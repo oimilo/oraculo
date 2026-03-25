@@ -11,14 +11,14 @@ Requirements para o MVP da Bienal (29-30 Mai 2026). Cada um mapeia para fases do
 
 - [x] **FLOW-01**: Visitante pode iniciar a experiência tocando um botão na tela
 - [x] **FLOW-02**: Oráculo reproduz monólogo de apresentação completo com pausas intencionais (2-4s entre frases)
-- [ ] **FLOW-03**: Oráculo apresenta pergunta do Inferno e aguarda resposta por voz (timeout 15s)
+- [x] **FLOW-03**: Oráculo apresenta pergunta do Inferno e aguarda resposta por voz (timeout 15s)
 - [ ] **FLOW-04**: Resposta do visitante é classificada em escolha binária (Caminho A: Vozes / Caminho B: Silêncio)
-- [ ] **FLOW-05**: Oráculo reproduz narrativa correspondente ao caminho escolhido no Inferno
-- [ ] **FLOW-06**: Oráculo apresenta pergunta do Purgatório (específica ao caminho) e aguarda resposta por voz
+- [x] **FLOW-05**: Oráculo reproduz narrativa correspondente ao caminho escolhido no Inferno
+- [x] **FLOW-06**: Oráculo apresenta pergunta do Purgatório (específica ao caminho) e aguarda resposta por voz
 - [ ] **FLOW-07**: Resposta do Purgatório é classificada em escolha binária (2 opções por caminho)
-- [ ] **FLOW-08**: Oráculo reproduz reflexão do Paraíso (pergunta reflexiva, sem classificação necessária)
-- [ ] **FLOW-09**: Oráculo reproduz devolução personalizada (1 de 4 variantes baseada nas 2 escolhas)
-- [ ] **FLOW-10**: Oráculo reproduz encerramento igual para todos e retorna ao estado inicial após 5s
+- [x] **FLOW-08**: Oráculo reproduz reflexão do Paraíso (pergunta reflexiva, sem classificação necessária)
+- [x] **FLOW-09**: Oráculo reproduz devolução personalizada (1 de 4 variantes baseada nas 2 escolhas)
+- [x] **FLOW-10**: Oráculo reproduz encerramento igual para todos e retorna ao estado inicial após 5s
 - [ ] **FLOW-11**: Silêncio prolongado (timeout) é tratado como escolha default com fala de transição poética
 - [x] **FLOW-12**: Experiência completa dura entre 7-10 minutos por visitante
 
@@ -99,14 +99,14 @@ Deferred para pós-evento ou iteração futura.
 |-------------|-------|--------|
 | FLOW-01 | Phase 1 | Complete |
 | FLOW-02 | Phase 1 | Complete |
-| FLOW-03 | Phase 1 | Pending |
+| FLOW-03 | Phase 1 | Complete |
 | FLOW-04 | Phase 2 | Pending |
-| FLOW-05 | Phase 1 | Pending |
-| FLOW-06 | Phase 1 | Pending |
+| FLOW-05 | Phase 1 | Complete |
+| FLOW-06 | Phase 1 | Complete |
 | FLOW-07 | Phase 2 | Pending |
-| FLOW-08 | Phase 1 | Pending |
-| FLOW-09 | Phase 1 | Pending |
-| FLOW-10 | Phase 1 | Pending |
+| FLOW-08 | Phase 1 | Complete |
+| FLOW-09 | Phase 1 | Complete |
+| FLOW-10 | Phase 1 | Complete |
 | FLOW-11 | Phase 2 | Pending |
 | FLOW-12 | Phase 1 | Complete |
 | TTS-01 | Phase 2 | Pending |
