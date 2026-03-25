@@ -55,11 +55,11 @@ Requirements para o MVP da Bienal (29-30 Mai 2026). Cada um mapeia para fases do
 
 ### Resiliência e Offline
 
-- [ ] **RES-01**: Todos os monólogos do roteiro têm áudios pré-gravados como fallback se ElevenLabs cair
-- [ ] **RES-02**: Se a internet cair, experiência continua com áudios pré-gravados para as falas fixas
+- [x] **RES-01**: Todos os monólogos do roteiro têm áudios pré-gravados como fallback se ElevenLabs cair
+- [x] **RES-02**: Se a internet cair, experiência continua com áudios pré-gravados para as falas fixas
 - [x] **RES-03**: Permissão de microfone é solicitada antes do início com tela explicativa
 - [x] **RES-04**: AudioContext é desbloqueado no primeiro clique (evita bloqueio de autoplay do browser)
-- [ ] **RES-05**: Sessão que trava por qualquer motivo retorna ao IDLE após 30s de inatividade
+- [x] **RES-05**: Sessão que trava por qualquer motivo retorna ao IDLE após 30s de inatividade
 
 ### Analytics e Admin
 
@@ -128,11 +128,11 @@ Deferred para pós-evento ou iteração futura.
 | UI-04 | Phase 2 | Complete |
 | UI-05 | Phase 2 | Complete |
 | UI-06 | Phase 1 | Complete |
-| RES-01 | Phase 3 | Pending |
-| RES-02 | Phase 3 | Pending |
+| RES-01 | Phase 3 | Complete |
+| RES-02 | Phase 3 | Complete |
 | RES-03 | Phase 1 | Complete |
 | RES-04 | Phase 1 | Complete |
-| RES-05 | Phase 3 | Pending |
+| RES-05 | Phase 3 | Complete |
 | ANA-01 | Phase 3 | Complete |
 | ANA-02 | Phase 3 | Complete |
 | ANA-03 | Phase 3 | Pending |

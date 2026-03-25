@@ -85,7 +85,7 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 03-01-PLAN.md -- Offline resilience: FallbackTTSService, inactivity timeout, fallback tracking
+- [x] 03-01-PLAN.md -- Offline resilience: FallbackTTSService, inactivity timeout, fallback tracking
 - [x] 03-02-PLAN.md -- Anonymous session analytics: types, mock service, useSessionAnalytics hook
 - [ ] 03-03-PLAN.md -- Multi-station + admin dashboard: station registry, heartbeat, /admin page
 
