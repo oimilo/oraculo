@@ -8,17 +8,17 @@ Agente de voz interativo que guia visitantes por uma jornada inspirada na Divina
 
 A experiência deve ser seamless e imersiva como um jogo — o visitante fala, ouve, e é transformado. Se a voz, o roteiro e as transições funcionarem perfeitamente, tudo funciona.
 
-## Current Milestone: v1.1 Real API Connections
+## Current Milestone: v1.2 Voice Flow Stabilization
 
-**Goal:** Substituir serviços mock por integrações reais com ElevenLabs, Whisper, Claude e Supabase via API routes server-side.
+**Goal:** Corrigir e refatorar todo o fluxo de interação por voz — desde o momento que o microfone abre até a classificação da resposta — garantindo que a sequência narrativa funcione sem sobreposições, com código limpo e extensível.
 
 **Target features:**
-- ElevenLabs TTS: API route `/api/tts` + `ElevenLabsTTSService` com PHASE_VOICE_SETTINGS
-- Whisper STT: API route `/api/stt` + `WhisperSTTService` (language=pt)
-- Claude NLU: API route `/api/nlu` + `ClaudeNLUService` (Haiku, classificação binária)
-- Supabase Analytics: `SupabaseAnalyticsService` + sessions table migration + RLS
-- `.env.example` com template de todas as chaves necessárias
-- Toggle `NEXT_PUBLIC_USE_REAL_APIS` para alternar mock↔real
+- Fix STT capture: microfone não capta respostas do visitante
+- Fix sobreposição de falas: TTS sobrepondo fases de escuta nos pontos de decisão
+- Fix sequência do fluxo: narração → pergunta → escuta → resposta na ordem correta
+- Ciclo de vida claro do microfone: quando abre, grava, processa e decide
+- Refatorar useVoiceChoice + orquestração TTS/STT para clareza e extensibilidade
+- Organização geral para suportar futuras branches de escolha
 
 ## Requirements
 
@@ -104,4 +104,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-25 after Phase 05 completion — Real voice services (ElevenLabs TTS, Whisper STT, Claude NLU) wired and tested*
+*Last updated: 2026-03-25 — Milestone v1.2 started (Voice Flow Stabilization)*
