@@ -30,7 +30,7 @@
 **Plans:** 2 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — API route handlers for TTS/STT/NLU with env validation and tests
+- [x] 04-01-PLAN.md — API route handlers for TTS/STT/NLU with env validation and tests
 - [x] 04-02-PLAN.md — Environment template (.env.example) and factory function preparation
 
 ---

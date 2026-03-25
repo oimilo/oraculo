@@ -13,9 +13,9 @@ Requirements para conectar APIs reais substituindo mocks. Cada um mapeia para fa
 
 ### API Routes
 
-- [ ] **API-01**: POST `/api/tts` aceita texto + voice settings e retorna audio stream do ElevenLabs (chave API server-side)
-- [ ] **API-02**: POST `/api/stt` aceita audio blob e retorna transcrição JSON do OpenAI Whisper (language=pt)
-- [ ] **API-03**: POST `/api/nlu` aceita transcript + question context + options e retorna classificação do Claude Haiku
+- [x] **API-01**: POST `/api/tts` aceita texto + voice settings e retorna audio stream do ElevenLabs (chave API server-side)
+- [x] **API-02**: POST `/api/stt` aceita audio blob e retorna transcrição JSON do OpenAI Whisper (language=pt)
+- [x] **API-03**: POST `/api/nlu` aceita transcript + question context + options e retorna classificação do Claude Haiku
 
 ### Real Services — TTS
 
@@ -43,7 +43,7 @@ Requirements para conectar APIs reais substituindo mocks. Cada um mapeia para fa
 
 - [x] **CFG-01**: `.env.example` documenta todas as variáveis de ambiente necessárias com descrições
 - [x] **CFG-02**: `NEXT_PUBLIC_USE_REAL_APIS=true` ativa implementações reais via factory functions existentes
-- [ ] **CFG-03**: Todas as API keys externas (ELEVENLABS_API_KEY, OPENAI_API_KEY, ANTHROPIC_API_KEY) ficam server-side only, nunca expostas ao client bundle
+- [x] **CFG-03**: Todas as API keys externas (ELEVENLABS_API_KEY, OPENAI_API_KEY, ANTHROPIC_API_KEY) ficam server-side only, nunca expostas ao client bundle
 
 ## v2 Requirements
 
@@ -89,12 +89,12 @@ Deferred para pós-evento ou iteração futura.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| API-01 | Phase 4 | Pending |
-| API-02 | Phase 4 | Pending |
-| API-03 | Phase 4 | Pending |
+| API-01 | Phase 4 | Complete |
+| API-02 | Phase 4 | Complete |
+| API-03 | Phase 4 | Complete |
 | CFG-01 | Phase 4 | Complete |
 | CFG-02 | Phase 4 | Complete |
-| CFG-03 | Phase 4 | Pending |
+| CFG-03 | Phase 4 | Complete |
 | RTTS-01 | Phase 5 | Pending |
 | RTTS-02 | Phase 5 | Pending |
 | RSTT-01 | Phase 5 | Pending |
