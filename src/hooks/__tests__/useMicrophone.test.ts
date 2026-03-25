@@ -2,17 +2,26 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useMicrophone } from '../useMicrophone';
 
+// Mock BlobEvent (not available in jsdom)
+class MockBlobEvent extends Event {
+  data: Blob;
+  constructor(type: string, init: { data: Blob }) {
+    super(type);
+    this.data = init.data;
+  }
+}
+
 // Mock MediaRecorder API
 const createMockMediaRecorder = () => {
   let state: 'inactive' | 'recording' | 'paused' = 'inactive';
-  let ondataavailable: ((e: BlobEvent) => void) | null = null;
+  let ondataavailable: ((e: any) => void) | null = null;
   let onstop: (() => void) | null = null;
 
   const mockRecorder = {
     get state() {
       return state;
     },
-    set ondataavailable(handler: (e: BlobEvent) => void) {
+    set ondataavailable(handler: (e: any) => void) {
       ondataavailable = handler;
     },
     set onstop(handler: () => void) {
@@ -26,7 +35,7 @@ const createMockMediaRecorder = () => {
       if (onstop) {
         // Simulate data available before stop
         if (ondataavailable) {
-          ondataavailable(new BlobEvent('dataavailable', { data: new Blob(['test'], { type: 'audio/webm' }) }));
+          ondataavailable(new MockBlobEvent('dataavailable', { data: new Blob(['test'], { type: 'audio/webm' }) }));
         }
         onstop();
       }
