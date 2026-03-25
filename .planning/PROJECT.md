@@ -83,8 +83,8 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 | Claude Haiku para NLU | Classificação binária rápida e barata (~100ms) | ✓ Good |
 | XState para state machine | Controle preciso de estados, transições e timeouts para fluxo guiado | ✓ Good |
 | Next.js + Supabase | SSR, API routes integradas, analytics persistidos, deploy Vercel | ✓ Good |
-| API keys server-side only | Segurança — chaves de API ficam em API routes do Next.js, nunca no cliente | — Pending |
-| Plain fetch (sem SDKs externos) | Simplicidade — fetch direto para ElevenLabs/Whisper/Claude, só @supabase/supabase-js | — Pending |
+| API keys server-side only | Segurança — chaves de API ficam em API routes do Next.js, nunca no cliente | ✓ Good |
+| Plain fetch (sem SDKs externos) | Simplicidade — fetch direto para ElevenLabs/Whisper/Claude, só @supabase/supabase-js | ✓ Good |
 
 ## Evolution
 
@@ -104,4 +104,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-25 after milestone v1.1 initialization*
+*Last updated: 2026-03-25 after Phase 04 completion — API routes + env config done*
