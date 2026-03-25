@@ -9,6 +9,7 @@ import { initAudioContext } from '@/lib/audio/audioContext';
 import { createTTSService, PHASE_VOICE_SETTINGS, type TTSService } from '@/services/tts';
 import { useVoiceChoice, type ChoiceConfig } from '@/hooks/useVoiceChoice';
 import { useAmbientAudio } from '@/hooks/useAmbientAudio';
+import { useSessionAnalytics } from '@/hooks/useSessionAnalytics';
 import PermissionScreen from './PermissionScreen';
 import StartButton from './StartButton';
 import PhaseBackground from './PhaseBackground';
@@ -86,6 +87,10 @@ export default function OracleExperience() {
   const [experienceStarted, setExperienceStarted] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const ttsRef = useRef<TTSService | null>(null);
+  const prevStateRef = useRef<any>(state.value);
+
+  // Session analytics hook
+  const analytics = useSessionAnalytics();
 
   // Determine which choice config is active based on current state
   const activeChoiceConfig = useMemo(() => {
@@ -106,6 +111,50 @@ export default function OracleExperience() {
 
   // Ambient audio hook
   useAmbientAudio(state.context.currentPhase, experienceStarted);
+
+  /**
+   * Track session start - fires when sessionId changes (new session)
+   */
+  useEffect(() => {
+    if (state.context.sessionId && !state.matches('IDLE') && experienceStarted) {
+      analytics.startSession(state.context.sessionId);
+    }
+  }, [state.context.sessionId, experienceStarted, analytics]);
+
+  /**
+   * Track session end on FIM
+   */
+  useEffect(() => {
+    if (state.matches('FIM') && state.context.sessionId) {
+      analytics.endSession(
+        state.context.sessionId,
+        state.context.choice1,
+        state.context.choice2,
+        state.context.fallbackCount,
+        true, // completed
+      );
+    }
+    prevStateRef.current = state.value;
+  }, [state.value, state.context, analytics]);
+
+  /**
+   * Track session timeout - when experience goes back to IDLE from non-FIM state
+   */
+  useEffect(() => {
+    if (state.matches('IDLE') && experienceStarted && prevStateRef.current !== 'FIM') {
+      if (state.context.sessionId) {
+        analytics.endSession(
+          state.context.sessionId,
+          state.context.choice1,
+          state.context.choice2,
+          state.context.fallbackCount,
+          false, // not completed (timeout)
+        );
+      }
+      setExperienceStarted(false);
+    }
+    prevStateRef.current = state.value;
+  }, [state.value, state.context, experienceStarted, analytics]);
 
   /**
    * Auto-speak on state change using TTSService
