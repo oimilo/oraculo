@@ -97,53 +97,53 @@ Deferred para pós-evento ou iteração futura.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FLOW-01 | — | Pending |
-| FLOW-02 | — | Pending |
-| FLOW-03 | — | Pending |
-| FLOW-04 | — | Pending |
-| FLOW-05 | — | Pending |
-| FLOW-06 | — | Pending |
-| FLOW-07 | — | Pending |
-| FLOW-08 | — | Pending |
-| FLOW-09 | — | Pending |
-| FLOW-10 | — | Pending |
-| FLOW-11 | — | Pending |
-| FLOW-12 | — | Pending |
-| TTS-01 | — | Pending |
-| TTS-02 | — | Pending |
-| TTS-03 | — | Pending |
-| TTS-04 | — | Pending |
-| STT-01 | — | Pending |
-| STT-02 | — | Pending |
-| STT-03 | — | Pending |
-| STT-04 | — | Pending |
-| STT-05 | — | Pending |
-| AMB-01 | — | Pending |
-| AMB-02 | — | Pending |
-| AMB-03 | — | Pending |
-| AMB-04 | — | Pending |
-| UI-01 | — | Pending |
-| UI-02 | — | Pending |
-| UI-03 | — | Pending |
-| UI-04 | — | Pending |
-| UI-05 | — | Pending |
-| UI-06 | — | Pending |
-| RES-01 | — | Pending |
-| RES-02 | — | Pending |
-| RES-03 | — | Pending |
-| RES-04 | — | Pending |
-| RES-05 | — | Pending |
-| ANA-01 | — | Pending |
-| ANA-02 | — | Pending |
-| ANA-03 | — | Pending |
-| ANA-04 | — | Pending |
-| ANA-05 | — | Pending |
+| FLOW-01 | Phase 1 | Pending |
+| FLOW-02 | Phase 1 | Pending |
+| FLOW-03 | Phase 1 | Pending |
+| FLOW-04 | Phase 2 | Pending |
+| FLOW-05 | Phase 1 | Pending |
+| FLOW-06 | Phase 1 | Pending |
+| FLOW-07 | Phase 2 | Pending |
+| FLOW-08 | Phase 1 | Pending |
+| FLOW-09 | Phase 1 | Pending |
+| FLOW-10 | Phase 1 | Pending |
+| FLOW-11 | Phase 2 | Pending |
+| FLOW-12 | Phase 1 | Pending |
+| TTS-01 | Phase 2 | Pending |
+| TTS-02 | Phase 2 | Pending |
+| TTS-03 | Phase 2 | Pending |
+| TTS-04 | Phase 2 | Pending |
+| STT-01 | Phase 2 | Pending |
+| STT-02 | Phase 2 | Pending |
+| STT-03 | Phase 2 | Pending |
+| STT-04 | Phase 2 | Pending |
+| STT-05 | Phase 2 | Pending |
+| AMB-01 | Phase 2 | Pending |
+| AMB-02 | Phase 2 | Pending |
+| AMB-03 | Phase 2 | Pending |
+| AMB-04 | Phase 2 | Pending |
+| UI-01 | Phase 1 | Pending |
+| UI-02 | Phase 2 | Pending |
+| UI-03 | Phase 2 | Pending |
+| UI-04 | Phase 2 | Pending |
+| UI-05 | Phase 2 | Pending |
+| UI-06 | Phase 1 | Pending |
+| RES-01 | Phase 3 | Pending |
+| RES-02 | Phase 3 | Pending |
+| RES-03 | Phase 1 | Pending |
+| RES-04 | Phase 1 | Pending |
+| RES-05 | Phase 3 | Pending |
+| ANA-01 | Phase 3 | Pending |
+| ANA-02 | Phase 3 | Pending |
+| ANA-03 | Phase 3 | Pending |
+| ANA-04 | Phase 3 | Pending |
+| ANA-05 | Phase 3 | Pending |
 
 **Coverage:**
 - v1 requirements: 41 total
-- Mapped to phases: 0
-- Unmapped: 41
+- Mapped to phases: 41
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-24*
-*Last updated: 2026-03-24 after initial definition*
+*Last updated: 2026-03-24 after roadmap creation*
