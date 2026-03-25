@@ -26,20 +26,22 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] Fluxo scripted completo com 3 perguntas, 4 caminhos e 4 devoluções personalizadas — *Validated in Phase 1*
+- [x] Voz gerada via ElevenLabs TTS com variação de tom/ritmo por fase — *Validated in Phase 2 (mock/interface ready)*
+- [x] Captura de voz do visitante + transcrição (Whisper) — *Validated in Phase 2 (mock/interface ready)*
+- [x] Classificação inteligente de escolhas (Claude Haiku NLU) — *Validated in Phase 2 (mock/interface ready)*
+- [x] Ambientação sonora por fase com crossfade — *Validated in Phase 2*
+- [x] UI mínima: botão de início, feedback visual por fase, indicador de escuta — *Validated in Phases 1+2*
+- [x] Fallback poético quando não entende + timeout redirect — *Validated in Phase 2*
+- [x] Analytics: sessões, caminhos escolhidos, tempos, taxas de fallback — *Validated in Phase 3 (localStorage mock)*
+- [x] Suporte a 2-3 estações simultâneas — *Validated in Phase 3 (browser UAT pending)*
+- [x] Painel admin com métricas e status das estações — *Validated in Phase 3*
+- [x] Fallback offline com áudios pré-gravados — *Validated in Phase 3 (audio files pending studio recording)*
+- [x] Inactivity timeout 30s → reset to IDLE — *Validated in Phase 3*
 
 ### Active
 
-- [ ] Fluxo scripted completo com 3 perguntas, 4 caminhos e 4 devoluções personalizadas
-- [ ] Voz gerada via ElevenLabs TTS com variação de tom/ritmo por fase
-- [ ] Captura de voz do visitante + transcrição (Whisper)
-- [ ] Classificação inteligente de escolhas (Claude Haiku NLU)
-- [ ] Ambientação sonora por fase com crossfade
-- [ ] UI mínima: botão de início, feedback visual por fase, indicador de escuta
-- [ ] Fallback poético quando não entende + timeout redirect
-- [ ] Analytics: sessões, caminhos escolhidos, tempos, taxas de fallback
-- [ ] Suporte a 2-3 estações simultâneas
-- [ ] Painel admin com métricas e status das estações
+(All v1 requirements implemented — browser UAT and studio recording pending before event)
 
 ### Out of Scope
 
@@ -102,4 +104,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-24 after milestone v1.0 initialization*
+*Last updated: 2026-03-25 after Phase 3 completion — all v1 requirements implemented*
