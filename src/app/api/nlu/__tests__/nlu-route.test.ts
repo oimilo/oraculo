@@ -71,7 +71,7 @@ describe('POST /api/nlu', () => {
     expect(data.error).toBeDefined();
   });
 
-  it('should call Anthropic Messages API at correct URL with claude-3-5-haiku-20241022', async () => {
+  it('should call Anthropic Messages API at correct URL with claude-haiku-4-5-20251001', async () => {
     const mockAnthropicResponse = {
       ok: true,
       status: 200,
@@ -109,7 +109,7 @@ describe('POST /api/nlu', () => {
     // Verify model in body
     const callArgs = (global.fetch as any).mock.calls[0];
     const body = JSON.parse(callArgs[1].body);
-    expect(body.model).toBe('claude-3-5-haiku-20241022');
+    expect(body.model).toBe('claude-haiku-4-5-20251001');
   });
 
   it('should return ClassificationResult JSON on success', async () => {

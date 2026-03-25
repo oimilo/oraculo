@@ -33,7 +33,7 @@ export type VoiceLifecycle =
   | { phase: 'idle' }
   | { phase: 'listening'; startedAt: number; previousAttempt?: number }
   | { phase: 'processing'; blob: Blob; attempt: number }
-  | { phase: 'decided'; result: VoiceChoiceResult }
+  | { phase: 'decided'; result: VoiceChoiceResult; attempt: number }
   | { phase: 'fallback'; attempt: number };
 
 export type VoiceEvent =
@@ -67,6 +67,12 @@ const LISTENING_DURATION_DEFAULT = 6000;
  * Voice lifecycle reducer - explicit finite state machine
  */
 export function voiceLifecycleReducer(state: VoiceLifecycle, event: VoiceEvent): VoiceLifecycle {
+  // RESET can happen from any non-idle state (e.g., deactivation during listening)
+  if (event.type === 'RESET') {
+    if (state.phase === 'idle') return state;
+    return { phase: 'idle' };
+  }
+
   switch (state.phase) {
     case 'idle':
       if (event.type === 'START_LISTENING') {
@@ -84,7 +90,7 @@ export function voiceLifecycleReducer(state: VoiceLifecycle, event: VoiceEvent):
 
     case 'processing':
       if (event.type === 'CLASSIFICATION_COMPLETE') {
-        return { phase: 'decided', result: event.result };
+        return { phase: 'decided', result: event.result, attempt: state.attempt };
       }
       if (event.type === 'NEED_FALLBACK') {
         return { phase: 'fallback', attempt: event.attempt };
@@ -99,9 +105,6 @@ export function voiceLifecycleReducer(state: VoiceLifecycle, event: VoiceEvent):
       return state;
 
     case 'decided':
-      if (event.type === 'RESET') {
-        return { phase: 'idle' };
-      }
       return state;
 
     default:
@@ -344,6 +347,7 @@ export function useVoiceChoice(config: ChoiceConfig, active: boolean): UseVoiceC
   const attemptCount =
     lifecycle.phase === 'processing' ? lifecycle.attempt :
     lifecycle.phase === 'fallback' ? lifecycle.attempt :
+    lifecycle.phase === 'decided' ? lifecycle.attempt :
     0;
 
   return {
