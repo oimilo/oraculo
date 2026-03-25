@@ -19,18 +19,18 @@ Requirements para conectar APIs reais substituindo mocks. Cada um mapeia para fa
 
 ### Real Services — TTS
 
-- [ ] **RTTS-01**: ElevenLabsTTSService implementa interface TTSService e chama `/api/tts` para cada segmento de fala
-- [ ] **RTTS-02**: Voice parameters (stability, similarity_boost, style, speed) variam por fase conforme PHASE_VOICE_SETTINGS
+- [x] **RTTS-01**: ElevenLabsTTSService implementa interface TTSService e chama `/api/tts` para cada segmento de fala
+- [x] **RTTS-02**: Voice parameters (stability, similarity_boost, style, speed) variam por fase conforme PHASE_VOICE_SETTINGS
 
 ### Real Services — STT
 
-- [ ] **RSTT-01**: WhisperSTTService implementa interface STTService e envia audio blob para `/api/stt`
-- [ ] **RSTT-02**: Transcrição é forçada para idioma português (language=pt no Whisper)
+- [x] **RSTT-01**: WhisperSTTService implementa interface STTService e envia audio blob para `/api/stt`
+- [x] **RSTT-02**: Transcrição é forçada para idioma português (language=pt no Whisper)
 
 ### Real Services — NLU
 
-- [ ] **RNLU-01**: ClaudeNLUService implementa interface NLUService e envia transcript+context para `/api/nlu`
-- [ ] **RNLU-02**: Classificação retorna choice A/B com confidence score e reasoning via Claude Haiku
+- [x] **RNLU-01**: ClaudeNLUService implementa interface NLUService e envia transcript+context para `/api/nlu`
+- [x] **RNLU-02**: Classificação retorna choice A/B com confidence score e reasoning via Claude Haiku
 
 ### Supabase Analytics
 
@@ -95,12 +95,12 @@ Deferred para pós-evento ou iteração futura.
 | CFG-01 | Phase 4 | Complete |
 | CFG-02 | Phase 4 | Complete |
 | CFG-03 | Phase 4 | Complete |
-| RTTS-01 | Phase 5 | Pending |
-| RTTS-02 | Phase 5 | Pending |
-| RSTT-01 | Phase 5 | Pending |
-| RSTT-02 | Phase 5 | Pending |
-| RNLU-01 | Phase 5 | Pending |
-| RNLU-02 | Phase 5 | Pending |
+| RTTS-01 | Phase 5 | Complete |
+| RTTS-02 | Phase 5 | Complete |
+| RSTT-01 | Phase 5 | Complete |
+| RSTT-02 | Phase 5 | Complete |
+| RNLU-01 | Phase 5 | Complete |
+| RNLU-02 | Phase 5 | Complete |
 | SUP-01 | Phase 6 | Pending |
 | SUP-02 | Phase 6 | Pending |
 | SUP-03 | Phase 6 | Pending |

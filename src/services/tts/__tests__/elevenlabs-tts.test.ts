@@ -27,8 +27,11 @@ vi.mock('../fallback', () => {
 const { ElevenLabsTTSService } = await import('../elevenlabs');
 const { FallbackTTSService } = await import('../fallback');
 
+// Import type separately to avoid TS2749 error
+import type { ElevenLabsTTSService as ElevenLabsTTSServiceType } from '../elevenlabs';
+
 describe('ElevenLabsTTSService', () => {
-  let service: ElevenLabsTTSService;
+  let service: ElevenLabsTTSServiceType;
   let mockAudioContext: any;
   let mockFetch: any;
 
