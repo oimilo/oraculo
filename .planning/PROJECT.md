@@ -8,19 +8,17 @@ Agente de voz interativo que guia visitantes por uma jornada inspirada na Divina
 
 A experiência deve ser seamless e imersiva como um jogo — o visitante fala, ouve, e é transformado. Se a voz, o roteiro e as transições funcionarem perfeitamente, tudo funciona.
 
-## Current Milestone: v1.0 O Oráculo — MVP para Bienal
+## Current Milestone: v1.1 Real API Connections
 
-**Goal:** Entregar o agente de voz funcional para 2-3 estações simultâneas no evento de 29-30 Mai 2026.
+**Goal:** Substituir serviços mock por integrações reais com ElevenLabs, Whisper, Claude e Supabase via API routes server-side.
 
 **Target features:**
-- State machine controlando fluxo scripted completo (3 perguntas, 4 caminhos, 4 devoluções)
-- TTS via ElevenLabs com voz variável por fase
-- STT via Whisper + classificação NLU via Claude Haiku
-- Sistema de ambientação sonora com crossfade entre fases
-- UI minimalista (botão de início + feedback visual sutil)
-- Fallback poético + timeout handling
-- Analytics no Supabase
-- Painel admin para operadores
+- ElevenLabs TTS: API route `/api/tts` + `ElevenLabsTTSService` com PHASE_VOICE_SETTINGS
+- Whisper STT: API route `/api/stt` + `WhisperSTTService` (language=pt)
+- Claude NLU: API route `/api/nlu` + `ClaudeNLUService` (Haiku, classificação binária)
+- Supabase Analytics: `SupabaseAnalyticsService` + sessions table migration + RLS
+- `.env.example` com template de todas as chaves necessárias
+- Toggle `NEXT_PUBLIC_USE_REAL_APIS` para alternar mock↔real
 
 ## Requirements
 
@@ -41,7 +39,7 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 
 ### Active
 
-(All v1 requirements implemented — browser UAT and studio recording pending before event)
+(v1.1 requirements — see REQUIREMENTS.md for full list)
 
 ### Out of Scope
 
@@ -80,11 +78,13 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| ElevenLabs TTS (não Conversational AI) | Controle total do fluxo — somos nós que orquestramos, não o SDK deles | — Pending |
-| Whisper para STT | Melhor accuracy em PT-BR para falas curtas/sussurradas | — Pending |
-| Claude Haiku para NLU | Classificação binária rápida e barata (~100ms) | — Pending |
-| XState para state machine | Controle preciso de estados, transições e timeouts para fluxo guiado | — Pending |
-| Next.js + Supabase | SSR, API routes integradas, analytics persistidos, deploy Vercel | — Pending |
+| ElevenLabs TTS (não Conversational AI) | Controle total do fluxo — somos nós que orquestramos, não o SDK deles | ✓ Good |
+| Whisper para STT | Melhor accuracy em PT-BR para falas curtas/sussurradas | ✓ Good |
+| Claude Haiku para NLU | Classificação binária rápida e barata (~100ms) | ✓ Good |
+| XState para state machine | Controle preciso de estados, transições e timeouts para fluxo guiado | ✓ Good |
+| Next.js + Supabase | SSR, API routes integradas, analytics persistidos, deploy Vercel | ✓ Good |
+| API keys server-side only | Segurança — chaves de API ficam em API routes do Next.js, nunca no cliente | — Pending |
+| Plain fetch (sem SDKs externos) | Simplicidade — fetch direto para ElevenLabs/Whisper/Claude, só @supabase/supabase-js | — Pending |
 
 ## Evolution
 
@@ -104,4 +104,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-25 after Phase 3 completion — all v1 requirements implemented*
+*Last updated: 2026-03-25 after milestone v1.1 initialization*
