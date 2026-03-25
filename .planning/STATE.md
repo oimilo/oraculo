@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: milestone
-status: Ready to execute
-last_updated: "2026-03-25T23:18:30.824Z"
+status: Phase complete — ready for verification
+last_updated: "2026-03-25T23:26:26.073Z"
 progress:
   total_phases: 3
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 3
-  completed_plans: 2
+  completed_plans: 3
 ---
 
 # State: O Oráculo
@@ -23,8 +23,8 @@ progress:
 
 ## Current Position
 
-Phase: 07 (voice-architecture-refactor) — EXECUTING
-Plan: 3 of 3
+Phase: 07 (voice-architecture-refactor) — COMPLETE
+Plan: 3 of 3 (all plans complete)
 
 ## Performance Metrics
 
@@ -43,9 +43,9 @@ Plan: 3 of 3
 
 **Milestone v1.2:**
 
-- Phases completed: 0/3
-- Plans completed: 0/0
-- Requirements validated: 0/19
+- Phases completed: 1/3 (Phase 07 complete)
+- Plans completed: 3/3
+- Requirements validated: 4/19 (QUAL-01, QUAL-02, QUAL-03, QUAL-04)
 
 ## Accumulated Context
 
@@ -60,6 +60,7 @@ Plan: 3 of 3
 7. **Plain fetch (sem SDKs)** — fetch direto para ElevenLabs/Whisper/Claude, só @supabase/supabase-js
 8. **v1.2 before Supabase** — Estabilizar fluxo de voz antes de adicionar analytics
 9. **QUAL requirements first** — Refactor architecture (Phase 7) before bug fixes (Phases 8-9)
+10. **Real timers for integration tests (QUAL-04)** — Catch production timing bugs in CI instead of hiding them with fake timers
 
 ### Known Bugs (from v1.1 testing)
 
@@ -71,9 +72,13 @@ Plan: 3 of 3
 
 ### Active TODOs
 
-- [ ] Plan Phase 7 (Voice Architecture Refactor)
-- [ ] Identify specific refactoring targets in useVoiceChoice and TTS orchestration
-- [ ] Review integration test suite for timing flakiness patterns
+- [x] Phase 7 (Voice Architecture Refactor) — COMPLETE (Plans 01-03)
+- [x] useVoiceChoice refactored to useReducer FSM (QUAL-01)
+- [x] TTS orchestration decoupled into useTTSOrchestrator (QUAL-02)
+- [x] Generic guard factory with XState v5 setup() (QUAL-03)
+- [x] Integration tests with realistic timing (QUAL-04)
+- [ ] Plan Phase 8 (Flow Sequencing + Microphone Lifecycle)
+- [ ] Plan Phase 9 (Voice Pipeline Integration)
 - [ ] 3 browser UAT items from v1.0 (multi-station, isolation, inactivity timeout)
 - [ ] Pre-recorded audio files (25 MP3s) need studio recording before event
 - [ ] Phase 6 Supabase analytics (deferred from v1.1)
@@ -88,16 +93,18 @@ Plan: 3 of 3
 
 **What just happened:**
 
-- Milestone v1.2 initialized
-- Roadmap created with 3 phases derived from 19 requirements
-- All requirements mapped to phases with 100% coverage
-- Phase structure: 7 (Refactor) → 8 (Flow+Mic) → 9 (Pipeline)
+- Phase 07 (Voice Architecture Refactor) completed — all 3 plans executed successfully
+- Plan 07-01: useVoiceChoice refactored to useReducer FSM, TTS extracted to useTTSOrchestrator
+- Plan 07-02: Generic guard factory created, oracleMachine migrated to XState v5 setup()
+- Plan 07-03: Integration tests rewritten with realistic async timing patterns
+- All 253 tests passing, zero regressions
+- Requirements validated: QUAL-01, QUAL-02, QUAL-03, QUAL-04
 
 **What's next:**
 
-- Run `/gsd:plan-phase 7` to decompose Voice Architecture Refactor
-- Begin refactoring useVoiceChoice lifecycle states (QUAL-01)
-- Decouple TTS orchestration from voice choice state (QUAL-02)
+- Run `/gsd:verify-phase 07` to validate Phase 7 completion
+- Plan Phase 8 (Flow Sequencing + Microphone Lifecycle) to fix flow bugs
+- Plan Phase 9 (Voice Pipeline Integration) to fix STT/NLU integration
 
 **Context for next session:**
 
@@ -106,11 +113,11 @@ Plan: 3 of 3
 - Flow sequencing (Phase 8) and pipeline integration (Phase 9) depend on clean foundation from Phase 7
 - Real API services already wired (v1.1 Phases 4-5) — this milestone fixes the orchestration layer
 
-**Last session ended:** 2026-03-25 (roadmap creation)
+**Last session ended:** 2026-03-25 (Phase 07 execution — Plan 03 complete)
 
 **Next recommended command:**
 
-`/gsd:plan-phase 7`
+`/gsd:verify-phase 07`
 
 ---
-*Last updated: 2026-03-25 — Roadmap created for milestone v1.2*
+*Last updated: 2026-03-25T23:26:26Z — Phase 07 complete, ready for verification*

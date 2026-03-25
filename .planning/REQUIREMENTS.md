@@ -72,7 +72,7 @@ Corrigir e refatorar fluxo de voz end-to-end: TTS → mic → STT → NLU → st
 - [x] **QUAL-01**: useVoiceChoice refactored with clear lifecycle phases (idle/listening/processing/decided)
 - [x] **QUAL-02**: TTS orchestration decoupled from voice choice logic (no shared mutable state)
 - [x] **QUAL-03**: State machine choice points are generic/extensible for future branches
-- [ ] **QUAL-04**: All voice flow integration tests pass with real service timing patterns
+- [x] **QUAL-04**: All voice flow integration tests pass with real service timing patterns
 
 ## v2 Requirements
 
@@ -132,7 +132,7 @@ Deferred para pós-evento ou iteração futura.
 | QUAL-01 | Phase 7 | Complete |
 | QUAL-02 | Phase 7 | Complete |
 | QUAL-03 | Phase 7 | Complete |
-| QUAL-04 | Phase 7 | Pending |
+| QUAL-04 | Phase 7 | Complete |
 | FLOW-01 | Phase 8 | Pending |
 | FLOW-02 | Phase 8 | Pending |
 | FLOW-03 | Phase 8 | Pending |
