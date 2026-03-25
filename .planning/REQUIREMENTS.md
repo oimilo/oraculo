@@ -46,18 +46,18 @@ Requirements para o MVP da Bienal (29-30 Mai 2026). Cada um mapeia para fases do
 
 ### UI e Feedback Visual
 
-- [ ] **UI-01**: Tela inicial mostra botão pulsante "Toque para começar" sobre fundo escuro com animação sutil de água
+- [x] **UI-01**: Tela inicial mostra botão pulsante "Toque para começar" sobre fundo escuro com animação sutil de água
 - [ ] **UI-02**: Durante a experiência, fundo muda sutilmente de cor por fase (bordô → azul acinzentado → dourado)
 - [ ] **UI-03**: Animação central abstrata reage ao áudio (waveform sutil)
 - [ ] **UI-04**: Indicador "ouvindo..." aparece como onda pulsante quando aguardando resposta
 - [ ] **UI-05**: Nenhum texto do roteiro aparece na tela — tudo é por áudio
-- [ ] **UI-06**: Tela final faz fade para preto e retorna ao início após 5 segundos
+- [x] **UI-06**: Tela final faz fade para preto e retorna ao início após 5 segundos
 
 ### Resiliência e Offline
 
 - [ ] **RES-01**: Todos os monólogos do roteiro têm áudios pré-gravados como fallback se ElevenLabs cair
 - [ ] **RES-02**: Se a internet cair, experiência continua com áudios pré-gravados para as falas fixas
-- [ ] **RES-03**: Permissão de microfone é solicitada antes do início com tela explicativa
+- [x] **RES-03**: Permissão de microfone é solicitada antes do início com tela explicativa
 - [x] **RES-04**: AudioContext é desbloqueado no primeiro clique (evita bloqueio de autoplay do browser)
 - [ ] **RES-05**: Sessão que trava por qualquer motivo retorna ao IDLE após 30s de inatividade
 
@@ -122,15 +122,15 @@ Deferred para pós-evento ou iteração futura.
 | AMB-02 | Phase 2 | Pending |
 | AMB-03 | Phase 2 | Pending |
 | AMB-04 | Phase 2 | Pending |
-| UI-01 | Phase 1 | Pending |
+| UI-01 | Phase 1 | Complete |
 | UI-02 | Phase 2 | Pending |
 | UI-03 | Phase 2 | Pending |
 | UI-04 | Phase 2 | Pending |
 | UI-05 | Phase 2 | Pending |
-| UI-06 | Phase 1 | Pending |
+| UI-06 | Phase 1 | Complete |
 | RES-01 | Phase 3 | Pending |
 | RES-02 | Phase 3 | Pending |
-| RES-03 | Phase 1 | Pending |
+| RES-03 | Phase 1 | Complete |
 | RES-04 | Phase 1 | Complete |
 | RES-05 | Phase 3 | Pending |
 | ANA-01 | Phase 3 | Pending |
