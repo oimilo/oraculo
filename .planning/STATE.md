@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: real-api-connections
-status: defining requirements
+status: roadmap defined
 last_updated: "2026-03-25"
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -19,14 +19,15 @@ progress:
 
 **Current Milestone:** v1.1 Real API Connections
 
-**Current Focus:** Defining requirements
+**Current Focus:** Ready to plan Phase 4 (API Routes & Configuration)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: Phase 4 (API Routes & Configuration)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-03-25 — Milestone v1.1 started
+Status: Roadmap defined, ready for planning
+Progress: ░░░░░░░░░░░░░░░░░░░░ 0% (0/3 phases)
+Last activity: 2026-03-25 — v1.1 roadmap created
 
 ## Performance Metrics
 
@@ -39,9 +40,9 @@ Last activity: 2026-03-25 — Milestone v1.1 started
 
 **Milestone v1.1:**
 
-- Phases completed: 0/?
+- Phases completed: 0/3
 - Plans completed: 0/?
-- Requirements validated: 0/?
+- Requirements validated: 0/16
 
 ## Accumulated Context
 
@@ -54,11 +55,11 @@ Last activity: 2026-03-25 — Milestone v1.1 started
 5. **Next.js + Supabase** — SSR, API routes integradas, analytics persistidos, deploy Vercel
 6. **API keys server-side only** — Chaves ficam em Next.js API routes, nunca expostas ao cliente
 7. **Plain fetch (sem SDKs)** — fetch direto para ElevenLabs/Whisper/Claude, só @supabase/supabase-js
+8. **3-phase structure for v1.1** — Phase 4: API routes + config, Phase 5: Real voice services, Phase 6: Supabase analytics
 
 ### Active TODOs
 
-- [ ] Define v1.1 requirements
-- [ ] Create v1.1 roadmap
+- [ ] Plan Phase 4 (API Routes & Configuration)
 - [ ] 3 browser UAT items from v1.0 (multi-station, isolation, inactivity timeout)
 - [ ] Pre-recorded audio files (25 MP3s) need studio recording before event
 
@@ -70,32 +71,33 @@ Last activity: 2026-03-25 — Milestone v1.1 started
 
 **Anticipated:**
 
-- ElevenLabs API key required for TTS integration
-- OpenAI API key required for Whisper STT
-- Anthropic API key required for Claude NLU
-- Supabase project URL + anon key required for analytics
+- ElevenLabs API key required for Phase 5 TTS integration
+- OpenAI API key required for Phase 5 Whisper STT
+- Anthropic API key required for Phase 5 Claude NLU
+- Supabase project URL + anon key required for Phase 6 analytics
 
 ### Recent Changes
 
 **2026-03-25:**
 
-- Milestone v1.0 completed — 3 phases, 13 plans, 41 requirements all implemented with mocks
-- Milestone v1.1 initialized — Real API Connections
+- v1.1 roadmap created with 3 phases covering 16 requirements
+- 100% requirement coverage validated (16/16 mapped)
+- Phase 4 ready for planning: API routes + configuration foundation
 
 ## Session Continuity
 
-**Last session ended:** 2026-03-25 (milestone v1.1 initialization)
+**Last session ended:** 2026-03-25 (v1.1 roadmap creation)
 
 **If returning after context loss, check:**
 
-1. Current phase number (see "Current Position" above)
-2. Active plan file (`.planning/phases/phase-{N}/PLAN.md`)
-3. Recent blockers (see "Known Blockers" above)
-4. Latest PROJECT.md decisions (Key Decisions table)
+1. Current phase number: Phase 4
+2. Roadmap file: `.planning/ROADMAP.md`
+3. Requirements file: `.planning/REQUIREMENTS.md` (traceability updated)
+4. Recent blockers: None currently
 
 **Next recommended command:**
 
-- Continue with requirements definition and roadmap creation
+`/gsd:plan-phase 4`
 
 ---
-*Last updated: 2026-03-25 after milestone v1.1 initialization*
+*Last updated: 2026-03-25 after v1.1 roadmap creation*

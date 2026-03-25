@@ -85,32 +85,32 @@ Deferred para pós-evento ou iteração futura.
 | RES-01 to RES-05 | Phases 1,3 | Complete |
 | ANA-01 to ANA-05 | Phase 3 | Complete |
 
-### v1.1 (Pending — phases assigned by roadmap)
+### v1.1 (Roadmap defined)
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| API-01 | TBD | Pending |
-| API-02 | TBD | Pending |
-| API-03 | TBD | Pending |
-| RTTS-01 | TBD | Pending |
-| RTTS-02 | TBD | Pending |
-| RSTT-01 | TBD | Pending |
-| RSTT-02 | TBD | Pending |
-| RNLU-01 | TBD | Pending |
-| RNLU-02 | TBD | Pending |
-| SUP-01 | TBD | Pending |
-| SUP-02 | TBD | Pending |
-| SUP-03 | TBD | Pending |
-| SUP-04 | TBD | Pending |
-| CFG-01 | TBD | Pending |
-| CFG-02 | TBD | Pending |
-| CFG-03 | TBD | Pending |
+| API-01 | Phase 4 | Pending |
+| API-02 | Phase 4 | Pending |
+| API-03 | Phase 4 | Pending |
+| CFG-01 | Phase 4 | Pending |
+| CFG-02 | Phase 4 | Pending |
+| CFG-03 | Phase 4 | Pending |
+| RTTS-01 | Phase 5 | Pending |
+| RTTS-02 | Phase 5 | Pending |
+| RSTT-01 | Phase 5 | Pending |
+| RSTT-02 | Phase 5 | Pending |
+| RNLU-01 | Phase 5 | Pending |
+| RNLU-02 | Phase 5 | Pending |
+| SUP-01 | Phase 6 | Pending |
+| SUP-02 | Phase 6 | Pending |
+| SUP-03 | Phase 6 | Pending |
+| SUP-04 | Phase 6 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 16 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 16
+- Mapped to phases: 16/16 ✓
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-24*
-*Last updated: 2026-03-25 after v1.1 requirements definition*
+*Last updated: 2026-03-25 after v1.1 roadmap creation*

@@ -1,93 +1,72 @@
-# Roadmap: O Oraculo v1.0
+# Roadmap: O Oraculo v1.1
 
-**Milestone:** v1.0 O Oraculo -- MVP para Bienal
-**Target:** Evento 29-30 Mai 2026
+**Milestone:** v1.1 Real API Connections
+**Target:** Connect ElevenLabs, Whisper, Claude, and Supabase to replace mock services
 **Granularity:** Standard
-**Created:** 2026-03-24
+**Created:** 2026-03-25
 
 ## Phases
 
-- [ ] **Phase 1: Core State Machine & Audio Foundation** - XState orchestration, audio context unlock, permissions, minimal UI shell
-- [ ] **Phase 2: Voice Processing Pipeline** - TTS streaming, STT transcription, NLU classification, ambient audio crossfading
-- [ ] **Phase 3: Polish, Resilience & Multi-Station** - Offline fallbacks, analytics dashboard, error handling, multi-station deployment
+- [ ] **Phase 4: API Routes & Configuration** - Server-side API endpoints for TTS/STT/NLU, environment configuration template
+- [ ] **Phase 5: Real Voice Services** - ElevenLabs TTS, Whisper STT, Claude NLU implementations behind existing interfaces
+- [ ] **Phase 6: Supabase Analytics** - Database migration, RLS policies, persistent analytics service, admin dashboard integration
 
 ## Phase Details
 
-### Phase 1: Core State Machine & Audio Foundation
-**Goal**: State machine orchestrates complete narrative flow with audio capabilities unlocked and microphone permissions secured
+### Phase 4: API Routes & Configuration
+**Goal**: Server-side API infrastructure is in place and services can authenticate against external APIs securely
 
-**Depends on**: Nothing (first phase)
+**Depends on**: Nothing (first phase of v1.1, builds on v1.0 service interfaces)
 
-**Requirements**: FLOW-01, FLOW-02, FLOW-03, FLOW-05, FLOW-06, FLOW-08, FLOW-09, FLOW-10, FLOW-12, RES-03, RES-04, UI-01, UI-06
+**Requirements**: API-01, API-02, API-03, CFG-01, CFG-02, CFG-03
 
 **Success Criteria** (what must be TRUE):
-1. Visitor can click start button and trigger the complete narrative state flow from idle through all phases to ending
-2. Audio playback works without browser autoplay blocking (AudioContext unlocked on first click)
-3. Microphone permission is granted before experience begins with clear explanatory screen
-4. UI shows phase-appropriate visual feedback (start button, phase indicator, end fade-to-black)
-5. Experience completes full cycle and returns to idle state ready for next visitor
+1. POST `/api/tts` accepts text and voice settings, returns ElevenLabs audio stream with proper error handling
+2. POST `/api/stt` accepts audio blob and returns Whisper transcription JSON with language=pt forced
+3. POST `/api/nlu` accepts transcript with context and returns Claude Haiku classification with confidence score
+4. `.env.example` file documents all required API keys with clear descriptions and example values
+5. Developer can toggle between mock and real services by setting `NEXT_PUBLIC_USE_REAL_APIS=true` without code changes
 
-**Plans:** 4 plans
+**Plans**: TBD
 
-Plans:
-- [x] 01-01-PLAN.md -- Project scaffold, types, script data, Vitest config
-- [x] 01-02-PLAN.md -- XState state machine (TDD) with all states and transitions
-- [x] 01-03-PLAN.md -- Audio utilities (AudioContext unlock, SpeechSynthesis wrapper)
-- [x] 01-04-PLAN.md -- UI components, orchestrator wiring, visual verification
+---
+
+### Phase 5: Real Voice Services
+**Goal**: Visitor receives real AI-generated voice responses and their speech is transcribed and classified by production APIs
+
+**Depends on**: Phase 4 (requires API routes to be functional)
+
+**Requirements**: RTTS-01, RTTS-02, RSTT-01, RSTT-02, RNLU-01, RNLU-02
+
+**Success Criteria** (what must be TRUE):
+1. Visitor hears ElevenLabs voice speak each narrative segment with phase-appropriate voice parameters (grave in Inferno, soft in Paradise)
+2. Voice parameters (stability, similarity_boost, style, speed) automatically vary per phase according to PHASE_VOICE_SETTINGS
+3. Visitor's spoken response is transcribed by Whisper with Portuguese language detection within 2 seconds
+4. Transcribed text is classified by Claude Haiku into correct narrative branch (A or B) with confidence score and reasoning
+5. Service factory functions switch between mock and real implementations based on `NEXT_PUBLIC_USE_REAL_APIS` env var
+6. When API calls fail, system gracefully falls back to error state without crashing the experience
+
+**Plans**: TBD
 
 **UI hint**: yes
 
 ---
 
-### Phase 2: Voice Processing Pipeline
-**Goal**: Visitor speaks and receives intelligent TTS responses with ambient soundscapes matching narrative phases
+### Phase 6: Supabase Analytics
+**Goal**: Session data persists to database with proper anonymity controls and admin dashboard displays real session metrics
 
-**Depends on**: Phase 1 (requires state machine, audio context, microphone access)
+**Depends on**: Phase 5 (can run independently but best tested with real sessions)
 
-**Requirements**: FLOW-04, FLOW-07, FLOW-11, TTS-01, TTS-02, TTS-03, TTS-04, STT-01, STT-02, STT-03, STT-04, STT-05, AMB-01, AMB-02, AMB-03, AMB-04, UI-02, UI-03, UI-04, UI-05
-
-**Success Criteria** (what must be TRUE):
-1. Visitor hears Oraculo speak with ElevenLabs voice that varies parameters by phase (grave in Inferno, soft in Paradise)
-2. Visitor speaks freely and their choice is understood and classified into correct narrative branch within 3 seconds
-3. When classification confidence is low, Oraculo responds with poetic redirection and listens again (max 2 attempts)
-4. Ambient soundscape shifts seamlessly between phases with crossfade transitions (no audio gaps)
-5. UI shows "listening" indicator when microphone is active and waveform reacts to audio playback
-6. Silence timeout is treated as valid narrative choice with appropriate transition dialogue
-
-**Plans:** 6 plans
-
-Plans:
-- [x] 02-01-PLAN.md -- Service interfaces (TTS, STT, NLU) with types, factories, and mock implementations
-- [x] 02-02-PLAN.md -- Ambient audio system (AmbientPlayer, crossfade utility, audio asset docs)
-- [x] 02-03-PLAN.md -- Browser hooks (useMicrophone, useWaveform) for recording and visualization
-- [x] 02-04-PLAN.md -- Audio UI components (WaveformVisualizer, ListeningIndicator)
-- [x] 02-05-PLAN.md -- Voice choice orchestration hook (record -> transcribe -> classify -> event)
-- [x] 02-06-PLAN.md -- Integration: wire all services/hooks into OracleExperience + browser verification
-
-**UI hint**: yes
-
----
-
-### Phase 3: Polish, Resilience & Multi-Station
-**Goal**: System operates reliably across 2-3 concurrent stations with graceful offline fallbacks and operator visibility into session analytics
-
-**Depends on**: Phase 2 (requires working voice pipeline to test failure modes)
-
-**Requirements**: RES-01, RES-02, RES-05, ANA-01, ANA-02, ANA-03, ANA-04, ANA-05
+**Requirements**: SUP-01, SUP-02, SUP-03, SUP-04
 
 **Success Criteria** (what must be TRUE):
-1. When internet drops during experience, visitor continues with pre-recorded fallback audio without interruption
-2. Session completes and logs anonymous analytics (path taken, duration, fallback count) without collecting any personal data
-3. Admin dashboard shows real-time status of all stations and aggregated session metrics (paths, completion rate, timing)
-4. Three concurrent sessions run on separate stations without audio interference or state collision
-5. Session that becomes inactive for 30 seconds automatically resets to idle state
+1. Database table `sessions` stores anonymous session data (id, station_id, path, duration, fallback_count, timestamps) without any personal information
+2. Row-level security policies allow anonymous inserts for session creation and authenticated reads for admin dashboard
+3. SupabaseAnalyticsService implements AnalyticsService interface and persists all 7 analytics methods to Supabase
+4. Admin dashboard at `/admin` displays live session metrics from Supabase when real APIs are enabled
+5. Session analytics survive browser refresh and are queryable across multiple stations
 
-**Plans:** 3 plans
-
-Plans:
-- [x] 03-01-PLAN.md -- Offline resilience: FallbackTTSService, inactivity timeout, fallback tracking
-- [x] 03-02-PLAN.md -- Anonymous session analytics: types, mock service, useSessionAnalytics hook
-- [x] 03-03-PLAN.md -- Multi-station + admin dashboard: station registry, heartbeat, /admin page
+**Plans**: TBD
 
 **UI hint**: yes
 
@@ -97,41 +76,61 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Core State Machine & Audio Foundation | 4/4 | Complete | 2026-03-25 |
-| 2. Voice Processing Pipeline | 0/6 | Planned | - |
-| 3. Polish, Resilience & Multi-Station | 0/3 | Planned | - |
+| 4. API Routes & Configuration | 0/? | Not started | - |
+| 5. Real Voice Services | 0/? | Not started | - |
+| 6. Supabase Analytics | 0/? | Not started | - |
 
 ## Dependencies
 
 ```
-Phase 1: Core State Machine & Audio Foundation
+Phase 4: API Routes & Configuration
     |
-Phase 2: Voice Processing Pipeline
+Phase 5: Real Voice Services
     |
-Phase 3: Polish, Resilience & Multi-Station
+Phase 6: Supabase Analytics (can run parallel to Phase 5 but tested after)
 ```
 
 ## Coverage
 
-**Total v1 Requirements:** 41
-- State Machine & Flow: 12 (FLOW-01 to FLOW-12)
-- TTS: 4 (TTS-01 to TTS-04)
-- STT & NLU: 5 (STT-01 to STT-05)
-- Ambient Audio: 4 (AMB-01 to AMB-04)
-- UI: 6 (UI-01 to UI-06)
-- Resilience: 5 (RES-01 to RES-05)
-- Analytics: 5 (ANA-01 to ANA-05)
+**Total v1.1 Requirements:** 16
 
-**Mapped to Phases:** 41/41
+- API Routes: 3 (API-01 to API-03)
+- Real TTS: 2 (RTTS-01 to RTTS-02)
+- Real STT: 2 (RSTT-01 to RSTT-02)
+- Real NLU: 2 (RNLU-01 to RNLU-02)
+- Supabase Analytics: 4 (SUP-01 to SUP-04)
+- Configuration: 3 (CFG-01 to CFG-03)
+
+**Mapped to Phases:** 16/16 ✓
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| API-01 | Phase 4 | Pending |
+| API-02 | Phase 4 | Pending |
+| API-03 | Phase 4 | Pending |
+| CFG-01 | Phase 4 | Pending |
+| CFG-02 | Phase 4 | Pending |
+| CFG-03 | Phase 4 | Pending |
+| RTTS-01 | Phase 5 | Pending |
+| RTTS-02 | Phase 5 | Pending |
+| RSTT-01 | Phase 5 | Pending |
+| RSTT-02 | Phase 5 | Pending |
+| RNLU-01 | Phase 5 | Pending |
+| RNLU-02 | Phase 5 | Pending |
+| SUP-01 | Phase 6 | Pending |
+| SUP-02 | Phase 6 | Pending |
+| SUP-03 | Phase 6 | Pending |
+| SUP-04 | Phase 6 | Pending |
 
 ## Research Flags
 
-**Phase 2 research completed** (2026-03-25):
-- ElevenLabs WebSocket streaming, Whisper PT-BR parameters, Claude Haiku classification patterns documented in 02-RESEARCH.md
-- Architecture: interface-based service layer with mock/real swap via env var
-- Browser APIs confirmed: Web Audio API, MediaRecorder API, Canvas API all mature and well-supported
+**All phases use standard integration patterns:**
 
-**Phases 1 and 3:** Standard patterns, skip additional research.
+- Phase 4: Next.js 15 App Router API routes (standard REST endpoints)
+- Phase 5: Plain fetch to external APIs (ElevenLabs REST, OpenAI Whisper, Anthropic Messages)
+- Phase 6: Supabase client library (@supabase/supabase-js) + SQL migrations
+
+No additional research needed — patterns are well-documented.
 
 ---
-*Last updated: 2026-03-25 after Phase 3 planning*
+*Last updated: 2026-03-25 after v1.1 roadmap creation*
