@@ -62,7 +62,7 @@ Plans:
 - [x] 02-03-PLAN.md -- Browser hooks (useMicrophone, useWaveform) for recording and visualization
 - [x] 02-04-PLAN.md -- Audio UI components (WaveformVisualizer, ListeningIndicator)
 - [x] 02-05-PLAN.md -- Voice choice orchestration hook (record -> transcribe -> classify -> event)
-- [ ] 02-06-PLAN.md -- Integration: wire all services/hooks into OracleExperience + browser verification
+- [x] 02-06-PLAN.md -- Integration: wire all services/hooks into OracleExperience + browser verification
 
 **UI hint**: yes
 
