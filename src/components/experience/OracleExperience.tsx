@@ -10,6 +10,7 @@ import { createTTSService, PHASE_VOICE_SETTINGS, type TTSService } from '@/servi
 import { useVoiceChoice, type ChoiceConfig } from '@/hooks/useVoiceChoice';
 import { useAmbientAudio } from '@/hooks/useAmbientAudio';
 import { useSessionAnalytics } from '@/hooks/useSessionAnalytics';
+import { StationRegistry } from '@/services/station';
 import PermissionScreen from './PermissionScreen';
 import StartButton from './StartButton';
 import PhaseBackground from './PhaseBackground';
@@ -91,6 +92,24 @@ export default function OracleExperience() {
 
   // Session analytics hook
   const analytics = useSessionAnalytics();
+
+  // Station heartbeat for admin dashboard (ANA-04)
+  useEffect(() => {
+    const stationId = typeof window !== 'undefined'
+      ? (new URLSearchParams(window.location.search).get('station') || 'station-1')
+      : 'station-1';
+    const registry = StationRegistry.getInstance();
+
+    // Send initial heartbeat
+    registry.heartbeat(stationId, state.context.sessionId || null);
+
+    // Send heartbeat every 10 seconds
+    const interval = setInterval(() => {
+      registry.heartbeat(stationId, state.context.sessionId || null);
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [state.context.sessionId]);
 
   // Determine which choice config is active based on current state
   const activeChoiceConfig = useMemo(() => {
