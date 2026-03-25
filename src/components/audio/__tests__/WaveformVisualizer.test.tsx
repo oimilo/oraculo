@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import WaveformVisualizer from '../WaveformVisualizer';
+import * as useWaveformModule from '@/hooks/useWaveform';
 
 // Mock the useWaveform hook since it's tested separately in Plan 03
 vi.mock('@/hooks/useWaveform', () => ({
@@ -40,17 +41,15 @@ describe('WaveformVisualizer', () => {
   });
 
   it('passes canvasRef to useWaveform hook', () => {
-    const { useWaveform } = require('@/hooks/useWaveform');
     render(<WaveformVisualizer />);
 
-    expect(useWaveform).toHaveBeenCalledWith(
+    expect(useWaveformModule.useWaveform).toHaveBeenCalledWith(
       expect.objectContaining({ current: expect.any(Object) }),
       expect.objectContaining({})
     );
   });
 
   it('accepts optional strokeColor and lineWidth props', () => {
-    const { useWaveform } = require('@/hooks/useWaveform');
     render(
       <WaveformVisualizer
         strokeColor="rgba(0, 255, 0, 0.8)"
@@ -58,7 +57,7 @@ describe('WaveformVisualizer', () => {
       />
     );
 
-    expect(useWaveform).toHaveBeenCalledWith(
+    expect(useWaveformModule.useWaveform).toHaveBeenCalledWith(
       expect.any(Object),
       expect.objectContaining({
         strokeColor: 'rgba(0, 255, 0, 0.8)',
