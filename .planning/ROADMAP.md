@@ -27,7 +27,11 @@
 4. `.env.example` file documents all required API keys with clear descriptions and example values
 5. Developer can toggle between mock and real services by setting `NEXT_PUBLIC_USE_REAL_APIS=true` without code changes
 
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — API route handlers for TTS/STT/NLU with env validation and tests
+- [ ] 04-02-PLAN.md — Environment template (.env.example) and factory function preparation
 
 ---
 
@@ -76,7 +80,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 4. API Routes & Configuration | 0/? | Not started | - |
+| 4. API Routes & Configuration | 0/2 | Planning complete | - |
 | 5. Real Voice Services | 0/? | Not started | - |
 | 6. Supabase Analytics | 0/? | Not started | - |
 
@@ -133,4 +137,4 @@ Phase 6: Supabase Analytics (can run parallel to Phase 5 but tested after)
 No additional research needed — patterns are well-documented.
 
 ---
-*Last updated: 2026-03-25 after v1.1 roadmap creation*
+*Last updated: 2026-03-25 after Phase 4 planning*
