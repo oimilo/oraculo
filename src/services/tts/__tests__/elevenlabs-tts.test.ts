@@ -1,6 +1,4 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import type { VoiceSettings } from '../index';
-import { PHASE_VOICE_SETTINGS } from '../index';
 import type { SpeechSegment } from '@/types';
 
 // Mock modules before imports
@@ -26,8 +24,10 @@ vi.mock('../fallback', () => {
 // Import after mocks are set up
 const { ElevenLabsTTSService } = await import('../elevenlabs');
 const { FallbackTTSService } = await import('../fallback');
+const { PHASE_VOICE_SETTINGS } = await import('../index');
 
-// Import type separately to avoid TS2749 error
+// Import types separately to avoid TS2749 error
+import type { VoiceSettings } from '../index';
 import type { ElevenLabsTTSService as ElevenLabsTTSServiceType } from '../elevenlabs';
 
 describe('ElevenLabsTTSService', () => {

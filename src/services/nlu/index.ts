@@ -1,4 +1,5 @@
 import { MockNLUService } from './mock';
+import { ClaudeNLUService } from './claude';
 
 export interface ClassificationResult {
   choice: 'A' | 'B';
@@ -16,9 +17,7 @@ export interface NLUService {
 
 export function createNLUService(): NLUService {
   if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_USE_REAL_APIS === 'true') {
-    // TODO(Phase 5): return new ClaudeNLUService()
-    // Real service will call /api/nlu route
-    console.warn('[NLU] Real service not yet implemented, using mock');
+    return new ClaudeNLUService();
   }
   return new MockNLUService();
 }
