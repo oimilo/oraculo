@@ -4,10 +4,10 @@ import { useMachine } from '@xstate/react';
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { oracleMachine } from '@/machines/oracleMachine';
 import { SCRIPT } from '@/data/script';
-import type { NarrativePhase, SpeechSegment } from '@/types';
+import type { SpeechSegment } from '@/types';
 import { initAudioContext } from '@/lib/audio/audioContext';
-import { createTTSService, PHASE_VOICE_SETTINGS, type TTSService } from '@/services/tts';
 import { useVoiceChoice, type ChoiceConfig } from '@/hooks/useVoiceChoice';
+import { useTTSOrchestrator } from '@/hooks/useTTSOrchestrator';
 import { useAmbientAudio } from '@/hooks/useAmbientAudio';
 import { useSessionAnalytics } from '@/hooks/useSessionAnalytics';
 import { StationRegistry } from '@/services/station';
@@ -86,9 +86,10 @@ export default function OracleExperience() {
   const [state, send] = useMachine(oracleMachine);
   const [micPermissionGranted, setMicPermissionGranted] = useState(false);
   const [experienceStarted, setExperienceStarted] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const ttsRef = useRef<TTSService | null>(null);
   const prevStateRef = useRef<any>(state.value);
+
+  // TTS orchestrator hook
+  const tts = useTTSOrchestrator();
 
   // Session analytics hook
   const analytics = useSessionAnalytics();
@@ -119,13 +120,20 @@ export default function OracleExperience() {
     return null;
   }, [state.value]);
 
-  // Voice choice hook (only active when at an AGUARDANDO state)
+  // Determine if we're in an AGUARDANDO state (used for voice choice activation)
+  const isAguardando =
+    state.matches({ INFERNO: 'AGUARDANDO' }) ||
+    state.matches({ PURGATORIO_A: 'AGUARDANDO' }) ||
+    state.matches({ PURGATORIO_B: 'AGUARDANDO' });
+
+  // Voice choice hook - active flag manages lifecycle automatically
   const voiceChoice = useVoiceChoice(
     activeChoiceConfig || {
       questionContext: '',
       options: { A: '', B: '' },
       eventMap: { A: '', B: '' },
-    }
+    },
+    isAguardando
   );
 
   // Ambient audio hook
@@ -176,46 +184,38 @@ export default function OracleExperience() {
   }, [state.value, state.context, experienceStarted, analytics]);
 
   /**
-   * Auto-speak on state change using TTSService
+   * Auto-speak on state change using TTS orchestrator
    */
   useEffect(() => {
     const scriptKey = getScriptKey(state);
-    if (!scriptKey || isSpeaking || !ttsRef.current) return;
+    if (!scriptKey || tts.isSpeaking) return;
 
-    const phase = state.context.currentPhase;
-    setIsSpeaking(true);
-
-    ttsRef.current
-      .speak(SCRIPT[scriptKey], PHASE_VOICE_SETTINGS[phase])
+    tts.speak(SCRIPT[scriptKey], state.context.currentPhase)
       .then(() => {
-        setIsSpeaking(false);
         send({ type: 'NARRATIVA_DONE' });
       })
       .catch((err) => {
-        setIsSpeaking(false);
         if (err.message !== 'Speech cancelled') {
           console.error('Speech error:', err);
         }
       });
 
     return () => {
-      ttsRef.current?.cancel();
-      setIsSpeaking(false);
+      tts.cancel();
     };
-  }, [state.value, send, state, isSpeaking]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.value, send, tts]);
 
   /**
    * Handle fallback: play fallback script when needsFallback is true
    */
   useEffect(() => {
-    if (!voiceChoice.needsFallback || !ttsRef.current) return;
+    if (!voiceChoice.needsFallback) return;
 
     const fallbackScript = getFallbackScript(state);
     if (!fallbackScript) return;
 
-    const phase = state.context.currentPhase;
-    ttsRef.current
-      .speak(fallbackScript, PHASE_VOICE_SETTINGS[phase])
+    tts.speak(fallbackScript, state.context.currentPhase)
       .then(() => {
         // After fallback TTS completes, restart listening
         voiceChoice.startListening();
@@ -223,7 +223,7 @@ export default function OracleExperience() {
       .catch((err) => {
         console.error('Fallback TTS error:', err);
       });
-  }, [voiceChoice.needsFallback, state]);
+  }, [voiceChoice.needsFallback, state, tts, voiceChoice]);
 
   /**
    * Handle choice result from voice pipeline
@@ -238,37 +238,17 @@ export default function OracleExperience() {
     voiceChoice.reset();
   }, [voiceChoice.choiceResult, send]);
 
-  /**
-   * Start voice choice when entering AGUARDANDO state
-   */
-  useEffect(() => {
-    if (activeChoiceConfig && !voiceChoice.isListening && !voiceChoice.choiceResult) {
-      voiceChoice.startListening().catch((err) => {
-        console.error('Failed to start listening:', err);
-      });
-    }
-  }, [activeChoiceConfig]);
+  // Voice choice lifecycle is now managed internally by the hook via `active` flag
 
   /**
    * Start handler - unlocks AudioContext and initializes TTS service (MUST be inside user click)
    */
   const handleStart = useCallback(async () => {
     await initAudioContext();
-
-    // Initialize TTS service
-    if (!ttsRef.current) {
-      ttsRef.current = createTTSService();
-    }
-
+    tts.initTTS();
     setExperienceStarted(true);
     send({ type: 'START' });
-  }, [send]);
-
-  // Determine if we're in an AGUARDANDO state
-  const isAguardando =
-    state.matches({ INFERNO: 'AGUARDANDO' }) ||
-    state.matches({ PURGATORIO_A: 'AGUARDANDO' }) ||
-    state.matches({ PURGATORIO_B: 'AGUARDANDO' });
+  }, [send, tts]);
 
   // Experience is active (not IDLE, not FIM)
   const experienceActive = experienceStarted && !state.matches('IDLE') && !state.matches('FIM');
@@ -285,7 +265,7 @@ export default function OracleExperience() {
       {/* Central visual area -- no text (UI-05) */}
       {experienceActive && (
         <div className="fixed inset-0 flex flex-col items-center justify-center gap-8 pointer-events-none">
-          <WaveformVisualizer visible={isSpeaking} />
+          <WaveformVisualizer visible={tts.isSpeaking} />
           <ListeningIndicator isListening={voiceChoice.isListening} />
         </div>
       )}
@@ -323,6 +303,19 @@ export default function OracleExperience() {
       )}
 
       {state.matches('FIM') && <EndFade />}
+
+      {/* Dev skip button — advances to next state by firing NARRATIVA_DONE */}
+      {experienceActive && !isAguardando && !state.matches('FIM') && (
+        <button
+          onClick={() => {
+            tts.cancel();
+            send({ type: 'NARRATIVA_DONE' });
+          }}
+          className="fixed bottom-4 right-4 z-50 px-4 py-2 bg-white/10 hover:bg-white/20 text-white/60 text-sm rounded backdrop-blur transition-colors"
+        >
+          Skip &raquo;
+        </button>
+      )}
     </PhaseBackground>
   );
 }
