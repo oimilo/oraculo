@@ -50,9 +50,11 @@ Plans:
 5. Service factory functions switch between mock and real implementations based on `NEXT_PUBLIC_USE_REAL_APIS` env var
 6. When API calls fail, system gracefully falls back to error state without crashing the experience
 
-**Plans**: TBD
+**Plans:** 2 plans
 
-**UI hint**: yes
+Plans:
+- [ ] 05-01-PLAN.md — Real service implementations (ElevenLabsTTSService, WhisperSTTService, ClaudeNLUService) with tests
+- [ ] 05-02-PLAN.md — Wire factory functions to import and return real services, full verification
 
 ---
 
@@ -80,8 +82,8 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 4. API Routes & Configuration | 0/2 | Planning complete | - |
-| 5. Real Voice Services | 0/? | Not started | - |
+| 4. API Routes & Configuration | 2/2 | Complete | 2026-03-25 |
+| 5. Real Voice Services | 0/2 | Planning complete | - |
 | 6. Supabase Analytics | 0/? | Not started | - |
 
 ## Dependencies
@@ -109,12 +111,12 @@ Phase 6: Supabase Analytics (can run parallel to Phase 5 but tested after)
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| API-01 | Phase 4 | Pending |
-| API-02 | Phase 4 | Pending |
-| API-03 | Phase 4 | Pending |
-| CFG-01 | Phase 4 | Pending |
-| CFG-02 | Phase 4 | Pending |
-| CFG-03 | Phase 4 | Pending |
+| API-01 | Phase 4 | Complete |
+| API-02 | Phase 4 | Complete |
+| API-03 | Phase 4 | Complete |
+| CFG-01 | Phase 4 | Complete |
+| CFG-02 | Phase 4 | Complete |
+| CFG-03 | Phase 4 | Complete |
 | RTTS-01 | Phase 5 | Pending |
 | RTTS-02 | Phase 5 | Pending |
 | RSTT-01 | Phase 5 | Pending |
@@ -137,4 +139,4 @@ Phase 6: Supabase Analytics (can run parallel to Phase 5 but tested after)
 No additional research needed — patterns are well-documented.
 
 ---
-*Last updated: 2026-03-25 after Phase 4 planning*
+*Last updated: 2026-03-25 after Phase 5 planning*
