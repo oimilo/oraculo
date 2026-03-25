@@ -24,16 +24,16 @@ Requirements para o MVP da Bienal (29-30 Mai 2026). Cada um mapeia para fases do
 
 ### Voz — TTS
 
-- [ ] **TTS-01**: Texto do roteiro é convertido em fala via ElevenLabs com streaming (latência < 1.5s para início do áudio)
-- [ ] **TTS-02**: Voz muda de parâmetros por fase (mais grave no Inferno, mais suave no Paraíso, definitiva no Encerramento)
-- [ ] **TTS-03**: Pausas intencionais de 1.5-4s são inseridas entre blocos de fala conforme roteiro
-- [ ] **TTS-04**: Voz é consistente (mesma identidade vocal) ao longo de toda a experiência
+- [x] **TTS-01**: Texto do roteiro é convertido em fala via ElevenLabs com streaming (latência < 1.5s para início do áudio)
+- [x] **TTS-02**: Voz muda de parâmetros por fase (mais grave no Inferno, mais suave no Paraíso, definitiva no Encerramento)
+- [x] **TTS-03**: Pausas intencionais de 1.5-4s são inseridas entre blocos de fala conforme roteiro
+- [x] **TTS-04**: Voz é consistente (mesma identidade vocal) ao longo de toda a experiência
 
 ### Voz — STT e NLU
 
-- [ ] **STT-01**: Fala do visitante é capturada via microfone do headphone e transcrita via Whisper em PT-BR
-- [ ] **STT-02**: Transcrição é classificada por Claude Haiku em escolha binária com confiança > 0.7
-- [ ] **STT-03**: Se confiança < 0.7 ou fala fora de contexto, Oráculo faz redirecionamento poético e reescuta (máx 2 tentativas)
+- [x] **STT-01**: Fala do visitante é capturada via microfone do headphone e transcrita via Whisper em PT-BR
+- [x] **STT-02**: Transcrição é classificada por Claude Haiku em escolha binária com confiança > 0.7
+- [x] **STT-03**: Se confiança < 0.7 ou fala fora de contexto, Oráculo faz redirecionamento poético e reescuta (máx 2 tentativas)
 - [ ] **STT-04**: Latência total entre fim da fala e início da resposta do Oráculo é < 3 segundos
 - [ ] **STT-05**: Indicador visual de "ouvindo" aparece quando o microfone está ativo
 
@@ -109,13 +109,13 @@ Deferred para pós-evento ou iteração futura.
 | FLOW-10 | Phase 1 | Complete |
 | FLOW-11 | Phase 2 | Pending |
 | FLOW-12 | Phase 1 | Complete |
-| TTS-01 | Phase 2 | Pending |
-| TTS-02 | Phase 2 | Pending |
-| TTS-03 | Phase 2 | Pending |
-| TTS-04 | Phase 2 | Pending |
-| STT-01 | Phase 2 | Pending |
-| STT-02 | Phase 2 | Pending |
-| STT-03 | Phase 2 | Pending |
+| TTS-01 | Phase 2 | Complete |
+| TTS-02 | Phase 2 | Complete |
+| TTS-03 | Phase 2 | Complete |
+| TTS-04 | Phase 2 | Complete |
+| STT-01 | Phase 2 | Complete |
+| STT-02 | Phase 2 | Complete |
+| STT-03 | Phase 2 | Complete |
 | STT-04 | Phase 2 | Pending |
 | STT-05 | Phase 2 | Pending |
 | AMB-01 | Phase 2 | Pending |
