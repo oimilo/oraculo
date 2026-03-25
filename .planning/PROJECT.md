@@ -104,4 +104,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-25 after Phase 04 completion — API routes + env config done*
+*Last updated: 2026-03-25 after Phase 05 completion — Real voice services (ElevenLabs TTS, Whisper STT, Claude NLU) wired and tested*
