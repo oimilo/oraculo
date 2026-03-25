@@ -115,8 +115,8 @@ describe('Oracle State Machine', () => {
       expect(actor.getSnapshot().value).toEqual({ INFERNO: 'TIMEOUT_REDIRECT' });
       expect(actor.getSnapshot().context.choice1).toBe('B');
 
-      // Advance another 2000ms for redirect transition
-      vi.advanceTimersByTime(2000);
+      // TIMEOUT_REDIRECT now waits for NARRATIVA_DONE (speech completion) instead of fixed timer
+      actor.send({ type: 'NARRATIVA_DONE' });
 
       expect(actor.getSnapshot().value).toEqual({ INFERNO: 'RESPOSTA_B' });
     });
@@ -654,14 +654,14 @@ describe('Oracle State Machine', () => {
   });
 
   describe('inactivity timeout (RES-05)', () => {
-    it('should transition from APRESENTACAO to IDLE after 30s inactivity', () => {
+    it('should transition from APRESENTACAO to IDLE after 120s inactivity', () => {
       const actor = createActor(oracleMachine);
       actor.start();
       actor.send({ type: 'START' });
 
       expect(actor.getSnapshot().value).toBe('APRESENTACAO');
 
-      vi.advanceTimersByTime(30000);
+      vi.advanceTimersByTime(120000);
 
       expect(actor.getSnapshot().value).toBe('IDLE');
       expect(actor.getSnapshot().context.sessionId).toBe('');
@@ -669,7 +669,7 @@ describe('Oracle State Machine', () => {
       expect(actor.getSnapshot().context.choice2).toBeNull();
     });
 
-    it('should transition from INFERNO.NARRATIVA to IDLE after 30s inactivity', () => {
+    it('should transition from INFERNO.NARRATIVA to IDLE after 120s inactivity', () => {
       const actor = createActor(oracleMachine);
       actor.start();
       actor.send({ type: 'START' });
@@ -677,7 +677,7 @@ describe('Oracle State Machine', () => {
 
       expect(actor.getSnapshot().value).toEqual({ INFERNO: 'NARRATIVA' });
 
-      vi.advanceTimersByTime(30000);
+      vi.advanceTimersByTime(120000);
 
       expect(actor.getSnapshot().value).toBe('IDLE');
     });
@@ -688,12 +688,12 @@ describe('Oracle State Machine', () => {
 
       expect(actor.getSnapshot().value).toBe('IDLE');
 
-      vi.advanceTimersByTime(30000);
+      vi.advanceTimersByTime(120000);
 
       expect(actor.getSnapshot().value).toBe('IDLE');
     });
 
-    it('should NOT have 30s timeout in FIM (has own 5s timer)', () => {
+    it('should NOT have 120s timeout in FIM (has own 5s timer)', () => {
       const actor = createActor(oracleMachine);
       actor.start();
       actor.send({ type: 'START' });
@@ -718,7 +718,7 @@ describe('Oracle State Machine', () => {
       expect(actor.getSnapshot().value).toBe('IDLE');
     });
 
-    it('should transition from PARAISO to IDLE after 30s inactivity', () => {
+    it('should transition from PARAISO to IDLE after 120s inactivity', () => {
       const actor = createActor(oracleMachine);
       actor.start();
       actor.send({ type: 'START' });
@@ -734,9 +734,55 @@ describe('Oracle State Machine', () => {
 
       expect(actor.getSnapshot().value).toBe('PARAISO');
 
-      vi.advanceTimersByTime(30000);
+      vi.advanceTimersByTime(120000);
 
       expect(actor.getSnapshot().value).toBe('IDLE');
+    });
+  });
+
+  describe('generic guards (QUAL-03)', () => {
+    it('should route DEVOLUCAO correctly using named guards for all 4 paths', () => {
+      // Test that the machine uses named guards from createChoiceGuard factory
+      // instead of inline anonymous functions, enabling extensibility and testability
+
+      const paths = [
+        { choice1: 'A' as const, choice2: 'FICAR' as const, expected: 'DEVOLUCAO_A_FICAR' },
+        { choice1: 'A' as const, choice2: 'EMBORA' as const, expected: 'DEVOLUCAO_A_EMBORA' },
+        { choice1: 'B' as const, choice2: 'PISAR' as const, expected: 'DEVOLUCAO_B_PISAR' },
+        { choice1: 'B' as const, choice2: 'CONTORNAR' as const, expected: 'DEVOLUCAO_B_CONTORNAR' },
+      ];
+
+      paths.forEach(({ choice1, choice2, expected }) => {
+        const actor = createActor(oracleMachine);
+        actor.start();
+
+        actor.send({ type: 'START' });
+        actor.send({ type: 'NARRATIVA_DONE' }); // -> INFERNO.NARRATIVA
+        actor.send({ type: 'NARRATIVA_DONE' }); // -> INFERNO.PERGUNTA
+        actor.send({ type: 'NARRATIVA_DONE' }); // -> INFERNO.AGUARDANDO
+
+        // Make choice1
+        actor.send({ type: choice1 === 'A' ? 'CHOICE_A' : 'CHOICE_B' });
+        actor.send({ type: 'NARRATIVA_DONE' }); // -> PURGATORIO_A or PURGATORIO_B
+
+        actor.send({ type: 'NARRATIVA_DONE' }); // -> NARRATIVA
+        actor.send({ type: 'NARRATIVA_DONE' }); // -> PERGUNTA
+        actor.send({ type: 'NARRATIVA_DONE' }); // -> AGUARDANDO
+
+        // Make choice2
+        const choice2EventMap: Record<string, 'CHOICE_FICAR' | 'CHOICE_EMBORA' | 'CHOICE_PISAR' | 'CHOICE_CONTORNAR'> = {
+          'FICAR': 'CHOICE_FICAR',
+          'EMBORA': 'CHOICE_EMBORA',
+          'PISAR': 'CHOICE_PISAR',
+          'CONTORNAR': 'CHOICE_CONTORNAR',
+        };
+        actor.send({ type: choice2EventMap[choice2] });
+
+        actor.send({ type: 'NARRATIVA_DONE' }); // -> PARAISO
+        actor.send({ type: 'NARRATIVA_DONE' }); // -> DEVOLUCAO (auto-routed by guards)
+
+        expect(actor.getSnapshot().value).toBe(expected);
+      });
     });
   });
 });

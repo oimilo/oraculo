@@ -1,6 +1,7 @@
-import { createMachine, assign } from 'xstate';
+import { setup, assign } from 'xstate';
 import type { OracleContext, OracleEvent } from './oracleMachine.types';
 import { INITIAL_CONTEXT } from './oracleMachine.types';
+import { PATH_GUARDS } from './guards/createChoiceGuard';
 
 /**
  * Oracle State Machine - Complete narrative flow per PRD Section 6
@@ -11,15 +12,21 @@ import { INITIAL_CONTEXT } from './oracleMachine.types';
  * - Timeouts and fallbacks at decision points
  * - Context tracking for session analytics
  */
-export const oracleMachine = createMachine(
-  {
-    id: 'oracle',
-    initial: 'IDLE',
-    types: {} as {
-      context: OracleContext;
-      events: OracleEvent;
-    },
-    context: INITIAL_CONTEXT,
+export const oracleMachine = setup({
+  types: {} as {
+    context: OracleContext;
+    events: OracleEvent;
+  },
+  guards: {
+    isPathAFicar: PATH_GUARDS.isPathAFicar,
+    isPathAEmbora: PATH_GUARDS.isPathAEmbora,
+    isPathBPisar: PATH_GUARDS.isPathBPisar,
+    isPathBContornar: PATH_GUARDS.isPathBContornar,
+  },
+}).createMachine({
+  id: 'oracle',
+  initial: 'IDLE',
+  context: INITIAL_CONTEXT,
     on: {
       FALLBACK_USED: {
         actions: assign({
@@ -49,7 +56,7 @@ export const oracleMachine = createMachine(
           NARRATIVA_DONE: 'INFERNO',
         },
         after: {
-          30000: {
+          120000: {
             target: '#oracle.IDLE',
             actions: assign({
               sessionId: '',
@@ -66,7 +73,7 @@ export const oracleMachine = createMachine(
         initial: 'NARRATIVA',
         entry: assign({ currentPhase: 'INFERNO' }),
         after: {
-          30000: {
+          120000: {
             target: '#oracle.IDLE',
             actions: assign({
               sessionId: '',
@@ -107,8 +114,8 @@ export const oracleMachine = createMachine(
             },
           },
           TIMEOUT_REDIRECT: {
-            after: {
-              2000: 'RESPOSTA_B',
+            on: {
+              NARRATIVA_DONE: 'RESPOSTA_B',
             },
           },
           RESPOSTA_A: {
@@ -129,7 +136,7 @@ export const oracleMachine = createMachine(
         initial: 'NARRATIVA',
         entry: assign({ currentPhase: 'PURGATORIO' }),
         after: {
-          30000: {
+          120000: {
             target: '#oracle.IDLE',
             actions: assign({
               sessionId: '',
@@ -187,7 +194,7 @@ export const oracleMachine = createMachine(
         initial: 'NARRATIVA',
         entry: assign({ currentPhase: 'PURGATORIO' }),
         after: {
-          30000: {
+          120000: {
             target: '#oracle.IDLE',
             actions: assign({
               sessionId: '',
@@ -247,7 +254,7 @@ export const oracleMachine = createMachine(
           NARRATIVA_DONE: 'DEVOLUCAO',
         },
         after: {
-          30000: {
+          120000: {
             target: '#oracle.IDLE',
             actions: assign({
               sessionId: '',
@@ -263,22 +270,10 @@ export const oracleMachine = createMachine(
       DEVOLUCAO: {
         entry: assign({ currentPhase: 'DEVOLUCAO' }),
         always: [
-          {
-            target: 'DEVOLUCAO_A_FICAR',
-            guard: ({ context }) => context.choice1 === 'A' && context.choice2 === 'FICAR',
-          },
-          {
-            target: 'DEVOLUCAO_A_EMBORA',
-            guard: ({ context }) => context.choice1 === 'A' && context.choice2 === 'EMBORA',
-          },
-          {
-            target: 'DEVOLUCAO_B_PISAR',
-            guard: ({ context }) => context.choice1 === 'B' && context.choice2 === 'PISAR',
-          },
-          {
-            target: 'DEVOLUCAO_B_CONTORNAR',
-            guard: ({ context }) => context.choice1 === 'B' && context.choice2 === 'CONTORNAR',
-          },
+          { target: 'DEVOLUCAO_A_FICAR', guard: 'isPathAFicar' },
+          { target: 'DEVOLUCAO_A_EMBORA', guard: 'isPathAEmbora' },
+          { target: 'DEVOLUCAO_B_PISAR', guard: 'isPathBPisar' },
+          { target: 'DEVOLUCAO_B_CONTORNAR', guard: 'isPathBContornar' },
         ],
       },
 
@@ -287,7 +282,7 @@ export const oracleMachine = createMachine(
           NARRATIVA_DONE: 'ENCERRAMENTO',
         },
         after: {
-          30000: {
+          120000: {
             target: '#oracle.IDLE',
             actions: assign({
               sessionId: '',
@@ -305,7 +300,7 @@ export const oracleMachine = createMachine(
           NARRATIVA_DONE: 'ENCERRAMENTO',
         },
         after: {
-          30000: {
+          120000: {
             target: '#oracle.IDLE',
             actions: assign({
               sessionId: '',
@@ -323,7 +318,7 @@ export const oracleMachine = createMachine(
           NARRATIVA_DONE: 'ENCERRAMENTO',
         },
         after: {
-          30000: {
+          120000: {
             target: '#oracle.IDLE',
             actions: assign({
               sessionId: '',
@@ -341,7 +336,7 @@ export const oracleMachine = createMachine(
           NARRATIVA_DONE: 'ENCERRAMENTO',
         },
         after: {
-          30000: {
+          120000: {
             target: '#oracle.IDLE',
             actions: assign({
               sessionId: '',
@@ -360,7 +355,7 @@ export const oracleMachine = createMachine(
           NARRATIVA_DONE: 'FIM',
         },
         after: {
-          30000: {
+          120000: {
             target: '#oracle.IDLE',
             actions: assign({
               sessionId: '',
@@ -388,5 +383,4 @@ export const oracleMachine = createMachine(
         },
       },
     },
-  }
-);
+  });
