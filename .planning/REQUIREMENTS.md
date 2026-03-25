@@ -47,10 +47,10 @@ Requirements para o MVP da Bienal (29-30 Mai 2026). Cada um mapeia para fases do
 ### UI e Feedback Visual
 
 - [x] **UI-01**: Tela inicial mostra botão pulsante "Toque para começar" sobre fundo escuro com animação sutil de água
-- [ ] **UI-02**: Durante a experiência, fundo muda sutilmente de cor por fase (bordô → azul acinzentado → dourado)
+- [x] **UI-02**: Durante a experiência, fundo muda sutilmente de cor por fase (bordô → azul acinzentado → dourado)
 - [x] **UI-03**: Animação central abstrata reage ao áudio (waveform sutil)
 - [x] **UI-04**: Indicador "ouvindo..." aparece como onda pulsante quando aguardando resposta
-- [ ] **UI-05**: Nenhum texto do roteiro aparece na tela — tudo é por áudio
+- [x] **UI-05**: Nenhum texto do roteiro aparece na tela — tudo é por áudio
 - [x] **UI-06**: Tela final faz fade para preto e retorna ao início após 5 segundos
 
 ### Resiliência e Offline
@@ -123,10 +123,10 @@ Deferred para pós-evento ou iteração futura.
 | AMB-03 | Phase 2 | Complete |
 | AMB-04 | Phase 2 | Complete |
 | UI-01 | Phase 1 | Complete |
-| UI-02 | Phase 2 | Pending |
+| UI-02 | Phase 2 | Complete |
 | UI-03 | Phase 2 | Complete |
 | UI-04 | Phase 2 | Complete |
-| UI-05 | Phase 2 | Pending |
+| UI-05 | Phase 2 | Complete |
 | UI-06 | Phase 1 | Complete |
 | RES-01 | Phase 3 | Pending |
 | RES-02 | Phase 3 | Pending |
