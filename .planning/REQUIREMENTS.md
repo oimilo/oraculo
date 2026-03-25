@@ -9,8 +9,8 @@ Requirements para o MVP da Bienal (29-30 Mai 2026). Cada um mapeia para fases do
 
 ### State Machine e Fluxo
 
-- [ ] **FLOW-01**: Visitante pode iniciar a experiência tocando um botão na tela
-- [ ] **FLOW-02**: Oráculo reproduz monólogo de apresentação completo com pausas intencionais (2-4s entre frases)
+- [x] **FLOW-01**: Visitante pode iniciar a experiência tocando um botão na tela
+- [x] **FLOW-02**: Oráculo reproduz monólogo de apresentação completo com pausas intencionais (2-4s entre frases)
 - [ ] **FLOW-03**: Oráculo apresenta pergunta do Inferno e aguarda resposta por voz (timeout 15s)
 - [ ] **FLOW-04**: Resposta do visitante é classificada em escolha binária (Caminho A: Vozes / Caminho B: Silêncio)
 - [ ] **FLOW-05**: Oráculo reproduz narrativa correspondente ao caminho escolhido no Inferno
@@ -20,7 +20,7 @@ Requirements para o MVP da Bienal (29-30 Mai 2026). Cada um mapeia para fases do
 - [ ] **FLOW-09**: Oráculo reproduz devolução personalizada (1 de 4 variantes baseada nas 2 escolhas)
 - [ ] **FLOW-10**: Oráculo reproduz encerramento igual para todos e retorna ao estado inicial após 5s
 - [ ] **FLOW-11**: Silêncio prolongado (timeout) é tratado como escolha default com fala de transição poética
-- [ ] **FLOW-12**: Experiência completa dura entre 7-10 minutos por visitante
+- [x] **FLOW-12**: Experiência completa dura entre 7-10 minutos por visitante
 
 ### Voz — TTS
 
@@ -97,8 +97,8 @@ Deferred para pós-evento ou iteração futura.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FLOW-01 | Phase 1 | Pending |
-| FLOW-02 | Phase 1 | Pending |
+| FLOW-01 | Phase 1 | Complete |
+| FLOW-02 | Phase 1 | Complete |
 | FLOW-03 | Phase 1 | Pending |
 | FLOW-04 | Phase 2 | Pending |
 | FLOW-05 | Phase 1 | Pending |
@@ -108,7 +108,7 @@ Deferred para pós-evento ou iteração futura.
 | FLOW-09 | Phase 1 | Pending |
 | FLOW-10 | Phase 1 | Pending |
 | FLOW-11 | Phase 2 | Pending |
-| FLOW-12 | Phase 1 | Pending |
+| FLOW-12 | Phase 1 | Complete |
 | TTS-01 | Phase 2 | Pending |
 | TTS-02 | Phase 2 | Pending |
 | TTS-03 | Phase 2 | Pending |
