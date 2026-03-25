@@ -16,7 +16,9 @@ export interface NLUService {
 
 export function createNLUService(): NLUService {
   if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_USE_REAL_APIS === 'true') {
-    throw new Error('Real NLU not implemented yet');
+    // TODO(Phase 5): return new ClaudeNLUService()
+    // Real service will call /api/nlu route
+    console.warn('[NLU] Real service not yet implemented, using mock');
   }
   return new MockNLUService();
 }

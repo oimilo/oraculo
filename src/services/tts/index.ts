@@ -26,9 +26,11 @@ export interface TTSService {
 
 export function createTTSService(): TTSService {
   if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_USE_REAL_APIS === 'true') {
+    // TODO(Phase 5): return new ElevenLabsTTSService()
+    // Real service will call /api/tts route
+    // Fallback chain: ElevenLabs -> FallbackTTS (pre-recorded) -> SpeechSynthesis
     if (isOnline()) {
-      // Real ElevenLabs implementation (future)
-      // For now, fall through to fallback
+      console.warn('[TTS] Real service not yet implemented, using fallback');
     }
     return new FallbackTTSService();
   }
