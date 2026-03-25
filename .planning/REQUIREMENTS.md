@@ -3,71 +3,47 @@
 **Defined:** 2026-03-24
 **Core Value:** Experiência seamless e imersiva como um jogo — voz, roteiro e transições funcionando perfeitamente.
 
-## v1 Requirements
+## v1.0 Requirements (Complete)
 
-Requirements para o MVP da Bienal (29-30 Mai 2026). Cada um mapeia para fases do roadmap.
+All 41 v1.0 requirements implemented with mock services. See MILESTONES.md for details.
 
-### State Machine e Fluxo
+## v1.1 Requirements
 
-- [x] **FLOW-01**: Visitante pode iniciar a experiência tocando um botão na tela
-- [x] **FLOW-02**: Oráculo reproduz monólogo de apresentação completo com pausas intencionais (2-4s entre frases)
-- [x] **FLOW-03**: Oráculo apresenta pergunta do Inferno e aguarda resposta por voz (timeout 15s)
-- [x] **FLOW-04**: Resposta do visitante é classificada em escolha binária (Caminho A: Vozes / Caminho B: Silêncio)
-- [x] **FLOW-05**: Oráculo reproduz narrativa correspondente ao caminho escolhido no Inferno
-- [x] **FLOW-06**: Oráculo apresenta pergunta do Purgatório (específica ao caminho) e aguarda resposta por voz
-- [x] **FLOW-07**: Resposta do Purgatório é classificada em escolha binária (2 opções por caminho)
-- [x] **FLOW-08**: Oráculo reproduz reflexão do Paraíso (pergunta reflexiva, sem classificação necessária)
-- [x] **FLOW-09**: Oráculo reproduz devolução personalizada (1 de 4 variantes baseada nas 2 escolhas)
-- [x] **FLOW-10**: Oráculo reproduz encerramento igual para todos e retorna ao estado inicial após 5s
-- [x] **FLOW-11**: Silêncio prolongado (timeout) é tratado como escolha default com fala de transição poética
-- [x] **FLOW-12**: Experiência completa dura entre 7-10 minutos por visitante
+Requirements para conectar APIs reais substituindo mocks. Cada um mapeia para fases do roadmap.
 
-### Voz — TTS
+### API Routes
 
-- [x] **TTS-01**: Texto do roteiro é convertido em fala via ElevenLabs com streaming (latência < 1.5s para início do áudio)
-- [x] **TTS-02**: Voz muda de parâmetros por fase (mais grave no Inferno, mais suave no Paraíso, definitiva no Encerramento)
-- [x] **TTS-03**: Pausas intencionais de 1.5-4s são inseridas entre blocos de fala conforme roteiro
-- [x] **TTS-04**: Voz é consistente (mesma identidade vocal) ao longo de toda a experiência
+- [ ] **API-01**: POST `/api/tts` aceita texto + voice settings e retorna audio stream do ElevenLabs (chave API server-side)
+- [ ] **API-02**: POST `/api/stt` aceita audio blob e retorna transcrição JSON do OpenAI Whisper (language=pt)
+- [ ] **API-03**: POST `/api/nlu` aceita transcript + question context + options e retorna classificação do Claude Haiku
 
-### Voz — STT e NLU
+### Real Services — TTS
 
-- [x] **STT-01**: Fala do visitante é capturada via microfone do headphone e transcrita via Whisper em PT-BR
-- [x] **STT-02**: Transcrição é classificada por Claude Haiku em escolha binária com confiança > 0.7
-- [x] **STT-03**: Se confiança < 0.7 ou fala fora de contexto, Oráculo faz redirecionamento poético e reescuta (máx 2 tentativas)
-- [x] **STT-04**: Latência total entre fim da fala e início da resposta do Oráculo é < 3 segundos
-- [x] **STT-05**: Indicador visual de "ouvindo" aparece quando o microfone está ativo
+- [ ] **RTTS-01**: ElevenLabsTTSService implementa interface TTSService e chama `/api/tts` para cada segmento de fala
+- [ ] **RTTS-02**: Voice parameters (stability, similarity_boost, style, speed) variam por fase conforme PHASE_VOICE_SETTINGS
 
-### Ambientação Sonora
+### Real Services — STT
 
-- [x] **AMB-01**: Cada fase tem ambientação sonora própria (Inferno: eco/sussurros, Purgatório: vento/passos, Paraíso: harmônico etéreo)
-- [x] **AMB-02**: Transições entre fases usam crossfade de 2-3 segundos (sem gaps audíveis)
-- [x] **AMB-03**: Ambientação toca simultaneamente com a voz TTS sem conflito de áudio
-- [x] **AMB-04**: Áudios de ambientação são loops seamless pré-carregados
+- [ ] **RSTT-01**: WhisperSTTService implementa interface STTService e envia audio blob para `/api/stt`
+- [ ] **RSTT-02**: Transcrição é forçada para idioma português (language=pt no Whisper)
 
-### UI e Feedback Visual
+### Real Services — NLU
 
-- [x] **UI-01**: Tela inicial mostra botão pulsante "Toque para começar" sobre fundo escuro com animação sutil de água
-- [x] **UI-02**: Durante a experiência, fundo muda sutilmente de cor por fase (bordô → azul acinzentado → dourado)
-- [x] **UI-03**: Animação central abstrata reage ao áudio (waveform sutil)
-- [x] **UI-04**: Indicador "ouvindo..." aparece como onda pulsante quando aguardando resposta
-- [x] **UI-05**: Nenhum texto do roteiro aparece na tela — tudo é por áudio
-- [x] **UI-06**: Tela final faz fade para preto e retorna ao início após 5 segundos
+- [ ] **RNLU-01**: ClaudeNLUService implementa interface NLUService e envia transcript+context para `/api/nlu`
+- [ ] **RNLU-02**: Classificação retorna choice A/B com confidence score e reasoning via Claude Haiku
 
-### Resiliência e Offline
+### Supabase Analytics
 
-- [x] **RES-01**: Todos os monólogos do roteiro têm áudios pré-gravados como fallback se ElevenLabs cair
-- [x] **RES-02**: Se a internet cair, experiência continua com áudios pré-gravados para as falas fixas
-- [x] **RES-03**: Permissão de microfone é solicitada antes do início com tela explicativa
-- [x] **RES-04**: AudioContext é desbloqueado no primeiro clique (evita bloqueio de autoplay do browser)
-- [x] **RES-05**: Sessão que trava por qualquer motivo retorna ao IDLE após 30s de inatividade
+- [ ] **SUP-01**: Tabela `sessions` no Supabase armazena dados anônimos (id, station_id, path, duration_ms, fallback_count, status, started_at, ended_at)
+- [ ] **SUP-02**: Políticas RLS permitem inserts anônimos e reads autenticados (admin)
+- [ ] **SUP-03**: SupabaseAnalyticsService implementa interface AnalyticsService com persistência no Supabase
+- [ ] **SUP-04**: Admin dashboard lê métricas de sessão do Supabase quando NEXT_PUBLIC_USE_REAL_APIS=true
 
-### Analytics e Admin
+### Configuration
 
-- [x] **ANA-01**: Cada sessão registra: estação, caminho escolhido, duração, contagem de fallbacks, se completou
-- [x] **ANA-02**: Zero dados pessoais são coletados (LGPD) — sem áudio persistido, sem transcrições salvas
-- [ ] **ANA-03**: Painel admin em `/admin` mostra: sessões ativas, total de visitantes, distribuição de caminhos, tempo médio
-- [ ] **ANA-04**: Painel admin mostra status online/offline de cada estação
-- [ ] **ANA-05**: 2-3 estações podem rodar sessões simultâneas sem interferência
+- [ ] **CFG-01**: `.env.example` documenta todas as variáveis de ambiente necessárias com descrições
+- [ ] **CFG-02**: `NEXT_PUBLIC_USE_REAL_APIS=true` ativa implementações reais via factory functions existentes
+- [ ] **CFG-03**: Todas as API keys externas (ELEVENLABS_API_KEY, OPENAI_API_KEY, ANTHROPIC_API_KEY) ficam server-side only, nunca expostas ao client bundle
 
 ## v2 Requirements
 
@@ -92,58 +68,49 @@ Deferred para pós-evento ou iteração futura.
 | Coleta de dados pessoais | LGPD + filosofia do projeto ("a água esquece tudo") |
 | Interrupção de voz (barge-in) | Visitante não deve interromper o Oráculo — fluxo é scripted |
 | Display de transcrição | Mostra bastidores, destrói imersão |
+| SDKs externos para ElevenLabs/Whisper/Claude | Complexidade desnecessária — plain fetch é suficiente |
+| ElevenLabs WebSocket streaming | v1.1 usa REST POST, WebSocket streaming fica para v2 se necessário |
 
 ## Traceability
 
+### v1.0 (Complete)
+
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FLOW-01 | Phase 1 | Complete |
-| FLOW-02 | Phase 1 | Complete |
-| FLOW-03 | Phase 1 | Complete |
-| FLOW-04 | Phase 2 | Complete |
-| FLOW-05 | Phase 1 | Complete |
-| FLOW-06 | Phase 1 | Complete |
-| FLOW-07 | Phase 2 | Complete |
-| FLOW-08 | Phase 1 | Complete |
-| FLOW-09 | Phase 1 | Complete |
-| FLOW-10 | Phase 1 | Complete |
-| FLOW-11 | Phase 2 | Complete |
-| FLOW-12 | Phase 1 | Complete |
-| TTS-01 | Phase 2 | Complete |
-| TTS-02 | Phase 2 | Complete |
-| TTS-03 | Phase 2 | Complete |
-| TTS-04 | Phase 2 | Complete |
-| STT-01 | Phase 2 | Complete |
-| STT-02 | Phase 2 | Complete |
-| STT-03 | Phase 2 | Complete |
-| STT-04 | Phase 2 | Complete |
-| STT-05 | Phase 2 | Complete |
-| AMB-01 | Phase 2 | Complete |
-| AMB-02 | Phase 2 | Complete |
-| AMB-03 | Phase 2 | Complete |
-| AMB-04 | Phase 2 | Complete |
-| UI-01 | Phase 1 | Complete |
-| UI-02 | Phase 2 | Complete |
-| UI-03 | Phase 2 | Complete |
-| UI-04 | Phase 2 | Complete |
-| UI-05 | Phase 2 | Complete |
-| UI-06 | Phase 1 | Complete |
-| RES-01 | Phase 3 | Complete |
-| RES-02 | Phase 3 | Complete |
-| RES-03 | Phase 1 | Complete |
-| RES-04 | Phase 1 | Complete |
-| RES-05 | Phase 3 | Complete |
-| ANA-01 | Phase 3 | Complete |
-| ANA-02 | Phase 3 | Complete |
-| ANA-03 | Phase 3 | Pending |
-| ANA-04 | Phase 3 | Pending |
-| ANA-05 | Phase 3 | Pending |
+| FLOW-01 to FLOW-12 | Phases 1-2 | Complete |
+| TTS-01 to TTS-04 | Phase 2 | Complete |
+| STT-01 to STT-05 | Phase 2 | Complete |
+| AMB-01 to AMB-04 | Phase 2 | Complete |
+| UI-01 to UI-06 | Phases 1-2 | Complete |
+| RES-01 to RES-05 | Phases 1,3 | Complete |
+| ANA-01 to ANA-05 | Phase 3 | Complete |
+
+### v1.1 (Pending — phases assigned by roadmap)
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| API-01 | TBD | Pending |
+| API-02 | TBD | Pending |
+| API-03 | TBD | Pending |
+| RTTS-01 | TBD | Pending |
+| RTTS-02 | TBD | Pending |
+| RSTT-01 | TBD | Pending |
+| RSTT-02 | TBD | Pending |
+| RNLU-01 | TBD | Pending |
+| RNLU-02 | TBD | Pending |
+| SUP-01 | TBD | Pending |
+| SUP-02 | TBD | Pending |
+| SUP-03 | TBD | Pending |
+| SUP-04 | TBD | Pending |
+| CFG-01 | TBD | Pending |
+| CFG-02 | TBD | Pending |
+| CFG-03 | TBD | Pending |
 
 **Coverage:**
-- v1 requirements: 41 total
-- Mapped to phases: 41
-- Unmapped: 0
+- v1.1 requirements: 16 total
+- Mapped to phases: 0 (pending roadmap)
+- Unmapped: 16
 
 ---
 *Requirements defined: 2026-03-24*
-*Last updated: 2026-03-24 after roadmap creation*
+*Last updated: 2026-03-25 after v1.1 requirements definition*
