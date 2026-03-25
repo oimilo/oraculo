@@ -34,8 +34,8 @@ Requirements para o MVP da Bienal (29-30 Mai 2026). Cada um mapeia para fases do
 - [x] **STT-01**: Fala do visitante é capturada via microfone do headphone e transcrita via Whisper em PT-BR
 - [x] **STT-02**: Transcrição é classificada por Claude Haiku em escolha binária com confiança > 0.7
 - [x] **STT-03**: Se confiança < 0.7 ou fala fora de contexto, Oráculo faz redirecionamento poético e reescuta (máx 2 tentativas)
-- [ ] **STT-04**: Latência total entre fim da fala e início da resposta do Oráculo é < 3 segundos
-- [ ] **STT-05**: Indicador visual de "ouvindo" aparece quando o microfone está ativo
+- [x] **STT-04**: Latência total entre fim da fala e início da resposta do Oráculo é < 3 segundos
+- [x] **STT-05**: Indicador visual de "ouvindo" aparece quando o microfone está ativo
 
 ### Ambientação Sonora
 
@@ -48,8 +48,8 @@ Requirements para o MVP da Bienal (29-30 Mai 2026). Cada um mapeia para fases do
 
 - [x] **UI-01**: Tela inicial mostra botão pulsante "Toque para começar" sobre fundo escuro com animação sutil de água
 - [ ] **UI-02**: Durante a experiência, fundo muda sutilmente de cor por fase (bordô → azul acinzentado → dourado)
-- [ ] **UI-03**: Animação central abstrata reage ao áudio (waveform sutil)
-- [ ] **UI-04**: Indicador "ouvindo..." aparece como onda pulsante quando aguardando resposta
+- [x] **UI-03**: Animação central abstrata reage ao áudio (waveform sutil)
+- [x] **UI-04**: Indicador "ouvindo..." aparece como onda pulsante quando aguardando resposta
 - [ ] **UI-05**: Nenhum texto do roteiro aparece na tela — tudo é por áudio
 - [x] **UI-06**: Tela final faz fade para preto e retorna ao início após 5 segundos
 
@@ -116,16 +116,16 @@ Deferred para pós-evento ou iteração futura.
 | STT-01 | Phase 2 | Complete |
 | STT-02 | Phase 2 | Complete |
 | STT-03 | Phase 2 | Complete |
-| STT-04 | Phase 2 | Pending |
-| STT-05 | Phase 2 | Pending |
+| STT-04 | Phase 2 | Complete |
+| STT-05 | Phase 2 | Complete |
 | AMB-01 | Phase 2 | Complete |
 | AMB-02 | Phase 2 | Complete |
 | AMB-03 | Phase 2 | Complete |
 | AMB-04 | Phase 2 | Complete |
 | UI-01 | Phase 1 | Complete |
 | UI-02 | Phase 2 | Pending |
-| UI-03 | Phase 2 | Pending |
-| UI-04 | Phase 2 | Pending |
+| UI-03 | Phase 2 | Complete |
+| UI-04 | Phase 2 | Complete |
 | UI-05 | Phase 2 | Pending |
 | UI-06 | Phase 1 | Complete |
 | RES-01 | Phase 3 | Pending |
