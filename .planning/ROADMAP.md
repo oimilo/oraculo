@@ -30,7 +30,7 @@
 
 Plans:
 - [ ] 07-01-PLAN.md — Refactor useVoiceChoice to FSM + extract useTTSOrchestrator (QUAL-01, QUAL-02)
-- [ ] 07-02-PLAN.md — Generic guard factory + refactor oracleMachine to setup() (QUAL-03)
+- [x] 07-02-PLAN.md — Generic guard factory + refactor oracleMachine to setup() (QUAL-03)
 - [ ] 07-03-PLAN.md — Integration tests with realistic timing patterns (QUAL-04)
 
 ### Phase 8: Flow Sequencing & Mic Lifecycle

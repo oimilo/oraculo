@@ -1,14 +1,14 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.2
-milestone_name: voice-flow-stabilization
-status: Roadmap complete
-last_updated: "2026-03-25T22:15:00.000Z"
+milestone_name: milestone
+status: Ready to execute
+last_updated: "2026-03-25T23:11:03.353Z"
 progress:
   total_phases: 3
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 3
+  completed_plans: 1
 ---
 
 # State: O Oráculo
@@ -19,19 +19,12 @@ progress:
 
 **Current Milestone:** v1.2 Voice Flow Stabilization
 
-**Current Focus:** Corrigir e refatorar fluxo de voz end-to-end: TTS → mic → STT → NLU → state machine.
+**Current Focus:** Phase 07 — voice-architecture-refactor
 
 ## Current Position
 
-**Phase:** 7 - Voice Architecture Refactor
-**Plan:** None yet (awaiting `/gsd:plan-phase 7`)
-**Status:** Not started
-**Last activity:** 2026-03-25 — Roadmap created
-
-**Progress:**
-```
-[------------------------------------------------------] 0/3 phases (0%)
-```
+Phase: 07 (voice-architecture-refactor) — EXECUTING
+Plan: 2 of 3
 
 ## Performance Metrics
 
