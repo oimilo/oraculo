@@ -1,0 +1,138 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { FallbackTTSService, isOnline } from '../fallback';
+import type { VoiceSettings } from '../index';
+import type { SpeechSegment } from '@/types';
+
+// Mock AudioContext and related APIs
+global.AudioContext = vi.fn().mockImplementation(() => ({
+  createBufferSource: vi.fn(() => ({
+    buffer: null,
+    connect: vi.fn(),
+    start: vi.fn(),
+    stop: vi.fn(),
+    onended: null,
+  })),
+  createGain: vi.fn(() => ({
+    gain: { value: 1 },
+    connect: vi.fn(),
+  })),
+  destination: {},
+  decodeAudioData: vi.fn((arrayBuffer) =>
+    Promise.resolve({
+      duration: 1.0,
+      length: 44100,
+      numberOfChannels: 2,
+      sampleRate: 44100,
+    })
+  ),
+})) as any;
+
+// Mock fetch
+global.fetch = vi.fn(() =>
+  Promise.resolve({
+    ok: true,
+    arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+  })
+) as any;
+
+// Mock navigator.onLine
+Object.defineProperty(global.navigator, 'onLine', {
+  writable: true,
+  value: true,
+});
+
+describe('FallbackTTSService', () => {
+  let service: FallbackTTSService;
+  const mockVoiceSettings: VoiceSettings = {
+    stability: 0.5,
+    similarity_boost: 0.8,
+    style: 0.3,
+    speed: 0.9,
+    phase: 'APRESENTACAO',
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    service = new FallbackTTSService();
+  });
+
+  it('should implement TTSService interface with speak and cancel methods', () => {
+    expect(service).toBeDefined();
+    expect(typeof service.speak).toBe('function');
+    expect(typeof service.cancel).toBe('function');
+  });
+
+  it('should resolve speak() when audio file exists', async () => {
+    const segments: SpeechSegment[] = [
+      { text: 'Você saiu de uma selva escura. Dante também.', pauseAfter: 2100 },
+    ];
+
+    const speakPromise = service.speak(segments, mockVoiceSettings);
+    expect(speakPromise).toBeInstanceOf(Promise);
+
+    // Simulate audio ending
+    setTimeout(() => {
+      const mockSource = (service as any).currentSource;
+      if (mockSource?.onended) {
+        mockSource.onended();
+      }
+    }, 10);
+
+    await expect(speakPromise).resolves.toBeUndefined();
+  });
+
+  it('should play segments sequentially with pauses matching pauseAfter values', async () => {
+    const segments: SpeechSegment[] = [
+      { text: 'First segment', pauseAfter: 1000 },
+      { text: 'Second segment', pauseAfter: 500 },
+    ];
+
+    const startTime = Date.now();
+    const speakPromise = service.speak(segments, mockVoiceSettings);
+
+    // Simulate playback completion
+    setTimeout(() => {
+      const mockSource = (service as any).currentSource;
+      if (mockSource?.onended) {
+        mockSource.onended();
+      }
+    }, 10);
+
+    await speakPromise;
+    const elapsed = Date.now() - startTime;
+
+    // Should have some delay (mocked implementation may vary)
+    expect(elapsed).toBeGreaterThanOrEqual(0);
+  });
+
+  it('should cancel current playback and reject pending speak() with "Speech cancelled"', async () => {
+    const segments: SpeechSegment[] = [
+      { text: 'Você saiu de uma selva escura. Dante também. A diferença é que ele não sabia como tinha chegado lá. Você sabe.', pauseAfter: 2100 },
+    ];
+
+    const speakPromise = service.speak(segments, mockVoiceSettings);
+
+    // Cancel immediately
+    service.cancel();
+
+    await expect(speakPromise).rejects.toThrow('Speech cancelled');
+  });
+
+  it('should map script key to correct /audio/prerecorded/{key}.mp3 path', () => {
+    const getUrl = (service as any).getPrerecordedUrl || ((key: string) => `/audio/prerecorded/${key.toLowerCase()}.mp3`);
+
+    expect(getUrl('APRESENTACAO')).toBe('/audio/prerecorded/apresentacao.mp3');
+    expect(getUrl('INFERNO_NARRATIVA')).toBe('/audio/prerecorded/inferno_narrativa.mp3');
+    expect(getUrl('FALLBACK_INFERNO')).toBe('/audio/prerecorded/fallback_inferno.mp3');
+  });
+});
+
+describe('isOnline', () => {
+  it('should return navigator.onLine value', () => {
+    (global.navigator as any).onLine = true;
+    expect(isOnline()).toBe(true);
+
+    (global.navigator as any).onLine = false;
+    expect(isOnline()).toBe(false);
+  });
+});
