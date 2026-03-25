@@ -39,10 +39,10 @@ Requirements para o MVP da Bienal (29-30 Mai 2026). Cada um mapeia para fases do
 
 ### Ambientação Sonora
 
-- [ ] **AMB-01**: Cada fase tem ambientação sonora própria (Inferno: eco/sussurros, Purgatório: vento/passos, Paraíso: harmônico etéreo)
-- [ ] **AMB-02**: Transições entre fases usam crossfade de 2-3 segundos (sem gaps audíveis)
-- [ ] **AMB-03**: Ambientação toca simultaneamente com a voz TTS sem conflito de áudio
-- [ ] **AMB-04**: Áudios de ambientação são loops seamless pré-carregados
+- [x] **AMB-01**: Cada fase tem ambientação sonora própria (Inferno: eco/sussurros, Purgatório: vento/passos, Paraíso: harmônico etéreo)
+- [x] **AMB-02**: Transições entre fases usam crossfade de 2-3 segundos (sem gaps audíveis)
+- [x] **AMB-03**: Ambientação toca simultaneamente com a voz TTS sem conflito de áudio
+- [x] **AMB-04**: Áudios de ambientação são loops seamless pré-carregados
 
 ### UI e Feedback Visual
 
@@ -118,10 +118,10 @@ Deferred para pós-evento ou iteração futura.
 | STT-03 | Phase 2 | Complete |
 | STT-04 | Phase 2 | Pending |
 | STT-05 | Phase 2 | Pending |
-| AMB-01 | Phase 2 | Pending |
-| AMB-02 | Phase 2 | Pending |
-| AMB-03 | Phase 2 | Pending |
-| AMB-04 | Phase 2 | Pending |
+| AMB-01 | Phase 2 | Complete |
+| AMB-02 | Phase 2 | Complete |
+| AMB-03 | Phase 2 | Complete |
+| AMB-04 | Phase 2 | Complete |
 | UI-01 | Phase 1 | Complete |
 | UI-02 | Phase 2 | Pending |
 | UI-03 | Phase 2 | Pending |

@@ -58,7 +58,7 @@ Plans:
 
 Plans:
 - [x] 02-01-PLAN.md -- Service interfaces (TTS, STT, NLU) with types, factories, and mock implementations
-- [ ] 02-02-PLAN.md -- Ambient audio system (AmbientPlayer, crossfade utility, audio asset docs)
+- [x] 02-02-PLAN.md -- Ambient audio system (AmbientPlayer, crossfade utility, audio asset docs)
 - [ ] 02-03-PLAN.md -- Browser hooks (useMicrophone, useWaveform) for recording and visualization
 - [ ] 02-04-PLAN.md -- Audio UI components (WaveformVisualizer, ListeningIndicator)
 - [ ] 02-05-PLAN.md -- Voice choice orchestration hook (record -> transcribe -> classify -> event)
