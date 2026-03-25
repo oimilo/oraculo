@@ -82,7 +82,12 @@ Plans:
 4. Three concurrent sessions run on separate stations without audio interference or state collision
 5. Session that becomes inactive for 30 seconds automatically resets to idle state
 
-**Plans**: TBD
+**Plans:** 3 plans
+
+Plans:
+- [ ] 03-01-PLAN.md -- Offline resilience: FallbackTTSService, inactivity timeout, fallback tracking
+- [ ] 03-02-PLAN.md -- Anonymous session analytics: types, mock service, useSessionAnalytics hook
+- [ ] 03-03-PLAN.md -- Multi-station + admin dashboard: station registry, heartbeat, /admin page
 
 **UI hint**: yes
 
@@ -94,7 +99,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Core State Machine & Audio Foundation | 4/4 | Complete | 2026-03-25 |
 | 2. Voice Processing Pipeline | 0/6 | Planned | - |
-| 3. Polish, Resilience & Multi-Station | 0/? | Not started | - |
+| 3. Polish, Resilience & Multi-Station | 0/3 | Planned | - |
 
 ## Dependencies
 
@@ -129,4 +134,4 @@ Phase 3: Polish, Resilience & Multi-Station
 **Phases 1 and 3:** Standard patterns, skip additional research.
 
 ---
-*Last updated: 2026-03-25 after Phase 2 planning*
+*Last updated: 2026-03-25 after Phase 3 planning*
