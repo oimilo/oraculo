@@ -41,8 +41,8 @@ Requirements para conectar APIs reais substituindo mocks. Cada um mapeia para fa
 
 ### Configuration
 
-- [ ] **CFG-01**: `.env.example` documenta todas as variáveis de ambiente necessárias com descrições
-- [ ] **CFG-02**: `NEXT_PUBLIC_USE_REAL_APIS=true` ativa implementações reais via factory functions existentes
+- [x] **CFG-01**: `.env.example` documenta todas as variáveis de ambiente necessárias com descrições
+- [x] **CFG-02**: `NEXT_PUBLIC_USE_REAL_APIS=true` ativa implementações reais via factory functions existentes
 - [ ] **CFG-03**: Todas as API keys externas (ELEVENLABS_API_KEY, OPENAI_API_KEY, ANTHROPIC_API_KEY) ficam server-side only, nunca expostas ao client bundle
 
 ## v2 Requirements
@@ -92,8 +92,8 @@ Deferred para pós-evento ou iteração futura.
 | API-01 | Phase 4 | Pending |
 | API-02 | Phase 4 | Pending |
 | API-03 | Phase 4 | Pending |
-| CFG-01 | Phase 4 | Pending |
-| CFG-02 | Phase 4 | Pending |
+| CFG-01 | Phase 4 | Complete |
+| CFG-02 | Phase 4 | Complete |
 | CFG-03 | Phase 4 | Pending |
 | RTTS-01 | Phase 5 | Pending |
 | RTTS-02 | Phase 5 | Pending |
