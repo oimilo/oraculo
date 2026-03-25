@@ -26,7 +26,12 @@
   2. TTS orchestration state and voice choice state are fully decoupled (no shared mutable variables)
   3. State machine choice points use generic handlers that accept any option set (extensible for future branches)
   4. Integration tests run against real service timing patterns (async delays, blob processing) without flakiness
-**Plans**: TBD
+**Plans:** 3 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — Refactor useVoiceChoice to FSM + extract useTTSOrchestrator (QUAL-01, QUAL-02)
+- [ ] 07-02-PLAN.md — Generic guard factory + refactor oracleMachine to setup() (QUAL-03)
+- [ ] 07-03-PLAN.md — Integration tests with realistic timing patterns (QUAL-04)
 
 ### Phase 8: Flow Sequencing & Mic Lifecycle
 **Goal**: Ensure narration → question → listen → response sequence with no overlaps or timing issues
@@ -59,7 +64,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 7. Voice Architecture Refactor | 0/0 | Not started | - |
+| 7. Voice Architecture Refactor | 0/3 | Planning complete | - |
 | 8. Flow Sequencing & Mic Lifecycle | 0/0 | Not started | - |
 | 9. STT/NLU Pipeline Integration | 0/0 | Not started | - |
 
@@ -112,4 +117,4 @@ Phase 9: STT/NLU Pipeline Integration (valid audio blobs depend on Phase 8)
 
 ---
 
-*Last updated: 2026-03-25 — Roadmap created for milestone v1.2*
+*Last updated: 2026-03-25 — Phase 7 plans created*
