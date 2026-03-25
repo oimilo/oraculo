@@ -347,7 +347,7 @@ describe('Oracle State Machine', () => {
   });
 
   describe('Test 16 - PARAISO reflexive', () => {
-    it('should transition from PARAISO to DEVOLUCAO on NARRATIVA_DONE', () => {
+    it('should transition from PARAISO through DEVOLUCAO to variant on NARRATIVA_DONE', () => {
       const actor = createActor(oracleMachine);
       actor.start();
       actor.send({ type: 'START' });
@@ -365,7 +365,8 @@ describe('Oracle State Machine', () => {
 
       actor.send({ type: 'NARRATIVA_DONE' });
 
-      expect(actor.getSnapshot().value).toBe('DEVOLUCAO');
+      // DEVOLUCAO immediately routes to variant based on choices via always guards
+      expect(actor.getSnapshot().value).toBe('DEVOLUCAO_A_FICAR');
     });
   });
 
