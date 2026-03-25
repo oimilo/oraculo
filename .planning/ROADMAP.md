@@ -27,7 +27,13 @@
 4. UI shows phase-appropriate visual feedback (start button, phase indicator, end fade-to-black)
 5. Experience completes full cycle and returns to idle state ready for next visitor
 
-**Plans**: TBD
+**Plans:** 4 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Project scaffold, types, script data, Vitest config
+- [ ] 01-02-PLAN.md — XState state machine (TDD) with all states and transitions
+- [ ] 01-03-PLAN.md — Audio utilities (AudioContext unlock, SpeechSynthesis wrapper)
+- [ ] 01-04-PLAN.md — UI components, orchestrator wiring, visual verification
 
 **UI hint**: yes
 
@@ -78,7 +84,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Core State Machine & Audio Foundation | 0/? | Not started | - |
+| 1. Core State Machine & Audio Foundation | 0/4 | Planned | - |
 | 2. Voice Processing Pipeline | 0/? | Not started | - |
 | 3. Polish, Resilience & Multi-Station | 0/? | Not started | - |
 
@@ -116,4 +122,4 @@ Phase 3: Polish, Resilience & Multi-Station
 **Phases 1 and 3:** Standard patterns, skip additional research.
 
 ---
-*Last updated: 2026-03-24 after roadmap creation*
+*Last updated: 2026-03-25 after Phase 1 planning*
