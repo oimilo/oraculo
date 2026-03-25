@@ -54,7 +54,7 @@ Plans:
 
 Plans:
 - [x] 05-01-PLAN.md — Real service implementations (ElevenLabsTTSService, WhisperSTTService, ClaudeNLUService) with tests
-- [ ] 05-02-PLAN.md — Wire factory functions to import and return real services, full verification
+- [x] 05-02-PLAN.md — Wire factory functions to import and return real services, full verification
 
 ---
 
