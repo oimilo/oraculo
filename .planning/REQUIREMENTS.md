@@ -125,20 +125,35 @@ Deferred para pós-evento ou iteração futura.
 | RNLU-01 to RNLU-02 | Phase 5 | Complete |
 | SUP-01 to SUP-04 | Phase 6 | Deferred |
 
-### v1.2 (Roadmap pending)
+### v1.2 (Active)
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FLOW-01 to FLOW-05 | TBD | Pending |
-| MIC-01 to MIC-05 | TBD | Pending |
-| PIPE-01 to PIPE-05 | TBD | Pending |
-| QUAL-01 to QUAL-04 | TBD | Pending |
+| QUAL-01 | Phase 7 | Pending |
+| QUAL-02 | Phase 7 | Pending |
+| QUAL-03 | Phase 7 | Pending |
+| QUAL-04 | Phase 7 | Pending |
+| FLOW-01 | Phase 8 | Pending |
+| FLOW-02 | Phase 8 | Pending |
+| FLOW-03 | Phase 8 | Pending |
+| FLOW-04 | Phase 8 | Pending |
+| FLOW-05 | Phase 8 | Pending |
+| MIC-01 | Phase 8 | Pending |
+| MIC-02 | Phase 8 | Pending |
+| MIC-03 | Phase 8 | Pending |
+| MIC-04 | Phase 8 | Pending |
+| MIC-05 | Phase 8 | Pending |
+| PIPE-01 | Phase 9 | Pending |
+| PIPE-02 | Phase 9 | Pending |
+| PIPE-03 | Phase 9 | Pending |
+| PIPE-04 | Phase 9 | Pending |
+| PIPE-05 | Phase 9 | Pending |
 
 **Coverage:**
 - v1.2 requirements: 19 total
-- Mapped to phases: 0/19 (roadmap pending)
-- Unmapped: 19
+- Mapped to phases: 19/19 ✓
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-24*
-*Last updated: 2026-03-25 — v1.2 requirements added*
+*Last updated: 2026-03-25 — v1.2 roadmap created*

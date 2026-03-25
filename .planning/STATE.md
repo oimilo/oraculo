@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: voice-flow-stabilization
-status: Defining requirements
-last_updated: "2026-03-25T22:00:00.000Z"
+status: Roadmap complete
+last_updated: "2026-03-25T22:15:00.000Z"
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -19,14 +19,19 @@ progress:
 
 **Current Milestone:** v1.2 Voice Flow Stabilization
 
-**Current Focus:** Defining requirements
+**Current Focus:** Corrigir e refatorar fluxo de voz end-to-end: TTS → mic → STT → NLU → state machine.
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-03-25 — Milestone v1.2 started
+**Phase:** 7 - Voice Architecture Refactor
+**Plan:** None yet (awaiting `/gsd:plan-phase 7`)
+**Status:** Not started
+**Last activity:** 2026-03-25 — Roadmap created
+
+**Progress:**
+```
+[------------------------------------------------------] 0/3 phases (0%)
+```
 
 ## Performance Metrics
 
@@ -45,9 +50,9 @@ Last activity: 2026-03-25 — Milestone v1.2 started
 
 **Milestone v1.2:**
 
-- Phases completed: 0/?
-- Plans completed: 0/?
-- Requirements validated: 0/?
+- Phases completed: 0/3
+- Plans completed: 0/0
+- Requirements validated: 0/19
 
 ## Accumulated Context
 
@@ -61,6 +66,7 @@ Last activity: 2026-03-25 — Milestone v1.2 started
 6. **API keys server-side only** — Chaves ficam em Next.js API routes, nunca expostas ao cliente
 7. **Plain fetch (sem SDKs)** — fetch direto para ElevenLabs/Whisper/Claude, só @supabase/supabase-js
 8. **v1.2 before Supabase** — Estabilizar fluxo de voz antes de adicionar analytics
+9. **QUAL requirements first** — Refactor architecture (Phase 7) before bug fixes (Phases 8-9)
 
 ### Known Bugs (from v1.1 testing)
 
@@ -72,6 +78,9 @@ Last activity: 2026-03-25 — Milestone v1.2 started
 
 ### Active TODOs
 
+- [ ] Plan Phase 7 (Voice Architecture Refactor)
+- [ ] Identify specific refactoring targets in useVoiceChoice and TTS orchestration
+- [ ] Review integration test suite for timing flakiness patterns
 - [ ] 3 browser UAT items from v1.0 (multi-station, isolation, inactivity timeout)
 - [ ] Pre-recorded audio files (25 MP3s) need studio recording before event
 - [ ] Phase 6 Supabase analytics (deferred from v1.1)
@@ -84,11 +93,31 @@ Last activity: 2026-03-25 — Milestone v1.2 started
 
 ## Session Continuity
 
-**Last session ended:** 2026-03-25 (v1.2 milestone creation)
+**What just happened:**
+
+- Milestone v1.2 initialized
+- Roadmap created with 3 phases derived from 19 requirements
+- All requirements mapped to phases with 100% coverage
+- Phase structure: 7 (Refactor) → 8 (Flow+Mic) → 9 (Pipeline)
+
+**What's next:**
+
+- Run `/gsd:plan-phase 7` to decompose Voice Architecture Refactor
+- Begin refactoring useVoiceChoice lifecycle states (QUAL-01)
+- Decouple TTS orchestration from voice choice state (QUAL-02)
+
+**Context for next session:**
+
+- This is a STABILIZATION milestone — fixing voice flow bugs that prevent the experience from working
+- QUAL requirements (refactoring) intentionally placed first to clean architecture before bug fixes
+- Flow sequencing (Phase 8) and pipeline integration (Phase 9) depend on clean foundation from Phase 7
+- Real API services already wired (v1.1 Phases 4-5) — this milestone fixes the orchestration layer
+
+**Last session ended:** 2026-03-25 (roadmap creation)
 
 **Next recommended command:**
 
-`/gsd:plan-phase 7` (after requirements + roadmap defined)
+`/gsd:plan-phase 7`
 
 ---
-*Last updated: 2026-03-25 — Milestone v1.2 started*
+*Last updated: 2026-03-25 — Roadmap created for milestone v1.2*
