@@ -7,6 +7,11 @@ interface ChoiceButtonsProps {
   timeoutSeconds: number;
 }
 
+/**
+ * Choice buttons that remain as fallback/development input alongside voice.
+ * Voice is the primary input method, but buttons allow manual testing and provide
+ * a backup when voice recognition fails or is unavailable.
+ */
 export default function ChoiceButtons({ options, onChoice, timeoutSeconds }: ChoiceButtonsProps) {
   const [remaining, setRemaining] = useState(timeoutSeconds);
 
