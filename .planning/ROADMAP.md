@@ -32,7 +32,7 @@
 Plans:
 - [x] 01-01-PLAN.md — Project scaffold, types, script data, Vitest config
 - [ ] 01-02-PLAN.md — XState state machine (TDD) with all states and transitions
-- [ ] 01-03-PLAN.md — Audio utilities (AudioContext unlock, SpeechSynthesis wrapper)
+- [x] 01-03-PLAN.md — Audio utilities (AudioContext unlock, SpeechSynthesis wrapper)
 - [ ] 01-04-PLAN.md — UI components, orchestrator wiring, visual verification
 
 **UI hint**: yes
