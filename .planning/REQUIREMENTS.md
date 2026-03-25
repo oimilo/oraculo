@@ -7,43 +7,72 @@
 
 All 41 v1.0 requirements implemented with mock services. See MILESTONES.md for details.
 
-## v1.1 Requirements
+## v1.1 Requirements (Paused — Phase 6 deferred)
 
-Requirements para conectar APIs reais substituindo mocks. Cada um mapeia para fases do roadmap.
+Requirements para conectar APIs reais substituindo mocks. Phases 4-5 complete, Phase 6 (Supabase) deferred.
 
-### API Routes
+### API Routes (Complete)
 
-- [x] **API-01**: POST `/api/tts` aceita texto + voice settings e retorna audio stream do ElevenLabs (chave API server-side)
-- [x] **API-02**: POST `/api/stt` aceita audio blob e retorna transcrição JSON do OpenAI Whisper (language=pt)
-- [x] **API-03**: POST `/api/nlu` aceita transcript + question context + options e retorna classificação do Claude Haiku
+- [x] **API-01**: POST `/api/tts` aceita texto + voice settings e retorna audio stream do ElevenLabs
+- [x] **API-02**: POST `/api/stt` aceita audio blob e retorna transcrição JSON do Whisper
+- [x] **API-03**: POST `/api/nlu` aceita transcript + context + options e retorna classificação
 
-### Real Services — TTS
+### Real Services (Complete)
 
-- [x] **RTTS-01**: ElevenLabsTTSService implementa interface TTSService e chama `/api/tts` para cada segmento de fala
-- [x] **RTTS-02**: Voice parameters (stability, similarity_boost, style, speed) variam por fase conforme PHASE_VOICE_SETTINGS
+- [x] **RTTS-01**: ElevenLabsTTSService implementa TTSService e chama `/api/tts`
+- [x] **RTTS-02**: Voice parameters variam por fase conforme PHASE_VOICE_SETTINGS
+- [x] **RSTT-01**: WhisperSTTService implementa STTService e envia audio para `/api/stt`
+- [x] **RSTT-02**: Transcrição forçada para português (language=pt)
+- [x] **RNLU-01**: ClaudeNLUService implementa NLUService e envia transcript+context para `/api/nlu`
+- [x] **RNLU-02**: Classificação retorna choice A/B com confidence e reasoning
 
-### Real Services — STT
+### Configuration (Complete)
 
-- [x] **RSTT-01**: WhisperSTTService implementa interface STTService e envia audio blob para `/api/stt`
-- [x] **RSTT-02**: Transcrição é forçada para idioma português (language=pt no Whisper)
+- [x] **CFG-01**: `.env.example` documenta todas as variáveis de ambiente
+- [x] **CFG-02**: `NEXT_PUBLIC_USE_REAL_APIS=true` ativa implementações reais
+- [x] **CFG-03**: API keys ficam server-side only
 
-### Real Services — NLU
+### Supabase Analytics (Deferred to post-v1.2)
 
-- [x] **RNLU-01**: ClaudeNLUService implementa interface NLUService e envia transcript+context para `/api/nlu`
-- [x] **RNLU-02**: Classificação retorna choice A/B com confidence score e reasoning via Claude Haiku
+- [ ] **SUP-01**: Tabela `sessions` no Supabase com dados anônimos
+- [ ] **SUP-02**: Políticas RLS (inserts anônimos, reads autenticados)
+- [ ] **SUP-03**: SupabaseAnalyticsService com persistência no Supabase
+- [ ] **SUP-04**: Admin dashboard lê métricas do Supabase
 
-### Supabase Analytics
+## v1.2 Requirements — Voice Flow Stabilization
 
-- [ ] **SUP-01**: Tabela `sessions` no Supabase armazena dados anônimos (id, station_id, path, duration_ms, fallback_count, status, started_at, ended_at)
-- [ ] **SUP-02**: Políticas RLS permitem inserts anônimos e reads autenticados (admin)
-- [ ] **SUP-03**: SupabaseAnalyticsService implementa interface AnalyticsService com persistência no Supabase
-- [ ] **SUP-04**: Admin dashboard lê métricas de sessão do Supabase quando NEXT_PUBLIC_USE_REAL_APIS=true
+Corrigir e refatorar fluxo de voz end-to-end: TTS → mic → STT → NLU → state machine.
 
-### Configuration
+### Flow Sequencing (FLOW)
 
-- [x] **CFG-01**: `.env.example` documenta todas as variáveis de ambiente necessárias com descrições
-- [x] **CFG-02**: `NEXT_PUBLIC_USE_REAL_APIS=true` ativa implementações reais via factory functions existentes
-- [x] **CFG-03**: Todas as API keys externas (ELEVENLABS_API_KEY, OPENAI_API_KEY, ANTHROPIC_API_KEY) ficam server-side only, nunca expostas ao client bundle
+- [ ] **FLOW-01**: TTS narration completes fully before microphone opens for listening
+- [ ] **FLOW-02**: Question TTS plays in PERGUNTA state, before entering AGUARDANDO
+- [ ] **FLOW-03**: TIMEOUT_REDIRECT text only plays after 15s timeout, not as primary question
+- [ ] **FLOW-04**: No TTS audio overlaps at any point during the experience
+- [ ] **FLOW-05**: State transitions wait for TTS completion before proceeding
+
+### Microphone Lifecycle (MIC)
+
+- [ ] **MIC-01**: Microphone recording starts only when entering AGUARDANDO state
+- [ ] **MIC-02**: Recording starts only after all TTS audio has finished playing
+- [ ] **MIC-03**: Recording duration captures full visitor response (configurable)
+- [ ] **MIC-04**: Audio blob from previous AGUARDANDO is never processed in a new state
+- [ ] **MIC-05**: Microphone stops cleanly on state exit (no orphaned streams)
+
+### STT/NLU Pipeline (PIPE)
+
+- [ ] **PIPE-01**: Whisper STT successfully transcribes spoken Portuguese responses
+- [ ] **PIPE-02**: NLU always receives valid config (correct options, not empty/stale)
+- [ ] **PIPE-03**: Classification result correctly maps to state machine event
+- [ ] **PIPE-04**: Low confidence triggers fallback TTS then re-listen cycle
+- [ ] **PIPE-05**: Empty/silence transcript handled gracefully with fallback or default
+
+### Code Quality (QUAL)
+
+- [ ] **QUAL-01**: useVoiceChoice refactored with clear lifecycle phases (idle/listening/processing/decided)
+- [ ] **QUAL-02**: TTS orchestration decoupled from voice choice logic (no shared mutable state)
+- [ ] **QUAL-03**: State machine choice points are generic/extensible for future branches
+- [ ] **QUAL-04**: All voice flow integration tests pass with real service timing patterns
 
 ## v2 Requirements
 
@@ -51,25 +80,25 @@ Deferred para pós-evento ou iteração futura.
 
 ### Enhancements
 
-- **ENH-01**: Detecção de retorno do visitante (se voltar ao Oráculo)
-- **ENH-02**: Análise de emoção na voz para adaptar tom do Oráculo
-- **ENH-03**: Suporte multi-idioma (inglês, espanhol)
-- **ENH-04**: Variantes generativas do roteiro (IA gera trechos únicos)
-- **ENH-05**: Override manual do operador via admin (classificar escolha manualmente se NLU falhar repetidamente)
+- **ENH-01**: Detecção de retorno do visitante
+- **ENH-02**: Análise de emoção na voz
+- **ENH-03**: Suporte multi-idioma
+- **ENH-04**: Variantes generativas do roteiro
+- **ENH-05**: Override manual do operador via admin
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
 | Chat livre com a IA | Experiência é guiada/scripted, não conversacional |
-| Texto do roteiro na tela | Quebra imersão — tudo deve ser por áudio |
+| Texto do roteiro na tela | Quebra imersão — tudo por áudio |
 | App mobile nativo | Webapp no browser do laptop é suficiente |
-| Sensor de toque na água | Complexidade de hardware desnecessária — botão digital |
-| Coleta de dados pessoais | LGPD + filosofia do projeto ("a água esquece tudo") |
-| Interrupção de voz (barge-in) | Visitante não deve interromper o Oráculo — fluxo é scripted |
+| Sensor de toque na água | Complexidade de hardware desnecessária |
+| Coleta de dados pessoais | LGPD compliance total |
+| Interrupção de voz (barge-in) | Visitante não deve interromper o Oráculo |
 | Display de transcrição | Mostra bastidores, destrói imersão |
-| SDKs externos para ElevenLabs/Whisper/Claude | Complexidade desnecessária — plain fetch é suficiente |
-| ElevenLabs WebSocket streaming | v1.1 usa REST POST, WebSocket streaming fica para v2 se necessário |
+| SDKs externos para ElevenLabs/Whisper/Claude | Plain fetch é suficiente |
+| ElevenLabs WebSocket streaming | REST POST suficiente para v1 |
 
 ## Traceability
 
@@ -85,32 +114,31 @@ Deferred para pós-evento ou iteração futura.
 | RES-01 to RES-05 | Phases 1,3 | Complete |
 | ANA-01 to ANA-05 | Phase 3 | Complete |
 
-### v1.1 (Roadmap defined)
+### v1.1 (Paused)
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| API-01 | Phase 4 | Complete |
-| API-02 | Phase 4 | Complete |
-| API-03 | Phase 4 | Complete |
-| CFG-01 | Phase 4 | Complete |
-| CFG-02 | Phase 4 | Complete |
-| CFG-03 | Phase 4 | Complete |
-| RTTS-01 | Phase 5 | Complete |
-| RTTS-02 | Phase 5 | Complete |
-| RSTT-01 | Phase 5 | Complete |
-| RSTT-02 | Phase 5 | Complete |
-| RNLU-01 | Phase 5 | Complete |
-| RNLU-02 | Phase 5 | Complete |
-| SUP-01 | Phase 6 | Pending |
-| SUP-02 | Phase 6 | Pending |
-| SUP-03 | Phase 6 | Pending |
-| SUP-04 | Phase 6 | Pending |
+| API-01 to API-03 | Phase 4 | Complete |
+| CFG-01 to CFG-03 | Phase 4 | Complete |
+| RTTS-01 to RTTS-02 | Phase 5 | Complete |
+| RSTT-01 to RSTT-02 | Phase 5 | Complete |
+| RNLU-01 to RNLU-02 | Phase 5 | Complete |
+| SUP-01 to SUP-04 | Phase 6 | Deferred |
+
+### v1.2 (Roadmap pending)
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| FLOW-01 to FLOW-05 | TBD | Pending |
+| MIC-01 to MIC-05 | TBD | Pending |
+| PIPE-01 to PIPE-05 | TBD | Pending |
+| QUAL-01 to QUAL-04 | TBD | Pending |
 
 **Coverage:**
-- v1.1 requirements: 16 total
-- Mapped to phases: 16/16 ✓
-- Unmapped: 0
+- v1.2 requirements: 19 total
+- Mapped to phases: 0/19 (roadmap pending)
+- Unmapped: 19
 
 ---
 *Requirements defined: 2026-03-24*
-*Last updated: 2026-03-25 after v1.1 roadmap creation*
+*Last updated: 2026-03-25 — v1.2 requirements added*
