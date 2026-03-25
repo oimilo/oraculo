@@ -1,6 +1,6 @@
-# Roadmap: O Oráculo v1.0
+# Roadmap: O Oraculo v1.0
 
-**Milestone:** v1.0 O Oráculo — MVP para Bienal
+**Milestone:** v1.0 O Oraculo -- MVP para Bienal
 **Target:** Evento 29-30 Mai 2026
 **Granularity:** Standard
 **Created:** 2026-03-24
@@ -30,10 +30,10 @@
 **Plans:** 4 plans
 
 Plans:
-- [x] 01-01-PLAN.md — Project scaffold, types, script data, Vitest config
-- [x] 01-02-PLAN.md — XState state machine (TDD) with all states and transitions
-- [x] 01-03-PLAN.md — Audio utilities (AudioContext unlock, SpeechSynthesis wrapper)
-- [x] 01-04-PLAN.md — UI components, orchestrator wiring, visual verification
+- [x] 01-01-PLAN.md -- Project scaffold, types, script data, Vitest config
+- [x] 01-02-PLAN.md -- XState state machine (TDD) with all states and transitions
+- [x] 01-03-PLAN.md -- Audio utilities (AudioContext unlock, SpeechSynthesis wrapper)
+- [x] 01-04-PLAN.md -- UI components, orchestrator wiring, visual verification
 
 **UI hint**: yes
 
@@ -47,14 +47,22 @@ Plans:
 **Requirements**: FLOW-04, FLOW-07, FLOW-11, TTS-01, TTS-02, TTS-03, TTS-04, STT-01, STT-02, STT-03, STT-04, STT-05, AMB-01, AMB-02, AMB-03, AMB-04, UI-02, UI-03, UI-04, UI-05
 
 **Success Criteria** (what must be TRUE):
-1. Visitor hears Oráculo speak with ElevenLabs voice that varies parameters by phase (grave in Inferno, soft in Paradise)
+1. Visitor hears Oraculo speak with ElevenLabs voice that varies parameters by phase (grave in Inferno, soft in Paradise)
 2. Visitor speaks freely and their choice is understood and classified into correct narrative branch within 3 seconds
-3. When classification confidence is low, Oráculo responds with poetic redirection and listens again (max 2 attempts)
+3. When classification confidence is low, Oraculo responds with poetic redirection and listens again (max 2 attempts)
 4. Ambient soundscape shifts seamlessly between phases with crossfade transitions (no audio gaps)
 5. UI shows "listening" indicator when microphone is active and waveform reacts to audio playback
 6. Silence timeout is treated as valid narrative choice with appropriate transition dialogue
 
-**Plans**: TBD
+**Plans:** 6 plans
+
+Plans:
+- [ ] 02-01-PLAN.md -- Service interfaces (TTS, STT, NLU) with types, factories, and mock implementations
+- [ ] 02-02-PLAN.md -- Ambient audio system (AmbientPlayer, crossfade utility, audio asset docs)
+- [ ] 02-03-PLAN.md -- Browser hooks (useMicrophone, useWaveform) for recording and visualization
+- [ ] 02-04-PLAN.md -- Audio UI components (WaveformVisualizer, ListeningIndicator)
+- [ ] 02-05-PLAN.md -- Voice choice orchestration hook (record -> transcribe -> classify -> event)
+- [ ] 02-06-PLAN.md -- Integration: wire all services/hooks into OracleExperience + browser verification
 
 **UI hint**: yes
 
@@ -84,17 +92,17 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Core State Machine & Audio Foundation | 0/4 | Planned | - |
-| 2. Voice Processing Pipeline | 0/? | Not started | - |
+| 1. Core State Machine & Audio Foundation | 4/4 | Complete | 2026-03-25 |
+| 2. Voice Processing Pipeline | 0/6 | Planned | - |
 | 3. Polish, Resilience & Multi-Station | 0/? | Not started | - |
 
 ## Dependencies
 
 ```
 Phase 1: Core State Machine & Audio Foundation
-    ↓
+    |
 Phase 2: Voice Processing Pipeline
-    ↓
+    |
 Phase 3: Polish, Resilience & Multi-Station
 ```
 
@@ -109,17 +117,16 @@ Phase 3: Polish, Resilience & Multi-Station
 - Resilience: 5 (RES-01 to RES-05)
 - Analytics: 5 (ANA-01 to ANA-05)
 
-**Mapped to Phases:** 41/41 ✓
+**Mapped to Phases:** 41/41
 
 ## Research Flags
 
-**Phase 2 flagged for deeper research** during planning:
-- ElevenLabs WebSocket streaming endpoint specifics (may have changed since Jan 2025)
-- Whisper optimal parameters for short PT-BR utterances
-- Claude Haiku prompt engineering for binary classification with imperfect transcripts
-- Recommend `/gsd:research-phase 2` before implementation
+**Phase 2 research completed** (2026-03-25):
+- ElevenLabs WebSocket streaming, Whisper PT-BR parameters, Claude Haiku classification patterns documented in 02-RESEARCH.md
+- Architecture: interface-based service layer with mock/real swap via env var
+- Browser APIs confirmed: Web Audio API, MediaRecorder API, Canvas API all mature and well-supported
 
 **Phases 1 and 3:** Standard patterns, skip additional research.
 
 ---
-*Last updated: 2026-03-25 after Phase 1 planning*
+*Last updated: 2026-03-25 after Phase 2 planning*
