@@ -70,7 +70,7 @@ describe('useMicrophone hook', () => {
     });
 
     // Mock MediaRecorder
-    const MockMediaRecorderClass = vi.fn(() => createMockMediaRecorder());
+    const MockMediaRecorderClass = vi.fn(() => createMockMediaRecorder()) as any;
     MockMediaRecorderClass.isTypeSupported = vi.fn((mimeType: string) => {
       return mimeType === 'audio/webm;codecs=opus' || mimeType === 'audio/webm';
     });
