@@ -1,5 +1,6 @@
 import type { SpeechSegment, NarrativePhase } from '@/types';
 import { MockTTSService } from './mock';
+import { FallbackTTSService, isOnline } from './fallback';
 
 export interface VoiceSettings {
   stability: number;        // 0-1, ElevenLabs parameter
@@ -25,8 +26,15 @@ export interface TTSService {
 
 export function createTTSService(): TTSService {
   if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_USE_REAL_APIS === 'true') {
-    // Real ElevenLabs implementation (Phase 3)
-    throw new Error('Real TTS not implemented yet');
+    if (isOnline()) {
+      // Real ElevenLabs implementation (future)
+      // For now, fall through to fallback
+    }
+    return new FallbackTTSService();
   }
   return new MockTTSService();
+}
+
+export function createFallbackTTSService(): TTSService {
+  return new FallbackTTSService();
 }

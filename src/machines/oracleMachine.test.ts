@@ -652,4 +652,91 @@ describe('Oracle State Machine', () => {
       expect(actor.getSnapshot().context.currentPhase).toBe('ENCERRAMENTO');
     });
   });
+
+  describe('inactivity timeout (RES-05)', () => {
+    it('should transition from APRESENTACAO to IDLE after 30s inactivity', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+      actor.send({ type: 'START' });
+
+      expect(actor.getSnapshot().value).toBe('APRESENTACAO');
+
+      vi.advanceTimersByTime(30000);
+
+      expect(actor.getSnapshot().value).toBe('IDLE');
+      expect(actor.getSnapshot().context.sessionId).toBe('');
+      expect(actor.getSnapshot().context.choice1).toBeNull();
+      expect(actor.getSnapshot().context.choice2).toBeNull();
+    });
+
+    it('should transition from INFERNO.NARRATIVA to IDLE after 30s inactivity', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+      actor.send({ type: 'START' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+
+      expect(actor.getSnapshot().value).toEqual({ INFERNO: 'NARRATIVA' });
+
+      vi.advanceTimersByTime(30000);
+
+      expect(actor.getSnapshot().value).toBe('IDLE');
+    });
+
+    it('should NOT timeout in IDLE', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+
+      expect(actor.getSnapshot().value).toBe('IDLE');
+
+      vi.advanceTimersByTime(30000);
+
+      expect(actor.getSnapshot().value).toBe('IDLE');
+    });
+
+    it('should NOT have 30s timeout in FIM (has own 5s timer)', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+      actor.send({ type: 'START' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_A' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_FICAR' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+
+      expect(actor.getSnapshot().value).toBe('FIM');
+
+      // Advance 5s should trigger FIM -> IDLE
+      vi.advanceTimersByTime(5000);
+
+      expect(actor.getSnapshot().value).toBe('IDLE');
+    });
+
+    it('should transition from PARAISO to IDLE after 30s inactivity', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+      actor.send({ type: 'START' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_A' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_FICAR' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+
+      expect(actor.getSnapshot().value).toBe('PARAISO');
+
+      vi.advanceTimersByTime(30000);
+
+      expect(actor.getSnapshot().value).toBe('IDLE');
+    });
+  });
 });

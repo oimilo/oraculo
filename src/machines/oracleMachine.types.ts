@@ -19,7 +19,8 @@ export type OracleEvent =
   | { type: 'CHOICE_EMBORA' }
   | { type: 'CHOICE_PISAR' }
   | { type: 'CHOICE_CONTORNAR' }
-  | { type: 'TIMEOUT' };
+  | { type: 'TIMEOUT' }
+  | { type: 'FALLBACK_USED' };
 
 /** Initial context values */
 export const INITIAL_CONTEXT: OracleContext = {

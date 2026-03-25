@@ -20,6 +20,13 @@ export const oracleMachine = createMachine(
       events: OracleEvent;
     },
     context: INITIAL_CONTEXT,
+    on: {
+      FALLBACK_USED: {
+        actions: assign({
+          fallbackCount: ({ context }) => context.fallbackCount + 1,
+        }),
+      },
+    },
     states: {
       IDLE: {
         on: {
@@ -41,11 +48,35 @@ export const oracleMachine = createMachine(
         on: {
           NARRATIVA_DONE: 'INFERNO',
         },
+        after: {
+          30000: {
+            target: '#oracle.IDLE',
+            actions: assign({
+              sessionId: '',
+              choice1: null,
+              choice2: null,
+              fallbackCount: 0,
+              currentPhase: 'APRESENTACAO',
+            }),
+          },
+        },
       },
 
       INFERNO: {
         initial: 'NARRATIVA',
         entry: assign({ currentPhase: 'INFERNO' }),
+        after: {
+          30000: {
+            target: '#oracle.IDLE',
+            actions: assign({
+              sessionId: '',
+              choice1: null,
+              choice2: null,
+              fallbackCount: 0,
+              currentPhase: 'APRESENTACAO',
+            }),
+          },
+        },
         states: {
           NARRATIVA: {
             on: {
@@ -97,6 +128,18 @@ export const oracleMachine = createMachine(
         id: 'PURGATORIO_A',
         initial: 'NARRATIVA',
         entry: assign({ currentPhase: 'PURGATORIO' }),
+        after: {
+          30000: {
+            target: '#oracle.IDLE',
+            actions: assign({
+              sessionId: '',
+              choice1: null,
+              choice2: null,
+              fallbackCount: 0,
+              currentPhase: 'APRESENTACAO',
+            }),
+          },
+        },
         states: {
           NARRATIVA: {
             on: {
@@ -143,6 +186,18 @@ export const oracleMachine = createMachine(
         id: 'PURGATORIO_B',
         initial: 'NARRATIVA',
         entry: assign({ currentPhase: 'PURGATORIO' }),
+        after: {
+          30000: {
+            target: '#oracle.IDLE',
+            actions: assign({
+              sessionId: '',
+              choice1: null,
+              choice2: null,
+              fallbackCount: 0,
+              currentPhase: 'APRESENTACAO',
+            }),
+          },
+        },
         states: {
           NARRATIVA: {
             on: {
@@ -191,6 +246,18 @@ export const oracleMachine = createMachine(
         on: {
           NARRATIVA_DONE: 'DEVOLUCAO',
         },
+        after: {
+          30000: {
+            target: '#oracle.IDLE',
+            actions: assign({
+              sessionId: '',
+              choice1: null,
+              choice2: null,
+              fallbackCount: 0,
+              currentPhase: 'APRESENTACAO',
+            }),
+          },
+        },
       },
 
       DEVOLUCAO: {
@@ -219,11 +286,35 @@ export const oracleMachine = createMachine(
         on: {
           NARRATIVA_DONE: 'ENCERRAMENTO',
         },
+        after: {
+          30000: {
+            target: '#oracle.IDLE',
+            actions: assign({
+              sessionId: '',
+              choice1: null,
+              choice2: null,
+              fallbackCount: 0,
+              currentPhase: 'APRESENTACAO',
+            }),
+          },
+        },
       },
 
       DEVOLUCAO_A_EMBORA: {
         on: {
           NARRATIVA_DONE: 'ENCERRAMENTO',
+        },
+        after: {
+          30000: {
+            target: '#oracle.IDLE',
+            actions: assign({
+              sessionId: '',
+              choice1: null,
+              choice2: null,
+              fallbackCount: 0,
+              currentPhase: 'APRESENTACAO',
+            }),
+          },
         },
       },
 
@@ -231,11 +322,35 @@ export const oracleMachine = createMachine(
         on: {
           NARRATIVA_DONE: 'ENCERRAMENTO',
         },
+        after: {
+          30000: {
+            target: '#oracle.IDLE',
+            actions: assign({
+              sessionId: '',
+              choice1: null,
+              choice2: null,
+              fallbackCount: 0,
+              currentPhase: 'APRESENTACAO',
+            }),
+          },
+        },
       },
 
       DEVOLUCAO_B_CONTORNAR: {
         on: {
           NARRATIVA_DONE: 'ENCERRAMENTO',
+        },
+        after: {
+          30000: {
+            target: '#oracle.IDLE',
+            actions: assign({
+              sessionId: '',
+              choice1: null,
+              choice2: null,
+              fallbackCount: 0,
+              currentPhase: 'APRESENTACAO',
+            }),
+          },
         },
       },
 
@@ -243,6 +358,18 @@ export const oracleMachine = createMachine(
         entry: assign({ currentPhase: 'ENCERRAMENTO' }),
         on: {
           NARRATIVA_DONE: 'FIM',
+        },
+        after: {
+          30000: {
+            target: '#oracle.IDLE',
+            actions: assign({
+              sessionId: '',
+              choice1: null,
+              choice2: null,
+              fallbackCount: 0,
+              currentPhase: 'APRESENTACAO',
+            }),
+          },
         },
       },
 
