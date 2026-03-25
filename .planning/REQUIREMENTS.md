@@ -63,8 +63,8 @@ Requirements para o MVP da Bienal (29-30 Mai 2026). Cada um mapeia para fases do
 
 ### Analytics e Admin
 
-- [ ] **ANA-01**: Cada sessão registra: estação, caminho escolhido, duração, contagem de fallbacks, se completou
-- [ ] **ANA-02**: Zero dados pessoais são coletados (LGPD) — sem áudio persistido, sem transcrições salvas
+- [x] **ANA-01**: Cada sessão registra: estação, caminho escolhido, duração, contagem de fallbacks, se completou
+- [x] **ANA-02**: Zero dados pessoais são coletados (LGPD) — sem áudio persistido, sem transcrições salvas
 - [ ] **ANA-03**: Painel admin em `/admin` mostra: sessões ativas, total de visitantes, distribuição de caminhos, tempo médio
 - [ ] **ANA-04**: Painel admin mostra status online/offline de cada estação
 - [ ] **ANA-05**: 2-3 estações podem rodar sessões simultâneas sem interferência
@@ -133,8 +133,8 @@ Deferred para pós-evento ou iteração futura.
 | RES-03 | Phase 1 | Complete |
 | RES-04 | Phase 1 | Complete |
 | RES-05 | Phase 3 | Pending |
-| ANA-01 | Phase 3 | Pending |
-| ANA-02 | Phase 3 | Pending |
+| ANA-01 | Phase 3 | Complete |
+| ANA-02 | Phase 3 | Complete |
 | ANA-03 | Phase 3 | Pending |
 | ANA-04 | Phase 3 | Pending |
 | ANA-05 | Phase 3 | Pending |
