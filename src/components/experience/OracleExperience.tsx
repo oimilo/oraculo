@@ -87,6 +87,7 @@ export default function OracleExperience() {
   const [micPermissionGranted, setMicPermissionGranted] = useState(false);
   const [experienceStarted, setExperienceStarted] = useState(false);
   const prevStateRef = useRef<any>(state.value);
+  const [ttsComplete, setTtsComplete] = useState(false);
 
   // TTS orchestrator hook
   const tts = useTTSOrchestrator();
@@ -127,13 +128,15 @@ export default function OracleExperience() {
     state.matches({ PURGATORIO_B: 'AGUARDANDO' });
 
   // Voice choice hook - active flag manages lifecycle automatically
+  // MIC-02: Only activate voice choice when in AGUARDANDO AND TTS has finished
+  const micShouldActivate = isAguardando && ttsComplete;
   const voiceChoice = useVoiceChoice(
     activeChoiceConfig || {
       questionContext: '',
       options: { A: '', B: '' },
       eventMap: { A: '', B: '' },
     },
-    isAguardando
+    micShouldActivate
   );
 
   // Ambient audio hook
@@ -184,19 +187,33 @@ export default function OracleExperience() {
   }, [state.value, state.context, experienceStarted, analytics]);
 
   /**
-   * Auto-speak on state change using TTS orchestrator
+   * Effect A: Play TTS on state change, track completion (FLOW-04, FLOW-05)
+   * Cancels previous audio on state exit to prevent overlaps.
+   * Sets ttsComplete=true only when playback finishes.
    */
   useEffect(() => {
     const scriptKey = getScriptKey(state);
-    if (!scriptKey || tts.isSpeaking) return;
+    if (!scriptKey) {
+      // States without TTS (AGUARDANDO, IDLE, FIM) — mark complete immediately
+      setTtsComplete(true);
+      return;
+    }
+
+    // Cancel previous TTS to prevent overlaps (FLOW-04)
+    tts.cancel();
+    setTtsComplete(false);
 
     tts.speak(SCRIPT[scriptKey], state.context.currentPhase)
       .then(() => {
-        send({ type: 'NARRATIVA_DONE' });
+        setTtsComplete(true);
       })
       .catch((err) => {
         if (err.message !== 'Speech cancelled') {
           console.error('Speech error:', err);
+        }
+        // On error (non-cancel), allow progression (FLOW-05)
+        if (err.message !== 'Speech cancelled') {
+          setTtsComplete(true);
         }
       });
 
@@ -204,7 +221,24 @@ export default function OracleExperience() {
       tts.cancel();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.value, send, tts]);
+  }, [state.value]);
+
+  /**
+   * Effect B: Send NARRATIVA_DONE only after TTS completes (FLOW-01, FLOW-02, FLOW-05)
+   * Does NOT fire in AGUARDANDO states (those wait for voice choice, not TTS).
+   * Does NOT fire in FIM state (auto-resets via XState timer).
+   */
+  useEffect(() => {
+    if (!ttsComplete) return;
+    if (isAguardando) return;
+    if (state.matches('FIM')) return;
+    if (state.matches('IDLE')) return;
+    // Only auto-advance states that have TTS and expect NARRATIVA_DONE
+    const scriptKey = getScriptKey(state);
+    if (!scriptKey) return;
+
+    send({ type: 'NARRATIVA_DONE' });
+  }, [ttsComplete, isAguardando, state, send]);
 
   /**
    * Handle fallback: play fallback script when needsFallback is true
@@ -309,6 +343,7 @@ export default function OracleExperience() {
         <button
           onClick={() => {
             tts.cancel();
+            setTtsComplete(true);
             send({ type: 'NARRATIVA_DONE' });
           }}
           className="fixed bottom-4 right-4 z-50 px-4 py-2 bg-white/10 hover:bg-white/20 text-white/60 text-sm rounded backdrop-blur transition-colors"
