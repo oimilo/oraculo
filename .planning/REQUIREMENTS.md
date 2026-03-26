@@ -80,9 +80,9 @@ Diagnosticar e corrigir por que o microfone não ativa nos estados AGUARDANDO. G
 
 ### Diagnostics (DIAG)
 
-- [ ] **DIAG-01**: Dev debug panel shows pipeline state in real-time (ttsComplete, micShouldActivate, voiceLifecycle phase, isRecording)
-- [ ] **DIAG-02**: Console logs trace every pipeline transition with timestamps
-- [ ] **DIAG-03**: Debug panel is togglable via keyboard shortcut and hidden by default
+- [x] **DIAG-01**: Dev debug panel shows pipeline state in real-time (ttsComplete, micShouldActivate, voiceLifecycle phase, isRecording)
+- [x] **DIAG-02**: Console logs trace every pipeline transition with timestamps
+- [x] **DIAG-03**: Debug panel is togglable via keyboard shortcut and hidden by default
 
 ### TTS Reliability (TTSR)
 
@@ -181,9 +181,9 @@ Deferred para pós-evento ou iteração futura.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DIAG-01 | Phase 10 | Pending |
-| DIAG-02 | Phase 10 | Pending |
-| DIAG-03 | Phase 10 | Pending |
+| DIAG-01 | Phase 10 | Complete |
+| DIAG-02 | Phase 10 | Complete |
+| DIAG-03 | Phase 10 | Complete |
 | TTSR-01 | Phase 11 | Pending |
 | TTSR-02 | Phase 11 | Pending |
 | TTSR-03 | Phase 11 | Pending |

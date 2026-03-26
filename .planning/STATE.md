@@ -1,3 +1,19 @@
+---
+gsd_state_version: 1.0
+milestone: v1.3
+milestone_name: Voice Capture Debug & Fix
+status: executing
+stopped_at: Completed 10-01-PLAN.md
+last_updated: "2026-03-26T13:42:17.447Z"
+last_activity: 2026-03-26
+progress:
+  total_phases: 3
+  completed_phases: 0
+  total_plans: 2
+  completed_plans: 1
+  percent: 0
+---
+
 # State: O Oraculo
 
 ## Project Reference
@@ -6,32 +22,36 @@
 
 **Current Milestone:** v1.3 Voice Capture Debug & Fix
 
-**Current Focus:** Phase 10 -- Pipeline Debug Instrumentation (ready to plan)
+**Current Focus:** Phase 10 — pipeline-debug-instrumentation
 
 ## Current Position
 
-Phase: 10 of 12 (Pipeline Debug Instrumentation)
-Plan: 0 of ? in current phase
-Status: Ready to plan
-Last activity: 2026-03-26 -- Roadmap created for v1.3
+Phase: 10 (pipeline-debug-instrumentation) — EXECUTING
+Plan: 2 of 2
+Status: Ready to execute
+Last activity: 2026-03-26
 
 Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
 **Milestone v1.0 (Complete):**
+
 - Phases: 3/3, Plans: 13/13, Reqs: 41/41
 - Duration: 1 day (2026-03-24 to 2026-03-25)
 
 **Milestone v1.1 (Paused):**
+
 - Phases: 2/3 (Phase 6 Supabase deferred)
 - Plans: 4/4
 
 **Milestone v1.2 (Complete):**
+
 - Phases: 3/3 (Phases 7-9), Plans: 6/6
 - Duration: 1 day (2026-03-25 to 2026-03-26)
 
 **Milestone v1.3 (Active):**
+
 - Phases: 0/3, Plans: 0/?
 - Target: Fix mic not activating in AGUARDANDO states
 
@@ -40,14 +60,18 @@ Progress: [░░░░░░░░░░] 0%
 ### Decisions
 
 Recent decisions affecting current work:
+
 - [Phase 9]: Frozen config snapshots prevent stale closures in async pipeline
 - [Phase 9]: 10s AbortController timeout on STT/NLU API calls
 - [Phase 8]: TTS-gated state transitions via ttsComplete flag
 - [Phase 8]: micShouldActivate = isAguardando && ttsComplete
+- [Phase 10-01]: performance.now() for relative timestamps in debug logs
+- [Phase 10-01]: Ctrl+Shift+D toggle for debug panel (hidden by default)
 
 ### Known Bug (Root Cause Analysis)
 
 Mic never activates in AGUARDANDO states. Suspected chain:
+
 1. MockTTSService calls waitForVoices() which hangs when SpeechSynthesis has no voices
 2. ttsComplete stays false indefinitely
 3. micShouldActivate never becomes true
@@ -64,6 +88,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-26
-Stopped at: Roadmap created for v1.3
+Last session: 2026-03-26T13:42:17.444Z
+Stopped at: Completed 10-01-PLAN.md
 Resume: /gsd:plan-phase 10

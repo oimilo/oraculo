@@ -50,10 +50,10 @@
 **Goal**: Developers can see exactly where the voice pipeline breaks in real-time
 **Depends on**: Phase 9 (pipeline architecture must be stable before adding instrumentation)
 **Requirements**: DIAG-01, DIAG-02, DIAG-03
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
-- [ ] 10-01-PLAN.md -- Debug infrastructure: logger utility, keyboard shortcut hook, DebugPanel component + tests
+- [x] 10-01-PLAN.md -- Debug infrastructure: logger utility, keyboard shortcut hook, DebugPanel component + tests
 - [ ] 10-02-PLAN.md -- Wiring: DebugPanel into OracleExperience + structured logging in all pipeline hooks
 
 **Success Criteria** (what must be TRUE):
@@ -91,7 +91,7 @@ Plans:
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 10. Pipeline Debug Instrumentation | v1.3 | 0/2 | Planning complete | - |
+| 10. Pipeline Debug Instrumentation | v1.3 | 1/2 | In Progress|  |
 | 11. TTS Reliability & Voice Pipeline Fix | v1.3 | 0/? | Not started | - |
 | 12. Browser End-to-End Validation | v1.3 | 0/? | Not started | - |
 
