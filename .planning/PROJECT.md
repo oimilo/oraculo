@@ -87,6 +87,8 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 | Decoupled TTS orchestration | useTTSOrchestrator hook owns TTS state privately, no shared mutable refs | ✓ Good — Phase 7 |
 | TTS-gated state transitions | ttsComplete flag + ttsForStateRef prevent premature NARRATIVA_DONE and Strict Mode double-play | ✓ Good — Phase 8 |
 | Mic activation gating | micShouldActivate = isAguardando && ttsComplete ensures mic only opens after TTS finishes | ✓ Good — Phase 8 |
+| Frozen config snapshots | configRef.current frozen when active=true prevents stale closures in async voice pipeline | ✓ Good — Phase 9 |
+| API timeout protection | 10s AbortController timeout on STT/NLU API calls prevents stuck states | ✓ Good — Phase 9 |
 | Next.js + Supabase | SSR, API routes integradas, analytics persistidos, deploy Vercel | ✓ Good |
 | API keys server-side only | Segurança — chaves de API ficam em API routes do Next.js, nunca no cliente | ✓ Good |
 | Plain fetch (sem SDKs externos) | Simplicidade — fetch direto para ElevenLabs/Whisper/Claude, só @supabase/supabase-js | ✓ Good |
@@ -109,4 +111,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-26 — Phase 8 complete (Flow Sequencing & Mic Lifecycle). 282 tests passing.*
+*Last updated: 2026-03-26 — Phase 9 complete (STT/NLU Pipeline Integration). 307 tests passing.*
