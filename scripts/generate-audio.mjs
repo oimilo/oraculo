@@ -233,7 +233,7 @@ async function generateAudio(key, text, voiceSettings) {
   const body = {
     text,
     model_id: 'eleven_v3',
-    language_code: 'pt-BR',
+    // NOTE: eleven_v3 auto-detects language; language_code is not supported
     voice_settings: {
       stability: voiceSettings.stability,
       similarity_boost: voiceSettings.similarity_boost,
