@@ -39,7 +39,10 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 
 ### Active
 
-(v2.0 requirements — see REQUIREMENTS.md for full list)
+- [ ] v3 audio tag conversion (buildV3Text, convertPauseToTag) — *Validated in Phase 13*
+- [ ] API route v2/v3 dual-mode via USE_V3_MODEL env flag — *Validated in Phase 13*
+- [ ] Voice IVC compatibility documented, pending live API verification — *Phase 13*
+- (remaining v2.0 requirements — see REQUIREMENTS.md for full list)
 
 ### Out of Scope
 
@@ -113,4 +116,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-26 — Milestone v2.0 started (Narração Realista com ElevenLabs v3)*
+*Last updated: 2026-03-26 — Phase 13 complete (v3 audio tag conversion + API dual-mode)*
