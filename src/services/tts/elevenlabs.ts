@@ -30,7 +30,7 @@ export class ElevenLabsTTSService implements TTSService {
             stability: voiceSettings.stability,
             similarity_boost: voiceSettings.similarity_boost,
             style: voiceSettings.style,
-            speed: voiceSettings.speed,
+            ...(voiceSettings.speed != null ? { speed: voiceSettings.speed } : {}),
           },
         }),
       });

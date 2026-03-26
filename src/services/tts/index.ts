@@ -7,7 +7,7 @@ export interface VoiceSettings {
   stability: number;        // 0-1, ElevenLabs parameter
   similarity_boost: number; // 0-1, ElevenLabs parameter
   style: number;            // 0-1, ElevenLabs parameter
-  speed: number;            // 0.5-2.0, ElevenLabs parameter
+  speed?: number;           // 0.5-2.0, ElevenLabs parameter -- optional (v3 does not support speed)
   phase: NarrativePhase;    // For mock routing to VoiceDirection
 }
 
