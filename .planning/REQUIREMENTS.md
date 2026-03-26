@@ -108,8 +108,8 @@ Refazer toda a narração com ElevenLabs v3, tags de inflexão inteligente e pon
 
 ### Voice Infrastructure (VINF)
 
-- [ ] **VINF-01**: Voice type verified as IVC (not PVC) and confirmed compatible with v3 audio tags
-- [ ] **VINF-02**: API route and generation script use `eleven_v3` model with correct parameters (no `speed`, no `speaker_boost`, add `language_code: 'pt-BR'`)
+- [x] **VINF-01**: Voice type verified as IVC (not PVC) and confirmed compatible with v3 audio tags
+- [x] **VINF-02**: API route and generation script use `eleven_v3` model with correct parameters (no `speed`, no `speaker_boost`, add `language_code: 'pt-BR'`)
 - [x] **VINF-03**: Generation script converts `pauseAfter` to v3 audio tags (`[pause]`, `[long pause]`) instead of SSML `<break>`
 
 ### Script Quality (SCRP)
@@ -220,8 +220,8 @@ Deferred para pós-evento ou iteração futura.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| VINF-01 | Phase 13 | Pending |
-| VINF-02 | Phase 13 | Pending |
+| VINF-01 | Phase 13 | Complete |
+| VINF-02 | Phase 13 | Complete |
 | VINF-03 | Phase 13 | Complete |
 | SCRP-01 | Phase 14 | Pending |
 | SCRP-02 | Phase 14 | Pending |

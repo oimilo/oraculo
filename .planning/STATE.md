@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Narração Realista com ElevenLabs v3
-status: executing
-stopped_at: Completed 13-01-PLAN.md
-last_updated: "2026-03-26T17:59:55.961Z"
+status: verifying
+stopped_at: Completed 13-02-PLAN.md
+last_updated: "2026-03-26T18:05:32.140Z"
 last_activity: 2026-03-26
 progress:
   total_phases: 3
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
+  completed_plans: 2
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ progress:
 
 Phase: 13 (voice-infrastructure-v3-migration) — EXECUTING
 Plan: 2 of 2
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-03-26
 
 Progress: [░░░░░░░░░░] 0%
@@ -75,6 +75,9 @@ Recent decisions affecting current work:
 - [Phase 11]: Activation logging uses separate createLogger('Activation') namespace
 - [Phase 13]: Pause thresholds: <500ms=none, 500-1500ms=[pause], >1500ms=[long pause] for v3 audio tags
 - [Phase 13]: Inflection tags prepend directly to text without space: [tag]Text
+- [Phase 13]: v2/v3 toggle via USE_V3_MODEL env var for safe testing
+- [Phase 13]: v3 mode omits speed and use_speaker_boost (not supported by eleven_v3)
+- [Phase 13]: Generation script reimplements convertPauseToTag inline (mjs cannot import ts)
 
 ### v2.0 Research Highlights
 
@@ -98,6 +101,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-26T17:59:55.958Z
-Stopped at: Completed 13-01-PLAN.md
+Last session: 2026-03-26T18:05:32.137Z
+Stopped at: Completed 13-02-PLAN.md
 Resume: /gsd:plan-phase 13
