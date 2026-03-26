@@ -223,7 +223,7 @@ export class FallbackTTSService implements TTSService {
    */
   private async fallbackToSpeechSynthesis(segments: SpeechSegment[], voiceSettings: VoiceSettings): Promise<void> {
     if (typeof window === 'undefined' || !window.speechSynthesis) {
-      // Server-side or headless - simulate delay
+      // Server-side or headless — simulate delay
       const totalDuration = segments.reduce(
         (acc, s) => acc + s.text.length * 50 + (s.pauseAfter ?? 0),
         0
@@ -232,9 +232,22 @@ export class FallbackTTSService implements TTSService {
       return;
     }
 
-    // Use browser SpeechSynthesis as final fallback
-    const { speakSegments } = await import('@/lib/audio/speechSynthesis');
+    // Browser with SpeechSynthesis — use timeout-guarded waitForVoices (TTSR-01)
+    const { speakSegments, waitForVoices } = await import('@/lib/audio/speechSynthesis');
     const { VOICE_DIRECTIONS } = await import('@/types');
+
+    const voices = await waitForVoices(3000);
+
+    if (voices.length === 0) {
+      // No voices available — simulate duration
+      const totalDuration = segments.reduce(
+        (acc, s) => acc + s.text.length * 50 + (s.pauseAfter ?? 0),
+        0
+      );
+      await new Promise(resolve => setTimeout(resolve, Math.min(totalDuration, 500)));
+      return;
+    }
+
     const voiceDirection = VOICE_DIRECTIONS[voiceSettings.phase];
     return speakSegments(segments, voiceDirection);
   }

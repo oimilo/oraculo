@@ -71,3 +71,58 @@ describe('TTS Service Interface', () => {
     expect(service.constructor.name).toBe('MockTTSService');
   });
 });
+
+describe('MockTTSService with no voices (TTSR-02)', () => {
+  beforeEach(() => {
+    vi.resetModules();
+    // Mock SpeechSynthesis with NO voices and voiceschanged never fires
+    global.window = {
+      speechSynthesis: {
+        getVoices: vi.fn(() => []),
+        speak: vi.fn(),
+        cancel: vi.fn(),
+        onvoiceschanged: null,
+      } as any,
+    } as any;
+  });
+
+  it('should resolve speak() within 4s when no voices available (bounded, not hanging)', async () => {
+    const { MockTTSService } = await import('../mock');
+    const service = new MockTTSService();
+
+    const segments = [{ text: 'Hello world', pauseAfter: 100 }];
+    const voiceSettings = {
+      stability: 0.5,
+      similarity_boost: 0.8,
+      style: 0.3,
+      speed: 0.9,
+      phase: 'APRESENTACAO' as const,
+    };
+
+    const start = Date.now();
+    await service.speak(segments, voiceSettings);
+    const elapsed = Date.now() - start;
+
+    // Must resolve: waitForVoices timeout (3s) + simulated delay (max 500ms) = max ~3.5s
+    expect(elapsed).toBeLessThan(4000);
+  });
+
+  it('should not call speechSynthesis.speak() when no voices available', async () => {
+    const { MockTTSService } = await import('../mock');
+    const service = new MockTTSService();
+
+    const segments = [{ text: 'Test' }];
+    const voiceSettings = {
+      stability: 0.5,
+      similarity_boost: 0.8,
+      style: 0.3,
+      speed: 0.9,
+      phase: 'INFERNO' as const,
+    };
+
+    await service.speak(segments, voiceSettings);
+
+    // speak() should NOT be called on SpeechSynthesis (no voices to use)
+    expect(window.speechSynthesis.speak).not.toHaveBeenCalled();
+  });
+});
