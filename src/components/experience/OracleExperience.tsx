@@ -22,6 +22,7 @@ import DebugPanel from '@/components/debug/DebugPanel';
 import { createLogger } from '@/lib/debug/logger';
 
 const logger = createLogger('TTS');
+const activationLogger = createLogger('Activation');
 
 // Choice configurations for each AGUARDANDO state
 const INFERNO_CHOICE: ChoiceConfig = {
@@ -136,6 +137,29 @@ export default function OracleExperience() {
   // Voice choice hook - active flag manages lifecycle automatically
   // MIC-02: Only activate voice choice when in AGUARDANDO AND TTS has finished
   const micShouldActivate = isAguardando && ttsComplete;
+
+  // TTSR-03: Log activation decision for every change in activation preconditions
+  useEffect(() => {
+    activationLogger.log('Mic activation check', {
+      state: JSON.stringify(state.value),
+      isAguardando,
+      ttsComplete,
+      micShouldActivate,
+    });
+
+    if (isAguardando && !ttsComplete) {
+      activationLogger.log('BLOCKED — waiting for ttsComplete', {
+        state: JSON.stringify(state.value),
+      });
+    }
+
+    if (micShouldActivate) {
+      activationLogger.log('ACTIVATED — ttsComplete verified true before mic', {
+        state: JSON.stringify(state.value),
+      });
+    }
+  }, [isAguardando, ttsComplete, micShouldActivate, state.value]);
+
   const voiceChoice = useVoiceChoice(
     activeChoiceConfig || {
       questionContext: '',

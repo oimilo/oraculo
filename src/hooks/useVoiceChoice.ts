@@ -200,14 +200,20 @@ export function useVoiceChoice(config: ChoiceConfig, active: boolean): UseVoiceC
     // Activating: start capture only once per activation
     if (!activationHandledRef.current) {
       activationHandledRef.current = true;
-      logger.log('Active — starting capture');
-      startListening().catch((err) => {
-        logger.error('Failed to start listening:', err);
-      });
+      const activationStart = performance.now();
+      logger.log('Activation timing — starting capture', { activationStart });
+      startListening()
+        .then(() => {
+          const elapsed = performance.now() - activationStart;
+          logger.log('Activation timing — recording started', { elapsedMs: elapsed.toFixed(2) });
+        })
+        .catch((err) => {
+          const elapsed = performance.now() - activationStart;
+          logger.error('Activation timing — failed to start', { elapsedMs: elapsed.toFixed(2), error: err });
+        });
     }
 
     return () => {
-      // Cleanup on deactivation or unmount
       logger.log('Cleanup — stopping recording');
       stopRecording();
     };
