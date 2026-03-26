@@ -59,7 +59,10 @@ Plans:
   3. Classification result (A/B) triggers correct state machine event and narrative branch
   4. Low confidence responses trigger fallback TTS followed by re-listen cycle (not silent failure)
   5. Silent or empty audio produces graceful fallback behavior (timeout or default choice)
-**Plans**: TBD
+**Plans:** 1 plan
+
+Plans:
+- [ ] 09-01-PLAN.md — STT/NLU pipeline integration tests + edge case hardening (PIPE-01, PIPE-02, PIPE-03, PIPE-04, PIPE-05)
 
 ---
 
@@ -69,7 +72,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 7. Voice Architecture Refactor | 3/3 | Complete | 2026-03-25 |
 | 8. Flow Sequencing & Mic Lifecycle | 2/2 | Complete | 2026-03-26 |
-| 9. STT/NLU Pipeline Integration | 0/0 | Not started | - |
+| 9. STT/NLU Pipeline Integration | 0/1 | Not started | - |
 
 ---
 
@@ -78,7 +81,7 @@ Plans:
 ```
 Phase 7: Voice Architecture Refactor (foundation) [COMPLETE]
     |
-Phase 8: Flow Sequencing & Mic Lifecycle (clean mic lifecycle depends on refactored hooks)
+Phase 8: Flow Sequencing & Mic Lifecycle (clean mic lifecycle depends on refactored hooks) [COMPLETE]
     |
 Phase 9: STT/NLU Pipeline Integration (valid audio blobs depend on Phase 8)
 ```
@@ -120,4 +123,4 @@ Phase 9: STT/NLU Pipeline Integration (valid audio blobs depend on Phase 8)
 
 ---
 
-*Last updated: 2026-03-25 — Phase 8 plans created*
+*Last updated: 2026-03-26 — Phase 9 plan created*
