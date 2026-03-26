@@ -88,6 +88,8 @@ export default function OracleExperience() {
   const [experienceStarted, setExperienceStarted] = useState(false);
   const prevStateRef = useRef<any>(state.value);
   const [ttsComplete, setTtsComplete] = useState(false);
+  const ttsForStateRef = useRef<string>('');
+  const speakTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // TTS orchestrator hook
   const tts = useTTSOrchestrator();
@@ -190,34 +192,49 @@ export default function OracleExperience() {
    * Effect A: Play TTS on state change, track completion (FLOW-04, FLOW-05)
    * Cancels previous audio on state exit to prevent overlaps.
    * Sets ttsComplete=true only when playback finishes.
+   * Uses setTimeout(0) to prevent React Strict Mode double-play in dev.
    */
   useEffect(() => {
     const scriptKey = getScriptKey(state);
+    const stateKey = JSON.stringify(state.value);
+
     if (!scriptKey) {
-      // States without TTS (AGUARDANDO, IDLE, FIM) — mark complete immediately
-      setTtsComplete(true);
+      // Non-speech states (AGUARDANDO, IDLE, FIM): don't touch ttsComplete
       return;
     }
 
     // Cancel previous TTS to prevent overlaps (FLOW-04)
     tts.cancel();
     setTtsComplete(false);
+    ttsForStateRef.current = '';
 
-    tts.speak(SCRIPT[scriptKey], state.context.currentPhase)
-      .then(() => {
-        setTtsComplete(true);
-      })
-      .catch((err) => {
-        if (err.message !== 'Speech cancelled') {
-          console.error('Speech error:', err);
-        }
-        // On error (non-cancel), allow progression (FLOW-05)
-        if (err.message !== 'Speech cancelled') {
-          setTtsComplete(true);
-        }
-      });
+    let cancelled = false;
+
+    // Defer speak to next tick so Strict Mode cleanup can cancel before audio starts
+    speakTimeoutRef.current = setTimeout(() => {
+      if (cancelled) return;
+
+      tts.speak(SCRIPT[scriptKey], state.context.currentPhase)
+        .then(() => {
+          if (!cancelled) {
+            ttsForStateRef.current = stateKey;
+            setTtsComplete(true);
+          }
+        })
+        .catch((err) => {
+          if (err.message !== 'Speech cancelled') {
+            console.error('Speech error:', err);
+          }
+          if (!cancelled && err.message !== 'Speech cancelled') {
+            ttsForStateRef.current = stateKey;
+            setTtsComplete(true);
+          }
+        });
+    }, 0);
 
     return () => {
+      cancelled = true;
+      if (speakTimeoutRef.current) clearTimeout(speakTimeoutRef.current);
       tts.cancel();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -227,6 +244,7 @@ export default function OracleExperience() {
    * Effect B: Send NARRATIVA_DONE only after TTS completes (FLOW-01, FLOW-02, FLOW-05)
    * Does NOT fire in AGUARDANDO states (those wait for voice choice, not TTS).
    * Does NOT fire in FIM state (auto-resets via XState timer).
+   * Guards against stale ttsComplete from previous state via ttsForStateRef.
    */
   useEffect(() => {
     if (!ttsComplete) return;
@@ -236,6 +254,9 @@ export default function OracleExperience() {
     // Only auto-advance states that have TTS and expect NARRATIVA_DONE
     const scriptKey = getScriptKey(state);
     if (!scriptKey) return;
+    // Prevent stale ttsComplete from previous state causing premature advance
+    const stateKey = JSON.stringify(state.value);
+    if (ttsForStateRef.current !== stateKey) return;
 
     send({ type: 'NARRATIVA_DONE' });
   }, [ttsComplete, isAguardando, state, send]);
