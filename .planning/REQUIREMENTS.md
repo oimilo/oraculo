@@ -45,11 +45,11 @@ Corrigir e refatorar fluxo de voz end-to-end: TTS → mic → STT → NLU → st
 
 ### Flow Sequencing (FLOW)
 
-- [ ] **FLOW-01**: TTS narration completes fully before microphone opens for listening
-- [ ] **FLOW-02**: Question TTS plays in PERGUNTA state, before entering AGUARDANDO
-- [ ] **FLOW-03**: TIMEOUT_REDIRECT text only plays after 15s timeout, not as primary question
-- [ ] **FLOW-04**: No TTS audio overlaps at any point during the experience
-- [ ] **FLOW-05**: State transitions wait for TTS completion before proceeding
+- [x] **FLOW-01**: TTS narration completes fully before microphone opens for listening
+- [x] **FLOW-02**: Question TTS plays in PERGUNTA state, before entering AGUARDANDO
+- [x] **FLOW-03**: TIMEOUT_REDIRECT text only plays after 15s timeout, not as primary question
+- [x] **FLOW-04**: No TTS audio overlaps at any point during the experience
+- [x] **FLOW-05**: State transitions wait for TTS completion before proceeding
 
 ### Microphone Lifecycle (MIC)
 
@@ -133,11 +133,11 @@ Deferred para pós-evento ou iteração futura.
 | QUAL-02 | Phase 7 | Complete |
 | QUAL-03 | Phase 7 | Complete |
 | QUAL-04 | Phase 7 | Complete |
-| FLOW-01 | Phase 8 | Pending |
-| FLOW-02 | Phase 8 | Pending |
-| FLOW-03 | Phase 8 | Pending |
-| FLOW-04 | Phase 8 | Pending |
-| FLOW-05 | Phase 8 | Pending |
+| FLOW-01 | Phase 8 | Complete |
+| FLOW-02 | Phase 8 | Complete |
+| FLOW-03 | Phase 8 | Complete |
+| FLOW-04 | Phase 8 | Complete |
+| FLOW-05 | Phase 8 | Complete |
 | MIC-01 | Phase 8 | Pending |
 | MIC-02 | Phase 8 | Pending |
 | MIC-03 | Phase 8 | Pending |

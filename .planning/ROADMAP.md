@@ -46,7 +46,7 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 08-01-PLAN.md — TTS-gated state transitions + flow sequencing tests (FLOW-01, FLOW-02, FLOW-03, FLOW-04, FLOW-05)
+- [x] 08-01-PLAN.md — TTS-gated state transitions + flow sequencing tests (FLOW-01, FLOW-02, FLOW-03, FLOW-04, FLOW-05)
 - [ ] 08-02-PLAN.md — Microphone lifecycle tests + stream cleanup hardening (MIC-01, MIC-02, MIC-03, MIC-04, MIC-05)
 
 ### Phase 9: STT/NLU Pipeline Integration
