@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: milestone
-status: Ready to plan
-last_updated: "2026-03-26T00:27:24.342Z"
+status: Phase complete — ready for verification
+last_updated: "2026-03-26T01:00:44.205Z"
 progress:
   total_phases: 3
-  completed_phases: 2
-  total_plans: 5
-  completed_plans: 5
+  completed_phases: 3
+  total_plans: 6
+  completed_plans: 6
 ---
 
 # State: O Oráculo
@@ -19,12 +19,12 @@ progress:
 
 **Current Milestone:** v1.2 Voice Flow Stabilization
 
-**Current Focus:** Phase 08 — flow-sequencing-mic-lifecycle
+**Current Focus:** Phase 09 — stt-nlu-pipeline-integration
 
 ## Current Position
 
-Phase: 9
-Plan: Not started
+Phase: 09 (stt-nlu-pipeline-integration) — EXECUTING
+Plan: 1 of 1
 
 ## Performance Metrics
 

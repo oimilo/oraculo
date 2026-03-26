@@ -61,11 +61,11 @@ Corrigir e refatorar fluxo de voz end-to-end: TTS → mic → STT → NLU → st
 
 ### STT/NLU Pipeline (PIPE)
 
-- [ ] **PIPE-01**: Whisper STT successfully transcribes spoken Portuguese responses
-- [ ] **PIPE-02**: NLU always receives valid config (correct options, not empty/stale)
-- [ ] **PIPE-03**: Classification result correctly maps to state machine event
-- [ ] **PIPE-04**: Low confidence triggers fallback TTS then re-listen cycle
-- [ ] **PIPE-05**: Empty/silence transcript handled gracefully with fallback or default
+- [x] **PIPE-01**: Whisper STT successfully transcribes spoken Portuguese responses
+- [x] **PIPE-02**: NLU always receives valid config (correct options, not empty/stale)
+- [x] **PIPE-03**: Classification result correctly maps to state machine event
+- [x] **PIPE-04**: Low confidence triggers fallback TTS then re-listen cycle
+- [x] **PIPE-05**: Empty/silence transcript handled gracefully with fallback or default
 
 ### Code Quality (QUAL)
 
@@ -143,11 +143,11 @@ Deferred para pós-evento ou iteração futura.
 | MIC-03 | Phase 8 | Complete |
 | MIC-04 | Phase 8 | Complete |
 | MIC-05 | Phase 8 | Complete |
-| PIPE-01 | Phase 9 | Pending |
-| PIPE-02 | Phase 9 | Pending |
-| PIPE-03 | Phase 9 | Pending |
-| PIPE-04 | Phase 9 | Pending |
-| PIPE-05 | Phase 9 | Pending |
+| PIPE-01 | Phase 9 | Complete |
+| PIPE-02 | Phase 9 | Complete |
+| PIPE-03 | Phase 9 | Complete |
+| PIPE-04 | Phase 9 | Complete |
+| PIPE-05 | Phase 9 | Complete |
 
 **Coverage:**
 - v1.2 requirements: 19 total

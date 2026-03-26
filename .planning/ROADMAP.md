@@ -62,7 +62,7 @@ Plans:
 **Plans:** 1 plan
 
 Plans:
-- [ ] 09-01-PLAN.md — STT/NLU pipeline integration tests + edge case hardening (PIPE-01, PIPE-02, PIPE-03, PIPE-04, PIPE-05)
+- [x] 09-01-PLAN.md — STT/NLU pipeline integration tests + edge case hardening (PIPE-01, PIPE-02, PIPE-03, PIPE-04, PIPE-05)
 
 ---
 
