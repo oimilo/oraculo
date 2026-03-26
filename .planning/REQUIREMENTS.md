@@ -88,13 +88,13 @@ Diagnosticar e corrigir por que o microfone não ativa nos estados AGUARDANDO. G
 
 - [x] **TTSR-01**: `waitForVoices()` has a timeout (3s) and falls back gracefully when SpeechSynthesis has no voices
 - [x] **TTSR-02**: MockTTSService resolves its promise within bounded time (never hangs indefinitely)
-- [ ] **TTSR-03**: `ttsComplete` is verified as `true` before mic activates in every AGUARDANDO state
+- [x] **TTSR-03**: `ttsComplete` is verified as `true` before mic activates in every AGUARDANDO state
 
 ### Voice Pipeline Fix (VPIPE)
 
-- [ ] **VPIPE-01**: Mic recording starts within 500ms of entering AGUARDANDO state (when ttsComplete=true)
-- [ ] **VPIPE-02**: Voice pipeline processes recorded audio and produces a choiceResult in all 3 AGUARDANDO states
-- [ ] **VPIPE-03**: Pipeline gracefully handles empty transcripts, API errors, and low confidence without freezing
+- [x] **VPIPE-01**: Mic recording starts within 500ms of entering AGUARDANDO state (when ttsComplete=true)
+- [x] **VPIPE-02**: Voice pipeline processes recorded audio and produces a choiceResult in all 3 AGUARDANDO states
+- [x] **VPIPE-03**: Pipeline gracefully handles empty transcripts, API errors, and low confidence without freezing
 
 ### Browser Validation (BVAL)
 
@@ -186,10 +186,10 @@ Deferred para pós-evento ou iteração futura.
 | DIAG-03 | Phase 10 | Complete |
 | TTSR-01 | Phase 11 | Complete |
 | TTSR-02 | Phase 11 | Complete |
-| TTSR-03 | Phase 11 | Pending |
-| VPIPE-01 | Phase 11 | Pending |
-| VPIPE-02 | Phase 11 | Pending |
-| VPIPE-03 | Phase 11 | Pending |
+| TTSR-03 | Phase 11 | Complete |
+| VPIPE-01 | Phase 11 | Complete |
+| VPIPE-02 | Phase 11 | Complete |
+| VPIPE-03 | Phase 11 | Complete |
 | BVAL-01 | Phase 12 | Pending |
 | BVAL-02 | Phase 12 | Pending |
 | BVAL-03 | Phase 12 | Pending |
