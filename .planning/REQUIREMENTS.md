@@ -53,11 +53,11 @@ Corrigir e refatorar fluxo de voz end-to-end: TTS → mic → STT → NLU → st
 
 ### Microphone Lifecycle (MIC)
 
-- [ ] **MIC-01**: Microphone recording starts only when entering AGUARDANDO state
-- [ ] **MIC-02**: Recording starts only after all TTS audio has finished playing
-- [ ] **MIC-03**: Recording duration captures full visitor response (configurable)
-- [ ] **MIC-04**: Audio blob from previous AGUARDANDO is never processed in a new state
-- [ ] **MIC-05**: Microphone stops cleanly on state exit (no orphaned streams)
+- [x] **MIC-01**: Microphone recording starts only when entering AGUARDANDO state
+- [x] **MIC-02**: Recording starts only after all TTS audio has finished playing
+- [x] **MIC-03**: Recording duration captures full visitor response (configurable)
+- [x] **MIC-04**: Audio blob from previous AGUARDANDO is never processed in a new state
+- [x] **MIC-05**: Microphone stops cleanly on state exit (no orphaned streams)
 
 ### STT/NLU Pipeline (PIPE)
 
@@ -138,11 +138,11 @@ Deferred para pós-evento ou iteração futura.
 | FLOW-03 | Phase 8 | Complete |
 | FLOW-04 | Phase 8 | Complete |
 | FLOW-05 | Phase 8 | Complete |
-| MIC-01 | Phase 8 | Pending |
-| MIC-02 | Phase 8 | Pending |
-| MIC-03 | Phase 8 | Pending |
-| MIC-04 | Phase 8 | Pending |
-| MIC-05 | Phase 8 | Pending |
+| MIC-01 | Phase 8 | Complete |
+| MIC-02 | Phase 8 | Complete |
+| MIC-03 | Phase 8 | Complete |
+| MIC-04 | Phase 8 | Complete |
+| MIC-05 | Phase 8 | Complete |
 | PIPE-01 | Phase 9 | Pending |
 | PIPE-02 | Phase 9 | Pending |
 | PIPE-03 | Phase 9 | Pending |

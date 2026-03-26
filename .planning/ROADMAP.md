@@ -10,7 +10,7 @@
 ## Phases
 
 - [x] **Phase 7: Voice Architecture Refactor** - Clean up hook orchestration and state machine coupling
-- [ ] **Phase 8: Flow Sequencing & Mic Lifecycle** - Fix TTS/mic timing and state transitions
+- [x] **Phase 8: Flow Sequencing & Mic Lifecycle** - Fix TTS/mic timing and state transitions
 - [ ] **Phase 9: STT/NLU Pipeline Integration** - End-to-end voice capture to classification
 
 ---
@@ -47,7 +47,7 @@ Plans:
 
 Plans:
 - [x] 08-01-PLAN.md — TTS-gated state transitions + flow sequencing tests (FLOW-01, FLOW-02, FLOW-03, FLOW-04, FLOW-05)
-- [ ] 08-02-PLAN.md — Microphone lifecycle tests + stream cleanup hardening (MIC-01, MIC-02, MIC-03, MIC-04, MIC-05)
+- [x] 08-02-PLAN.md — Microphone lifecycle tests + stream cleanup hardening (MIC-01, MIC-02, MIC-03, MIC-04, MIC-05)
 
 ### Phase 9: STT/NLU Pipeline Integration
 **Goal**: Voice capture produces accurate transcription and classification that drives correct state transitions
@@ -68,7 +68,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 7. Voice Architecture Refactor | 3/3 | Complete | 2026-03-25 |
-| 8. Flow Sequencing & Mic Lifecycle | 0/2 | Planning complete | - |
+| 8. Flow Sequencing & Mic Lifecycle | 2/2 | Complete | 2026-03-26 |
 | 9. STT/NLU Pipeline Integration | 0/0 | Not started | - |
 
 ---
@@ -102,16 +102,16 @@ Phase 9: STT/NLU Pipeline Integration (valid audio blobs depend on Phase 8)
 | QUAL-02 | Phase 7 | Complete |
 | QUAL-03 | Phase 7 | Complete |
 | QUAL-04 | Phase 7 | Complete |
-| FLOW-01 | Phase 8 | Pending |
-| FLOW-02 | Phase 8 | Pending |
-| FLOW-03 | Phase 8 | Pending |
-| FLOW-04 | Phase 8 | Pending |
-| FLOW-05 | Phase 8 | Pending |
-| MIC-01 | Phase 8 | Pending |
-| MIC-02 | Phase 8 | Pending |
-| MIC-03 | Phase 8 | Pending |
-| MIC-04 | Phase 8 | Pending |
-| MIC-05 | Phase 8 | Pending |
+| FLOW-01 | Phase 8 | Complete |
+| FLOW-02 | Phase 8 | Complete |
+| FLOW-03 | Phase 8 | Complete |
+| FLOW-04 | Phase 8 | Complete |
+| FLOW-05 | Phase 8 | Complete |
+| MIC-01 | Phase 8 | Complete |
+| MIC-02 | Phase 8 | Complete |
+| MIC-03 | Phase 8 | Complete |
+| MIC-04 | Phase 8 | Complete |
+| MIC-05 | Phase 8 | Complete |
 | PIPE-01 | Phase 9 | Pending |
 | PIPE-02 | Phase 9 | Pending |
 | PIPE-03 | Phase 9 | Pending |
