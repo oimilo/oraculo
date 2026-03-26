@@ -47,6 +47,57 @@ const PURGATORIO_B_CHOICE: ChoiceConfig = {
 };
 
 /**
+ * Breathing delay (ms) before sending NARRATIVA_DONE after TTS completes.
+ * Prevents the experience from feeling rushed between narrative segments.
+ *
+ * Tiers:
+ *   Long  (2500ms) — Major phase transitions (e.g. APRESENTACAO→INFERNO)
+ *   Medium(1500ms) — NARRATIVA→PERGUNTA, within-phase narrative beats
+ *   Short  (800ms) — PERGUNTA→AGUARDANDO (question ends, waiting for input)
+ *   None     (0ms) — TIMEOUT / FALLBACK functional prompts
+ */
+function getBreathingDelay(machineState: any): number {
+  const LONG = 2500;
+  const MEDIUM = 1500;
+  const SHORT = 800;
+  const NONE = 0;
+
+  // --- Long: top-level phase boundaries ---
+  // APRESENTACAO → INFERNO
+  if (machineState.matches('APRESENTACAO')) return LONG;
+  // PARAISO → DEVOLUCAO
+  if (machineState.matches('PARAISO')) return LONG;
+  // DEVOLUCAO_* → ENCERRAMENTO
+  if (machineState.matches('DEVOLUCAO_A_FICAR')) return LONG;
+  if (machineState.matches('DEVOLUCAO_A_EMBORA')) return LONG;
+  if (machineState.matches('DEVOLUCAO_B_PISAR')) return LONG;
+  if (machineState.matches('DEVOLUCAO_B_CONTORNAR')) return LONG;
+  // ENCERRAMENTO → FIM
+  if (machineState.matches('ENCERRAMENTO')) return LONG;
+  // INFERNO.RESPOSTA_* → PURGATORIO (cross-phase)
+  if (machineState.matches({ INFERNO: 'RESPOSTA_A' })) return LONG;
+  if (machineState.matches({ INFERNO: 'RESPOSTA_B' })) return LONG;
+  // PURGATORIO_*.RESPOSTA_* → PARAISO (cross-phase)
+  if (machineState.matches({ PURGATORIO_A: 'RESPOSTA_FICAR' })) return LONG;
+  if (machineState.matches({ PURGATORIO_A: 'RESPOSTA_EMBORA' })) return LONG;
+  if (machineState.matches({ PURGATORIO_B: 'RESPOSTA_PISAR' })) return LONG;
+  if (machineState.matches({ PURGATORIO_B: 'RESPOSTA_CONTORNAR' })) return LONG;
+
+  // --- Medium: NARRATIVA → PERGUNTA ---
+  if (machineState.matches({ INFERNO: 'NARRATIVA' })) return MEDIUM;
+  if (machineState.matches({ PURGATORIO_A: 'NARRATIVA' })) return MEDIUM;
+  if (machineState.matches({ PURGATORIO_B: 'NARRATIVA' })) return MEDIUM;
+
+  // --- Short: PERGUNTA → AGUARDANDO ---
+  if (machineState.matches({ INFERNO: 'PERGUNTA' })) return SHORT;
+  if (machineState.matches({ PURGATORIO_A: 'PERGUNTA' })) return SHORT;
+  if (machineState.matches({ PURGATORIO_B: 'PERGUNTA' })) return SHORT;
+
+  // --- None: TIMEOUT, FALLBACK, or any unmapped state ---
+  return NONE;
+}
+
+/**
  * Maps current machine state to the corresponding script key
  */
 function getScriptKey(machineState: any): keyof typeof SCRIPT | null {
@@ -95,6 +146,7 @@ export default function OracleExperience() {
   const [ttsComplete, setTtsComplete] = useState(false);
   const ttsForStateRef = useRef<string>('');
   const speakTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const breathingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // TTS orchestrator hook
   const tts = useTTSOrchestrator();
@@ -278,6 +330,9 @@ export default function OracleExperience() {
    * Does NOT fire in AGUARDANDO states (those wait for voice choice, not TTS).
    * Does NOT fire in FIM state (auto-resets via XState timer).
    * Guards against stale ttsComplete from previous state via ttsForStateRef.
+   *
+   * Includes a configurable "breathing delay" between TTS end and state advance
+   * so narrative phases don't feel rushed.
    */
   useEffect(() => {
     if (!ttsComplete) return;
@@ -291,8 +346,29 @@ export default function OracleExperience() {
     const stateKey = JSON.stringify(state.value);
     if (ttsForStateRef.current !== stateKey) return;
 
-    logger.log('Effect B — sending NARRATIVA_DONE', { state: JSON.stringify(state.value) });
-    send({ type: 'NARRATIVA_DONE' });
+    const delay = getBreathingDelay(state);
+    logger.log(`Effect B — waiting ${delay}ms before NARRATIVA_DONE`, { state: stateKey });
+
+    if (delay === 0) {
+      send({ type: 'NARRATIVA_DONE' });
+      return;
+    }
+
+    let cancelled = false;
+    breathingTimeoutRef.current = setTimeout(() => {
+      if (!cancelled) {
+        logger.log('Effect B — sending NARRATIVA_DONE after breathing delay', { state: stateKey, delay });
+        send({ type: 'NARRATIVA_DONE' });
+      }
+    }, delay);
+
+    return () => {
+      cancelled = true;
+      if (breathingTimeoutRef.current) {
+        clearTimeout(breathingTimeoutRef.current);
+        breathingTimeoutRef.current = null;
+      }
+    };
   }, [ttsComplete, isAguardando, state, send]);
 
   /**
