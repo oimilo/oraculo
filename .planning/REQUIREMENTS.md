@@ -74,6 +74,34 @@ Corrigir e refatorar fluxo de voz end-to-end: TTS → mic → STT → NLU → st
 - [x] **QUAL-03**: State machine choice points are generic/extensible for future branches
 - [x] **QUAL-04**: All voice flow integration tests pass with real service timing patterns
 
+## v1.3 Requirements — Voice Capture Debug & Fix
+
+Diagnosticar e corrigir por que o microfone não ativa nos estados AGUARDANDO. Garantir pipeline end-to-end no browser.
+
+### Diagnostics (DIAG)
+
+- [ ] **DIAG-01**: Dev debug panel shows pipeline state in real-time (ttsComplete, micShouldActivate, voiceLifecycle phase, isRecording)
+- [ ] **DIAG-02**: Console logs trace every pipeline transition with timestamps
+- [ ] **DIAG-03**: Debug panel is togglable via keyboard shortcut and hidden by default
+
+### TTS Reliability (TTSR)
+
+- [ ] **TTSR-01**: `waitForVoices()` has a timeout (3s) and falls back gracefully when SpeechSynthesis has no voices
+- [ ] **TTSR-02**: MockTTSService resolves its promise within bounded time (never hangs indefinitely)
+- [ ] **TTSR-03**: `ttsComplete` is verified as `true` before mic activates in every AGUARDANDO state
+
+### Voice Pipeline Fix (VPIPE)
+
+- [ ] **VPIPE-01**: Mic recording starts within 500ms of entering AGUARDANDO state (when ttsComplete=true)
+- [ ] **VPIPE-02**: Voice pipeline processes recorded audio and produces a choiceResult in all 3 AGUARDANDO states
+- [ ] **VPIPE-03**: Pipeline gracefully handles empty transcripts, API errors, and low confidence without freezing
+
+### Browser Validation (BVAL)
+
+- [ ] **BVAL-01**: Full flow completes end-to-end in browser with mock APIs (APRESENTACAO through FIM)
+- [ ] **BVAL-02**: Full flow completes end-to-end with real APIs (ElevenLabs TTS, Whisper STT, Claude NLU)
+- [ ] **BVAL-03**: Voice choice correctly sends event to state machine and transitions away from AGUARDANDO
+
 ## v2 Requirements
 
 Deferred para pós-evento ou iteração futura.
@@ -125,7 +153,7 @@ Deferred para pós-evento ou iteração futura.
 | RNLU-01 to RNLU-02 | Phase 5 | Complete |
 | SUP-01 to SUP-04 | Phase 6 | Deferred |
 
-### v1.2 (Active)
+### v1.2 (Complete)
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
@@ -149,11 +177,28 @@ Deferred para pós-evento ou iteração futura.
 | PIPE-04 | Phase 9 | Complete |
 | PIPE-05 | Phase 9 | Complete |
 
+### v1.3 (Active)
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| DIAG-01 | Phase 10 | Pending |
+| DIAG-02 | Phase 10 | Pending |
+| DIAG-03 | Phase 10 | Pending |
+| TTSR-01 | Phase 11 | Pending |
+| TTSR-02 | Phase 11 | Pending |
+| TTSR-03 | Phase 11 | Pending |
+| VPIPE-01 | Phase 11 | Pending |
+| VPIPE-02 | Phase 11 | Pending |
+| VPIPE-03 | Phase 11 | Pending |
+| BVAL-01 | Phase 12 | Pending |
+| BVAL-02 | Phase 12 | Pending |
+| BVAL-03 | Phase 12 | Pending |
+
 **Coverage:**
-- v1.2 requirements: 19 total
-- Mapped to phases: 19/19 ✓
+- v1.3 requirements: 12 total
+- Mapped to phases: 12/12 ✓
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-24*
-*Last updated: 2026-03-25 — v1.2 roadmap created*
+*Last updated: 2026-03-26 — v1.3 requirements added*
