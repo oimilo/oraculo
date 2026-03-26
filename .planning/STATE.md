@@ -1,7 +1,7 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.3
-milestone_name: Voice Capture Debug & Fix
+milestone: v2.0
+milestone_name: Narração Realista com ElevenLabs v3
 status: verifying
 stopped_at: Completed 11-02-PLAN.md
 last_updated: "2026-03-26T15:41:36.469Z"
@@ -20,16 +20,16 @@ progress:
 
 **Core Value:** Experiencia seamless e imersiva como um jogo -- o visitante fala, ouve, e e transformado. Se a voz, o roteiro e as transicoes funcionarem perfeitamente, tudo funciona.
 
-**Current Milestone:** v1.3 Voice Capture Debug & Fix
+**Current Milestone:** v2.0 Narração Realista com ElevenLabs v3
 
-**Current Focus:** Phase 11 — tts-reliability-voice-pipeline-fix
+**Current Focus:** Defining requirements
 
 ## Current Position
 
-Phase: 12
-Plan: Not started
-Status: Phase complete — ready for verification
-Last activity: 2026-03-26
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-26 — Milestone v2.0 started
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -50,10 +50,15 @@ Progress: [░░░░░░░░░░] 0%
 - Phases: 3/3 (Phases 7-9), Plans: 6/6
 - Duration: 1 day (2026-03-25 to 2026-03-26)
 
-**Milestone v1.3 (Active):**
+**Milestone v1.3 (In Progress — Phase 12 pending):**
 
-- Phases: 0/3, Plans: 0/?
+- Phases: 2/3, Plans: 4/4 (Phase 12 Browser E2E not started)
 - Target: Fix mic not activating in AGUARDANDO states
+
+**Milestone v2.0 (Active):**
+
+- Phases: 0/?, Plans: 0/?
+- Target: Narração realista com ElevenLabs v3 + inflexão inteligente
 
 ## Accumulated Context
 

@@ -8,16 +8,17 @@ Agente de voz interativo que guia visitantes por uma jornada inspirada na Divina
 
 A experiência deve ser seamless e imersiva como um jogo — o visitante fala, ouve, e é transformado. Se a voz, o roteiro e as transições funcionarem perfeitamente, tudo funciona.
 
-## Current Milestone: v1.3 Voice Capture Debug & Fix
+## Current Milestone: v2.0 Narração Realista com ElevenLabs v3
 
-**Goal:** Diagnosticar e corrigir por que o microfone não ativa nos estados AGUARDANDO, forçando clique manual nos botões — garantir que o pipeline de voz funcione end-to-end no browser.
+**Goal:** Refazer toda a narração do Oráculo com qualidade natural usando ElevenLabs v3, tags de inflexão inteligente e pontuação PT-BR impecável para a voz clonada feminina.
 
 **Target features:**
-- Debug panel visual mostrando estado do pipeline em tempo real (TTS status, ttsComplete, micShouldActivate, lifecycle phase)
-- Fix MockTTSService: timeout no SpeechSynthesis + fallback robusto quando waitForVoices() trava
-- Validar fluxo completo no browser com mock e real APIs
-- Garantir que mic ativa corretamente em TODOS os 3 estados AGUARDANDO (Inferno, Purgatório A, Purgatório B)
-- Observabilidade do pipeline para diagnóstico rápido no evento
+- Pesquisar melhores práticas de narração por AI com ElevenLabs v3 (modelo, tags de inflexão, pontuação)
+- Revisar e corrigir pontuação do roteiro inteiro para PT-BR perfeito (acentuação, travessão, vírgulas)
+- Aplicar tags de inflexão por segmento ([thoughtful], [whispering], [sad], [determined], pausas inteligentes)
+- Atualizar script de geração para usar modelo v3 e parâmetros de inflexão
+- Regenerar todos os 25 MP3s com a voz clonada (voice_id: AcSHc9S7hdxvGEJVWFzo)
+- Validar naturalidade e expressividade em cada fase narrativa
 
 ## Requirements
 
@@ -38,7 +39,7 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 
 ### Active
 
-(v1.3 requirements — see REQUIREMENTS.md for full list)
+(v2.0 requirements — see REQUIREMENTS.md for full list)
 
 ### Out of Scope
 
@@ -112,4 +113,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-26 — Phase 11 complete (TTS Reliability & Voice Pipeline Fix)*
+*Last updated: 2026-03-26 — Milestone v2.0 started (Narração Realista com ElevenLabs v3)*
