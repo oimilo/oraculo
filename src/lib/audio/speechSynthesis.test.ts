@@ -226,4 +226,60 @@ describe('speechSynthesis wrapper', () => {
     const voices = await voicesPromise;
     expect(voices).toEqual(mockVoices);
   });
+
+  it('Test 10: waitForVoices() resolves with empty array after timeout when voiceschanged never fires (TTSR-01)', async () => {
+    // Mock empty voices and no voiceschanged event
+    const noVoicesSynth = {
+      ...mockSynth,
+      getVoices: vi.fn(() => []),
+      onvoiceschanged: null,
+    };
+
+    Object.defineProperty(window, 'speechSynthesis', {
+      value: noVoicesSynth,
+      writable: true,
+      configurable: true,
+    });
+
+    const start = Date.now();
+    const voices = await waitForVoices(100); // Use short timeout for test speed
+    const elapsed = Date.now() - start;
+
+    expect(voices).toEqual([]);
+    expect(elapsed).toBeGreaterThanOrEqual(90);
+    expect(elapsed).toBeLessThan(500);
+  });
+
+  it('Test 11: waitForVoices() resolves immediately when voices already loaded (ignores timeout)', async () => {
+    const start = Date.now();
+    const voices = await waitForVoices(3000);
+    const elapsed = Date.now() - start;
+
+    expect(voices).toEqual(mockVoices);
+    expect(elapsed).toBeLessThan(100); // Should not wait for timeout
+  });
+
+  it('Test 12: speakSegments() returns immediately when no voices available after timeout', async () => {
+    const noVoicesSynth = {
+      ...mockSynth,
+      getVoices: vi.fn(() => []),
+      onvoiceschanged: null,
+    };
+
+    Object.defineProperty(window, 'speechSynthesis', {
+      value: noVoicesSynth,
+      writable: true,
+      configurable: true,
+    });
+
+    const segments = [{ text: 'Test segment' }];
+    const start = Date.now();
+    await speakSegments(segments);
+    const elapsed = Date.now() - start;
+
+    // Should resolve within timeout window, not hang
+    expect(elapsed).toBeLessThan(5000);
+    // speak should NOT have been called (no voices)
+    expect(noVoicesSynth.speak).not.toHaveBeenCalled();
+  });
 });
