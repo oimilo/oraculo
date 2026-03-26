@@ -97,7 +97,7 @@ Plans:
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 10. Pipeline Debug Instrumentation | v1.3 | 2/2 | Complete    | 2026-03-26 |
-| 11. TTS Reliability & Voice Pipeline Fix | v1.3 | 2/2 | Complete   | 2026-03-26 |
+| 11. TTS Reliability & Voice Pipeline Fix | v1.3 | 2/2 | Complete    | 2026-03-26 |
 | 12. Browser End-to-End Validation | v1.3 | 0/? | Not started | - |
 
 ---
