@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Narração Realista com ElevenLabs v3
 status: verifying
-stopped_at: Completed 13-02-PLAN.md
-last_updated: "2026-03-26T18:10:12.316Z"
+stopped_at: Completed 260326-noe quick task (awaiting human verification of MP3 quality)
+last_updated: "2026-03-26T20:16:19.521Z"
 last_activity: 2026-03-26
 progress:
   total_phases: 3
@@ -78,6 +78,7 @@ Recent decisions affecting current work:
 - [Phase 13]: v2/v3 toggle via USE_V3_MODEL env var for safe testing
 - [Phase 13]: v3 mode omits speed and use_speaker_boost (not supported by eleven_v3)
 - [Phase 13]: Generation script reimplements convertPauseToTag inline (mjs cannot import ts)
+- [Phase quick-260326-noe]: eleven_v3 does not support language_code param -- removed, v3 auto-detects language
 
 ### v2.0 Research Highlights
 
@@ -101,6 +102,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-26T18:05:32.137Z
-Stopped at: Completed 13-02-PLAN.md
+Last session: 2026-03-26T20:16:18.345Z
+Stopped at: Completed 260326-noe quick task (awaiting human verification of MP3 quality)
 Resume: /gsd:plan-phase 13
