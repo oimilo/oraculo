@@ -1,14 +1,14 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.2
-milestone_name: milestone
-status: Milestone complete
-last_updated: "2026-03-26T01:05:58.998Z"
+milestone: v1.3
+milestone_name: Voice Capture Debug & Fix
+status: Defining requirements
+last_updated: "2026-03-26T12:00:00.000Z"
 progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 6
-  completed_plans: 6
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # State: O Oráculo
@@ -17,14 +17,16 @@ progress:
 
 **Core Value:** Experiência seamless e imersiva como um jogo — o visitante fala, ouve, e é transformado. Se a voz, o roteiro e as transições funcionarem perfeitamente, tudo funciona.
 
-**Current Milestone:** v1.2 Voice Flow Stabilization
+**Current Milestone:** v1.3 Voice Capture Debug & Fix
 
-**Current Focus:** Phase 09 — stt-nlu-pipeline-integration
+**Current Focus:** Defining requirements
 
 ## Current Position
 
-Phase: 09
-Plan: Not started
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-26 — Milestone v1.3 started
 
 ## Performance Metrics
 
@@ -41,11 +43,12 @@ Plan: Not started
 - Plans completed: 4/4
 - Requirements validated: 0/16 (integration issues found during testing)
 
-**Milestone v1.2:**
+**Milestone v1.2 (Complete):**
 
-- Phases completed: 1/3 (Phase 07 complete)
-- Plans completed: 3/3
-- Requirements validated: 4/19 (QUAL-01, QUAL-02, QUAL-03, QUAL-04)
+- Phases completed: 3/3 (Phases 07-09)
+- Plans completed: 6/6
+- Requirements validated: 4/19 (QUAL-01 through QUAL-04)
+- Focus: Voice architecture refactor, flow sequencing, STT/NLU pipeline
 
 ## Accumulated Context
 
@@ -62,25 +65,20 @@ Plan: Not started
 9. **QUAL requirements first** — Refactor architecture (Phase 7) before bug fixes (Phases 8-9)
 10. **Real timers for integration tests (QUAL-04)** — Catch production timing bugs in CI instead of hiding them with fake timers
 
-### Known Bugs (from v1.1 testing)
+### Known Bugs (CRITICAL — v1.3 target)
 
-- STT not capturing voice responses during AGUARDANDO states
-- TTS voices overlapping at decision points
-- Flow sequence: question plays at TIMEOUT_REDIRECT instead of before AGUARDANDO
-- NLU receives empty options due to stale closure in useVoiceChoice (partially patched)
-- Unclear microphone lifecycle: when it opens, records, processes
+- **Mic never activates in AGUARDANDO states** — user forced to click buttons manually
+- Root cause suspected: MockTTSService → `waitForVoices()` hangs when SpeechSynthesis has no voices → `ttsComplete` stays false → `micShouldActivate` never becomes true
+- Secondary: zero observability of pipeline state in browser (no debug panel)
+- Tertiary: mock STT returns fixed "vozes" — impossible to test real voice in mock mode
 
 ### Active TODOs
 
-- [x] Phase 7 (Voice Architecture Refactor) — COMPLETE (Plans 01-03)
-- [x] useVoiceChoice refactored to useReducer FSM (QUAL-01)
-- [x] TTS orchestration decoupled into useTTSOrchestrator (QUAL-02)
-- [x] Generic guard factory with XState v5 setup() (QUAL-03)
-- [x] Integration tests with realistic timing (QUAL-04)
-- [ ] Plan Phase 8 (Flow Sequencing + Microphone Lifecycle)
-- [ ] Plan Phase 9 (Voice Pipeline Integration)
+- [ ] Debug panel to trace pipeline state in browser
+- [ ] Fix MockTTSService SpeechSynthesis reliability
+- [ ] Browser validation of full voice flow
 - [ ] 3 browser UAT items from v1.0 (multi-station, isolation, inactivity timeout)
-- [ ] Pre-recorded audio files (25 MP3s) need studio recording before event
+- [ ] Pre-recorded audio files (25 MP3s) — DONE via ElevenLabs
 - [ ] Phase 6 Supabase analytics (deferred from v1.1)
 
 ### Known Blockers
@@ -93,31 +91,15 @@ Plan: Not started
 
 **What just happened:**
 
-- Phase 07 (Voice Architecture Refactor) completed — all 3 plans executed successfully
-- Plan 07-01: useVoiceChoice refactored to useReducer FSM, TTS extracted to useTTSOrchestrator
-- Plan 07-02: Generic guard factory created, oracleMachine migrated to XState v5 setup()
-- Plan 07-03: Integration tests rewritten with realistic async timing patterns
-- All 253 tests passing, zero regressions
-- Requirements validated: QUAL-01, QUAL-02, QUAL-03, QUAL-04
+- Milestone v1.3 started — Voice Capture Debug & Fix
+- Deep code investigation identified root cause: MockTTSService depends on browser SpeechSynthesis which can hang, preventing ttsComplete from becoming true, blocking mic activation
+- Key files analyzed: useVoiceChoice.ts, useMicrophone.ts, OracleExperience.tsx, MockTTSService, speechSynthesis.ts
 
 **What's next:**
 
-- Run `/gsd:verify-phase 07` to validate Phase 7 completion
-- Plan Phase 8 (Flow Sequencing + Microphone Lifecycle) to fix flow bugs
-- Plan Phase 9 (Voice Pipeline Integration) to fix STT/NLU integration
-
-**Context for next session:**
-
-- This is a STABILIZATION milestone — fixing voice flow bugs that prevent the experience from working
-- QUAL requirements (refactoring) intentionally placed first to clean architecture before bug fixes
-- Flow sequencing (Phase 8) and pipeline integration (Phase 9) depend on clean foundation from Phase 7
-- Real API services already wired (v1.1 Phases 4-5) — this milestone fixes the orchestration layer
-
-**Last session ended:** 2026-03-25 (Phase 07 execution — Plan 03 complete)
-
-**Next recommended command:**
-
-`/gsd:verify-phase 07`
+- Define requirements for v1.3
+- Create roadmap
+- Execute phases to fix voice capture
 
 ---
-*Last updated: 2026-03-25T23:26:26Z — Phase 07 complete, ready for verification*
+*Last updated: 2026-03-26 — Milestone v1.3 started*

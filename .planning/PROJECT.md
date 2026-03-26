@@ -8,17 +8,16 @@ Agente de voz interativo que guia visitantes por uma jornada inspirada na Divina
 
 A experiência deve ser seamless e imersiva como um jogo — o visitante fala, ouve, e é transformado. Se a voz, o roteiro e as transições funcionarem perfeitamente, tudo funciona.
 
-## Current Milestone: v1.2 Voice Flow Stabilization
+## Current Milestone: v1.3 Voice Capture Debug & Fix
 
-**Goal:** Corrigir e refatorar todo o fluxo de interação por voz — desde o momento que o microfone abre até a classificação da resposta — garantindo que a sequência narrativa funcione sem sobreposições, com código limpo e extensível.
+**Goal:** Diagnosticar e corrigir por que o microfone não ativa nos estados AGUARDANDO, forçando clique manual nos botões — garantir que o pipeline de voz funcione end-to-end no browser.
 
 **Target features:**
-- Fix STT capture: microfone não capta respostas do visitante
-- Fix sobreposição de falas: TTS sobrepondo fases de escuta nos pontos de decisão
-- Fix sequência do fluxo: narração → pergunta → escuta → resposta na ordem correta
-- Ciclo de vida claro do microfone: quando abre, grava, processa e decide
-- Refatorar useVoiceChoice + orquestração TTS/STT para clareza e extensibilidade
-- Organização geral para suportar futuras branches de escolha
+- Debug panel visual mostrando estado do pipeline em tempo real (TTS status, ttsComplete, micShouldActivate, lifecycle phase)
+- Fix MockTTSService: timeout no SpeechSynthesis + fallback robusto quando waitForVoices() trava
+- Validar fluxo completo no browser com mock e real APIs
+- Garantir que mic ativa corretamente em TODOS os 3 estados AGUARDANDO (Inferno, Purgatório A, Purgatório B)
+- Observabilidade do pipeline para diagnóstico rápido no evento
 
 ## Requirements
 
@@ -39,7 +38,7 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 
 ### Active
 
-(v1.1 requirements — see REQUIREMENTS.md for full list)
+(v1.3 requirements — see REQUIREMENTS.md for full list)
 
 ### Out of Scope
 
@@ -111,4 +110,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-26 — Phase 9 complete (STT/NLU Pipeline Integration). 307 tests passing.*
+*Last updated: 2026-03-26 — Milestone v1.3 started (Voice Capture Debug & Fix)*
