@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Voice Capture Debug & Fix
-status: verifying
-stopped_at: Completed 10-02-PLAN.md
-last_updated: "2026-03-26T13:55:12.813Z"
+status: executing
+stopped_at: Completed 11-01-PLAN.md
+last_updated: "2026-03-26T15:31:34.461Z"
 last_activity: 2026-03-26
 progress:
   total_phases: 3
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_plans: 4
+  completed_plans: 3
   percent: 0
 ---
 
@@ -22,13 +22,13 @@ progress:
 
 **Current Milestone:** v1.3 Voice Capture Debug & Fix
 
-**Current Focus:** Phase 10 — pipeline-debug-instrumentation
+**Current Focus:** Phase 11 — tts-reliability-voice-pipeline-fix
 
 ## Current Position
 
-Phase: 11
-Plan: Not started
-Status: Phase complete — ready for verification
+Phase: 11 (tts-reliability-voice-pipeline-fix) — EXECUTING
+Plan: 2 of 2
+Status: Ready to execute
 Last activity: 2026-03-26
 
 Progress: [░░░░░░░░░░] 0%
@@ -69,6 +69,9 @@ Recent decisions affecting current work:
 - [Phase 10-01]: Ctrl+Shift+D toggle for debug panel (hidden by default)
 - [Phase 10-02]: Structured logging with createLogger for all voice pipeline hooks (VoiceChoice, Mic, TTS namespaces)
 - [Phase 10-02]: DebugPanel wired with 6 live state props for real-time pipeline visibility (Ctrl+Shift+D toggle)
+- [Phase 11]: waitForVoices timeout resolves with empty array (not reject) for graceful fallback
+- [Phase 11]: 3000ms default timeout balances voice loading time vs pipeline blocking
+- [Phase 11]: Bounded simulated delay capped at 500ms for no-voices fallback path
 
 ### Known Bug (Root Cause Analysis)
 
@@ -90,6 +93,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-26T13:50:19.864Z
-Stopped at: Completed 10-02-PLAN.md
+Last session: 2026-03-26T15:31:34.458Z
+Stopped at: Completed 11-01-PLAN.md
 Resume: /gsd:plan-phase 10

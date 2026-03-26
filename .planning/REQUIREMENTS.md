@@ -86,8 +86,8 @@ Diagnosticar e corrigir por que o microfone não ativa nos estados AGUARDANDO. G
 
 ### TTS Reliability (TTSR)
 
-- [ ] **TTSR-01**: `waitForVoices()` has a timeout (3s) and falls back gracefully when SpeechSynthesis has no voices
-- [ ] **TTSR-02**: MockTTSService resolves its promise within bounded time (never hangs indefinitely)
+- [x] **TTSR-01**: `waitForVoices()` has a timeout (3s) and falls back gracefully when SpeechSynthesis has no voices
+- [x] **TTSR-02**: MockTTSService resolves its promise within bounded time (never hangs indefinitely)
 - [ ] **TTSR-03**: `ttsComplete` is verified as `true` before mic activates in every AGUARDANDO state
 
 ### Voice Pipeline Fix (VPIPE)
@@ -184,8 +184,8 @@ Deferred para pós-evento ou iteração futura.
 | DIAG-01 | Phase 10 | Complete |
 | DIAG-02 | Phase 10 | Complete |
 | DIAG-03 | Phase 10 | Complete |
-| TTSR-01 | Phase 11 | Pending |
-| TTSR-02 | Phase 11 | Pending |
+| TTSR-01 | Phase 11 | Complete |
+| TTSR-02 | Phase 11 | Complete |
 | TTSR-03 | Phase 11 | Pending |
 | VPIPE-01 | Phase 11 | Pending |
 | VPIPE-02 | Phase 11 | Pending |

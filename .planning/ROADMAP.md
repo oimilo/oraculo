@@ -65,10 +65,10 @@ Plans:
 **Goal**: Voice pipeline activates the microphone reliably in every AGUARDANDO state without manual intervention
 **Depends on**: Phase 10 (debug instrumentation needed to verify fixes)
 **Requirements**: TTSR-01, TTSR-02, TTSR-03, VPIPE-01, VPIPE-02, VPIPE-03
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
-- [ ] 11-01-PLAN.md -- TTS reliability: waitForVoices timeout, MockTTSService bounded resolution, FallbackTTSService timeout guard
+- [x] 11-01-PLAN.md -- TTS reliability: waitForVoices timeout, MockTTSService bounded resolution, FallbackTTSService timeout guard
 - [ ] 11-02-PLAN.md -- Voice pipeline verification: ttsComplete verification logging, activation timing, integration tests for all AGUARDANDO states
 
 **Success Criteria** (what must be TRUE):
@@ -97,7 +97,7 @@ Plans:
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 10. Pipeline Debug Instrumentation | v1.3 | 2/2 | Complete    | 2026-03-26 |
-| 11. TTS Reliability & Voice Pipeline Fix | v1.3 | 0/2 | Not started | - |
+| 11. TTS Reliability & Voice Pipeline Fix | v1.3 | 1/2 | In Progress|  |
 | 12. Browser End-to-End Validation | v1.3 | 0/? | Not started | - |
 
 ---
