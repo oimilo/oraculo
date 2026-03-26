@@ -2,6 +2,7 @@
 export interface SpeechSegment {
   text: string;
   pauseAfter?: number; // milliseconds
+  inflection?: string[]; // v3 audio tags, e.g. ["thoughtful"], ["whispers", "sad"]
 }
 
 /** Narrative phases matching PRD Section 6 */
