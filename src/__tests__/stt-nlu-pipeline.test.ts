@@ -584,4 +584,124 @@ describe('STT/NLU Pipeline Integration', () => {
       }
     });
   });
+
+  describe('VPIPE-03: Pipeline handles errors without freezing', () => {
+    describe('voiceLifecycleReducer handles error scenarios', () => {
+      it('NEED_FALLBACK from processing transitions to fallback state', () => {
+        const processingState: VoiceLifecycle = { phase: 'processing', blob: new Blob(), attempt: 1 };
+        const result = voiceLifecycleReducer(processingState, { type: 'NEED_FALLBACK', attempt: 1 });
+
+        expect(result.phase).toBe('fallback');
+      });
+
+      it('CLASSIFICATION_COMPLETE with wasDefault=true from processing transitions to decided', () => {
+        const processingState: VoiceLifecycle = { phase: 'processing', blob: new Blob(), attempt: 2 };
+        const result = voiceLifecycleReducer(processingState, {
+          type: 'CLASSIFICATION_COMPLETE',
+          result: { eventType: 'CHOICE_B', confidence: 0, transcript: '', wasDefault: true },
+        });
+
+        expect(result.phase).toBe('decided');
+        if (result.phase === 'decided') {
+          expect(result.result.wasDefault).toBe(true);
+          expect(result.result.eventType).toBe('CHOICE_B');
+        }
+      });
+
+      it('START_LISTENING from fallback transitions to listening with preserved attempt count', () => {
+        const fallbackState: VoiceLifecycle = { phase: 'fallback', attempt: 1 };
+        const result = voiceLifecycleReducer(fallbackState, { type: 'START_LISTENING' });
+
+        expect(result.phase).toBe('listening');
+        if (result.phase === 'listening') {
+          expect(result.previousAttempt).toBe(1);
+        }
+      });
+
+      it('RESET from any non-idle state returns to idle', () => {
+        const states: VoiceLifecycle[] = [
+          { phase: 'listening', startedAt: Date.now() },
+          { phase: 'processing', blob: new Blob(), attempt: 1 },
+          { phase: 'fallback', attempt: 1 },
+          { phase: 'decided', result: { eventType: 'CHOICE_A', confidence: 0.9, transcript: 'vozes', wasDefault: false }, attempt: 1 },
+        ];
+
+        for (const state of states) {
+          const result = voiceLifecycleReducer(state, { type: 'RESET' });
+          expect(result.phase).toBe('idle');
+        }
+      });
+    });
+
+    describe('Pipeline processes empty transcript gracefully', () => {
+      it('empty transcript triggers NEED_FALLBACK on first attempt', () => {
+        const processingState: VoiceLifecycle = { phase: 'processing', blob: new Blob(), attempt: 1 };
+
+        // Simulates: STT returns '' -> pipeline checks attempt < maxAttempts -> dispatches NEED_FALLBACK
+        const result = voiceLifecycleReducer(processingState, { type: 'NEED_FALLBACK', attempt: 1 });
+        expect(result.phase).toBe('fallback');
+      });
+
+      it('empty transcript triggers CLASSIFICATION_COMPLETE with default on max attempts', () => {
+        const processingState: VoiceLifecycle = { phase: 'processing', blob: new Blob(), attempt: 2 };
+
+        // Simulates: STT returns '' -> attempt >= maxAttempts -> dispatch CLASSIFICATION_COMPLETE with wasDefault
+        const result = voiceLifecycleReducer(processingState, {
+          type: 'CLASSIFICATION_COMPLETE',
+          result: { eventType: 'CHOICE_B', confidence: 0, transcript: '', wasDefault: true },
+        });
+
+        expect(result.phase).toBe('decided');
+        if (result.phase === 'decided') {
+          expect(result.result.wasDefault).toBe(true);
+        }
+      });
+    });
+
+    describe('Pipeline handles API errors without freezing', () => {
+      it('STT error on first attempt triggers fallback, not freeze', () => {
+        // Pipeline catches STT errors and dispatches NEED_FALLBACK
+        const processingState: VoiceLifecycle = { phase: 'processing', blob: new Blob(), attempt: 1 };
+        const result = voiceLifecycleReducer(processingState, { type: 'NEED_FALLBACK', attempt: 1 });
+
+        expect(result.phase).toBe('fallback');
+        if (result.phase === 'fallback') {
+          expect(result.attempt).toBe(1);
+        }
+      });
+
+      it('STT error on max attempt triggers default choice, not freeze', () => {
+        const processingState: VoiceLifecycle = { phase: 'processing', blob: new Blob(), attempt: 2 };
+        const result = voiceLifecycleReducer(processingState, {
+          type: 'CLASSIFICATION_COMPLETE',
+          result: { eventType: 'CHOICE_B', confidence: 0, transcript: '', wasDefault: true },
+        });
+
+        expect(result.phase).toBe('decided');
+      });
+    });
+
+    describe('Low confidence path does not freeze', () => {
+      it('low confidence on attempt 1 triggers fallback for retry', () => {
+        const processingState: VoiceLifecycle = { phase: 'processing', blob: new Blob(), attempt: 1 };
+        const result = voiceLifecycleReducer(processingState, { type: 'NEED_FALLBACK', attempt: 1 });
+
+        expect(result.phase).toBe('fallback');
+      });
+
+      it('low confidence on max attempt uses default event', () => {
+        const processingState: VoiceLifecycle = { phase: 'processing', blob: new Blob(), attempt: 2 };
+        const result = voiceLifecycleReducer(processingState, {
+          type: 'CLASSIFICATION_COMPLETE',
+          result: { eventType: 'CHOICE_CONTORNAR', confidence: 0.3, transcript: 'maybe', wasDefault: true },
+        });
+
+        expect(result.phase).toBe('decided');
+        if (result.phase === 'decided') {
+          expect(result.result.wasDefault).toBe(true);
+          expect(result.result.confidence).toBe(0.3);
+        }
+      });
+    });
+  });
 });

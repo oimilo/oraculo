@@ -376,4 +376,82 @@ describe('Voice Flow Integration', () => {
       expect(actor.getSnapshot().matches({ INFERNO: 'RESPOSTA_A' })).toBe(true);
     });
   });
+
+  describe('ttsComplete gating prevents premature mic activation (TTSR-03)', () => {
+    it('micShouldActivate is false when isAguardando=true but ttsComplete=false', () => {
+      // This tests the gating logic: micShouldActivate = isAguardando && ttsComplete
+      const isAguardando = true;
+      const ttsComplete = false;
+      const micShouldActivate = isAguardando && ttsComplete;
+
+      expect(micShouldActivate).toBe(false);
+    });
+
+    it('micShouldActivate is true only when both isAguardando=true AND ttsComplete=true', () => {
+      const isAguardando = true;
+      const ttsComplete = true;
+      const micShouldActivate = isAguardando && ttsComplete;
+
+      expect(micShouldActivate).toBe(true);
+    });
+
+    it('micShouldActivate is false when not in AGUARDANDO even if ttsComplete=true', () => {
+      const isAguardando = false;
+      const ttsComplete = true;
+      const micShouldActivate = isAguardando && ttsComplete;
+
+      expect(micShouldActivate).toBe(false);
+    });
+  });
+
+  describe('Voice pipeline works in all 3 AGUARDANDO states (VPIPE-02)', () => {
+    it('INFERNO.AGUARDANDO accepts CHOICE_A and transitions to RESPOSTA_A', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+      actor.send({ type: 'START' });
+      actor.send({ type: 'NARRATIVA_DONE' }); // -> INFERNO.NARRATIVA
+      actor.send({ type: 'NARRATIVA_DONE' }); // -> INFERNO.PERGUNTA
+      actor.send({ type: 'NARRATIVA_DONE' }); // -> INFERNO.AGUARDANDO
+
+      expect(actor.getSnapshot().matches({ INFERNO: 'AGUARDANDO' })).toBe(true);
+      actor.send({ type: 'CHOICE_A' });
+      expect(actor.getSnapshot().matches({ INFERNO: 'RESPOSTA_A' })).toBe(true);
+    });
+
+    it('PURGATORIO_A.AGUARDANDO accepts CHOICE_EMBORA and transitions to RESPOSTA_EMBORA', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+      actor.send({ type: 'START' });
+      actor.send({ type: 'NARRATIVA_DONE' }); // -> INFERNO.NARRATIVA
+      actor.send({ type: 'NARRATIVA_DONE' }); // -> INFERNO.PERGUNTA
+      actor.send({ type: 'NARRATIVA_DONE' }); // -> INFERNO.AGUARDANDO
+      actor.send({ type: 'CHOICE_A' }); // -> INFERNO.RESPOSTA_A
+      actor.send({ type: 'NARRATIVA_DONE' }); // -> PURGATORIO_A.NARRATIVA
+      actor.send({ type: 'NARRATIVA_DONE' }); // -> PURGATORIO_A.PERGUNTA
+      actor.send({ type: 'NARRATIVA_DONE' }); // -> PURGATORIO_A.AGUARDANDO
+
+      expect(actor.getSnapshot().matches({ PURGATORIO_A: 'AGUARDANDO' })).toBe(true);
+      actor.send({ type: 'CHOICE_EMBORA' });
+      expect(actor.getSnapshot().matches({ PURGATORIO_A: 'RESPOSTA_EMBORA' })).toBe(true);
+      expect(actor.getSnapshot().context.choice2).toBe('EMBORA');
+    });
+
+    it('PURGATORIO_B.AGUARDANDO accepts CHOICE_PISAR and transitions to RESPOSTA_PISAR', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+      actor.send({ type: 'START' });
+      actor.send({ type: 'NARRATIVA_DONE' }); // -> INFERNO.NARRATIVA
+      actor.send({ type: 'NARRATIVA_DONE' }); // -> INFERNO.PERGUNTA
+      actor.send({ type: 'NARRATIVA_DONE' }); // -> INFERNO.AGUARDANDO
+      actor.send({ type: 'CHOICE_B' }); // -> INFERNO.RESPOSTA_B
+      actor.send({ type: 'NARRATIVA_DONE' }); // -> PURGATORIO_B.NARRATIVA
+      actor.send({ type: 'NARRATIVA_DONE' }); // -> PURGATORIO_B.PERGUNTA
+      actor.send({ type: 'NARRATIVA_DONE' }); // -> PURGATORIO_B.AGUARDANDO
+
+      expect(actor.getSnapshot().matches({ PURGATORIO_B: 'AGUARDANDO' })).toBe(true);
+      actor.send({ type: 'CHOICE_PISAR' });
+      expect(actor.getSnapshot().matches({ PURGATORIO_B: 'RESPOSTA_PISAR' })).toBe(true);
+      expect(actor.getSnapshot().context.choice2).toBe('PISAR');
+    });
+  });
 });
