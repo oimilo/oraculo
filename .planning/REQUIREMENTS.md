@@ -102,7 +102,29 @@ Diagnosticar e corrigir por que o microfone não ativa nos estados AGUARDANDO. G
 - [ ] **BVAL-02**: Full flow completes end-to-end with real APIs (ElevenLabs TTS, Whisper STT, Claude NLU)
 - [ ] **BVAL-03**: Voice choice correctly sends event to state machine and transitions away from AGUARDANDO
 
-## v2 Requirements
+## v2.0 Requirements — Narração Realista com ElevenLabs v3
+
+Refazer toda a narração com ElevenLabs v3, tags de inflexão inteligente e pontuação PT-BR impecável.
+
+### Voice Infrastructure (VINF)
+
+- [ ] **VINF-01**: Voice type verified as IVC (not PVC) and confirmed compatible with v3 audio tags
+- [ ] **VINF-02**: API route and generation script use `eleven_v3` model with correct parameters (no `speed`, no `speaker_boost`, add `language_code: 'pt-BR'`)
+- [ ] **VINF-03**: Generation script converts `pauseAfter` to v3 audio tags (`[pause]`, `[long pause]`) instead of SSML `<break>`
+
+### Script Quality (SCRP)
+
+- [ ] **SCRP-01**: All 25 script segments have correct PT-BR punctuation (accents, travessão, vírgulas, sentence endings)
+- [ ] **SCRP-02**: Each script segment has appropriate inflection tags matching PRD voice directions per phase (calmo/grave/intimo/sussurro/determinado)
+- [ ] **SCRP-03**: Tag density stays under 1 per sentence to avoid over-tagging artifacts
+
+### Audio Generation (AGEN)
+
+- [ ] **AGEN-01**: All 25 MP3s regenerated with `eleven_v3` model and audio tags at minimum 192kbps quality
+- [ ] **AGEN-02**: Each MP3 sounds natural — no robotic delivery, no static, no tag read-aloud artifacts
+- [ ] **AGEN-03**: Emotional tone matches PRD directions per phase and voice sounds consistent across all 25 clips
+
+## Future Requirements
 
 Deferred para pós-evento ou iteração futura.
 
