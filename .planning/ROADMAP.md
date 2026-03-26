@@ -1,126 +1,135 @@
-# Roadmap: O Oráculo
+# Roadmap: O Oraculo
 
-**Milestone:** v1.2 Voice Flow Stabilization
-**Phases:** 3
-**Granularity:** Standard
-**Coverage:** 19/19 requirements mapped
+## Milestones
 
----
+- v1.0 MVP (shipped 2026-03-25)
+- v1.1 Real API Integration (Paused -- Phase 6 Supabase deferred)
+- v1.2 Voice Flow Stabilization (shipped 2026-03-26)
+- v1.3 Voice Capture Debug & Fix (in progress)
 
 ## Phases
 
-- [x] **Phase 7: Voice Architecture Refactor** - Clean up hook orchestration and state machine coupling
-- [x] **Phase 8: Flow Sequencing & Mic Lifecycle** - Fix TTS/mic timing and state transitions
-- [ ] **Phase 9: STT/NLU Pipeline Integration** - End-to-end voice capture to classification
+<details>
+<summary>v1.0 MVP (Phases 1-3) - SHIPPED 2026-03-25</summary>
+
+- [x] **Phase 1: State Machine & Core Flow** - XState v5 machine with 17 states, 4 branching paths
+- [x] **Phase 2: Voice Services & UI** - TTS, STT, NLU services with mock pattern + ambient audio + UI
+- [x] **Phase 3: Analytics, Multi-Station & Resilience** - Analytics, admin dashboard, offline fallback, timeouts
+
+</details>
+
+<details>
+<summary>v1.1 Real API Integration (Phases 4-6) - PAUSED</summary>
+
+- [x] **Phase 4: API Routes & Configuration** - Server-side API routes for ElevenLabs, Whisper, Claude
+- [x] **Phase 5: Real Voice Services** - ElevenLabs TTS, Whisper STT, Claude NLU implementations
+- [ ] **Phase 6: Supabase Analytics** - Deferred to post-event
+
+</details>
+
+<details>
+<summary>v1.2 Voice Flow Stabilization (Phases 7-9) - SHIPPED 2026-03-26</summary>
+
+- [x] **Phase 7: Voice Architecture Refactor** - useReducer FSM, generic guards, decoupled TTS
+- [x] **Phase 8: Flow Sequencing & Mic Lifecycle** - TTS gating, mic activation gating, stream cleanup
+- [x] **Phase 9: STT/NLU Pipeline Integration** - Pipeline integration tests, edge case hardening
+
+</details>
+
+### v1.3 Voice Capture Debug & Fix (In Progress)
+
+- [ ] **Phase 10: Pipeline Debug Instrumentation** - Dev debug panel + console logging for pipeline visibility
+- [ ] **Phase 11: TTS Reliability & Voice Pipeline Fix** - Fix root causes: waitForVoices timeout, MockTTS resolution, mic activation
+- [ ] **Phase 12: Browser End-to-End Validation** - Validate full flow in real browser with mock and real APIs
 
 ---
 
 ## Phase Details
 
-### Phase 7: Voice Architecture Refactor
-**Goal**: Clean hook architecture and state machine coupling to support reliable voice flow
-**Depends on**: Nothing (refactoring existing code)
-**Requirements**: QUAL-01, QUAL-02, QUAL-03, QUAL-04
+### Phase 10: Pipeline Debug Instrumentation
+**Goal**: Developers can see exactly where the voice pipeline breaks in real-time
+**Depends on**: Phase 9 (pipeline architecture must be stable before adding instrumentation)
+**Requirements**: DIAG-01, DIAG-02, DIAG-03
 **Success Criteria** (what must be TRUE):
-  1. useVoiceChoice has explicit lifecycle states (idle/listening/processing/decided) with no ambiguous transitions
-  2. TTS orchestration state and voice choice state are fully decoupled (no shared mutable variables)
-  3. State machine choice points use generic handlers that accept any option set (extensible for future branches)
-  4. Integration tests run against real service timing patterns (async delays, blob processing) without flakiness
-**Plans:** 3 plans
+  1. Developer can see ttsComplete, micShouldActivate, voiceLifecycle phase, and isRecording values updating live in the browser
+  2. Developer can read console logs that trace every pipeline transition (TTS start/end, mic open/close, STT send/receive, NLU classify) with timestamps
+  3. Debug panel is hidden by default and togglable via keyboard shortcut without affecting the visitor experience
+**Plans**: TBD
 
-Plans:
-- [x] 07-01-PLAN.md — Refactor useVoiceChoice to FSM + extract useTTSOrchestrator (QUAL-01, QUAL-02)
-- [x] 07-02-PLAN.md — Generic guard factory + refactor oracleMachine to setup() (QUAL-03)
-- [x] 07-03-PLAN.md — Integration tests with realistic timing patterns (QUAL-04)
-
-### Phase 8: Flow Sequencing & Mic Lifecycle
-**Goal**: Ensure narration -> question -> listen -> response sequence with no overlaps or timing issues
-**Depends on**: Phase 7
-**Requirements**: FLOW-01, FLOW-02, FLOW-03, FLOW-04, FLOW-05, MIC-01, MIC-02, MIC-03, MIC-04, MIC-05
+### Phase 11: TTS Reliability & Voice Pipeline Fix
+**Goal**: Voice pipeline activates the microphone reliably in every AGUARDANDO state without manual intervention
+**Depends on**: Phase 10 (debug instrumentation needed to verify fixes)
+**Requirements**: TTSR-01, TTSR-02, TTSR-03, VPIPE-01, VPIPE-02, VPIPE-03
 **Success Criteria** (what must be TRUE):
-  1. User hears narration TTS fully complete before microphone opens for response
-  2. Question TTS plays in PERGUNTA state, then mic opens only after question completes
-  3. Timeout redirect text plays only after 15s silence timeout, not as default question
-  4. No audio overlaps occur at any decision point (Inferno/Purgatorio/Paraiso)
-  5. Microphone recording captures full visitor response and stops cleanly on state exit with no orphaned streams
-**Plans:** 2 plans
+  1. MockTTSService resolves its speak() promise within bounded time even when browser SpeechSynthesis has no voices or hangs
+  2. ttsComplete is verified as true before mic activates -- no AGUARDANDO state ever opens mic while TTS is still pending
+  3. Microphone recording starts within 500ms of entering each of the 3 AGUARDANDO states (Inferno, Purgatorio A, Purgatorio B)
+  4. Voice pipeline produces a choiceResult (A or B or fallback) from recorded audio in all 3 AGUARDANDO states
+  5. Pipeline handles empty transcripts, API errors, and low confidence without freezing or leaving the user stuck
+**Plans**: TBD
 
-Plans:
-- [x] 08-01-PLAN.md — TTS-gated state transitions + flow sequencing tests (FLOW-01, FLOW-02, FLOW-03, FLOW-04, FLOW-05)
-- [x] 08-02-PLAN.md — Microphone lifecycle tests + stream cleanup hardening (MIC-01, MIC-02, MIC-03, MIC-04, MIC-05)
-
-### Phase 9: STT/NLU Pipeline Integration
-**Goal**: Voice capture produces accurate transcription and classification that drives correct state transitions
-**Depends on**: Phase 8
-**Requirements**: PIPE-01, PIPE-02, PIPE-03, PIPE-04, PIPE-05
+### Phase 12: Browser End-to-End Validation
+**Goal**: Full Oraculo experience works end-to-end in a real browser from APRESENTACAO through FIM using voice
+**Depends on**: Phase 11 (pipeline must be fixed before validation)
+**Requirements**: BVAL-01, BVAL-02, BVAL-03
 **Success Criteria** (what must be TRUE):
-  1. User speaks Portuguese response and Whisper transcribes with acceptable accuracy
-  2. NLU receives correct choice options matching current state (never stale/empty config)
-  3. Classification result (A/B) triggers correct state machine event and narrative branch
-  4. Low confidence responses trigger fallback TTS followed by re-listen cycle (not silent failure)
-  5. Silent or empty audio produces graceful fallback behavior (timeout or default choice)
-**Plans:** 1 plan
-
-Plans:
-- [x] 09-01-PLAN.md — STT/NLU pipeline integration tests + edge case hardening (PIPE-01, PIPE-02, PIPE-03, PIPE-04, PIPE-05)
+  1. User completes the full journey (APRESENTACAO through FIM) in Chrome/Edge using mock APIs with voice input at all 3 choice points
+  2. User completes the full journey using real APIs (ElevenLabs TTS, Whisper STT, Claude NLU) with voice input
+  3. Voice choice correctly sends CHOOSE_A or CHOOSE_B event to state machine and transitions away from AGUARDANDO within expected time
+**Plans**: TBD
 
 ---
 
 ## Progress
 
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 7. Voice Architecture Refactor | 3/3 | Complete | 2026-03-25 |
-| 8. Flow Sequencing & Mic Lifecycle | 2/2 | Complete | 2026-03-26 |
-| 9. STT/NLU Pipeline Integration | 0/1 | Not started | - |
+**Execution Order:** Phase 10 -> Phase 11 -> Phase 12
+
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 10. Pipeline Debug Instrumentation | v1.3 | 0/? | Not started | - |
+| 11. TTS Reliability & Voice Pipeline Fix | v1.3 | 0/? | Not started | - |
+| 12. Browser End-to-End Validation | v1.3 | 0/? | Not started | - |
 
 ---
 
 ## Dependencies
 
 ```
-Phase 7: Voice Architecture Refactor (foundation) [COMPLETE]
+Phase 10: Pipeline Debug Instrumentation (visibility first)
     |
-Phase 8: Flow Sequencing & Mic Lifecycle (clean mic lifecycle depends on refactored hooks) [COMPLETE]
+Phase 11: TTS Reliability & Voice Pipeline Fix (fix with visibility)
     |
-Phase 9: STT/NLU Pipeline Integration (valid audio blobs depend on Phase 8)
+Phase 12: Browser End-to-End Validation (validate the fixes)
 ```
 
 ---
 
 ## Coverage
 
-**Total v1.2 Requirements:** 19
+**Total v1.3 Requirements:** 12
 
-- Flow Sequencing: 5 (FLOW-01 to FLOW-05)
-- Microphone Lifecycle: 5 (MIC-01 to MIC-05)
-- STT/NLU Pipeline: 5 (PIPE-01 to PIPE-05)
-- Code Quality: 4 (QUAL-01 to QUAL-04)
+- Diagnostics: 3 (DIAG-01 to DIAG-03)
+- TTS Reliability: 3 (TTSR-01 to TTSR-03)
+- Voice Pipeline Fix: 3 (VPIPE-01 to VPIPE-03)
+- Browser Validation: 3 (BVAL-01 to BVAL-03)
 
-**Mapped to Phases:** 19/19 ✓
+**Mapped to Phases:** 12/12
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| QUAL-01 | Phase 7 | Complete |
-| QUAL-02 | Phase 7 | Complete |
-| QUAL-03 | Phase 7 | Complete |
-| QUAL-04 | Phase 7 | Complete |
-| FLOW-01 | Phase 8 | Complete |
-| FLOW-02 | Phase 8 | Complete |
-| FLOW-03 | Phase 8 | Complete |
-| FLOW-04 | Phase 8 | Complete |
-| FLOW-05 | Phase 8 | Complete |
-| MIC-01 | Phase 8 | Complete |
-| MIC-02 | Phase 8 | Complete |
-| MIC-03 | Phase 8 | Complete |
-| MIC-04 | Phase 8 | Complete |
-| MIC-05 | Phase 8 | Complete |
-| PIPE-01 | Phase 9 | Pending |
-| PIPE-02 | Phase 9 | Pending |
-| PIPE-03 | Phase 9 | Pending |
-| PIPE-04 | Phase 9 | Pending |
-| PIPE-05 | Phase 9 | Pending |
+| DIAG-01 | Phase 10 | Pending |
+| DIAG-02 | Phase 10 | Pending |
+| DIAG-03 | Phase 10 | Pending |
+| TTSR-01 | Phase 11 | Pending |
+| TTSR-02 | Phase 11 | Pending |
+| TTSR-03 | Phase 11 | Pending |
+| VPIPE-01 | Phase 11 | Pending |
+| VPIPE-02 | Phase 11 | Pending |
+| VPIPE-03 | Phase 11 | Pending |
+| BVAL-01 | Phase 12 | Pending |
+| BVAL-02 | Phase 12 | Pending |
+| BVAL-03 | Phase 12 | Pending |
 
 ---
 
-*Last updated: 2026-03-26 — Phase 9 plan created*
+*Last updated: 2026-03-26 -- Roadmap created for v1.3*
