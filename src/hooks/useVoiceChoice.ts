@@ -1,7 +1,8 @@
-import { useReducer, useCallback, useRef, useEffect } from 'react';
+import { useReducer, useCallback, useRef, useEffect, useDebugValue } from 'react';
 import { useMicrophone } from './useMicrophone';
 import { createSTTService, type STTService } from '@/services/stt';
 import { createNLUService, type NLUService, type ClassificationResult } from '@/services/nlu';
+import { createLogger } from '@/lib/debug/logger';
 
 export interface ChoiceConfig {
   /** Context of the question being asked (for NLU) */
@@ -63,6 +64,8 @@ const MAX_ATTEMPTS_DEFAULT = 2;
 const CONFIDENCE_THRESHOLD_DEFAULT = 0.7;
 const LISTENING_DURATION_DEFAULT = 6000;
 
+const logger = createLogger('VoiceChoice');
+
 /**
  * Voice lifecycle reducer - explicit finite state machine
  */
@@ -123,6 +126,10 @@ export function useVoiceChoice(config: ChoiceConfig, active: boolean): UseVoiceC
   const [lifecycle, dispatch] = useReducer(voiceLifecycleReducer, { phase: 'idle' });
   const [error, setError] = useReducer((_: string | null, newError: string | null) => newError, null);
 
+  useDebugValue(
+    active ? `${lifecycle.phase} (active)` : `${lifecycle.phase} (inactive)`
+  );
+
   const sttRef = useRef<STTService | null>(null);
   const nluRef = useRef<NLUService | null>(null);
 
@@ -159,17 +166,17 @@ export function useVoiceChoice(config: ChoiceConfig, active: boolean): UseVoiceC
   const startListening = useCallback(async () => {
     setError(null);
     dispatch({ type: 'START_LISTENING' });
-    console.log('[VoiceChoice] startListening, duration:', listeningDuration);
+    logger.log('startListening START', { duration: listeningDuration, active });
     await startRecording(listeningDuration);
-  }, [startRecording, listeningDuration]);
+  }, [startRecording, listeningDuration, active]);
 
   const stopListening = useCallback(() => {
-    console.log('[VoiceChoice] stopListening');
+    logger.log('stopListening');
     stopRecording();
   }, [stopRecording]);
 
   const reset = useCallback(() => {
-    console.log('[VoiceChoice] reset');
+    logger.log('reset');
     dispatch({ type: 'RESET' });
     setError(null);
   }, []);
@@ -193,15 +200,15 @@ export function useVoiceChoice(config: ChoiceConfig, active: boolean): UseVoiceC
     // Activating: start capture only once per activation
     if (!activationHandledRef.current) {
       activationHandledRef.current = true;
-      console.log('[VoiceChoice] Active — starting capture');
+      logger.log('Active — starting capture');
       startListening().catch((err) => {
-        console.error('[VoiceChoice] Failed to start listening:', err);
+        logger.error('Failed to start listening:', err);
       });
     }
 
     return () => {
       // Cleanup on deactivation or unmount
-      console.log('[VoiceChoice] Cleanup — stopping recording');
+      logger.log('Cleanup — stopping recording');
       stopRecording();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -225,14 +232,14 @@ export function useVoiceChoice(config: ChoiceConfig, active: boolean): UseVoiceC
 
     // Guard: don't process with invalid/dummy config
     if (!snap.options.A || !snap.options.B) {
-      console.log('[VoiceChoice] Ignoring audioBlob — config has empty options');
+      logger.log('Ignoring audioBlob — config has empty options');
       return;
     }
 
     let cancelled = false;
 
     async function processAudio() {
-      console.log('[VoiceChoice] Processing audio blob, size:', blob.size);
+      logger.log('Processing audio blob START', { size: blob.size, attempt: currentAttempt });
 
       try {
         // Step 1: Transcribe
@@ -241,12 +248,12 @@ export function useVoiceChoice(config: ChoiceConfig, active: boolean): UseVoiceC
 
         if (cancelled) return;
 
-        console.log('[VoiceChoice] STT result:', JSON.stringify(transcript));
+        logger.log('STT complete', { transcript: JSON.stringify(transcript), length: transcript?.length });
 
         if (!transcript || transcript.trim() === '') {
           // Empty transcript -- treat as silence
           if (currentAttempt >= maxAttempts) {
-            console.log('[VoiceChoice] Max attempts reached, using default');
+            logger.log('Max attempts reached, using default', { attempt: currentAttempt });
             dispatch({
               type: 'CLASSIFICATION_COMPLETE',
               result: {
@@ -257,7 +264,7 @@ export function useVoiceChoice(config: ChoiceConfig, active: boolean): UseVoiceC
               },
             });
           } else {
-            console.log('[VoiceChoice] Empty transcript, requesting fallback');
+            logger.log('Empty transcript, requesting fallback', { attempt: currentAttempt });
             dispatch({ type: 'NEED_FALLBACK', attempt: currentAttempt });
           }
           return;
@@ -273,7 +280,7 @@ export function useVoiceChoice(config: ChoiceConfig, active: boolean): UseVoiceC
 
         if (cancelled) return;
 
-        console.log('[VoiceChoice] NLU result:', JSON.stringify(classification));
+        logger.log('NLU complete', { choice: classification.choice, confidence: classification.confidence });
 
         // Step 3: Check confidence
         if (classification.confidence >= threshold) {
@@ -281,7 +288,7 @@ export function useVoiceChoice(config: ChoiceConfig, active: boolean): UseVoiceC
             ? snap.eventMap.A
             : snap.eventMap.B;
 
-          console.log('[VoiceChoice] Choice accepted:', eventType, 'confidence:', classification.confidence);
+          logger.log('Choice accepted', { eventType, confidence: classification.confidence });
           dispatch({
             type: 'CLASSIFICATION_COMPLETE',
             result: {
@@ -293,7 +300,7 @@ export function useVoiceChoice(config: ChoiceConfig, active: boolean): UseVoiceC
           });
         } else if (currentAttempt >= maxAttempts) {
           // Max attempts reached -- use default
-          console.log('[VoiceChoice] Low confidence + max attempts, using default');
+          logger.log('Max attempts reached, using default', { attempt: currentAttempt });
           dispatch({
             type: 'CLASSIFICATION_COMPLETE',
             result: {
@@ -305,13 +312,13 @@ export function useVoiceChoice(config: ChoiceConfig, active: boolean): UseVoiceC
           });
         } else {
           // Low confidence, can retry
-          console.log('[VoiceChoice] Low confidence, requesting fallback');
+          logger.log('Low confidence, requesting fallback', { confidence: classification.confidence, attempt: currentAttempt });
           dispatch({ type: 'NEED_FALLBACK', attempt: currentAttempt });
         }
       } catch (err) {
         if (!cancelled) {
           const message = err instanceof Error ? err.message : 'Voice processing failed';
-          console.error('[VoiceChoice] Processing error:', message);
+          logger.error('Processing error:', message);
           setError(message);
 
           // On error after max attempts, default

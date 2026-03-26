@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { createTTSService, PHASE_VOICE_SETTINGS, type TTSService } from '@/services/tts';
 import type { SpeechSegment, NarrativePhase } from '@/types';
+import { createLogger } from '@/lib/debug/logger';
 
 export interface UseTTSOrchestratorReturn {
   isSpeaking: boolean;
@@ -8,6 +9,8 @@ export interface UseTTSOrchestratorReturn {
   cancel: () => void;
   initTTS: () => void;
 }
+
+const logger = createLogger('TTS');
 
 /**
  * TTS orchestration hook - manages TTS service lifecycle and speaking state.
@@ -19,12 +22,14 @@ export function useTTSOrchestrator(): UseTTSOrchestratorReturn {
   const isSpeakingRef = useRef(false);
 
   const initTTS = useCallback(() => {
+    logger.log('initTTS called');
     if (!ttsRef.current) {
       ttsRef.current = createTTSService();
     }
   }, []);
 
   const cancel = useCallback(() => {
+    logger.log('cancel called');
     if (ttsRef.current) {
       ttsRef.current.cancel();
     }
@@ -45,8 +50,14 @@ export function useTTSOrchestrator(): UseTTSOrchestratorReturn {
     isSpeakingRef.current = true;
     setIsSpeaking(true);
 
+    logger.log('speak START', { segmentCount: segments.length, phase });
     try {
+      logger.log('speak — calling service');
       await ttsRef.current.speak(segments, PHASE_VOICE_SETTINGS[phase]);
+      logger.log('speak END — success');
+    } catch (err) {
+      logger.error('speak END — error', { error: err instanceof Error ? err.message : String(err) });
+      throw err;
     } finally {
       isSpeakingRef.current = false;
       setIsSpeaking(false);

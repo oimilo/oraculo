@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { createLogger } from '@/lib/debug/logger';
 
 // MIME type fallback per Research Pitfall 3
 const MIME_PREFERENCES = [
@@ -16,6 +17,8 @@ function getSupportedMimeType(): string {
   }
   return ''; // Let browser choose default
 }
+
+const logger = createLogger('Mic');
 
 export interface UseMicrophoneReturn {
   isRecording: boolean;
@@ -35,6 +38,7 @@ export function useMicrophone(): UseMicrophoneReturn {
   const autoStopRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const releaseStream = useCallback(() => {
+    logger.log('releaseStream', { hadStream: !!streamRef.current });
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());
       streamRef.current = null;
@@ -42,6 +46,7 @@ export function useMicrophone(): UseMicrophoneReturn {
   }, []);
 
   const stopRecording = useCallback(() => {
+    logger.log('stopRecording called', { hasRecorder: !!mediaRecorderRef.current, state: mediaRecorderRef.current?.state });
     // Clear auto-stop timer (always, whether it exists or not)
     if (autoStopRef.current) {
       clearTimeout(autoStopRef.current);
@@ -73,6 +78,7 @@ export function useMicrophone(): UseMicrophoneReturn {
           sampleRate: 44100,
         },
       });
+      logger.log('getUserMedia SUCCESS');
       streamRef.current = stream;
 
       const mimeType = getSupportedMimeType();
@@ -88,7 +94,7 @@ export function useMicrophone(): UseMicrophoneReturn {
       recorder.onstop = () => {
         const type = mimeType || 'audio/webm';
         const blob = new Blob(chunksRef.current, { type });
-        console.log('[Mic] Recording stopped, blob size:', blob.size);
+        logger.log('Recording stopped, blob size:', blob.size);
         setAudioBlob(blob);
         chunksRef.current = [];
         releaseStream();
@@ -97,12 +103,12 @@ export function useMicrophone(): UseMicrophoneReturn {
       recorder.start();
       mediaRecorderRef.current = recorder;
       setIsRecording(true);
-      console.log('[Mic] Recording started', maxDuration ? `(auto-stop in ${maxDuration}ms)` : '');
+      logger.log('Recording started', { maxDuration, mimeType: mimeType || 'default' });
 
       // Set auto-stop timer inside startRecording — tied to THIS recorder
       if (maxDuration) {
         autoStopRef.current = setTimeout(() => {
-          console.log('[Mic] Auto-stop timer fired');
+          logger.log('Auto-stop timer fired');
           // Check that THIS recorder is still active (not replaced by another)
           if (mediaRecorderRef.current === recorder && recorder.state === 'recording') {
             recorder.stop();
@@ -113,7 +119,7 @@ export function useMicrophone(): UseMicrophoneReturn {
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Microphone access denied';
-      console.error('[Mic] Error:', message);
+      logger.error('Error:', message);
       setError(message);
       setIsRecording(false);
       releaseStream();
