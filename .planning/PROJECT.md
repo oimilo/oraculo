@@ -88,6 +88,8 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 | Mic activation gating | micShouldActivate = isAguardando && ttsComplete ensures mic only opens after TTS finishes | ✓ Good — Phase 8 |
 | Frozen config snapshots | configRef.current frozen when active=true prevents stale closures in async voice pipeline | ✓ Good — Phase 9 |
 | API timeout protection | 10s AbortController timeout on STT/NLU API calls prevents stuck states | ✓ Good — Phase 9 |
+| waitForVoices timeout | Promise.race with 3s timeout prevents indefinite hang when SpeechSynthesis has no voices | ✓ Good — Phase 11 |
+| Activation verification logging | activationLogger traces BLOCKED/ACTIVATED states proving ttsComplete verified before mic | ✓ Good — Phase 11 |
 | Next.js + Supabase | SSR, API routes integradas, analytics persistidos, deploy Vercel | ✓ Good |
 | API keys server-side only | Segurança — chaves de API ficam em API routes do Next.js, nunca no cliente | ✓ Good |
 | Plain fetch (sem SDKs externos) | Simplicidade — fetch direto para ElevenLabs/Whisper/Claude, só @supabase/supabase-js | ✓ Good |
@@ -110,4 +112,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-26 — Milestone v1.3 started (Voice Capture Debug & Fix)*
+*Last updated: 2026-03-26 — Phase 11 complete (TTS Reliability & Voice Pipeline Fix)*
