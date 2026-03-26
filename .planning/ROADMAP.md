@@ -65,13 +65,18 @@ Plans:
 **Goal**: Voice pipeline activates the microphone reliably in every AGUARDANDO state without manual intervention
 **Depends on**: Phase 10 (debug instrumentation needed to verify fixes)
 **Requirements**: TTSR-01, TTSR-02, TTSR-03, VPIPE-01, VPIPE-02, VPIPE-03
+**Plans:** 2 plans
+
+Plans:
+- [ ] 11-01-PLAN.md -- TTS reliability: waitForVoices timeout, MockTTSService bounded resolution, FallbackTTSService timeout guard
+- [ ] 11-02-PLAN.md -- Voice pipeline verification: ttsComplete verification logging, activation timing, integration tests for all AGUARDANDO states
+
 **Success Criteria** (what must be TRUE):
   1. MockTTSService resolves its speak() promise within bounded time even when browser SpeechSynthesis has no voices or hangs
   2. ttsComplete is verified as true before mic activates -- no AGUARDANDO state ever opens mic while TTS is still pending
   3. Microphone recording starts within 500ms of entering each of the 3 AGUARDANDO states (Inferno, Purgatorio A, Purgatorio B)
   4. Voice pipeline produces a choiceResult (A or B or fallback) from recorded audio in all 3 AGUARDANDO states
   5. Pipeline handles empty transcripts, API errors, and low confidence without freezing or leaving the user stuck
-**Plans**: TBD
 
 ### Phase 12: Browser End-to-End Validation
 **Goal**: Full Oraculo experience works end-to-end in a real browser from APRESENTACAO through FIM using voice
@@ -92,7 +97,7 @@ Plans:
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 10. Pipeline Debug Instrumentation | v1.3 | 2/2 | Complete    | 2026-03-26 |
-| 11. TTS Reliability & Voice Pipeline Fix | v1.3 | 0/? | Not started | - |
+| 11. TTS Reliability & Voice Pipeline Fix | v1.3 | 0/2 | Not started | - |
 | 12. Browser End-to-End Validation | v1.3 | 0/? | Not started | - |
 
 ---
@@ -137,4 +142,4 @@ Phase 12: Browser End-to-End Validation (validate the fixes)
 
 ---
 
-*Last updated: 2026-03-26 -- Phase 10 planned (2 plans)*
+*Last updated: 2026-03-26 -- Phase 11 planned (2 plans)*
