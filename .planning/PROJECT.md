@@ -85,6 +85,8 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 | useReducer FSM for voice choice | Explicit 5-state lifecycle eliminates impossible states (was 32 boolean combos) | ✓ Good — Phase 7 |
 | Generic guard factory | Type-safe, extensible guard creation via createChoiceGuard/createCompoundGuard | ✓ Good — Phase 7 |
 | Decoupled TTS orchestration | useTTSOrchestrator hook owns TTS state privately, no shared mutable refs | ✓ Good — Phase 7 |
+| TTS-gated state transitions | ttsComplete flag + ttsForStateRef prevent premature NARRATIVA_DONE and Strict Mode double-play | ✓ Good — Phase 8 |
+| Mic activation gating | micShouldActivate = isAguardando && ttsComplete ensures mic only opens after TTS finishes | ✓ Good — Phase 8 |
 | Next.js + Supabase | SSR, API routes integradas, analytics persistidos, deploy Vercel | ✓ Good |
 | API keys server-side only | Segurança — chaves de API ficam em API routes do Next.js, nunca no cliente | ✓ Good |
 | Plain fetch (sem SDKs externos) | Simplicidade — fetch direto para ElevenLabs/Whisper/Claude, só @supabase/supabase-js | ✓ Good |
@@ -107,4 +109,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-25 — Phase 7 complete (Voice Architecture Refactor). 253 tests passing.*
+*Last updated: 2026-03-26 — Phase 8 complete (Flow Sequencing & Mic Lifecycle). 282 tests passing.*
