@@ -5,7 +5,8 @@
 - v1.0 MVP (shipped 2026-03-25)
 - v1.1 Real API Integration (Paused -- Phase 6 Supabase deferred)
 - v1.2 Voice Flow Stabilization (shipped 2026-03-26)
-- v1.3 Voice Capture Debug & Fix (in progress)
+- v1.3 Voice Capture Debug & Fix (shipped 2026-03-26)
+- v2.0 Narração Realista com ElevenLabs v3 (in progress)
 
 ## Phases
 
@@ -36,110 +37,101 @@
 
 </details>
 
-### v1.3 Voice Capture Debug & Fix (In Progress)
+<details>
+<summary>v1.3 Voice Capture Debug & Fix (Phases 10-11) - SHIPPED 2026-03-26</summary>
 
 - [x] **Phase 10: Pipeline Debug Instrumentation** - Dev debug panel + console logging for pipeline visibility (completed 2026-03-26)
 - [x] **Phase 11: TTS Reliability & Voice Pipeline Fix** - Fix root causes: waitForVoices timeout, MockTTS resolution, mic activation (completed 2026-03-26)
-- [ ] **Phase 12: Browser End-to-End Validation** - Validate full flow in real browser with mock and real APIs
+- ~~Phase 12: Browser End-to-End Validation~~ - Dropped (manual browser testing sufficient)
+
+</details>
+
+### v2.0 Narração Realista com ElevenLabs v3 (In Progress)
+
+- [ ] **Phase 13: Voice Infrastructure & v3 Migration** - Verify voice IVC, update API to eleven_v3, convert SSML to audio tags
+- [ ] **Phase 14: Script Preparation & Tag Strategy** - PT-BR punctuation audit, inflection tag annotation, character budgeting
+- [ ] **Phase 15: Audio Generation & Quality Validation** - Regenerate 25 MP3s with v3, quality validation, A/B comparison
 
 ---
 
 ## Phase Details
 
-### Phase 10: Pipeline Debug Instrumentation
-**Goal**: Developers can see exactly where the voice pipeline breaks in real-time
-**Depends on**: Phase 9 (pipeline architecture must be stable before adding instrumentation)
-**Requirements**: DIAG-01, DIAG-02, DIAG-03
-**Plans:** 2/2 plans complete
-
-Plans:
-- [x] 10-01-PLAN.md -- Debug infrastructure: logger utility, keyboard shortcut hook, DebugPanel component + tests
-- [x] 10-02-PLAN.md -- Wiring: DebugPanel into OracleExperience + structured logging in all pipeline hooks
-
+### Phase 13: Voice Infrastructure & v3 Migration
+**Goal**: ElevenLabs v3 API integration working with cloned voice, SSML-to-audio-tag conversion, and backward compatibility
+**Depends on**: Phase 11 (voice pipeline must be stable)
+**Requirements**: VINF-01, VINF-02, VINF-03
 **Success Criteria** (what must be TRUE):
-  1. Developer can see ttsComplete, micShouldActivate, voiceLifecycle phase, and isRecording values updating live in the browser
-  2. Developer can read console logs that trace every pipeline transition (TTS start/end, mic open/close, STT send/receive, NLU classify) with timestamps
-  3. Debug panel is hidden by default and togglable via keyboard shortcut without affecting the visitor experience
+  1. Voice `AcSHc9S7hdxvGEJVWFzo` verified as IVC and confirmed working with v3 audio tags
+  2. API route and generation script use `eleven_v3` model with correct parameters (no `speed`, no `speaker_boost`, `language_code: 'pt-BR'`)
+  3. `buildV3Text()` converts `pauseAfter` to audio tags (`[pause]`, `[long pause]`) and prepends inflection tags
+  4. Both v2 and v3 paths work via env flag for safe testing
 
-### Phase 11: TTS Reliability & Voice Pipeline Fix
-**Goal**: Voice pipeline activates the microphone reliably in every AGUARDANDO state without manual intervention
-**Depends on**: Phase 10 (debug instrumentation needed to verify fixes)
-**Requirements**: TTSR-01, TTSR-02, TTSR-03, VPIPE-01, VPIPE-02, VPIPE-03
-**Plans:** 2/2 plans complete
-
-Plans:
-- [x] 11-01-PLAN.md -- TTS reliability: waitForVoices timeout, MockTTSService bounded resolution, FallbackTTSService timeout guard
-- [x] 11-02-PLAN.md -- Voice pipeline verification: ttsComplete verification logging, activation timing, integration tests for all AGUARDANDO states
-
+### Phase 14: Script Preparation & Tag Strategy
+**Goal**: All 25 script segments annotated with correct PT-BR punctuation and strategic inflection tags
+**Depends on**: Phase 13 (voice compatibility must be verified before tagging)
+**Requirements**: SCRP-01, SCRP-02, SCRP-03
 **Success Criteria** (what must be TRUE):
-  1. MockTTSService resolves its speak() promise within bounded time even when browser SpeechSynthesis has no voices or hangs
-  2. ttsComplete is verified as true before mic activates -- no AGUARDANDO state ever opens mic while TTS is still pending
-  3. Microphone recording starts within 500ms of entering each of the 3 AGUARDANDO states (Inferno, Purgatorio A, Purgatorio B)
-  4. Voice pipeline produces a choiceResult (A or B or fallback) from recorded audio in all 3 AGUARDANDO states
-  5. Pipeline handles empty transcripts, API errors, and low confidence without freezing or leaving the user stuck
+  1. All script segments pass PT-BR punctuation validation (accents, travessão, vírgulas)
+  2. Each segment has inflection tags matching PRD voice directions (calmo/grave/intimo/sussurro/determinado)
+  3. Tag density is max 1 per sentence, total tag overhead under 15% of character count per segment
 
-### Phase 12: Browser End-to-End Validation
-**Goal**: Full Oraculo experience works end-to-end in a real browser from APRESENTACAO through FIM using voice
-**Depends on**: Phase 11 (pipeline must be fixed before validation)
-**Requirements**: BVAL-01, BVAL-02, BVAL-03
+### Phase 15: Audio Generation & Quality Validation
+**Goal**: 25 high-quality MP3s with emotional inflection replace v2 pre-recorded audio
+**Depends on**: Phase 14 (script must be annotated before generation)
+**Requirements**: AGEN-01, AGEN-02, AGEN-03
 **Success Criteria** (what must be TRUE):
-  1. User completes the full journey (APRESENTACAO through FIM) in Chrome/Edge using mock APIs with voice input at all 3 choice points
-  2. User completes the full journey using real APIs (ElevenLabs TTS, Whisper STT, Claude NLU) with voice input
-  3. Voice choice correctly sends CHOOSE_A or CHOOSE_B event to state machine and transitions away from AGUARDANDO within expected time
-**Plans**: TBD
+  1. All 25 MP3s regenerated at 192kbps minimum with `eleven_v3` model
+  2. No MP3 has audible static, tag read-aloud artifacts, or robotic delivery
+  3. Emotional tone matches PRD directions per phase and voice is consistent across all 25 clips
 
 ---
 
 ## Progress
 
-**Execution Order:** Phase 10 -> Phase 11 -> Phase 12
+**Execution Order:** Phase 13 -> Phase 14 -> Phase 15
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 10. Pipeline Debug Instrumentation | v1.3 | 2/2 | Complete    | 2026-03-26 |
-| 11. TTS Reliability & Voice Pipeline Fix | v1.3 | 2/2 | Complete    | 2026-03-26 |
-| 12. Browser End-to-End Validation | v1.3 | 0/? | Not started | - |
+| 13. Voice Infrastructure & v3 Migration | v2.0 | 0/? | Not started | - |
+| 14. Script Preparation & Tag Strategy | v2.0 | 0/? | Not started | - |
+| 15. Audio Generation & Quality Validation | v2.0 | 0/? | Not started | - |
 
 ---
 
 ## Dependencies
 
 ```
-Phase 10: Pipeline Debug Instrumentation (visibility first)
+Phase 13: Voice Infrastructure & v3 Migration (verify voice + API compatibility)
     |
-Phase 11: TTS Reliability & Voice Pipeline Fix (fix with visibility)
+Phase 14: Script Preparation & Tag Strategy (annotate script with validated tags)
     |
-Phase 12: Browser End-to-End Validation (validate the fixes)
+Phase 15: Audio Generation & Quality Validation (generate final MP3s)
 ```
 
 ---
 
 ## Coverage
 
-**Total v1.3 Requirements:** 12
+**Total v2.0 Requirements:** 9
 
-- Diagnostics: 3 (DIAG-01 to DIAG-03)
-- TTS Reliability: 3 (TTSR-01 to TTSR-03)
-- Voice Pipeline Fix: 3 (VPIPE-01 to VPIPE-03)
-- Browser Validation: 3 (BVAL-01 to BVAL-03)
+- Voice Infrastructure: 3 (VINF-01 to VINF-03)
+- Script Quality: 3 (SCRP-01 to SCRP-03)
+- Audio Generation: 3 (AGEN-01 to AGEN-03)
 
-**Mapped to Phases:** 12/12
+**Mapped to Phases:** 9/9
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DIAG-01 | Phase 10 | Pending |
-| DIAG-02 | Phase 10 | Pending |
-| DIAG-03 | Phase 10 | Pending |
-| TTSR-01 | Phase 11 | Pending |
-| TTSR-02 | Phase 11 | Pending |
-| TTSR-03 | Phase 11 | Pending |
-| VPIPE-01 | Phase 11 | Pending |
-| VPIPE-02 | Phase 11 | Pending |
-| VPIPE-03 | Phase 11 | Pending |
-| BVAL-01 | Phase 12 | Pending |
-| BVAL-02 | Phase 12 | Pending |
-| BVAL-03 | Phase 12 | Pending |
+| VINF-01 | Phase 13 | Pending |
+| VINF-02 | Phase 13 | Pending |
+| VINF-03 | Phase 13 | Pending |
+| SCRP-01 | Phase 14 | Pending |
+| SCRP-02 | Phase 14 | Pending |
+| SCRP-03 | Phase 14 | Pending |
+| AGEN-01 | Phase 15 | Pending |
+| AGEN-02 | Phase 15 | Pending |
+| AGEN-03 | Phase 15 | Pending |
 
 ---
 
-*Last updated: 2026-03-26 -- Phase 11 planned (2 plans)*
+*Last updated: 2026-03-26 -- v1.3 closed, v2.0 roadmap created (3 phases)*

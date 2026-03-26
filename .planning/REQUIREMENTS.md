@@ -96,11 +96,11 @@ Diagnosticar e corrigir por que o microfone não ativa nos estados AGUARDANDO. G
 - [x] **VPIPE-02**: Voice pipeline processes recorded audio and produces a choiceResult in all 3 AGUARDANDO states
 - [x] **VPIPE-03**: Pipeline gracefully handles empty transcripts, API errors, and low confidence without freezing
 
-### Browser Validation (BVAL)
+### Browser Validation (BVAL) — Dropped
 
-- [ ] **BVAL-01**: Full flow completes end-to-end in browser with mock APIs (APRESENTACAO through FIM)
-- [ ] **BVAL-02**: Full flow completes end-to-end with real APIs (ElevenLabs TTS, Whisper STT, Claude NLU)
-- [ ] **BVAL-03**: Voice choice correctly sends event to state machine and transitions away from AGUARDANDO
+- ~~**BVAL-01**: Full flow completes end-to-end in browser with mock APIs~~ — Dropped (manual browser testing sufficient)
+- ~~**BVAL-02**: Full flow completes end-to-end with real APIs~~ — Dropped
+- ~~**BVAL-03**: Voice choice correctly sends event to state machine~~ — Dropped
 
 ## v2.0 Requirements — Narração Realista com ElevenLabs v3
 
@@ -199,7 +199,7 @@ Deferred para pós-evento ou iteração futura.
 | PIPE-04 | Phase 9 | Complete |
 | PIPE-05 | Phase 9 | Complete |
 
-### v1.3 (Active)
+### v1.3 (Complete)
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
@@ -212,13 +212,27 @@ Deferred para pós-evento ou iteração futura.
 | VPIPE-01 | Phase 11 | Complete |
 | VPIPE-02 | Phase 11 | Complete |
 | VPIPE-03 | Phase 11 | Complete |
-| BVAL-01 | Phase 12 | Pending |
-| BVAL-02 | Phase 12 | Pending |
-| BVAL-03 | Phase 12 | Pending |
+| BVAL-01 | Phase 12 | Dropped |
+| BVAL-02 | Phase 12 | Dropped |
+| BVAL-03 | Phase 12 | Dropped |
+
+### v2.0 (Active)
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| VINF-01 | Phase 13 | Pending |
+| VINF-02 | Phase 13 | Pending |
+| VINF-03 | Phase 13 | Pending |
+| SCRP-01 | Phase 14 | Pending |
+| SCRP-02 | Phase 14 | Pending |
+| SCRP-03 | Phase 14 | Pending |
+| AGEN-01 | Phase 15 | Pending |
+| AGEN-02 | Phase 15 | Pending |
+| AGEN-03 | Phase 15 | Pending |
 
 **Coverage:**
-- v1.3 requirements: 12 total
-- Mapped to phases: 12/12 ✓
+- v2.0 requirements: 9 total
+- Mapped to phases: 9/9 ✓
 - Unmapped: 0
 
 ---

@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Narração Realista com ElevenLabs v3
-status: verifying
-stopped_at: Completed 11-02-PLAN.md
-last_updated: "2026-03-26T15:41:36.469Z"
+status: planning
+stopped_at: v1.3 closed, v2.0 roadmap created
+last_updated: "2026-03-26T18:00:00.000Z"
 last_activity: 2026-03-26
 progress:
   total_phases: 3
-  completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
   percent: 0
 ---
 
@@ -22,14 +22,14 @@ progress:
 
 **Current Milestone:** v2.0 Narração Realista com ElevenLabs v3
 
-**Current Focus:** Defining requirements
+**Current Focus:** Planning Phase 13 (Voice Infrastructure & v3 Migration)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 13 - Voice Infrastructure & v3 Migration
 Plan: —
-Status: Defining requirements
-Last activity: 2026-03-26 — Milestone v2.0 started
+Status: Planning
+Last activity: 2026-03-26 — v1.3 closed, v2.0 roadmap created
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -50,14 +50,15 @@ Progress: [░░░░░░░░░░] 0%
 - Phases: 3/3 (Phases 7-9), Plans: 6/6
 - Duration: 1 day (2026-03-25 to 2026-03-26)
 
-**Milestone v1.3 (In Progress — Phase 12 pending):**
+**Milestone v1.3 (Complete):**
 
-- Phases: 2/3, Plans: 4/4 (Phase 12 Browser E2E not started)
-- Target: Fix mic not activating in AGUARDANDO states
+- Phases: 2/2 (Phases 10-11, Phase 12 dropped), Plans: 4/4
+- Duration: 1 day (2026-03-26)
+- Phase 12 (Browser E2E) dropped — manual testing sufficient
 
 **Milestone v2.0 (Active):**
 
-- Phases: 0/?, Plans: 0/?
+- Phases: 0/3, Plans: 0/?
 - Target: Narração realista com ElevenLabs v3 + inflexão inteligente
 
 ## Accumulated Context
@@ -70,24 +71,19 @@ Recent decisions affecting current work:
 - [Phase 9]: 10s AbortController timeout on STT/NLU API calls
 - [Phase 8]: TTS-gated state transitions via ttsComplete flag
 - [Phase 8]: micShouldActivate = isAguardando && ttsComplete
-- [Phase 10-01]: performance.now() for relative timestamps in debug logs
-- [Phase 10-01]: Ctrl+Shift+D toggle for debug panel (hidden by default)
-- [Phase 10-02]: Structured logging with createLogger for all voice pipeline hooks (VoiceChoice, Mic, TTS namespaces)
-- [Phase 10-02]: DebugPanel wired with 6 live state props for real-time pipeline visibility (Ctrl+Shift+D toggle)
 - [Phase 11]: waitForVoices timeout resolves with empty array (not reject) for graceful fallback
-- [Phase 11]: 3000ms default timeout balances voice loading time vs pipeline blocking
-- [Phase 11]: Bounded simulated delay capped at 500ms for no-voices fallback path
-- [Phase 11]: Activation logging uses separate createLogger('Activation') namespace for diagnostic clarity
-- [Phase 11]: VPIPE-03 tests exercise voiceLifecycleReducer directly for deterministic error scenario coverage
+- [Phase 11]: Activation logging uses separate createLogger('Activation') namespace
 
-### Known Bug (Root Cause Analysis)
+### v2.0 Research Highlights
 
-Mic never activates in AGUARDANDO states. Suspected chain:
-
-1. MockTTSService calls waitForVoices() which hangs when SpeechSynthesis has no voices
-2. ttsComplete stays false indefinitely
-3. micShouldActivate never becomes true
-4. User forced to click buttons manually
+- ElevenLabs v3 replaces SSML `<break>` with audio tags (`[pause]`, `[thoughtful]`, etc.)
+- Cloned voice must be IVC (not PVC) for v3 tag support
+- Lower stability from 0.65-0.80 → 0.40-0.70 for Natural mode
+- Remove `speaker_boost` and `speed` params (not supported in v3)
+- Tag density: max 1-2 per phrase to avoid instability
+- PT-BR punctuation needs normalization (travessão, abbreviations, accents)
+- 192kbps minimum output for headphone delivery
+- 5,000 char limit requires segment-aware generation
 
 ### Active TODOs
 
@@ -100,6 +96,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-26T15:36:47.673Z
-Stopped at: Completed 11-02-PLAN.md
-Resume: /gsd:plan-phase 10
+Last session: 2026-03-26
+Stopped at: v1.3 closed, v2.0 roadmap created
+Resume: /gsd:plan-phase 13
