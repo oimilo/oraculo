@@ -201,7 +201,9 @@ describe('STT/NLU Pipeline Integration', () => {
       }
 
       expect(state.phase).toBe('fallback');
-      expect(state.attempt).toBe(1);
+      if (state.phase === 'fallback') {
+        expect(state.attempt).toBe(1);
+      }
     });
 
     it('confidence 0.8 on attempt 2 triggers CLASSIFICATION_COMPLETE', () => {
@@ -217,7 +219,9 @@ describe('STT/NLU Pipeline Integration', () => {
       // New audio arrives
       state = voiceLifecycleReducer(state, { type: 'AUDIO_READY', blob: new Blob() });
       expect(state.phase).toBe('processing');
-      expect(state.attempt).toBe(2); // Incremented from previousAttempt
+      if (state.phase === 'processing') {
+        expect(state.attempt).toBe(2); // Incremented from previousAttempt
+      }
 
       // Second classification succeeds
       const confidence = 0.8;
@@ -423,7 +427,9 @@ describe('STT/NLU Pipeline Integration', () => {
       const audioBlob = new Blob(['audio-data'], { type: 'audio/webm' });
       state = voiceLifecycleReducer(state, { type: 'AUDIO_READY', blob: audioBlob });
       expect(state.phase).toBe('processing');
-      expect(state.attempt).toBe(1);
+      if (state.phase === 'processing') {
+        expect(state.attempt).toBe(1);
+      }
 
       // Step 3: STT transcription
       mockSTT.setNextTranscript('vozes');
@@ -493,7 +499,9 @@ describe('STT/NLU Pipeline Integration', () => {
 
       state = voiceLifecycleReducer(state, { type: 'AUDIO_READY', blob: new Blob() });
       expect(state.phase).toBe('processing');
-      expect(state.attempt).toBe(2);
+      if (state.phase === 'processing') {
+        expect(state.attempt).toBe(2);
+      }
 
       // Attempt 2: High confidence
       mockSTT.setNextTranscript('option b');
@@ -547,12 +555,17 @@ describe('STT/NLU Pipeline Integration', () => {
       // Retry
       state = voiceLifecycleReducer(state, { type: 'START_LISTENING' });
       state = voiceLifecycleReducer(state, { type: 'AUDIO_READY', blob: new Blob() });
-      expect(state.attempt).toBe(2);
+      if (state.phase === 'processing') {
+        expect(state.attempt).toBe(2);
+      }
 
       // Attempt 2: Still empty (max attempts reached)
       mockSTT.setNextTranscript('');
       const transcript2 = await mockSTT.transcribe(new Blob());
       expect(transcript2.trim()).toBe('');
+      if (state.phase !== 'processing') {
+        throw new Error('Expected processing phase');
+      }
 
       // Use default
       const result: VoiceChoiceResult = {

@@ -26,6 +26,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Empty blob — skip Whisper call, return empty transcript
+    if (audioFile.size === 0) {
+      return NextResponse.json({ text: '' });
+    }
+
     // Build FormData for Whisper API
     const whisperForm = new FormData();
     whisperForm.append('file', audioFile, audioFile.name || 'audio.webm');
@@ -33,30 +38,50 @@ export async function POST(request: NextRequest) {
     whisperForm.append('language', 'pt');
     whisperForm.append('response_format', 'json');
 
-    // Call OpenAI Whisper API
-    const whisperResponse = await fetch(
-      'https://api.openai.com/v1/audio/transcriptions',
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-        },
-        body: whisperForm,
-      }
-    );
+    // Set up 10-second timeout to prevent stuck states
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-    // Handle Whisper error response
-    if (!whisperResponse.ok) {
-      const errorText = await whisperResponse.text();
-      return NextResponse.json(
-        { error: `Whisper API error: ${whisperResponse.status}` },
-        { status: 502 }
+    try {
+      // Call OpenAI Whisper API
+      const whisperResponse = await fetch(
+        'https://api.openai.com/v1/audio/transcriptions',
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+          },
+          body: whisperForm,
+          signal: controller.signal,
+        }
       );
-    }
 
-    // Parse and return transcription
-    const result = await whisperResponse.json();
-    return NextResponse.json({ text: result.text });
+      clearTimeout(timeoutId);
+
+      // Handle Whisper error response
+      if (!whisperResponse.ok) {
+        const errorText = await whisperResponse.text();
+        return NextResponse.json(
+          { error: `Whisper API error: ${whisperResponse.status}` },
+          { status: 502 }
+        );
+      }
+
+      // Parse and return transcription
+      const result = await whisperResponse.json();
+      return NextResponse.json({ text: result.text });
+    } catch (fetchError) {
+      clearTimeout(timeoutId);
+
+      if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+        return NextResponse.json(
+          { error: 'STT request timeout' },
+          { status: 504 }
+        );
+      }
+
+      throw fetchError; // Re-throw other errors
+    }
   } catch (error) {
     console.error('STT API error:', error);
     return NextResponse.json(
