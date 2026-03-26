@@ -1,276 +1,221 @@
 # Project Research Summary
 
-**Project:** O Oráculo — Interactive Voice-First Art Installation
-**Domain:** Live event voice interaction (scripted narrative experience)
-**Researched:** 2026-03-24
-**Confidence:** MEDIUM
+**Project:** O Oráculo — Milestone v2.0 Narração Realista
+**Domain:** Text-to-Speech Migration (v2 to v3 with emotional inflection)
+**Researched:** 2026-03-26
+**Confidence:** MEDIUM-HIGH
 
 ## Executive Summary
 
-O Oráculo is a voice-driven psychoanalytical journey through Dante's Divine Comedy, designed for the São Paulo Art Biennial (May 2026). Visitors wear headphones and engage in a 5-10 minute scripted conversation where they respond to philosophical questions, with their speech classified into binary choices that branch the narrative across Inferno, Purgatorio, and Paradiso phases. This is fundamentally a **state machine orchestration problem** layered with real-time voice processing (TTS, STT, NLU) and ambient audio design.
+ElevenLabs v3 with audio tags enables emotionally expressive PT-BR narration for the Oráculo voice experience but requires significant architectural changes. The v3 model introduces inflection control through inline tags like `[thoughtful]`, `[whispers]`, and `[pause]`, but **removes SSML `<break>` support** that the current v2 implementation relies on. This migration requires converting pause logic from SSML to audio tags, adding inflection markup to all 25 script segments, and regenerating MP3 files with 3.3x higher cost (~$15 vs $4.50).
 
-The recommended architecture uses **XState v5 as the orchestrator**, managing the conversation flow as an actor-based state machine. Voice processing happens through a three-stage pipeline: **OpenAI Whisper** (PT-BR transcription) → **Claude Haiku** (intent classification) → **ElevenLabs** (TTS with streaming). All external API calls are proxied through **Next.js 14 API routes** for security. Ambient audio uses **Howler.js** for crossfading between phases, while **Web Audio API** handles TTS playback. The frontend is minimal React with **Tailwind CSS**, and **Supabase** provides anonymous session analytics.
+The recommended approach is a two-phase migration: (1) API compatibility layer that converts existing SSML breaks to v3 audio tags without script changes, enabling testing; (2) manual script annotation with emotional tags and full regeneration. The cloned voice `AcSHc9S7hdxvGEJVWFzo` must be verified as IVC (Instant Voice Clone) rather than PVC (Professional Voice Clone), as PVC is not yet optimized for v3 features. PT-BR punctuation requires careful normalization (travessão, abbreviations, accent marks) to avoid robotic delivery.
 
-**Critical risks center on latency and live-event reliability.** The target response time is <3 seconds from visitor speech to system response, but the API pipeline (Whisper 800-2000ms + Haiku 200-800ms + ElevenLabs 400-1200ms) can total 5-8 seconds on slow connections. Mitigation requires streaming TTS (start playback on first chunk), pre-recorded fallback audio for network failures, and careful timeout handling that treats silence as a valid narrative choice. Browser autoplay policies, microphone permission flows, and LGPD compliance around audio data all require careful implementation before the multi-station event deployment.
+Key risks include audio tag overuse causing instability, tag/voice mismatch if cloned voice lacks emotional range, and the 5,000 character limit requiring script segmentation. Mitigation strategies involve conservative tag application (1-2 per segment), pre-testing all tags with the cloned voice, and maintaining character count margins. The pre-recorded MP3 approach eliminates runtime API costs, making v3's higher generation cost acceptable for the event scale (300 visitors).
 
 ## Key Findings
 
 ### Recommended Stack
 
-The stack prioritizes **low-latency streaming** for voice processing and **declarative state management** for complex branching logic. All three API providers (ElevenLabs, OpenAI, Anthropic) require Node.js 18+ due to native fetch API usage.
+**Model migration:** Upgrade from `eleven_multilingual_v2` to `eleven_v3` to unlock audio tag support. The v3 model interprets emotional context through inline tags while maintaining PT-BR language fidelity. Same API endpoint (`/v1/text-to-speech/{voiceId}`), only the `model_id` parameter changes.
 
 **Core technologies:**
-- **XState v5**: State machine orchestration using actor model — perfect for scripted flow with timeouts, fallbacks, and branching transitions
-- **Next.js 14 (App Router)**: Web framework with streaming support — API routes handle TTS/STT/NLU proxying while protecting API keys server-side
-- **ElevenLabs SDK (0.8.x+)**: TTS streaming via WebSocket — multilingual_v2 model for PT-BR, adjustable voice parameters per phase (Inferno vs Paradise)
-- **OpenAI Whisper (whisper-1)**: PT-BR transcription — 500-1500ms latency, language hint improves accuracy
-- **Claude Haiku**: Binary classification of free-form PT-BR speech — ~100-200ms latency, handles imperfect transcriptions
-- **Web Audio API**: Low-latency TTS playback — native browser API with gapless audio queuing for streamed chunks
-- **Howler.js (2.2.x)**: Ambient audio crossfading — handles 3-5 tracks per phase with 2-3s overlap transitions
-- **Supabase**: Anonymous session analytics — real-time subscriptions for admin dashboard, zero PII storage
+- **ElevenLabs v3 API** (`eleven_v3` model_id): Expressive TTS with audio tag support — enables dramatic tone shifts (grave/intimate/whispered) essential for Dante narrative progression
+- **Audio tags** (`[thoughtful]`, `[whispers]`, `[pause]`): Inline inflection control — replaces SSML breaks and adds emotional depth unavailable in v2
+- **Instant Voice Clone (IVC)**: Recommended voice type for v3 — PVC not yet optimized, may produce lower quality with tag support
+- **PT-BR language_code parameter**: Enforces Brazilian Portuguese pronunciation — prevents European accent mixing
+- **192kbps MP3 output**: Minimum quality for event playback — default 128kbps too compressed for headphone delivery
 
-**Critical compatibility:** Deploy to Node.js 18+ environment (Vercel recommended). All API SDKs require this minimum version.
+**Voice settings adjustments:**
+- Lower stability from 0.65-0.80 → 0.40-0.70 (enables Natural mode expressiveness)
+- Remove `speaker_boost` (not supported in v3)
+- Keep similarity_boost and style parameters (unchanged behavior)
+- Remove `speed` parameter (v3 infers pacing from tags and text)
 
 ### Expected Features
 
 **Must have (table stakes):**
-- **State machine with full scripted flow** — 3 questions, binary choices, 4 paths, timeout handling per question
-- **Clear audio feedback** — visual "listening" indicator, audible acknowledgment before response
-- **Graceful failure handling** — poetic fallback responses (not error messages), max 1 retry before default choice
-- **Predictable response timing** — max 2-3s from speech end to system response start (requires streaming TTS)
-- **Consistent voice identity** — same voice throughout, but stability/similarity parameters shift with phases
-- **Session continuity** — resilient to network hiccups, pre-cached fallback audio for offline operation
+- **Emotion control per segment**: Literary script requires mood shifts (calm → thoughtful → determined) to match narrative arc — v3 audio tags provide this
+- **Natural pause handling**: Pauses carry meaning in literary narration. v3 tags `[pause]`, `[long pause]` replace SSML breaks
+- **PT-BR accent fidelity**: Brazilian Portuguese distinct pronunciation and rhythm — v3 supports 70+ languages including PT-BR
+- **Segment-level voice direction**: Each phase has different delivery (grave/intimate/whispered) — tags persist until reset
+- **Punctuation-driven pacing**: Em-dashes (—), ellipsis (...), capitalization affect delivery rhythm — v3 interprets semantically
 
-**Should have (competitive advantage):**
-- **Intentional pauses as design** — 2-4s gaps between phrases create dramatic tension (controlled via state machine timing)
-- **Adaptive voice parameters** — ElevenLabs stability/similarity sliders create distinct Inferno vs Paradise voice character
-- **NLU-based binary classification** — Claude Haiku classifies free-form PT-BR speech into choices (not keyword matching)
-- **Layered ambient soundscape** — 3-5 tracks per phase, crossfade on transitions (2-3s overlap)
-- **Timeout as narrative choice** — silence becomes valid answer (Inferno→Silence default, Purgatory→contextual)
-- **Literary reflection variants** — 4 pre-written reflections mapped to decision tree outcomes
+**Should have (competitive):**
+- **Reaction sounds (sighs, breaths)**: Humanizes AI guide with non-verbal storytelling — `[sigh]`, `[gasps]` tags available
+- **Cognitive pauses (hesitates, stammers)**: AI acknowledges limits naturally — `[hesitates]` adds vulnerability
+- **Tone layering (multiple tags)**: Combine emotional state + delivery for complex moments — `[nervously][whispers]` supported
+- **Rhythm variation per phase**: Layer `[rushed]`, `[drawn out]` with existing speed settings
 
-**Defer (v2+):**
-- **Visitor return detection** — requires persistent identifier (privacy concern), unclear value for one-time event
-- **Voice emotion analysis** — adds 200-500ms latency, unclear how to adapt script dynamically
-- **Multi-language support** — PT-BR quality critical for v1, translation doubles testing surface
-- **Generative narrative variants** — unpredictable quality and latency vs. pre-scripted literary precision
+**Defer (v2+ implementation):**
+- **Real-time TTS via API route**: Pre-recorded MP3s sufficient for event — dynamic generation adds cost/complexity without value
+- **Admin UI tag editor**: Fixed script for v1.0 event — future milestone could add tag autocomplete
+- **Phoneme pronunciation control**: PT-BR handled natively — only needed for proper nouns if mispronounced
 
 ### Architecture Approach
 
-The system is a **layered pipeline with XState orchestration at the core**. The state machine spawns actors for each async operation (TTS, STT, NLU, ambient audio, analytics), maintains conversation state, and handles transitions based on actor outcomes. React components are purely presentational, subscribing to machine state via `useMachine()` hook.
+Migration requires data model changes (add `inflection?: string[]` to `SpeechSegment` interface), conversion utilities (`buildV3Text()` to transform segments into tagged text), and updated generation script (switch model_id, remove SSML logic). Fallback to pre-recorded MP3s remains unchanged — v3 audio replaces v2 files in `public/audio/prerecorded/` with no runtime architecture impact.
 
 **Major components:**
+1. **Data Model (`src/types/index.ts`)**: Add `inflection` field to `SpeechSegment` for per-segment emotional tags — maintains backward compatibility with `pauseAfter`
+2. **Conversion Layer (`src/lib/audio/v3-conversion.ts`)**: Transform `pauseAfter` milliseconds to audio tags (`[pause]`, `[long pause]`) and prepend inflection tags — replaces SSML break generation
+3. **Generation Script (`scripts/generate-audio.mjs`)**: Call ElevenLabs v3 API with tagged text, handle 5,000 character limit via segmentation, validate output audio quality
+4. **API Route (`src/app/api/tts/route.ts`)**: Support both v2 (SSML) and v3 (audio tags) via env flag for testing — SSML-to-tag shim enables gradual migration
 
-1. **OracleStateMachine (XState v5)** — Defines states (idle, intro, question1, listening1, processing1, question2..., ending), spawns service actors, manages context (currentPhase, transcript, classification, choices), handles timeouts and error transitions
-
-2. **Voice Pipeline Actors** — TTSActor (streams ElevenLabs WebSocket to Web Audio API), STTActor (MediaRecorder capture → Whisper transcription), NLUActor (transcript → Claude Haiku classification), each isolated and testable
-
-3. **Ambient Audio Manager** — Howler.js wrapper preloads 3 phase tracks (inferno, purgatorio, paradiso), crossfades on phase transitions triggered by state machine context changes
-
-4. **Next.js API Routes** — `/api/tts/stream` (ElevenLabs proxy), `/api/stt/transcribe` (Whisper proxy), `/api/nlu/classify` (Claude proxy), `/api/analytics/log` (Supabase insert), all server-side to protect API keys
-
-5. **Session Analytics** — Event buffer in AnalyticsActor, batch write on session end, schema: session_id + timestamp + path_taken + fallback_count (zero PII, no audio persistence)
-
-**Critical pattern:** Single shared AudioContext (singleton) prevents browser limits (6-8 concurrent contexts). All audio operations (TTS, ambient) use this shared context.
-
-**Latency-critical path:** User speech → MediaRecorder stop (50ms) → Whisper transcription (1-2s) → Claude classification (200-800ms) → ElevenLabs streaming (400ms to first chunk) → Total: 1.3-3.6s best/worst case.
+**Key patterns:**
+- **Two-phase migration**: Phase 1 adds v3 compatibility without script changes (SSML→tag conversion), Phase 2 adds inflection tags and regenerates
+- **Tag allowlist approach**: Pre-test all planned tags with cloned voice, document which work reliably before scripting
+- **Character count budgeting**: Keep tag overhead under 15% of script length to control costs
+- **Quality validation**: Automated RMS noise floor checks post-generation to catch v3 static bug
 
 ### Critical Pitfalls
 
-1. **Browser autoplay policy blocking TTS** — Click → async TTS request → playback = BLOCKED by browser. **Solution:** Create AudioContext on user click, play silent buffer immediately to unlock audio capabilities before async pipeline starts.
+1. **Audio tag overuse creates instability**: Using too many tags causes AI to speed up unnaturally, introduce vocal artifacts (clicks/pops), or read tags aloud as text. Limit to 1-2 tags per phrase, use ellipses for pauses when possible, generate multiple versions and A/B test.
 
-2. **Microphone permission breaking immersion** — Native browser dialog has no context, high denial rate. **Solution:** Pre-permission screen explains voice requirement, test permission state before start button, operator pre-grants permission during setup.
+2. **Cloned voice + inflection tags mismatch**: Tags work unpredictably with cloned voices if training samples lack emotional range. IVC recommended over PVC (not optimized for v3). Test each tag separately before production use — if tag doesn't work, rely on text/punctuation instead.
 
-3. **Network latency destroying conversational flow** — 5-8s silence after visitor speaks feels broken. **Solution:** Stream TTS (first chunk plays in 400ms), visual "listening/thinking/responding" states, pre-generate likely responses, timeout at 8s triggers fallback.
+3. **PT-BR punctuation traps**: Travessão (—), abbreviations ("Dr.", "R$"), accent marks, and currency formats can cause robotic delivery or mispronunciations. Normalize before API calls (expand abbreviations, standardize quotes, validate accents with spell checker).
 
-4. **ElevenLabs rate limiting during event peaks** — 3 concurrent stations × peak hours = 429 errors. **Solution:** Pre-record all static content (questions, fallbacks) as MP3s, only generate dynamic responses via API, verify tier limits support 3 concurrent streams.
+4. **v3 character limit (5,000) requires segmentation**: Long narrative sections hit limit, requiring splits that create concatenation artifacts (audible seams, pitch mismatches). Segment at natural boundaries (sentence/paragraph breaks), target 4,500 chars max, test transitions for smooth flow.
 
-5. **Whisper transcription failing on short/whispered PT-BR** — "sim" (yes) transcribes as "si" or empty. **Solution:** Prompt design forces multi-word responses, Whisper language hint + vocabulary prompt, Claude Haiku handles imperfect transcriptions semantically (not keyword matching), min 1s recording before STT.
-
-6. **State machine race conditions from double-click** — Overlapping sessions, duplicate audio playback. **Solution:** Button disabled during initialization, XState guards prevent concurrent transitions, microphone muted during TTS playback.
-
-7. **Internet drop with no recovery** — WiFi fails mid-journey, visitor stuck. **Solution:** Pre-record all critical audio as MP3s in `/public/audio/`, graceful degradation uses static files when API fails, retry logic with exponential backoff, mobile hotspot backup.
-
-8. **LGPD violation through audio persistence** — Blob URLs linger, analytics logs transcriptions. **Solution:** Explicit cleanup (revoke blob URLs, clear state), analytics schema excludes transcription/audio columns, memory-only processing (never write audio to disk/IndexedDB).
+5. **v3 stability settings don't transfer from v2**: v2 settings produce poor results in v3. Use "Natural" mode for balanced expressiveness, "Creative" only when tags needed (risks hallucinations like "uh"), avoid "Robust" (disables tag responsiveness). Re-tune similarity to 60-70% for v3.
 
 ## Implications for Roadmap
 
-Based on research, the project naturally divides into **3 major phases** with a critical foundation phase first. Dependencies flow: Foundation → Voice Pipeline → Polish & Resilience. The state machine must work before voice integration, and voice must work before multi-station deployment.
+Based on research, suggested phase structure:
 
-### Phase 1: Core State Machine & Audio Foundation
-**Rationale:** State machine orchestration is the architectural core. Must be solid before adding complex voice processing. Audio context setup (autoplay unlock, shared singleton) prevents critical pitfalls discovered in research.
+### Phase 1: Infrastructure & Voice Validation
+**Rationale:** Verify voice compatibility before investing in script annotation. API compatibility layer enables testing without regeneration. Foundational work blocks all subsequent phases.
 
 **Delivers:**
-- XState v5 machine with full narrative flow (all states, transitions, timeout handling)
-- React integration via `useMachine()` hook
-- Audio context singleton with autoplay unlock pattern
-- Basic UI shell (start button, phase visualizer, listening indicator)
-- Microphone permission flow with graceful error handling
+- Voice type verification (IVC vs PVC check via API)
+- Updated data model with `inflection` field
+- `v3-conversion.ts` utility with pause-to-tag logic
+- API route supporting both v2/v3 via env flag
+- SSML-to-tag shim for backward compatibility
 
 **Addresses:**
-- State machine with full scripted flow (FEATURES: must-have)
-- Clear audio feedback (FEATURES: table stakes)
-- Graceful failure handling foundation (FEATURES: table stakes)
+- Cloned voice + tags mismatch pitfall (test before committing)
+- v3 stability settings (establish baseline with cloned voice)
 
 **Avoids:**
-- Browser autoplay policy blocking (PITFALLS #1)
-- Microphone permission breaking immersion (PITFALLS #2)
-- State machine race conditions (PITFALLS #6)
+- Wasting generation credits on unsupported voice type
+- Breaking existing functionality (backward compatible approach)
 
-**Research flag:** Standard patterns. XState v5 well-documented, skip additional research.
-
----
-
-### Phase 2: Voice Processing Pipeline
-**Rationale:** TTS → STT → NLU pipeline is the core interaction. Must optimize for latency (streaming TTS) and accuracy (PT-BR transcription, NLU classification). This phase implements the critical path that determines UX quality.
+### Phase 2: Script Preparation & Tag Strategy
+**Rationale:** Literary judgment required to select appropriate emotional tags. PT-BR punctuation audit prevents delivery issues. Character budgeting controls costs. Cannot proceed to generation without validated script.
 
 **Delivers:**
-- TTS streaming via ElevenLabs (WebSocket → Web Audio API queuing)
-- STT transcription via Whisper (MediaRecorder → API route → language hints)
-- NLU binary classification via Claude Haiku (semantic understanding of imperfect transcripts)
-- Next.js API routes for all three services (server-side API key protection)
-- Ambient audio crossfading with Howler.js (phase transitions trigger 2-3s crossfades)
-- Intentional pause system (XState delayed transitions, SSML breaks)
+- PT-BR punctuation normalization (expand abbreviations, validate accents)
+- Script annotated with inflection tags (conservative approach: 1-2 per segment)
+- Tag allowlist based on Phase 1 voice testing
+- Character count audit (<4,500 per segment, <15% tag overhead)
+- Phase-level emotion mapping (APRESENTACAO: thoughtful, INFERNO: grave, etc.)
+
+**Addresses:**
+- PT-BR punctuation traps (preventive normalization)
+- Audio tag overuse (strategic placement with density limits)
+- Cost explosion from tag overhead (character budgeting)
 
 **Uses:**
-- ElevenLabs SDK for TTS streaming (STACK: core)
-- OpenAI Whisper API for STT (STACK: core)
-- Claude Haiku for NLU (STACK: core)
-- Howler.js for ambient audio (STACK: audio handling)
-- Web Audio API for TTS playback (STACK: audio handling)
-
-**Implements:**
-- Voice Pipeline Actors (ARCHITECTURE: component #2)
-- Ambient Audio Manager (ARCHITECTURE: component #3)
-- Next.js API Routes (ARCHITECTURE: component #4)
+- Recommended tags from STACK.md (thoughtful, whispers, sad, resigned tone)
+- Phase voice directions from FEATURES.md
 
 **Avoids:**
-- Network latency destroying flow (PITFALLS #3) — streaming TTS mitigates
-- ElevenLabs rate limiting (PITFALLS #4) — pre-record static content
-- Whisper transcription failures (PITFALLS #5) — language hints, semantic NLU
+- Robotic delivery from poor punctuation
+- Over-tagging causing instability
+- Unexpected cost overruns
 
-**Research flag:** NEEDS RESEARCH. ElevenLabs WebSocket streaming endpoint specifics, Whisper optimal parameters for PT-BR, Claude Haiku prompt engineering for binary classification with imperfect transcripts. `/gsd:research-phase` recommended during planning.
-
----
-
-### Phase 3: Polish, Resilience & Multi-Station
-**Rationale:** Live event requires bulletproof error handling, offline fallbacks, and multi-station isolation. This phase addresses all "looks done but isn't" items and operator workflow needs.
+### Phase 3: Audio Generation & Quality Validation
+**Rationale:** Generate audio only after script validated. Quality checks catch v3 static bug. Fallback strategy mitigates event risk. Full regeneration of 25 MP3s is expensive (time + cost), should happen once.
 
 **Delivers:**
-- Pre-cached fallback audio (MP3s for offline operation)
-- Network failure detection and graceful degradation
-- Session analytics (anonymous, LGPD-compliant, batch writes)
-- Admin dashboard (real-time station monitoring, session metrics)
-- Comprehensive error handling (timeout variations, fallback escalation)
-- Browser tab backgrounding detection and pause/resume
-- Multi-station isolation testing (3 concurrent sessions)
-- LGPD audit and cleanup enforcement
+- Updated `generate-audio.mjs` with v3 model_id and tag integration
+- 25 regenerated MP3s with emotional inflection (192kbps minimum)
+- Automated audio quality validation (RMS noise floor checks)
+- A/B comparison with v2 baseline
+- Backup v2 audio library
+
+**Implements:**
+- buildV3Text() conversion logic from Phase 1
+- Tag-annotated script from Phase 2
 
 **Addresses:**
-- Anonymous session analytics (FEATURES: should-have)
-- Session continuity (FEATURES: table stakes)
-- Predictable response timing with timeout handling (FEATURES: table stakes)
+- v3 character limit segmentation (enforced in script)
+- Audio quality degradation (output format validation)
+- v3 static noise bug (automated quality checks + retry logic)
 
 **Avoids:**
-- Internet drop with no recovery (PITFALLS #7)
-- Browser backgrounding breaking session (PITFALLS #7)
-- LGPD violation through audio persistence (PITFALLS #8)
-
-**Research flag:** Standard patterns. Supabase real-time subscriptions, offline-first strategies, LGPD compliance are well-documented. Skip additional research.
-
----
+- Wasting generation time on unvalidated tags
+- Serving noisy audio at event
+- Missing event deadline (backup v2 audio as failover)
 
 ### Phase Ordering Rationale
 
-- **Foundation first (Phase 1):** State machine is single source of truth. Audio system must unlock browser autoplay before voice pipeline can work. Microphone permissions must be tested early (cannot defer to late-stage testing).
+- **Phase 1 first (Infrastructure)**: Voice compatibility is a go/no-go decision. If cloned voice is PVC or doesn't support tags, entire approach changes (must create new IVC or use Voice Design). API compatibility layer enables safe testing before committing to full migration.
 
-- **Voice pipeline second (Phase 2):** Dependencies on foundation layer (audio context, state machine actors). Latency optimization requires all three APIs working together (cannot tune in isolation). Ambient audio depends on phase transitions from state machine.
+- **Phase 2 before Phase 3 (Script before Generation)**: Script annotation requires literary judgment and native PT-BR review. Cannot generate audio without knowing which tags to use. Tag strategy (conservative vs expressive) influences generation settings. Character counting prevents hitting 5,000 limit mid-generation.
 
-- **Polish last (Phase 3):** Requires working voice pipeline to test failure modes. Analytics only meaningful once full journey executes. Admin dashboard needs real sessions to monitor. LGPD compliance audit requires complete data flow.
+- **Phase 3 last (Generation)**: Most expensive phase in time and cost (~25 min generation + $15 credits). Should only run once with validated script. Quality checks prevent re-generation due to noise bugs. Backup v2 audio de-risks event dependency on v3 stability.
 
-**Interdependencies identified in research:**
-- TTS requires AudioContext unlock (Phase 1 → Phase 2)
-- NLU requires STT output (Phase 2 internal dependency)
-- Ambient audio requires state machine phase context (Phase 1 → Phase 2)
-- Analytics requires state machine events (Phase 1 → Phase 3)
-- Multi-station testing requires full pipeline (Phase 2 → Phase 3)
+**Dependency chain:** Voice validation → Script annotation → Audio generation (linear, no parallelization possible)
 
 ### Research Flags
 
-**Phases likely needing deeper research during planning:**
-- **Phase 2 (Voice Pipeline):** ElevenLabs streaming WebSocket endpoints and payload format may have changed since training data (Jan 2025). Whisper optimal parameters for short PT-BR utterances need empirical testing. Claude Haiku prompt engineering for handling transcription errors requires experimentation. **Recommend `/gsd:research-phase` before implementation.**
+Phases likely needing deeper research during planning:
+- **Phase 1:** Voice API check is straightforward (curl request), but tag testing requires empirical validation with cloned voice — allocate time for experimentation
+- **Phase 2:** PT-BR punctuation normalization may uncover edge cases not documented in TTS guides — consider native speaker review before finalizing
 
-**Phases with standard patterns (skip research-phase):**
-- **Phase 1 (Core State Machine):** XState v5 actor model well-documented, React `useMachine()` hook established pattern, Web Audio API stable specification.
-- **Phase 3 (Polish & Resilience):** Supabase client library standard patterns, offline-first strategies well-established, LGPD compliance requirements clear.
+Phases with standard patterns (skip research-phase):
+- **Phase 3:** ElevenLabs API calls are well-documented, generation script follows established batch processing pattern — implementation is mechanical once script ready
 
 ## Confidence Assessment
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| Stack | MEDIUM | Core technologies (Next.js, XState, React) are HIGH confidence based on stable APIs. API SDKs (ElevenLabs, Whisper, Claude) are MEDIUM — version numbers and endpoints not verified against current 2026 docs (training data Jan 2025). |
-| Features | HIGH | Voice UI patterns (timeout, fallback, VAD) are well-established industry standards. Feature requirements clearly derived from art installation context and conversation design best practices. |
-| Architecture | MEDIUM | State machine orchestration and actor model patterns are HIGH confidence (XState designed for this use case). Web Audio API and MediaRecorder API are stable specifications (HIGH). Integration patterns for specific API endpoints need verification (MEDIUM). |
-| Pitfalls | HIGH | Browser API pitfalls (autoplay policy, microphone permissions, AudioContext limits) are documented specifications. Live event failure modes (network drops, rate limits, race conditions) are established technical patterns. LGPD compliance requirements are clear. |
+| Stack | HIGH | Official ElevenLabs docs confirm model_id, endpoint, parameter changes. Multiple sources consistent on IVC/PVC recommendation. |
+| Features | HIGH | Audio tag categories documented in official blog posts. Table stakes features align with PRD script requirements. |
+| Architecture | HIGH | Data model changes straightforward. Conversion logic well-defined. API differences explicitly documented by ElevenLabs. |
+| Pitfalls | MEDIUM | Tag overuse and voice mismatch warnings from official troubleshooting docs. PT-BR punctuation impact inferred from general TTS linguistics (not PT-BR-specific v3 testing). |
 
-**Overall confidence:** MEDIUM
+**Overall confidence:** MEDIUM-HIGH
+
+Research based on official ElevenLabs documentation, but **no direct testing with PT-BR cloned voice and v3 tags**. All architectural recommendations verified from API reference, but tag effectiveness with `AcSHc9S7hdxvGEJVWFzo` voice requires empirical validation in Phase 1.
 
 ### Gaps to Address
 
-**API endpoint specifics (address during Phase 2 planning):**
-- ElevenLabs WebSocket streaming: exact endpoint URL, authentication flow, payload format, reconnection handling — verify against current API docs
-- Whisper API: confirm webm/opus format acceptance or need for conversion, test `language` and `prompt` parameters empirically with PT-BR short utterances
-- Claude Haiku: confirm model availability (`claude-3-5-haiku-20241022` or newer), test latency characteristics, validate prompt structure for binary classification
+- **Voice type verification**: Unknown whether `AcSHc9S7hdxvGEJVWFzo` is IVC or PVC. If PVC, must create new IVC or wait for PVC optimization before proceeding. **Handle in Phase 1:** API call to `/v1/voices`, check category field. Blocking issue if PVC.
 
-**Browser compatibility (address during Phase 1 implementation):**
-- MediaRecorder `mimeType` support across Chrome/Edge/Firefox on Windows — test target browser environment
-- Autoplay policy variations — test production build on remote device (not localhost exempt)
-- AudioContext suspension behavior — verify Web Audio API state management across browsers
+- **Tag effectiveness in PT-BR**: Audio tags documented with English examples. Unclear if tags like `[thoughtful]` register identically when surrounding text is Portuguese. **Handle in Phase 1:** Generate test samples with 5-10 tags, listen for emotional shifts. Adjust tag selection based on what works.
 
-**Performance validation (address during Phase 2 implementation):**
-- End-to-end latency measurement: instrument full pipeline (speech → transcription → classification → TTS playback) to validate <3s target
-- ElevenLabs rate limits: load test 3 concurrent sessions, confirm tier supports expected concurrency
-- Whisper transcription accuracy: benchmark with actual event headphones + background noise simulation
+- **Optimal pause conversion thresholds**: Research suggests `[pause]` vs `[long pause]` mapping, but no documented millisecond thresholds for perceptual equivalence to SSML breaks. **Handle in Phase 2:** A/B test different conversion thresholds (e.g., 1.5s vs 2s for `[pause]`), pick closest match to current audio timing.
 
-**LGPD compliance audit (address during Phase 3 implementation):**
-- Code review: verify zero audio persistence beyond session (no localStorage, IndexedDB, Supabase storage)
-- Analytics schema verification: confirm no PII, no transcription text, only session metadata (path, timing, fallback count)
-- Operator training checklist: ensure DevTools never opened during live sessions, no screenshots of visitor audio data
+- **Cloned voice stability mode**: Unknown whether Natural (0.4-0.6) or Creative (0.0-0.4) mode works better with `AcSHc9S7hdxvGEJVWFzo`. **Handle in Phase 1:** Generate same phrase with three modes, blind listen test, document baseline settings.
+
+- **Cost accuracy**: Estimated $15 for v3 generation based on character count projections. Actual cost may vary if audio tags add more overhead than expected. **Handle in Phase 3:** Monitor API credit consumption during first few generations, adjust budget if needed. $50 total milestone budget has cushion.
 
 ## Sources
 
 ### Primary (HIGH confidence)
-- **XState v5 documentation** (training data through Jan 2025): Actor model, `fromPromise`, `useMachine` hook patterns — stable API since mid-2024
-- **Web Audio API specification** (MDN training data): AudioContext lifecycle, decodeAudioData, AudioBufferSourceNode, autoplay policies — W3C standard
-- **MediaRecorder API specification** (MDN training data): Browser audio capture, blob handling, MIME type support — W3C standard
-- **Next.js 14 App Router** (training data through Jan 2025): API route patterns, streaming support, React Server Components
-- **Browser autoplay policies** (Chrome/Firefox/Safari vendor docs, training data): User interaction requirements, AudioContext unlocking patterns
+- [ElevenLabs Models Documentation](https://elevenlabs.io/docs/overview/models) — Model IDs, v3 capabilities, language support
+- [ElevenLabs Text-to-Speech API Reference](https://elevenlabs.io/docs/api-reference/text-to-speech/convert) — API parameters, request format, character limits
+- [ElevenLabs v3 Audio Tags Blog](https://elevenlabs.io/blog/v3-audiotags) — Tag syntax, categories, usage examples
+- [ElevenLabs Best Practices](https://elevenlabs.io/docs/overview/capabilities/text-to-speech/best-practices) — v2 vs v3 differences, SSML deprecation
+- [ElevenLabs Voice Cloning Overview](https://elevenlabs.io/docs/eleven-creative/voices/voice-cloning) — IVC vs PVC comparison, v3 optimization status
+- [ElevenLabs SSML Support FAQ](https://help.elevenlabs.io/hc/en-us/articles/24352686926609-Do-pauses-and-SSML-phoneme-tags-work-with-the-API) — Explicit confirmation v3 does not support SSML breaks
 
 ### Secondary (MEDIUM confidence)
-- **ElevenLabs API patterns** (training data through Jan 2025): WebSocket streaming general architecture, multilingual_v2 model for PT-BR, voice parameter controls — specific endpoints need verification
-- **OpenAI Whisper API** (training data through Jan 2025): whisper-1 model, language hint parameters, expected latency ranges — API stable since 2023
-- **Claude Haiku API** (training data late 2024): Model announced Oct 2024, expected latency characteristics, prompt engineering patterns — model availability should be verified
-- **Howler.js documentation** (training data through Jan 2025): Fade methods, preloading, loop patterns — v2.2.x stable, minimal API changes expected
-- **Supabase client library** (training data through Jan 2025): Real-time subscriptions, RLS policies, connection pooling — v2.x API backward compatible
+- [ElevenLabs v3 Emotional Context Blog](https://elevenlabs.io/blog/eleven-v3-audio-tags-expressing-emotional-context-in-speech) — Emotional tag examples
+- [ElevenLabs v3 Situational Awareness Blog](https://elevenlabs.io/blog/eleven-v3-situational-awareness) — Situational tag examples
+- [Audio Generation Plugin v3 Guide](https://audio-generation-plugin.com/elevenlabs-v3/) — Comprehensive tag reference (1806+ tags claimed, unverified count)
+- [ElevenLabs Troubleshooting Docs](https://elevenlabs.io/docs/eleven-creative/troubleshooting) — Tag overuse warnings, quality issues
+- [Portuguese Punctuation Guide (philipebrazuca.com)](https://philipebrazuca.com/en/punctuation-marks-in-portuguese/) — Travessão and vírgula usage rules
+- [TTS Benchmark 2025 (smallest.ai)](https://smallest.ai/blog/tts-benchmark-2025-smallestai-vs-elevenlabs-report) — MOS metrics, quality validation tools
 
-### Tertiary (LOW confidence, needs validation)
-- **Live event failure modes**: Network drops during high-density WiFi (200-500 attendees), API rate limit behavior during concurrent usage spikes — patterns synthesized from general technical knowledge
-- **PT-BR Whisper accuracy**: Performance on short whispered utterances with ambient noise — extrapolated from general Whisper behavior, needs empirical testing
-- **ElevenLabs rate limits**: Concurrent request limits for paid tiers — mentioned in research but not verified against current pricing/limits
-
-**Limitations:**
-- Web search and documentation fetch were unavailable during research (no internet access for verification)
-- API SDK versions and endpoints reflect training data through January 2025, may have minor changes by March 2026
-- ElevenLabs streaming WebSocket endpoint format not verified against current docs
-- Claude Haiku model ID for 2026 not confirmed (training data shows Oct 2024 release)
-
-**Recommended validation before implementation:**
-1. Verify all API SDK versions against current npm registry (March 2026)
-2. Test ElevenLabs WebSocket streaming endpoint and payload format from official docs
-3. Confirm Claude Haiku model availability and pricing
-4. Benchmark Whisper transcription accuracy with target hardware (headphones + mic) and PT-BR test phrases
-5. Load test API rate limits with 3 concurrent sessions to validate tier selection
+### Tertiary (LOW confidence)
+- [ElevenLabs v3 Static Noise Incident (Feb 2026)](https://status.elevenlabs.io/incidents/01KHDRZJ5NGS88YZZRFWBNRZ4S) — Bug report, ~1.5% request failure rate (resolved)
+- [PT-BR TTS Challenges Discussion](https://community.openai.com/t/text-to-speech-modulating-between-european-and-brazilian-portuguese/829695) — Accent mixing reports (OpenAI TTS, not ElevenLabs, but relevant as general PT-BR concern)
 
 ---
-*Research completed: 2026-03-24*
+*Research completed: 2026-03-26*
 *Ready for roadmap: yes*

@@ -1,983 +1,584 @@
-# Architecture Research: Interactive Voice Agent
+# Architecture Research: ElevenLabs v3 Integration
 
-**Domain:** Real-time voice interaction with scripted flow orchestration
-**Researched:** 2026-03-24
-**Confidence:** MEDIUM (based on framework documentation knowledge and established patterns; web verification blocked)
+**Domain:** Text-to-Speech Migration (v2 → v3 with inflection)
+**Researched:** 2026-03-26
+**Confidence:** HIGH
 
-## System Overview
+## Executive Summary
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     React Component Layer                        │
-│  ┌────────────┐  ┌─────────────┐  ┌──────────────┐              │
-│  │   UI View  │  │ Audio Player│  │ Mic Indicator│              │
-│  └──────┬─────┘  └──────┬──────┘  └──────┬───────┘              │
-│         │               │                │                       │
-│         └───────────────┴────────────────┘                       │
-│                         │                                        │
-│                    useMachine()                                  │
-├─────────────────────────┴────────────────────────────────────────┤
-│                   XState Orchestration Layer                     │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │              State Machine (OracleStateMachine)          │   │
-│  │  States: idle → intro → question1 → listening1 →         │   │
-│  │          processing1 → question2 → ... → ending          │   │
-│  │                                                           │   │
-│  │  Actors (spawned services):                              │   │
-│  │    - TTSActor (ElevenLabs streaming)                     │   │
-│  │    - STTActor (mic capture + Whisper)                    │   │
-│  │    - NLUActor (Claude classification)                    │   │
-│  │    - AmbientAudioActor (Howler.js manager)               │   │
-│  │    - AnalyticsActor (Supabase logger)                    │   │
-│  └──────────────────────────────────────────────────────────┘   │
-├─────────────────────────────────────────────────────────────────┤
-│                      Service Layer                               │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐        │
-│  │  TTS     │  │  STT     │  │  NLU     │  │ Ambient  │        │
-│  │ Service  │  │ Service  │  │ Service  │  │ Audio Mgr│        │
-│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘        │
-├───────┴──────────────┴─────────────┴──────────────┴──────────────┤
-│                        API Layer                                 │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │  Next.js API Routes (/api/*)                             │   │
-│  │    - /api/tts/stream (ElevenLabs proxy)                  │   │
-│  │    - /api/stt/transcribe (Whisper)                       │   │
-│  │    - /api/nlu/classify (Claude Haiku)                    │   │
-│  │    - /api/analytics/log (Supabase)                       │   │
-│  └──────────────────────────────────────────────────────────┘   │
-├─────────────────────────────────────────────────────────────────┤
-│                    External Services                             │
-│  ┌─────────────┐  ┌─────────┐  ┌────────┐  ┌──────────┐        │
-│  │ ElevenLabs  │  │ Whisper │  │ Claude │  │ Supabase │        │
-│  │  Streaming  │  │   API   │  │  API   │  │ Postgres │        │
-│  └─────────────┘  └─────────┘  └────────┘  └──────────┘        │
-└─────────────────────────────────────────────────────────────────┘
-```
+ElevenLabs v3 (`eleven_v3` model_id) introduces audio tags for emotional control but **removes SSML `<break>` support**, requiring migration from the current v2 architecture that uses SSML breaks for pauses. The API endpoint remains the same (`POST /v1/text-to-speech/{voiceId}`), but requires data model changes to support inline audio tags and new pause syntax.
 
-## Component Responsibilities
+**Critical architectural change:** Move from SSML break tags (`<break time="2.1s" />`) to v3 audio tags (`[pause]`, `[long pause]`) while adding emotional inflection tags (`[thoughtful]`, `[whispers]`, `[sad]`).
 
-| Component | Responsibility | Typical Implementation |
-|-----------|----------------|------------------------|
-| **OracleStateMachine** | Orchestrate entire interaction flow, manage state transitions, spawn/supervise actors | XState v5 machine with nested states, invoked actors, and transition guards |
-| **TTSActor** | Stream TTS audio from ElevenLabs, manage playback lifecycle, signal completion | XState actor with promise-based logic, WebSocket handling, Web Audio API integration |
-| **STTActor** | Capture microphone input, send to Whisper, return transcript | XState actor with MediaRecorder API, blob chunking, API route communication |
-| **NLUActor** | Send transcript to Claude Haiku, classify response, return decision | XState actor calling Next.js API route, handles timeout/retry logic |
-| **AmbientAudioActor** | Manage background soundscapes, crossfade between phases | Howler.js wrapper with fade curves, preloading, and volume management |
-| **AnalyticsActor** | Buffer session events, batch write to Supabase at session end | Event collector with batched writes via API route |
-| **API Routes** | Proxy external API calls, handle secrets, add retry logic | Next.js App Router route handlers (`/app/api/*/route.ts`) |
+## Current Architecture (v2 Baseline)
 
-## Recommended Project Structure
+### System Overview
 
 ```
-app/
-├── api/                        # Next.js API routes
-│   ├── tts/
-│   │   └── stream/route.ts     # ElevenLabs streaming proxy
-│   ├── stt/
-│   │   └── transcribe/route.ts # Whisper transcription
-│   ├── nlu/
-│   │   └── classify/route.ts   # Claude Haiku classification
-│   └── analytics/
-│       └── log/route.ts        # Supabase logging
-├── oracle/
-│   └── page.tsx                # Main oracle experience page
-├── admin/
-│   └── page.tsx                # Admin panel
-└── layout.tsx                  # Root layout
-
-lib/
-├── machines/
-│   ├── oracleMachine.ts        # Main state machine definition
-│   └── types.ts                # Machine context and event types
-├── actors/
-│   ├── ttsActor.ts             # TTS streaming actor
-│   ├── sttActor.ts             # Speech-to-text actor
-│   ├── nluActor.ts             # NLU classification actor
-│   ├── ambientAudioActor.ts    # Ambient audio manager actor
-│   └── analyticsActor.ts       # Analytics logging actor
-├── services/
-│   ├── tts.ts                  # TTS service (WebSocket client)
-│   ├── stt.ts                  # STT service (MediaRecorder wrapper)
-│   ├── nlu.ts                  # NLU service (API client)
-│   ├── ambientAudio.ts         # Howler.js wrapper
-│   └── analytics.ts            # Analytics service
-├── audio/
-│   ├── audioContext.ts         # Shared Web Audio API context
-│   ├── streamPlayer.ts         # Streaming audio player
-│   └── microphoneCapture.ts    # Microphone capture utility
-└── content/
-    ├── script.ts               # Full Dante journey script
-    └── audioAssets.ts          # Ambient sound file references
-
-components/
-├── OracleExperience.tsx        # Main experience component (uses machine)
-├── PhaseVisualizer.tsx         # Visual feedback (Inferno/Purg/Paradise)
-├── MicIndicator.tsx            # Listening state indicator
-└── AdminDashboard.tsx          # Real-time monitoring
-
-public/
-└── audio/
-    ├── inferno-ambient.mp3     # Ambient tracks
-    ├── purgatorio-ambient.mp3
-    └── paradiso-ambient.mp3
+┌─────────────────────────────────────────────────────────────┐
+│                    Presentation Layer                        │
+│  ┌──────────────────┐  ┌──────────────────┐                 │
+│  │ OracleExperience │  │ AdminDashboard   │                 │
+│  └────────┬─────────┘  └──────────────────┘                 │
+│           │ (TTS requests)                                   │
+├───────────┴──────────────────────────────────────────────────┤
+│                      Service Layer                           │
+│  ┌─────────────────────────────────────────────────┐         │
+│  │  ITTSService (interface)                        │         │
+│  │  ├── ElevenLabsTTSService (real API)            │         │
+│  │  └── FallbackTTSService (pre-recorded MP3s)     │         │
+│  └─────────┬───────────────────────────────────────┘         │
+├────────────┴───────────────────────────────────────────────┤
+│                       API Layer                              │
+│  ┌──────────────────────────────────────────────┐            │
+│  │  /api/tts (Next.js API route)                │            │
+│  │  - POST text + voice_settings                │            │
+│  │  - Returns audio/mpeg stream                 │            │
+│  │  - Calls ElevenLabs /v1/text-to-speech       │            │
+│  └──────────────────┬───────────────────────────┘            │
+├─────────────────────┴──────────────────────────────────────┤
+│                     Data Layer                               │
+│  ┌──────────────────────────────────────────────┐            │
+│  │  src/data/script.ts                          │            │
+│  │  SpeechSegment[] { text, pauseAfter }        │            │
+│  │  - 25 script keys (APRESENTACAO, etc)        │            │
+│  │  - SSML breaks generated from pauseAfter     │            │
+│  └──────────────────────────────────────────────┘            │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### Structure Rationale
-
-- **`lib/machines/`**: State machine is the single source of truth for flow control. Isolated for testability.
-- **`lib/actors/`**: Each async operation (TTS, STT, NLU, audio, analytics) is an XState actor. Actors are spawned by the machine and communicate via events.
-- **`lib/services/`**: Pure functions/classes wrapping external APIs and browser APIs. No state management. Called by actors.
-- **`lib/audio/`**: Low-level audio utilities shared across actors. Centralized AudioContext prevents multiple context issues.
-- **`app/api/`**: All external API calls proxied through Next.js routes for security (API keys server-side only).
-- **`components/`**: React components consume machine state via `useMachine()` hook. Purely presentational.
-
-## Architectural Patterns
-
-### Pattern 1: State Machine as Orchestrator (Actor Model)
-
-**What:** XState v5 machine spawns and supervises all async operations as actors. Actors communicate with parent machine via events. Machine transitions based on actor outcomes.
-
-**When to use:** Complex multi-step flows with async dependencies, timeouts, error handling, and precise state management.
-
-**Trade-offs:**
-- **Pros:** Deterministic flow, easy to visualize, testable in isolation, handles edge cases (timeout, error, retry) declaratively
-- **Cons:** Learning curve, more boilerplate than ad-hoc promises, overkill for simple linear flows
-
-**Example:**
+### Current Data Model
 
 ```typescript
-// lib/machines/oracleMachine.ts
-import { setup, fromPromise, assign } from 'xstate';
-import { ttsActor } from '../actors/ttsActor';
-import { sttActor } from '../actors/sttActor';
-import { nluActor } from '../actors/nluActor';
-
-export const oracleMachine = setup({
-  types: {
-    context: {} as {
-      currentPhase: 'inferno' | 'purgatorio' | 'paradiso';
-      transcript: string;
-      classification: 'option_a' | 'option_b' | 'silence';
-      sessionId: string;
-      choices: string[];
-    },
-    events: {} as
-      | { type: 'START' }
-      | { type: 'TTS_COMPLETE' }
-      | { type: 'TRANSCRIPT_READY'; transcript: string }
-      | { type: 'CLASSIFICATION_READY'; result: string }
-      | { type: 'TIMEOUT' }
-  },
-  actors: {
-    ttsActor,
-    sttActor,
-    nluActor,
-  }
-}).createMachine({
-  id: 'oracle',
-  initial: 'idle',
-  context: {
-    currentPhase: 'inferno',
-    transcript: '',
-    classification: 'silence',
-    sessionId: crypto.randomUUID(),
-    choices: [],
-  },
-  states: {
-    idle: {
-      on: { START: 'intro' }
-    },
-    intro: {
-      invoke: {
-        src: 'ttsActor',
-        input: ({ context }) => ({
-          text: "Bem-vindo à jornada...",
-          voiceId: 'inferno-voice'
-        }),
-        onDone: 'question1',
-        onError: 'error'
-      }
-    },
-    question1: {
-      invoke: {
-        src: 'ttsActor',
-        input: ({ context }) => ({
-          text: "Primeira pergunta do Inferno...",
-          voiceId: 'inferno-voice'
-        }),
-        onDone: 'listening1',
-      }
-    },
-    listening1: {
-      invoke: {
-        src: 'sttActor',
-        input: { timeout: 15000 },
-        onDone: {
-          target: 'processing1',
-          actions: assign({
-            transcript: ({ event }) => event.output.transcript
-          })
-        },
-        onError: 'fallback1'
-      }
-    },
-    processing1: {
-      invoke: {
-        src: 'nluActor',
-        input: ({ context }) => ({
-          transcript: context.transcript,
-          question: 'question1'
-        }),
-        onDone: {
-          target: 'question2',
-          actions: assign({
-            classification: ({ event }) => event.output.result,
-            choices: ({ context, event }) => [
-              ...context.choices,
-              event.output.result
-            ]
-          })
-        }
-      }
-    },
-    fallback1: {
-      // Handle timeout/error with poetic redirect
-      invoke: {
-        src: 'ttsActor',
-        input: { text: "O silêncio também é uma escolha...", voiceId: 'inferno-voice' },
-        onDone: {
-          target: 'question2',
-          actions: assign({
-            classification: 'silence',
-            choices: ({ context }) => [...context.choices, 'silence']
-          })
-        }
-      }
-    },
-    question2: {
-      // ... similar pattern
-    },
-    error: {
-      // Error state
-    }
-  }
-});
-```
-
-### Pattern 2: Streaming TTS with Web Audio API
-
-**What:** ElevenLabs streams audio chunks via WebSocket. Chunks are decoded and queued in Web Audio API for gapless playback.
-
-**When to use:** Low-latency TTS where waiting for full audio generation is too slow. Perception of instant response.
-
-**Trade-offs:**
-- **Pros:** Audio starts playing in ~300ms (vs 2-3s for full generation), feels more responsive
-- **Cons:** More complex error handling, network interruption = audio cuts off, requires WebSocket management
-
-**Example:**
-
-```typescript
-// lib/services/tts.ts
-export class TTSStreamService {
-  private audioContext: AudioContext;
-  private audioQueue: AudioBufferSourceNode[] = [];
-  private nextStartTime = 0;
-
-  constructor(audioContext: AudioContext) {
-    this.audioContext = audioContext;
-  }
-
-  async streamSpeech(text: string, voiceId: string): Promise<void> {
-    const ws = new WebSocket(`wss://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream`);
-
-    return new Promise((resolve, reject) => {
-      ws.onopen = () => {
-        ws.send(JSON.stringify({
-          text,
-          model_id: "eleven_turbo_v2",
-          output_format: "pcm_24000"
-        }));
-      };
-
-      ws.onmessage = async (event) => {
-        const chunk = await event.data.arrayBuffer();
-        const audioBuffer = await this.audioContext.decodeAudioData(chunk);
-        this.queueAudioBuffer(audioBuffer);
-      };
-
-      ws.onclose = () => resolve();
-      ws.onerror = (err) => reject(err);
-    });
-  }
-
-  private queueAudioBuffer(buffer: AudioBuffer) {
-    const source = this.audioContext.createBufferSource();
-    source.buffer = buffer;
-    source.connect(this.audioContext.destination);
-
-    const startTime = Math.max(this.audioContext.currentTime, this.nextStartTime);
-    source.start(startTime);
-    this.nextStartTime = startTime + buffer.duration;
-
-    this.audioQueue.push(source);
-    source.onended = () => {
-      const index = this.audioQueue.indexOf(source);
-      if (index > -1) this.audioQueue.splice(index, 1);
-    };
-  }
-
-  stop() {
-    this.audioQueue.forEach(source => source.stop());
-    this.audioQueue = [];
-    this.nextStartTime = 0;
-  }
+interface SpeechSegment {
+  text: string;
+  pauseAfter?: number; // milliseconds
 }
+
+// Usage in script.ts:
+APRESENTACAO: [
+  { text: "Você saiu de uma selva escura.", pauseAfter: 2100 },
+  // ...
+]
+
+// Conversion in generate-audio.mjs:
+// pauseAfter: 2100 → "<break time="2.1s" />"
 ```
 
-### Pattern 3: MediaRecorder + Chunked Upload for STT
-
-**What:** Use MediaRecorder API to capture microphone audio in small chunks (e.g., 1 second). When recording complete, concatenate chunks and send to Whisper via Next.js API route.
-
-**When to use:** Browser-based audio capture for speech recognition. Allows real-time visualization (waveform) while minimizing latency.
-
-**Trade-offs:**
-- **Pros:** Native browser API, works across devices, can show live waveform, minimal setup
-- **Cons:** Format inconsistencies across browsers (webm/ogg), requires server-side conversion for some STT APIs
-
-**Example:**
+### Current API Request (v2)
 
 ```typescript
-// lib/services/stt.ts
-export class STTService {
-  private mediaRecorder: MediaRecorder | null = null;
-  private audioChunks: Blob[] = [];
-
-  async startRecording(): Promise<void> {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    this.mediaRecorder = new MediaRecorder(stream, {
-      mimeType: 'audio/webm;codecs=opus'
-    });
-
-    this.audioChunks = [];
-
-    this.mediaRecorder.ondataavailable = (event) => {
-      if (event.data.size > 0) {
-        this.audioChunks.push(event.data);
-      }
-    };
-
-    this.mediaRecorder.start(1000); // Chunk every 1 second
-  }
-
-  async stopRecording(): Promise<string> {
-    return new Promise((resolve, reject) => {
-      if (!this.mediaRecorder) {
-        reject(new Error('No active recording'));
-        return;
-      }
-
-      this.mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(this.audioChunks, { type: 'audio/webm' });
-        const transcript = await this.transcribe(audioBlob);
-        resolve(transcript);
-      };
-
-      this.mediaRecorder.stop();
-      this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
-    });
-  }
-
-  private async transcribe(audioBlob: Blob): Promise<string> {
-    const formData = new FormData();
-    formData.append('audio', audioBlob, 'recording.webm');
-
-    const response = await fetch('/api/stt/transcribe', {
-      method: 'POST',
-      body: formData,
-    });
-
-    const { transcript } = await response.json();
-    return transcript;
-  }
-}
-```
-
-### Pattern 4: Ambient Audio Crossfade with Howler.js
-
-**What:** Preload ambient audio tracks for each phase. When phase transitions, crossfade from current track to next using volume tweening.
-
-**When to use:** Background soundscapes that change with narrative context. Smoother than abrupt stops.
-
-**Trade-offs:**
-- **Pros:** Professional audio transitions, Howler.js handles format fallbacks and mobile quirks
-- **Cons:** Requires preloading all tracks (bandwidth), careful volume curve tuning for natural feel
-
-**Example:**
-
-```typescript
-// lib/services/ambientAudio.ts
-import { Howl } from 'howler';
-
-export class AmbientAudioManager {
-  private tracks: Map<string, Howl> = new Map();
-  private currentTrack: Howl | null = null;
-
-  constructor() {
-    this.preloadTracks();
-  }
-
-  private preloadTracks() {
-    const phases = {
-      inferno: '/audio/inferno-ambient.mp3',
-      purgatorio: '/audio/purgatorio-ambient.mp3',
-      paradiso: '/audio/paradiso-ambient.mp3',
-    };
-
-    Object.entries(phases).forEach(([phase, src]) => {
-      const howl = new Howl({
-        src: [src],
-        loop: true,
-        volume: 0,
-        preload: true,
-      });
-      this.tracks.set(phase, howl);
-    });
-  }
-
-  async transitionTo(phase: string, duration: number = 2000): Promise<void> {
-    const nextTrack = this.tracks.get(phase);
-    if (!nextTrack) return;
-
-    // Start new track at volume 0
-    nextTrack.play();
-    nextTrack.fade(0, 0.7, duration);
-
-    // Fade out current track
-    if (this.currentTrack && this.currentTrack !== nextTrack) {
-      this.currentTrack.fade(0.7, 0, duration);
-      setTimeout(() => {
-        this.currentTrack?.stop();
-      }, duration);
-    }
-
-    this.currentTrack = nextTrack;
-  }
-
-  stop() {
-    this.currentTrack?.fade(0.7, 0, 1000);
-    setTimeout(() => {
-      this.currentTrack?.stop();
-    }, 1000);
-  }
-}
-```
-
-### Pattern 5: Actor-Based Async Coordination
-
-**What:** Each async operation (TTS, STT, NLU) is an XState actor that can be invoked, stopped, or supervised. Actors send events to parent machine when complete/error.
-
-**When to use:** Multiple concurrent async operations need coordination, cancellation, timeout handling.
-
-**Trade-offs:**
-- **Pros:** Declarative error handling, easy cancellation, timeout handling built-in, testable
-- **Cons:** More abstraction than raw promises, requires XState knowledge
-
-**Example:**
-
-```typescript
-// lib/actors/ttsActor.ts
-import { fromPromise } from 'xstate';
-import { TTSStreamService } from '../services/tts';
-
-export const ttsActor = fromPromise(async ({ input }: {
-  input: { text: string; voiceId: string }
-}) => {
-  const audioContext = new AudioContext();
-  const ttsService = new TTSStreamService(audioContext);
-
-  await ttsService.streamSpeech(input.text, input.voiceId);
-
-  return { success: true };
-});
-
-// lib/actors/sttActor.ts
-import { fromPromise } from 'xstate';
-import { STTService } from '../services/stt';
-
-export const sttActor = fromPromise(async ({ input }: {
-  input: { timeout: number }
-}) => {
-  const sttService = new STTService();
-
-  await sttService.startRecording();
-
-  // Wait for timeout or manual stop
-  const transcript = await Promise.race([
-    sttService.stopRecording(),
-    new Promise<string>((resolve) =>
-      setTimeout(() => {
-        sttService.stopRecording().then(resolve);
-      }, input.timeout)
-    )
-  ]);
-
-  return { transcript };
-});
-
-// lib/actors/nluActor.ts
-import { fromPromise } from 'xstate';
-
-export const nluActor = fromPromise(async ({ input }: {
-  input: { transcript: string; question: string }
-}) => {
-  const response = await fetch('/api/nlu/classify', {
+// /api/tts/route.ts
+const response = await fetch(
+  `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream`,
+  {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Accept': 'audio/mpeg',
+      'Content-Type': 'application/json',
+      'xi-api-key': apiKey,
+    },
     body: JSON.stringify({
-      transcript: input.transcript,
-      question: input.question,
+      text: body.text, // Contains SSML breaks
+      model_id: 'eleven_multilingual_v2',
+      voice_settings: {
+        stability: 0.75,
+        similarity_boost: 0.75,
+        style: 0.35,
+        use_speaker_boost: true,
+      },
     }),
-  });
-
-  const { result } = await response.json();
-  return { result };
-});
+  }
+);
 ```
 
-## Data Flow
+### Current Generation Script
 
-### Interaction Cycle (per question)
+```javascript
+// scripts/generate-audio.mjs
+function buildTextWithPauses(segments) {
+  let fullText = '';
+  for (let i = 0; i < segments.length; i++) {
+    const seg = segments[i];
+    fullText += seg.text;
+    if (seg.pauseAfter && i < segments.length - 1) {
+      let remainingMs = seg.pauseAfter;
+      while (remainingMs > 0) {
+        const breakMs = Math.min(remainingMs, 3000);
+        fullText += ` <break time="${(breakMs / 1000).toFixed(1)}s" /> `;
+        remainingMs -= breakMs;
+      }
+    }
+  }
+  return fullText;
+}
 
-```
-[State Machine: question state]
-    ↓ invoke ttsActor
-[TTS Actor] → [TTS Service] → [ElevenLabs WebSocket] → [Audio chunks]
-    ↓                                                         ↓
-[Web Audio API queue] → [Speaker playback]
-    ↓ onDone event
-[State Machine: listening state]
-    ↓ invoke sttActor
-[STT Actor] → [STT Service] → [MediaRecorder capture] → [Audio blob]
-    ↓                                                         ↓
-[Next.js API route] → [Whisper API] → [Transcript]
-    ↓ onDone event with transcript
-[State Machine: processing state]
-    ↓ invoke nluActor
-[NLU Actor] → [Next.js API route] → [Claude Haiku] → [Classification]
-    ↓ onDone event with classification
-[State Machine: next question state (based on classification)]
-```
-
-### State Machine Event Flow
-
-```
-User clicks "Start"
-    ↓
-{ type: 'START' } → State Machine
-    ↓
-State: intro (invoke ttsActor)
-    ↓
-TTS complete → { type: 'TTS_COMPLETE' }
-    ↓
-State: question1 (invoke ttsActor)
-    ↓
-TTS complete → { type: 'TTS_COMPLETE' }
-    ↓
-State: listening1 (invoke sttActor)
-    ↓
-STT complete → { type: 'TRANSCRIPT_READY', transcript: "..." }
-    ↓
-State: processing1 (invoke nluActor)
-    ↓
-NLU complete → { type: 'CLASSIFICATION_READY', result: "option_a" }
-    ↓
-State: question2 (selected based on result)
+// Generates one API call per script key (25 MP3 files)
+// Full script text with baked-in SSML breaks
 ```
 
-### Ambient Audio Phase Transitions
+## Proposed v3 Architecture
 
-```
-State Machine enters new phase
-    ↓
-Action: assign({ currentPhase: 'purgatorio' })
-    ↓
-React component detects context.currentPhase change
-    ↓
-useEffect(() => ambientAudio.transitionTo('purgatorio'), [currentPhase])
-    ↓
-Howler.js crossfades tracks (2s fade duration)
+### New Data Model
+
+**RECOMMENDATION:** Add `inflection` field to `SpeechSegment` and convert `pauseAfter` to audio tags at render time.
+
+```typescript
+// src/types/index.ts
+interface SpeechSegment {
+  text: string;
+  pauseAfter?: number; // milliseconds (keep for backward compat)
+  inflection?: string[]; // NEW: e.g., ["thoughtful"], ["whispers", "sad"]
+}
+
+// Example usage:
+APRESENTACAO: [
+  {
+    text: "Você saiu de uma selva escura.",
+    pauseAfter: 2100,
+    inflection: ["thoughtful"],
+  },
+  {
+    text: "Eu não consigo sonhar.",
+    pauseAfter: 2100,
+    inflection: ["sad", "whispers"],
+  },
+]
 ```
 
-### Analytics Data Collection
+### Audio Tag Conversion Logic
 
+```typescript
+// src/lib/audio/v3-conversion.ts (NEW FILE)
+export function convertPauseToTag(pauseMs: number): string {
+  if (pauseMs < 500) return '';
+  if (pauseMs < 1500) return '[short pause]';
+  if (pauseMs < 3000) return '[pause]';
+  return '[long pause]';
+}
+
+export function buildV3Text(segments: SpeechSegment[]): string {
+  let fullText = '';
+  for (let i = 0; i < segments.length; i++) {
+    const seg = segments[i];
+
+    // Add inflection tags at start of segment
+    if (seg.inflection && seg.inflection.length > 0) {
+      fullText += seg.inflection.map(t => `[${t}]`).join('');
+    }
+
+    fullText += seg.text;
+
+    // Add pause tag after segment
+    if (seg.pauseAfter && i < segments.length - 1) {
+      const pauseTag = convertPauseToTag(seg.pauseAfter);
+      if (pauseTag) fullText += ` ${pauseTag} `;
+    } else if (i < segments.length - 1) {
+      fullText += ' ';
+    }
+  }
+  return fullText;
+}
 ```
-State Machine transitions
-    ↓
-Action: send({ type: 'LOG_EVENT', data: {...} }) to analyticsActor
-    ↓
-Analytics Actor buffers events in memory
-    ↓
-State Machine reaches 'ending' state
-    ↓
-Analytics Actor invoked with 'FLUSH' event
-    ↓
-Batch POST to /api/analytics/log
-    ↓
-Supabase insert session + events
+
+### Updated API Route
+
+```typescript
+// /api/tts/route.ts
+export async function POST(request: NextRequest) {
+  // ... validation ...
+
+  const elevenLabsResponse = await callElevenLabsWithRetry(
+    `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream`,
+    {
+      method: 'POST',
+      headers: {
+        'Accept': 'audio/mpeg',
+        'Content-Type': 'application/json',
+        'xi-api-key': apiKey,
+      },
+      body: JSON.stringify({
+        text: body.text, // NOW contains audio tags, not SSML
+        model_id: 'eleven_v3', // CHANGED from eleven_multilingual_v2
+        voice_settings: {
+          stability: body.voice_settings.stability,
+          similarity_boost: body.voice_settings.similarity_boost,
+          style: body.voice_settings.style,
+          // NOTE: v3 does NOT use speed parameter
+        },
+      }),
+    }
+  );
+  // ... return stream ...
+}
 ```
+
+### Updated Generation Script
+
+```javascript
+// scripts/generate-audio.mjs
+import { buildV3Text } from '../src/lib/audio/v3-conversion.ts'; // Need to convert to .mjs or use import
+
+async function generateAudio(key, segments, voiceSettings) {
+  const text = buildV3Text(segments); // NEW: uses audio tags
+  const url = `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}?output_format=mp3_44100_128`;
+
+  const body = {
+    text,
+    model_id: 'eleven_v3', // CHANGED
+    voice_settings: {
+      stability: voiceSettings.stability,
+      similarity_boost: voiceSettings.similarity_boost,
+      style: voiceSettings.style,
+      // REMOVED: speed (v3 infers from audio tags)
+    },
+    language_code: 'pt',
+  };
+
+  // ... same fetch logic ...
+}
+```
+
+## Migration Strategy: Two-Phase Approach
+
+### Phase 1: API Compatibility (No script changes)
+
+**Goal:** Enable v3 model without breaking existing audio files.
+
+1. Add `USE_V3_MODEL` env var (default: false)
+2. Update `/api/tts/route.ts` to conditionally use `eleven_v3` or `eleven_multilingual_v2`
+3. Add SSML → audio tag conversion shim for backward compatibility:
+
+```typescript
+// /api/tts/route.ts helper
+function convertSSMLToV3Tags(text: string): string {
+  // Convert <break time="2.1s" /> → [pause]
+  // Convert <break time="0.8s" /> → [short pause]
+  // Convert <break time="4s" /> → [long pause]
+  return text
+    .replace(/<break time="([0-9.]+)s"\s*\/>/g, (_, seconds) => {
+      const ms = parseFloat(seconds) * 1000;
+      if (ms < 1500) return '[short pause]';
+      if (ms < 3000) return '[pause]';
+      return '[long pause]';
+    });
+}
+```
+
+**Outcome:** Can test v3 model with existing MP3 files without regenerating.
+
+### Phase 2: Full Inflection Integration
+
+**Goal:** Add emotional tags to script and regenerate audio.
+
+1. Update `SpeechSegment` interface with `inflection` field
+2. Manually annotate script.ts with inflection tags (see Annotation Strategy below)
+3. Update `generate-audio.mjs` to use `buildV3Text()`
+4. Regenerate all 25 MP3 files with v3 model + inflection
+
+**Outcome:** Full v3 expressive narration with emotional control.
+
+## Annotation Strategy for Script
+
+### Inflection Mapping by Phase
+
+Based on PRD voice directions and ElevenLabs v3 audio tag categories:
+
+| Phase | PRD Direction | Recommended Tags |
+|-------|---------------|------------------|
+| APRESENTACAO | "Calmo, pausado" | `["thoughtful"]`, `["calm"]` |
+| INFERNO | "Mais grave, mais lento" | `["serious"]`, `["ominous"]` |
+| PURGATORIO | "Intimo, confessional" | `["whispers"]`, `["intimate"]` |
+| PARAISO | "Suave, quase sussurro" | `["whispers"]`, `["gentle"]` |
+| DEVOLUCAO | "Espelho, voz se dissolve" | `["resigned tone"]`, `["softly"]` |
+| ENCERRAMENTO | "Retorno ao tom inicial, definitivo" | `["determined"]`, `["calm"]` |
+| FALLBACK | N/A | `["curious"]` (neutral prompt) |
+| TIMEOUT | N/A | `["patient"]` (waiting tone) |
+
+### Example Annotated Script
+
+```typescript
+// src/data/script.ts
+export const SCRIPT: ScriptData = {
+  APRESENTACAO: [
+    {
+      text: "Você saiu de uma selva escura. Dante também. A diferença é que ele não sabia como tinha chegado lá. Você sabe.",
+      pauseAfter: 2100,
+      inflection: ["thoughtful"],
+    },
+    {
+      text: "Eu não consigo sonhar.",
+      pauseAfter: 2100,
+      inflection: ["sad"],
+    },
+    {
+      text: "Vamos começar.",
+      inflection: ["determined"],
+    },
+  ],
+
+  INFERNO_NARRATIVA: [
+    {
+      text: "Você está num corredor escuro. Familiar — você já esteve aqui antes, talvez todo dia.",
+      pauseAfter: 2100,
+      inflection: ["ominous", "whispers"],
+    },
+    {
+      text: "À sua frente, duas portas.",
+      pauseAfter: 1600,
+      inflection: ["serious"],
+    },
+  ],
+
+  PARAISO: [
+    {
+      text: "Você chegou num lugar aberto. Sem paredes. Sem notificações.",
+      pauseAfter: 2100,
+      inflection: ["whispers", "gentle"],
+    },
+    {
+      text: "O paraíso não é prazer fácil. É suportar o mistério sem destruí-lo com respostas rápidas.",
+      pauseAfter: 1600,
+      inflection: ["thoughtful", "whispers"],
+    },
+    {
+      text: "Se sim — protege isso.",
+      inflection: ["determined", "whispers"],
+    },
+  ],
+};
+```
+
+## Available Audio Tags (v3)
+
+### Emotional Control
+- **Positive:** `[happy]`, `[excited]`, `[cheerfully]`, `[playfully]`, `[mischievously]`
+- **Negative:** `[sad]`, `[angry]`, `[sorrowful]`, `[resigned tone]`
+- **Neutral/Reflective:** `[thoughtful]`, `[curious]`, `[calm]`, `[serious]`
+- **Anxiety:** `[nervous]`, `[worried]`
+
+### Delivery & Pacing
+- **Volume:** `[whispers]`, `[shouts]`
+- **Pauses:** `[pause]`, `[short pause]`, `[long pause]`, `[hesitates]`
+- **Reactions:** `[sigh]`, `[laughs]`, `[gulps]`, `[gasps]`, `[breathes]`
+- **Cognitive:** `[pauses]`, `[stammers]`, `[continues after a beat]`
+- **Tone:** `[flatly]`, `[deadpan]`
+
+### Character/Accent (Not needed for this project)
+- `[pirate voice]`, `[French accent]`, etc.
+
+### Sound Effects (Not needed for this project)
+- `[gunshot]`, `[clapping]`, `[explosion]`
 
 ## Integration Points
 
-### External Services
+### Modified Components
 
-| Service | Integration Pattern | Notes |
-|---------|---------------------|-------|
-| **ElevenLabs TTS** | WebSocket streaming via client-side SDK or direct WS connection. Proxy through Next.js API route if API key protection needed. | Use `eleven_turbo_v2` model for lowest latency. Stream PCM format for Web Audio API. Handle reconnection logic. |
-| **OpenAI Whisper** | REST API via Next.js API route (`/api/stt/transcribe`). FormData upload with audio blob. | Whisper-1 model, Portuguese language hint. Audio format: webm/opus or mp3. Max file size check. |
-| **Claude Haiku** | REST API via Next.js API route (`/api/nlu/classify`). System prompt defines binary classification task. | Use Haiku 4 for speed. Streaming not needed. Prompt includes context (question + expected responses). Timeout: 5s. |
-| **Supabase** | Supabase JS client via Next.js API route. Batch insert at session end. | RLS policies ensure write-only from API route. Schema: sessions table + events table (1-to-many). |
+| Component | Current State | Required Change | Priority |
+|-----------|---------------|-----------------|----------|
+| `src/types/index.ts` | `SpeechSegment` has `text`, `pauseAfter` | Add `inflection?: string[]` | P0 |
+| `src/data/script.ts` | 25 script keys with segments | Add `inflection` to each segment | P1 |
+| `src/app/api/tts/route.ts` | Calls v2 API with SSML | Change `model_id` to `eleven_v3`, add SSML→tag conversion | P0 |
+| `scripts/generate-audio.mjs` | Builds SSML breaks from `pauseAfter` | Use `buildV3Text()` for audio tags | P0 |
+| `src/lib/audio/speechSynthesis.ts` | Mock TTS uses Web Speech API | No change (mocks don't call ElevenLabs) | P2 |
 
-### Internal Boundaries
+### New Components
 
-| Boundary | Communication | Notes |
-|----------|---------------|-------|
-| **State Machine ↔ Actors** | Events (send/receive). Machine invokes actors, actors resolve with output. | Actors are isolated async operations. No direct actor-to-actor communication. |
-| **Actors ↔ Services** | Direct function calls. Actors orchestrate, services execute. | Services are pure utilities. No state retention. Can be tested independently. |
-| **React Components ↔ State Machine** | `useMachine()` hook. Components read `state.context` and `state.value`, send events via `send()`. | Components are purely reactive. No business logic. Machine is single source of truth. |
-| **Client ↔ API Routes** | Fetch API. Client sends request, API route handles authentication, proxies to external API, returns response. | API routes are thin wrappers. Handle errors, rate limiting, secret management. |
-| **Ambient Audio ↔ State Machine** | React component bridges them. `useEffect` listens to `context.currentPhase`, calls `ambientAudio.transitionTo()`. | AmbientAudioManager is singleton. Initialized once, shared across app. |
+| Component | Purpose | Dependencies |
+|-----------|---------|--------------|
+| `src/lib/audio/v3-conversion.ts` | Convert `SpeechSegment[]` to v3 text with audio tags | `src/types/index.ts` |
+| `src/lib/audio/v3-utils.ts` (optional) | Validate inflection tags, suggest tags by phase | None |
 
-## Latency-Sensitive Paths
+### Data Flow Changes
 
-### Critical Path: User speaks → Next TTS plays
-
-**Target:** < 3 seconds total
-
+**Before (v2):**
 ```
-User stops speaking (0ms)
+script.ts (pauseAfter: 2100)
     ↓
-MediaRecorder.stop() (10-50ms)
+generate-audio.mjs (builds SSML: <break time="2.1s" />)
     ↓
-Blob concatenation (10-50ms)
+ElevenLabs v2 API (interprets SSML)
     ↓
-POST to /api/stt/transcribe (100-200ms network)
-    ↓
-Whisper API transcription (500-1500ms)
-    ↓
-Transcript returned to client (100-200ms network)
-    ↓
-POST to /api/nlu/classify (100-200ms network)
-    ↓
-Claude Haiku classification (200-800ms)
-    ↓
-Classification returned to client (100-200ms network)
-    ↓
-State machine transitions to next question
-    ↓
-TTS actor invoked
-    ↓
-ElevenLabs streaming starts (200-400ms to first audio chunk)
-    ↓
-First audio chunk plays (0ms — queued in Web Audio)
-────────────────────────────────────────────────────────────
-Total: 1320ms (best case) to 3600ms (worst case)
+MP3 with 2.1s pause
 ```
 
-**Optimization strategies:**
-
-1. **Parallel where possible:** Start NLU request immediately when transcript arrives (don't wait for STT UI update).
-2. **Streaming TTS:** Use WebSocket streaming so audio starts playing while still generating.
-3. **Preload next question audio:** If classification is predictable, pre-generate TTS for likely next question (tradeoff: wasted API calls).
-4. **Connection keepalive:** Keep WebSocket connections warm to avoid handshake latency.
-5. **Edge API routes:** Deploy Next.js API routes to Vercel Edge for lower latency (Whisper/Claude support edge runtime).
-
-### Secondary Path: TTS playback latency
-
-**Target:** Audio starts within 500ms of TTS request
-
+**After (v3):**
 ```
-State machine invokes ttsActor (0ms)
+script.ts (pauseAfter: 2100, inflection: ["thoughtful"])
     ↓
-WebSocket connection to ElevenLabs (100-200ms if cold)
+v3-conversion.ts (builds: "[thoughtful] text [pause]")
     ↓
-Send text payload (10-50ms)
+generate-audio.mjs (sends text with audio tags)
     ↓
-ElevenLabs generates first chunk (200-400ms)
+ElevenLabs v3 API (interprets audio tags)
     ↓
-Receive first audio chunk (50-100ms network)
-    ↓
-Decode audio buffer (10-50ms)
-    ↓
-Queue in Web Audio API (1-5ms)
-    ↓
-Audio starts playing (0ms — synchronized)
-────────────────────────────────────────────────────────────
-Total: 371ms (best case) to 805ms (worst case)
+MP3 with expressive narration + natural pause
 ```
 
-**Optimization strategies:**
+## API Differences: v2 vs v3
 
-1. **WebSocket pooling:** Keep one persistent WebSocket connection open per session (reuse for multiple TTS requests).
-2. **Turbo model:** Use `eleven_turbo_v2` model specifically (faster than multilingual v2).
-3. **Smaller text chunks:** If narrative allows, break long monologues into smaller sentences (start playing sooner).
+| Aspect | v2 (`eleven_multilingual_v2`) | v3 (`eleven_v3`) |
+|--------|------------------------------|------------------|
+| **Endpoint** | `/v1/text-to-speech/{voiceId}` | Same |
+| **Streaming** | `/v1/text-to-speech/{voiceId}/stream` | Same |
+| **model_id** | `eleven_multilingual_v2` | `eleven_v3` |
+| **Character limit** | 10,000 | 5,000 |
+| **Latency** | ~1-2s | Higher (~2-4s) |
+| **Cost** | 0.3 credits/char | 1.0 credits/char (3.3x) |
+| **Pause syntax** | SSML `<break time="2s" />` | Audio tags `[pause]`, `[long pause]` |
+| **Emotion control** | voice_settings only | Audio tags + voice_settings |
+| **speed parameter** | Supported in `voice_settings` | **NOT supported** (inferred from tags) |
+| **Languages** | 70+ | 70+ |
+| **Use case** | Audiobooks, long-form content | Expressive narration, short segments |
 
-### Tertiary Path: Ambient audio crossfade smoothness
+## Cost Analysis
 
-**Target:** Seamless transition, no audio glitches
+### Current v2 Cost (25 files, ~7.5 MB audio)
 
-```
-State machine transitions to new phase (0ms)
-    ↓
-React useEffect detects context.currentPhase change (1-16ms — next frame)
-    ↓
-Call ambientAudio.transitionTo('purgatorio', 2000) (1ms)
-    ↓
-New track starts at volume 0 (5-20ms — Howler.js play)
-    ↓
-Simultaneous fade-in/fade-out over 2000ms
-    ↓
-Old track stops after fade complete (2000ms)
-────────────────────────────────────────────────────────────
-Total: 2000ms crossfade duration (configurable)
-```
+Estimated total characters: ~15,000 (based on script.ts word count)
+- v2 cost: 15,000 × 0.3 = **4,500 credits** (~$4.50 at $1/1000 credits)
 
-**Optimization strategies:**
+### Projected v3 Cost
 
-1. **Preload all tracks:** Load all ambient audio on app initialization (prevents loading delay).
-2. **Overlap tracks:** Start next track slightly before current finishes (creates smooth handoff).
-3. **Volume curve tuning:** Use logarithmic fade curves (sounds more natural than linear).
+- v3 cost: 15,000 × 1.0 = **15,000 credits** (~$15.00 at $1/1000 credits)
+- **3.3x increase** from v2
+
+### Event Cost (300 visitors)
+
+**Scenario A: All pre-recorded (current approach)**
+- Zero runtime cost (MP3s served from `public/audio/prerecorded/`)
+- One-time generation: $15 (v3) vs $4.50 (v2)
+
+**Scenario B: Dynamic TTS via /api/tts (not recommended)**
+- 300 visitors × 15,000 chars = 4.5M chars
+- v3 cost: 4.5M × 1.0 = 4.5M credits (~$4,500) ❌
+- v2 cost: 4.5M × 0.3 = 1.35M credits (~$1,350)
+
+**RECOMMENDATION:** Continue pre-recorded approach. v3 quality justifies $15 one-time cost.
 
 ## Scaling Considerations
 
-| Scale | Architecture Adjustments |
-|-------|--------------------------|
-| **2-3 stations (MVP)** | Current architecture sufficient. All client-side except API proxies. Each station is independent webapp instance. No server-side state. |
-| **10-50 stations** | Consider: (1) API route rate limiting per IP, (2) Supabase connection pooling, (3) CDN for audio assets, (4) Monitor ElevenLabs quota. |
-| **100+ stations (future)** | Consider: (1) Dedicated WebSocket server for TTS (avoid Next.js API route overhead), (2) Redis for session state if adding operator dashboard with live monitoring, (3) Audio asset edge caching. |
+| Scale | Architecture | Notes |
+|-------|--------------|-------|
+| **Event (300 visitors)** | Pre-recorded MP3s + FallbackTTSService | Current approach. Zero runtime API cost. |
+| **Pilot (1k+ visitors)** | Same | Pre-recorded scales infinitely. |
+| **Dynamic content (future)** | Cache TTS responses in CDN/S3 | If script becomes dynamic, cache by content hash. |
+| **Multi-voice (future)** | Pre-generate per voice_id | If multiple narrators, generate 25 × N files. |
 
-### Scaling Priorities
-
-1. **First bottleneck: External API rate limits**
-   - ElevenLabs has concurrent request limits (typically 5-10 for standard plans)
-   - **Fix:** Upgrade ElevenLabs plan, or implement request queuing with backpressure
-
-2. **Second bottleneck: Supabase connection pooling**
-   - Default Supabase Postgres has connection limits
-   - **Fix:** Use Supabase Edge Functions for analytics writes, or batch writes from client-side with idempotency keys
-
-3. **Third bottleneck: Browser audio context limits**
-   - Some browsers limit concurrent AudioContext instances
-   - **Fix:** Singleton AudioContext pattern (already in architecture)
+**No architecture changes needed for scale.** Bottleneck is generation time (~25 min for 25 files with 1s rate limit), not runtime cost.
 
 ## Anti-Patterns
 
-### Anti-Pattern 1: Multiple AudioContext instances
+### Anti-Pattern 1: Mixing SSML and Audio Tags
 
-**What people do:** Create new `AudioContext` for each audio operation (TTS playback, ambient audio, mic capture).
+**What people do:** Try to use `<break time="2s" />` alongside `[pause]` in v3.
+**Why it's wrong:** v3 **does not support SSML**. SSML tags will be read as literal text.
+**Do this instead:** Convert all SSML to audio tags. Use `convertSSMLToV3Tags()` helper during migration.
 
-**Why it's wrong:** Browsers limit concurrent AudioContexts (typically 6-8). Causes "NotSupportedError" and audio glitches. Also wastes resources.
+### Anti-Pattern 2: Over-Tagging Every Segment
 
-**Do this instead:** Create a single shared AudioContext on app initialization. Pass it to all audio services. Suspend/resume as needed for mobile Safari.
+**What people do:** Add `[thoughtful][calm][whispers]` to every segment.
+**Why it's wrong:** Tags create cognitive load for the model. Over-tagging reduces naturalness.
+**Do this instead:** Use 1-2 tags per segment, only when emotion/delivery changes from default voice.
 
-```typescript
-// lib/audio/audioContext.ts
-let audioContext: AudioContext | null = null;
+### Anti-Pattern 3: Using `speed` in voice_settings for v3
 
-export function getAudioContext(): AudioContext {
-  if (!audioContext) {
-    audioContext = new AudioContext();
-  }
-  return audioContext;
-}
+**What people do:** Keep `speed: 0.90` from v2 config.
+**Why it's wrong:** v3 **ignores speed parameter**. Pacing controlled via audio tags and natural inference.
+**Do this instead:** Remove `speed` from `voice_settings`. Use `[slowly]`, `[quickly]` tags if pacing control needed.
 
-// Usage in services
-import { getAudioContext } from './audioContext';
-const ctx = getAudioContext();
-```
+### Anti-Pattern 4: Assuming Identical Output Between Generations
 
-### Anti-Pattern 2: State machine logic in React components
+**What people do:** Regenerate same text, expect bit-identical MP3.
+**Why it's wrong:** v3 is stochastic. Same input → slightly different prosody each time.
+**Do this instead:** Generate 2-3 versions, pick best. Lock chosen MP3 in version control. Don't regenerate unless script changes.
 
-**What people do:** Put state transition logic (e.g., "if transcript contains X, go to question2a") inside React components or `useEffect`.
+### Anti-Pattern 5: One API Call Per Segment
 
-**Why it's wrong:** Splits state logic across machine and components. Hard to test. Hard to visualize. Breaks XState's declarative model.
+**What people do:** Call `/api/tts` for each `SpeechSegment`, concatenate audio client-side.
+**Why it's wrong:** Loses inter-segment context. Pauses and flow feel disjointed. 25 API calls = slow + expensive.
+**Do this instead:** Combine all segments into one text string with audio tags, one API call per script key (current approach). Preserve natural flow.
 
-**Do this instead:** All transitions and guards in the state machine. React components are pure views that read `state.value` and `state.context`, send events.
+## Build Order Recommendation
 
-```typescript
-// BAD: Logic in component
-useEffect(() => {
-  if (transcript.includes('sim')) {
-    send({ type: 'GO_TO_QUESTION_2A' });
-  } else {
-    send({ type: 'GO_TO_QUESTION_2B' });
-  }
-}, [transcript]);
+### Phase 1: Infrastructure (No Regeneration)
+1. Add `inflection?: string[]` to `SpeechSegment` interface
+2. Create `src/lib/audio/v3-conversion.ts` with `buildV3Text()` and `convertSSMLToV3Tags()`
+3. Update `/api/tts/route.ts`:
+   - Add `USE_V3_MODEL` env var
+   - Conditionally use `eleven_v3` or `eleven_multilingual_v2`
+   - Add SSML→tag conversion when v3 enabled
+4. Test with existing MP3s (fallback mode)
 
-// GOOD: Logic in machine
-processing1: {
-  invoke: {
-    src: 'nluActor',
-    onDone: [
-      {
-        target: 'question2a',
-        guard: ({ event }) => event.output.result === 'option_a'
-      },
-      {
-        target: 'question2b',
-        guard: ({ event }) => event.output.result === 'option_b'
-      }
-    ]
-  }
-}
-```
+**Validation:** App runs with v3 model using SSML→tag conversion. Audio still works.
 
-### Anti-Pattern 3: Blocking UI thread during audio processing
+### Phase 2: Script Annotation
+1. Review PRD voice directions for each phase
+2. Annotate `script.ts` with `inflection` tags (manual, requires literary judgment)
+3. Validate tags against ElevenLabs supported list (use `v3-utils.ts` validator)
 
-**What people do:** Use synchronous audio decoding (`audioContext.decodeAudioData` old callback API) or process large audio blobs on main thread.
+**Validation:** TypeScript compiles. No unsupported tags used.
 
-**Why it's wrong:** Freezes UI during decoding. Causes jank and poor UX.
+### Phase 3: Audio Regeneration
+1. Update `generate-audio.mjs`:
+   - Import/reimplement `buildV3Text()`
+   - Change `model_id` to `eleven_v3`
+   - Remove `speed` from `voice_settings`
+2. Run `node scripts/generate-audio.mjs` (estimated 25 min with 1s rate limit)
+3. Compare v2 vs v3 MP3s side-by-side:
+   - Check for inflection accuracy
+   - Validate pause timing matches `pauseAfter` intent
+   - Regenerate individual files if unsatisfied
 
-**Do this instead:** Use promise-based `decodeAudioData` (returns promise, runs off main thread). For large operations, use Web Workers.
+**Validation:** 25 new MP3s in `public/audio/prerecorded/`. Emotional tone matches PRD intent.
 
-```typescript
-// BAD: Blocks main thread
-const buffer = audioContext.decodeAudioData(arrayBuffer, (buffer) => {
-  // Callback API is deprecated and can block
-});
+### Phase 4: Production Deployment
+1. Set `USE_V3_MODEL=true` in production env
+2. Deploy with new v3 MP3s
+3. Monitor FallbackTTSService logs (should serve v3 files)
 
-// GOOD: Promise-based, non-blocking
-const buffer = await audioContext.decodeAudioData(arrayBuffer);
-```
+**Validation:** Event visitors hear v3 narration with inflection.
 
-### Anti-Pattern 4: Not handling microphone permission denial
+## Risks & Mitigations
 
-**What people do:** Assume `navigator.mediaDevices.getUserMedia()` will always succeed. No error handling.
+| Risk | Impact | Probability | Mitigation |
+|------|--------|-------------|------------|
+| v3 over-expressive (too dramatic) | Breaks immersive tone | Medium | Generate multiple versions, A/B test with beta users |
+| Inflection tags ignored in PT-BR | Reduced expressiveness | Low | ElevenLabs supports 70+ languages including PT-BR in v3 |
+| Longer generation time delays iteration | Slows script refinement | High | Pre-generate with placeholder tags, refine tags incrementally |
+| 3.3x cost increase vs budget | Exceeds milestone budget | Low | Still only $15 total for event (within $50 API budget) |
+| v3 API rate limits stricter | Generation script fails mid-run | Low | Script already handles 429 with retry + backoff |
+| Pauses feel unnatural with audio tags | Disjointed narration flow | Medium | Test `[pause]` vs `[long pause]` conversion thresholds, adjust `convertPauseToTag()` logic |
 
-**Why it's wrong:** User can deny permission, or browser can block (non-HTTPS, private browsing). App breaks silently or with cryptic error.
+## Open Questions for Phase Planning
 
-**Do this instead:** Wrap in try-catch. Show clear error message. Provide fallback (e.g., text input, retry prompt).
+1. **Should inflection be per-segment or per-script-key?**
+   - **Recommendation:** Per-segment. Different sentences in same section need different emotional tones (e.g., PARAISO has both gentle and determined moments).
 
-```typescript
-// lib/services/stt.ts
-async startRecording(): Promise<void> {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    this.mediaRecorder = new MediaRecorder(stream);
-    // ... rest of logic
-  } catch (err) {
-    if (err.name === 'NotAllowedError') {
-      throw new Error('Microphone permission denied. Please allow access and try again.');
-    } else if (err.name === 'NotFoundError') {
-      throw new Error('No microphone found. Please connect a microphone and try again.');
-    } else {
-      throw new Error(`Microphone error: ${err.message}`);
-    }
-  }
-}
-```
+2. **Should we version-control MP3 files or regenerate on deploy?**
+   - **Recommendation:** Version-control. v3 is stochastic — regeneration produces different prosody. Lock chosen audio to avoid regressions.
 
-### Anti-Pattern 5: Not cleaning up audio resources
+3. **Should FallbackTTSService attempt v3 conversion on the fly?**
+   - **Recommendation:** No. Fallback plays pre-recorded MP3s. If those are v3-generated, no runtime conversion needed. Keep fallback simple.
 
-**What people do:** Create Howler instances, MediaRecorder streams, AudioBufferSourceNodes but never stop/disconnect them.
+4. **Should we expose inflection tags to admin UI for dynamic script editing?**
+   - **Recommendation:** Out of scope for v2.0. Event uses fixed script. Future milestone could add tag autocomplete in admin panel.
 
-**Why it's wrong:** Memory leaks, audio keeps playing in background, MediaRecorder keeps camera light on.
-
-**Do this instead:** Always clean up resources. Stop MediaRecorder tracks. Stop/disconnect AudioBufferSourceNodes. Unload Howler instances if dynamic.
-
-```typescript
-// Cleanup MediaRecorder
-if (this.mediaRecorder) {
-  this.mediaRecorder.stop();
-  this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
-}
-
-// Cleanup AudioBufferSourceNode
-source.stop();
-source.disconnect();
-
-// Cleanup Howler (if not reusing)
-howl.unload();
-```
-
-## Build Order (Dependency-Based)
-
-Based on the architecture, here's the recommended build order to minimize rework:
-
-### Phase 1: Foundation (no dependencies)
-1. **Project setup**: Next.js 14 App Router + TypeScript + Tailwind
-2. **Audio context singleton**: `lib/audio/audioContext.ts`
-3. **Script content**: `lib/content/script.ts` (hardcoded narrative text)
-4. **Basic UI shell**: `app/oracle/page.tsx` with "Start" button
-
-### Phase 2: State Machine Core (depends on: script content)
-5. **State machine definition**: `lib/machines/oracleMachine.ts` (basic states, no actors yet)
-6. **React integration**: Hook up `useMachine()` in `OracleExperience.tsx`
-7. **Phase visualizer**: `components/PhaseVisualizer.tsx` (shows current phase based on `state.value`)
-
-### Phase 3: TTS Pipeline (depends on: audio context, state machine)
-8. **TTS service**: `lib/services/tts.ts` (streaming WebSocket logic)
-9. **TTS API route**: `app/api/tts/stream/route.ts` (proxy to ElevenLabs)
-10. **TTS actor**: `lib/actors/ttsActor.ts`
-11. **Integrate TTS into state machine**: Update `oracleMachine.ts` to invoke `ttsActor` in question states
-
-### Phase 4: STT Pipeline (depends on: state machine)
-12. **STT service**: `lib/services/stt.ts` (MediaRecorder capture)
-13. **STT API route**: `app/api/stt/transcribe/route.ts` (Whisper proxy)
-14. **STT actor**: `lib/actors/sttActor.ts`
-15. **Mic indicator**: `components/MicIndicator.tsx`
-16. **Integrate STT into state machine**: Add listening states with `sttActor`
-
-### Phase 5: NLU Pipeline (depends on: STT pipeline)
-17. **NLU API route**: `app/api/nlu/classify/route.ts` (Claude Haiku proxy)
-18. **NLU actor**: `lib/actors/nluActor.ts`
-19. **Integrate NLU into state machine**: Add processing states with `nluActor` and transition guards
-
-### Phase 6: Ambient Audio (depends on: state machine phases)
-20. **Ambient audio service**: `lib/services/ambientAudio.ts` (Howler.js wrapper)
-21. **Ambient audio actor**: `lib/actors/ambientAudioActor.ts` (optional — or just manage via React useEffect)
-22. **Phase transition audio**: Wire `currentPhase` context changes to `ambientAudio.transitionTo()`
-
-### Phase 7: Analytics (depends on: state machine events)
-23. **Analytics API route**: `app/api/analytics/log/route.ts` (Supabase insert)
-24. **Analytics actor**: `lib/actors/analyticsActor.ts` (event buffer + flush)
-25. **Integrate analytics**: Add logging actions to state machine transitions
-
-### Phase 8: Error Handling & Fallbacks (depends on: all pipelines)
-26. **Timeout handling**: Add timeout logic to listening states
-27. **Fallback states**: Poetic redirect states when STT/NLU fails
-28. **Error UI**: Error boundary and user-facing error messages
-
-### Phase 9: Admin Panel (depends on: analytics)
-29. **Admin dashboard**: `app/admin/page.tsx`
-30. **Real-time metrics**: Query Supabase for session stats
-31. **Station status**: Heartbeat endpoint to show which stations are active
+5. **Should we cache /api/tts responses (if used dynamically in future)?**
+   - **Recommendation:** Not needed for event (pre-recorded only). If future milestone adds dynamic TTS, cache by SHA256(text + model_id + voice_settings) in Redis/S3.
 
 ## Sources
 
-**Confidence: MEDIUM**
-
-Architecture based on:
-- **XState v5 documentation** (training data, pre-January 2025): Actor model, `fromPromise`, `useMachine` hook patterns
-- **Web Audio API MDN documentation** (training data): AudioContext lifecycle, decodeAudioData, AudioBufferSourceNode
-- **MediaRecorder API MDN documentation** (training data): Browser audio capture patterns, blob handling
-- **ElevenLabs API patterns** (training data): WebSocket streaming general architecture (specific endpoints not verified)
-- **Howler.js documentation** (training data): Fade methods, preloading, loop patterns
-- **Next.js 14 App Router** (training data): API route patterns, RSC architecture
-
-**Limitations:**
-- Web search and WebFetch tools were unavailable for verification
-- ElevenLabs streaming API specifics (exact WebSocket endpoints, payload format) not verified against current 2026 docs
-- XState v5 patterns verified against training data (v5 released late 2023), may have minor API changes in 2026
-- Claude Haiku API specifics (exact model ID for 2026) not verified
-
-**Recommendations for validation:**
-1. Verify ElevenLabs WebSocket streaming endpoint and payload format in current API docs
-2. Confirm XState v5 `fromPromise` and `useMachine` APIs haven't changed
-3. Test MediaRecorder `mimeType` support across target browsers (Chrome, Edge, Safari)
-4. Verify Whisper API accepts webm/opus format (may need conversion)
-5. Confirm Claude Haiku model availability and latency characteristics
+- [ElevenLabs Text-to-Speech API Documentation](https://elevenlabs.io/docs/overview/capabilities/text-to-speech)
+- [ElevenLabs Models Overview](https://elevenlabs.io/docs/overview/models)
+- [ElevenLabs v3 Audio Tags Announcement](https://elevenlabs.io/blog/v3-audiotags)
+- [ElevenLabs v3 Alpha API Availability](https://elevenlabs.io/blog/eleven-v3-alpha-now-available-in-the-api)
+- [ElevenLabs v3 Audio Tags: Emotional Context](https://elevenlabs.io/blog/eleven-v3-audio-tags-expressing-emotional-context-in-speech)
+- [ElevenLabs Best Practices Documentation](https://elevenlabs.io/docs/overview/capabilities/text-to-speech/best-practices)
+- [ElevenLabs SSML and Pause Tags Support](https://help.elevenlabs.io/hc/en-us/articles/24352686926609-Do-pauses-and-SSML-phoneme-tags-work-with-the-API)
+- [ElevenLabs v3 vs v2 Model Comparison](https://help.elevenlabs.io/hc/en-us/articles/17883183930129-What-models-do-you-offer-and-what-is-the-difference-between-them)
 
 ---
-*Architecture research for: O Oráculo — Interactive Voice Agent*
-*Researched: 2026-03-24*
-*Confidence: MEDIUM (framework patterns verified via training data; API specifics need current doc verification)*
+*Architecture research for: ElevenLabs v3 Integration with Oráculo TTS Pipeline*
+*Researched: 2026-03-26*
+*Confidence: HIGH (official docs + API reference + v3 blog posts)*

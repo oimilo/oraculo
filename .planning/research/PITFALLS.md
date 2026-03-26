@@ -1,483 +1,223 @@
-# Pitfalls Research
+# Pitfalls Research: ElevenLabs v3 for PT-BR Narration
 
-**Domain:** Live Voice-Interactive Installation
-**Researched:** 2026-03-24
-**Confidence:** MEDIUM (based on browser API specifications, TTS/STT system behavior patterns, and live event failure modes from training data through Jan 2025)
+**Domain:** AI narration upgrade from ElevenLabs v2 to v3 with inflection tags for Brazilian Portuguese interactive voice experience
+**Researched:** 2026-03-26
+**Confidence:** MEDIUM (verified with official docs + web sources, PT-BR specific guidance limited)
 
 ## Critical Pitfalls
 
-### Pitfall 1: Browser Autoplay Policy Blocking TTS on First Interaction
+### Pitfall 1: Audio Tag Overuse Creates Instability
 
 **What goes wrong:**
-Visitor presses "start" button, state machine advances, but no audio plays. The experience appears broken. TTS audio is silently blocked by browser autoplay policy because user interaction didn't directly trigger audio playback — it triggered an async TTS API call that *later* tried to play audio.
+Using too many audio tags (especially break/pause tags) in a single generation causes the AI to speed up unnaturally, introduce vocal artifacts like clicks/pops, or add background noise. The voice may also read tags out loud as text instead of applying them, or ignore tags completely.
 
 **Why it happens:**
-Browsers require user interaction to be directly synchronous with audio playback. Async chain breaks the gesture: Click → API call → Response arrives → Play audio = BLOCKED. The browser considers the play() attempt to be "not user-initiated" because too much time elapsed between the click and the play.
+v3's tag processing is experimental and can become unstable when parsing dense tag markup. Each tag adds computational complexity. Excessive breaks disrupt the model's natural prosody prediction, causing it to compensate with unpredictable behavior.
 
 **How to avoid:**
-1. **Workaround pattern:** Create AudioContext on user click, play silent audio immediately to "unlock" audio capabilities
-2. **Implementation:**
-```javascript
-// On first user click
-const audioContext = new AudioContext();
-const silentBuffer = audioContext.createBuffer(1, 1, 22050);
-const source = audioContext.createBufferSource();
-source.buffer = silentBuffer;
-source.connect(audioContext.destination);
-source.start(); // This unlocks audio playback
-
-// Now subsequent TTS playback will work
-```
-3. **Test across browsers:** Chrome, Edge, Firefox have different autoplay policies
-4. **Fallback UI:** Show "Click to enable audio" button if AudioContext.state === 'suspended'
+- Limit break tags to 3 seconds maximum duration
+- Use ellipses (`...`) and punctuation for pauses instead of `[break]` tags when possible
+- Space tags strategically — one emotion tag per phrase, not per word
+- Generate multiple versions and A/B test — v3 output varies between runs
+- Test incremental additions: add one tag, verify quality, then add next
 
 **Warning signs:**
-- TTS works in dev (localhost exempt from autoplay policy) but fails in production
-- First TTS utterance silent, subsequent ones work
-- console.error: "play() failed because the user didn't interact with the document first"
+- Sudden speed increases mid-sentence
+- "Uh" or "ah" vocal mannerisms appearing during tagged pauses
+- Static noise or clicks between words
+- TTS reading "[whispering]" aloud instead of whispering
+- Tags being ignored entirely without error messages
 
 **Phase to address:**
-Phase 1 (Core State Machine) — Audio system initialization must be bulletproof before building conversation flow
+Phase 1 (Script Preparation) — Tag markup strategy and testing protocol. Phase 2 (Audio Generation) — Quality validation with tag density checks.
 
 ---
 
-### Pitfall 2: Microphone Permission Prompt Breaks Immersion
+### Pitfall 2: PT-BR Punctuation Traps Create Mechanical Delivery
 
 **What goes wrong:**
-Visitor clicks start, immediately sees browser permission dialog asking to allow microphone access. Many visitors:
-- Dismiss the dialog (experience ends immediately)
-- Are confused about why a "psychoanalysis experience" needs their microphone
-- Take 10-15 seconds to read and approve, breaking the dramatic entrance
-- On denial, webapp has no second chance — must refresh page to retry
+Brazilian Portuguese uses specific punctuation patterns (travessão for dialogue, vírgulas in compound sentences, abbreviated titles) that standard English-trained TTS models mispronounce or pause incorrectly, making speech sound robotic or broken.
 
 **Why it happens:**
-`navigator.mediaDevices.getUserMedia()` triggers native browser permission dialog. No way to style it, delay it, or provide context first. Once denied, permission persists until manually reset in browser settings.
+- **Travessão (—)**: Portuguese dialogue uses em-dash without closing quotes. TTS may not recognize this as dialogue marker, pausing incorrectly or skipping prosody shift.
+- **Abbreviations**: "Dr.", "Sr.", "etc." may trigger sentence-ending pauses if not normalized
+- **Numbers**: "R$ 1.000,00" (Brazilian currency format with period/comma reversed from English) confuses normalization
+- **Quotation marks**: Portuguese can use «guillemets» or "" — mixed usage confuses prosody
+- **Accentuation**: Missing or wrong accents (á vs a) changes pronunciation entirely
 
 **How to avoid:**
-1. **Pre-permission screen:** Before "Start" button, show screen explaining "This experience uses your voice. Please allow microphone access when prompted."
-2. **Permission request flow:**
-```javascript
-try {
-  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-  // Success path
-} catch (err) {
-  if (err.name === 'NotAllowedError') {
-    // Show recovery UI: "Microphone access denied. Refresh page and click Allow."
-  }
-  if (err.name === 'NotFoundError') {
-    // Show error: "No microphone detected. Check headphones are connected."
-  }
-}
-```
-3. **Test permission state before starting:**
-```javascript
-const permissionStatus = await navigator.permissions.query({ name: 'microphone' });
-if (permissionStatus.state === 'denied') {
-  // Show "blocked" state UI before visitor clicks start
-}
-```
-4. **Operator checklist:** Before event, manually test each station to grant permissions once (persists across sessions)
+- **Normalize before sending to API**: Convert "Dr." → "Doutor", "R$ 1.000" → "mil reais"
+- **Standardize punctuation**: Use only straight quotes (""), avoid mixing with «»
+- **Test travessão handling**: If em-dash causes pauses, replace with hyphen + space ("- ")
+- **Spell out numbers**: Write "três mil reais" instead of "R$ 3.000"
+- **Validate accents**: Run script through PT-BR spell checker to catch missing acentos
 
 **Warning signs:**
-- High bounce rate (visitors leave without completing)
-- Operators report "people keep clicking and nothing happens"
-- Multiple refresh attempts per station
+- Unnatural pauses after "Dr." or "Sr." mid-sentence
+- Currency amounts read as individual digits ("um ponto zero zero zero") instead of "mil"
+- Dialogue lines lacking emotional shift (flat monotone despite dramatic context)
+- Mispronounced words that differ only by accent (cáqui vs caqui)
 
 **Phase to address:**
-Phase 1 (Core State Machine) — Microphone initialization is first-run critical path
+Phase 1 (Script Preparation) — Comprehensive punctuation audit and normalization. Create PT-BR style guide with approved patterns.
 
 ---
 
-### Pitfall 3: Network Latency Destroying Conversational Flow
+### Pitfall 3: Cloned Voice + Inflection Tags Mismatch
 
 **What goes wrong:**
-Visitor speaks response. 3-5 seconds of silence. Then TTS responds. The rhythm feels broken and robotic. At 10+ seconds (poor venue WiFi), visitors assume it's broken and walk away.
+Inflection tags work unpredictably with cloned voices compared to pre-built voices. Tags like `[whispering]` or `[shouting]` may be ignored, sound unconvincing, or introduce artifacts if the cloned voice's training samples don't contain those emotional ranges.
 
 **Why it happens:**
-Sequential API calls create cumulative latency:
-1. STT (Whisper): 800-2000ms depending on audio length
-2. NLU (Claude Haiku): 200-800ms for classification
-3. TTS (ElevenLabs): 400-1200ms for first chunk
+Instant Voice Clones (IVC) don't train a custom model — they rely on prior knowledge to "guess" the voice. If the original audio samples (used for cloning) never contained whispers, the AI has no reference for what "this voice whispering" sounds like. Professional Voice Clones (PVC) are "not yet fully optimized" for v3, resulting in lower quality with tag support.
 
-Total: 1.4-4 seconds minimum, often 5-8 seconds on slow connections.
+The cloned voice's base characteristics constrain tag effectiveness. A calm, meditative voice won't shout convincingly; a high-energy voice can't whisper naturally.
 
 **How to avoid:**
-1. **Stream TTS immediately:** Use ElevenLabs streaming endpoint, start playback on first chunk (saves 1-2 seconds perceived latency)
-2. **Parallel where possible:** Start preparing TTS request while waiting for NLU response
-3. **Optimistic classification:** For binary choices, prepare BOTH response audios in advance, play the correct one immediately after classification
-4. **Visual feedback:** Show "listening" → "thinking" → "responding" states so silence feels intentional
-5. **Timeout strategy:**
-   - If STT > 3s, show "having trouble hearing" visual feedback
-   - If total latency > 8s, trigger fallback response ("The connection to the oracle wavers...")
-6. **Pre-generate fallback audio:** Timeout responses should be pre-recorded MP3s (no API dependency)
+- **Use IVC, not PVC for v3**: Official guidance states IVC works better with v3 features than PVC
+- **Match tags to voice character**: Review original cloning samples — if they're all calm narration, avoid `[excited]` or `[angry]` tags
+- **Test each tag separately**: Generate sample with single tag to verify it works with your cloned voice before applying in production
+- **Provide diverse training samples**: When cloning, include emotional variety (calm, expressive, thoughtful tones) if you plan to use tags
+- **Fallback strategy**: If tag doesn't work, rely on text and punctuation to convey emotion instead
 
 **Warning signs:**
-- Testers report "feels sluggish" or "not responsive"
-- Event WiFi speed test shows >200ms latency or <5Mbps bandwidth
-- ElevenLabs API monitoring shows p95 latency >1.5s
+- Tag applied but no audible change in delivery
+- Artifacts/distortion when using tags that worked on pre-built voices
+- Voice "breaking" or glitching when attempting emotional extremes
+- Tags work inconsistently across regenerations
 
 **Phase to address:**
-Phase 2 (Voice Integration) — Latency optimization is core to voice UX quality
+Phase 1 (Voice Selection & Cloning) — Test all planned inflection tags with cloned voice before scripting. Document which tags work reliably. Phase 2 (Audio Generation) — Tag allowlist based on Phase 1 results.
 
 ---
 
-### Pitfall 4: ElevenLabs Rate Limiting During Event Peak Hours
+### Pitfall 4: V3 Character Limit Requires Script Segmentation
 
 **What goes wrong:**
-Event opening (10am), lunchtime (1pm), or popular session end times create usage spikes. All 3 stations simultaneously serving 3 visitors. ElevenLabs returns 429 (rate limit exceeded). TTS fails. Visitors see error state or stuck loading.
+v3 has 5,000 character limit per request (vs. 40,000 for Flash/Turbo models). Long narrative sections get truncated or require splitting into multiple API calls, creating concatenation artifacts (audible seams, pitch/energy mismatches between clips).
 
 **Why it happens:**
-ElevenLabs free tier: 10k chars/month. Paid starter tier: often 30k chars/month with rate limit of ~X requests/second. Your script has ~2000 characters per complete journey × 300 visitors = 600k characters needed. With 3 concurrent stations, you can hit per-second rate limits even on paid tier.
+v3's expressiveness requires more compute per character. ElevenLabs imposed 8x lower limit compared to v2 models. Developers assume they can send full script paragraphs like with v2, hitting silent truncation or API errors.
 
 **How to avoid:**
-1. **Verify tier limits BEFORE event:**
-   - Contact ElevenLabs support to confirm concurrent request limits
-   - Load test with 3 simultaneous requests to measure actual throttling
-   - Upgrade to tier with guaranteed concurrency for your scale
-2. **Implement request queue:**
-```javascript
-// Limit concurrent TTS requests across all stations
-const ttsQueue = new PQueue({ concurrency: 2, interval: 1000, intervalCap: 2 });
-
-async function requestTTS(text) {
-  return ttsQueue.add(() => elevenLabsAPI.textToSpeech(text));
-}
-```
-3. **Pre-generate common audio:**
-   - Opening monologue (same for everyone) → pre-recorded MP3
-   - Fallback responses → pre-recorded MP3
-   - Question prompts → pre-recorded MP3
-   - Only generate personalized responses via API
-4. **Fallback strategy:**
-   - If TTS fails, play pre-recorded generic version
-   - Log failure for operator dashboard
-   - Continue journey rather than error out
-5. **Cost estimation:**
-   - 600k characters at $0.30/1k chars = $180 for event
-   - Budget $50/day for dev testing + buffer
+- **Segment at natural boundaries**: Split on sentence or paragraph breaks, never mid-sentence
+- **Leave margin**: Target 4,500 characters max to account for tag markup overhead
+- **Track character count including tags**: `[whispering]` counts as 12 characters
+- **Consistent context for segments**: If first clip ends thoughtfully, start next with similar energy
+- **Test concatenation**: Play segments back-to-back to detect jarring transitions
+- **Use Flash/Turbo for long-form**: Reserve v3 for emotionally critical sections; use cheaper models for transitional narration
 
 **Warning signs:**
-- 429 errors in API logs during testing
-- ElevenLabs dashboard shows "approaching quota"
-- Response times spike during concurrent testing
+- API returns 400 error with character limit message
+- Truncated audio cuts off mid-word
+- Energy/pitch jumps between concatenated clips
+- Cost blowup from splitting single narration into 8 API calls
 
 **Phase to address:**
-Phase 2 (Voice Integration) for implementation, Phase 3 (Polish & Resilience) for failover testing
+Phase 1 (Script Preparation) — Identify segment boundaries. Phase 2 (Audio Generation) — Implement segmentation logic with character counting. Phase 3 (Quality Validation) — Listen tests for concatenation artifacts.
 
 ---
 
-### Pitfall 5: Whisper Transcription Accuracy Failure on Short/Whispered PT-BR Utterances
+### Pitfall 5: V3 Stability Settings Don't Transfer from V2
 
 **What goes wrong:**
-Visitor whispers "sim" (yes). Whisper transcribes as "si" or "são" or empty string. Claude Haiku receives gibberish, classification fails. System triggers fallback response. After 2 fallback responses, visitor assumes system is broken and leaves.
+Settings that worked well in v2 (Stability ~50%, Similarity ~75%, Style 0) may produce poor results in v3. Voices sound robotic, over-emotive, or unstable. Developers copy v2 config assuming backwards compatibility.
 
 **Why it happens:**
-- Short utterances (<0.5s) have insufficient audio context for accurate transcription
-- Whispered speech lacks acoustic energy in key frequency bands
-- PT-BR has phonetic ambiguity in short words ("sim" vs. "sem" vs. "cem")
-- Background noise at event venue (200-500 people, ambient music) masks quiet speech
-- Headphone mic quality varies — cheap mics have poor low-frequency response
+v3 introduced new stability modes (Creative, Natural, Robust) that replace the simple slider approach. "Creative" mode enables expressiveness but may hallucinate filler words. "Robust" disables tag responsiveness. The old percentage-based stability slider still exists but interacts differently with v3's architecture.
 
 **How to avoid:**
-1. **Prompt design workaround:** Don't ask yes/no questions. Ask for elaborated responses.
-   - BAD: "Você aceita seguir?"
-   - GOOD: "O que você escolhe: luz ou escuridão?"
-   - (Forces multi-word response with more phonetic content)
-2. **Whisper optimization:**
-   - Use `language: 'pt'` parameter explicitly
-   - Use `prompt` parameter with expected vocabulary: "sim, não, luz, escuridão, medo, coragem"
-   - Set `temperature: 0` for deterministic output
-3. **Audio preprocessing:**
-   - Apply noise reduction filter before sending to Whisper
-   - Normalize audio volume (boost quiet recordings)
-   - Require minimum 1-second recording before sending to STT
-4. **NLU resilience:**
-   - Claude Haiku prompt includes phonetic alternatives: "Classify even if transcription is partial: 'si', 'sim', 's' → YES"
-   - Semantic classification vs. keyword matching: "Words related to acceptance, light, courage → Option A"
-5. **Microphone quality control:**
-   - Test headphones BEFORE event with actual Whisper API
-   - Reject headphones where "sim" transcribes incorrectly >20% of test attempts
-   - Budget for good quality wired headsets with boom mics (not earbuds)
-6. **Operator intervention:**
-   - Admin dashboard shows transcription quality per station
-   - If transcription confidence <0.7, operator can manually advance state machine
+- **Start with Natural mode**: Default for v3, balances expressiveness and accuracy
+- **Use Creative only when tags needed**: Enables full tag responsiveness but risks hallucinations ("uh", "um" insertions)
+- **Avoid Robust for inflection**: Highly stable but "less responsive to directional prompts" (tags won't work)
+- **Re-tune similarity**: v3 may need lower similarity (60-70%) to avoid replicating artifacts from cloned voice samples
+- **Set Style to 0**: Style exaggeration increases latency and compute cost; only raise if voice lacks personality
+- **A/B test settings**: Generate same phrase with different configs, listen blind, pick winner
 
 **Warning signs:**
-- Testing reveals transcription accuracy <80% for target phrases
-- Fallback responses triggered >30% of the time
-- Operators report "people have to repeat themselves"
+- Robotic delivery despite using emotional tags
+- Random "uh" or "ah" mid-sentence (hallucination)
+- Tags ignored even with proper formatting
+- Increased latency or API timeouts
 
 **Phase to address:**
-Phase 2 (Voice Integration) for Whisper setup, Phase 3 (Polish & Resilience) for preprocessing and fallback refinement
+Phase 1 (Configuration Baseline) — Benchmark all three stability modes with your cloned voice and tags. Phase 2 (Audio Generation) — Lock in validated config before batch generation.
 
 ---
 
-### Pitfall 6: State Machine Race Conditions from Double-Click or Rapid Speech
+### Pitfall 6: Audio Quality Degradation from Wrong Output Settings
 
 **What goes wrong:**
-Visitor double-clicks "Start" button. Two sessions initialize simultaneously. State machine receives overlapping transitions. Audio plays twice (overlapping/cacophony). Analytics records duplicate session. Or: Visitor speaks response while previous TTS is still playing. System captures TTS output as visitor speech, sends it to Whisper, creates feedback loop.
+Using default 128kbps MP3 output results in muffled, compressed audio unsuitable for event playback over headphones. Artifacts compound when combining pre-recorded audio with live TTS. Silence handling creates awkward gaps or cuts.
 
 **Why it happens:**
-- UI doesn't disable button during async initialization
-- No mutex/lock preventing concurrent state transitions
-- Microphone remains active during TTS playback (echo cancellation not perfect)
-- Event handlers don't check "already in progress" flag
+Default output is 128kbps @ 44.1kHz to save bandwidth and credits. For event installations or theatrical experiences, this quality is noticeably inferior. Free tier users stuck with 128kbps without option to upgrade.
 
 **How to avoid:**
-1. **Button state management:**
-```javascript
-const [isInitializing, setIsInitializing] = useState(false);
-
-async function handleStart() {
-  if (isInitializing) return; // Guard clause
-  setIsInitializing(true);
-
-  try {
-    await initializeSession();
-  } finally {
-    setIsInitializing(false);
-  }
-}
-```
-2. **XState guards:**
-```javascript
-guards: {
-  canTransition: (context) => {
-    return !context.isTransitioning && !context.isSpeaking;
-  }
-}
-```
-3. **Microphone muting during TTS:**
-```javascript
-function playTTS(audio) {
-  stopMicrophone(); // Mute mic before playing
-  audio.onended = () => {
-    startMicrophone(); // Re-enable after playback complete
-  };
-}
-```
-4. **Session ID locking:**
-   - Generate unique session ID on first user click
-   - All API calls tagged with session ID
-   - Analytics rejects duplicate session IDs within 1-hour window
-5. **Debouncing user input:**
-   - Ignore speech input during first 500ms after enabling microphone (prevents TTS tail capture)
-   - Require minimum audio energy threshold before considering "speech detected"
+- **Minimum 192kbps MP3**: Requires Creator tier ($11/mo) or higher
+- **Consider ultra_lossless for master recordings**: 705.6kbps @ 44.1kHz for zero-loss archival (then compress for web delivery)
+- **Match sample rate across all assets**: If ambient audio is 48kHz, don't mix with 44.1kHz TTS (causes resampling artifacts)
+- **Trim silence intelligently**: Use audio editor to normalize silence duration (500ms max) instead of letting TTS generate 2-3 second gaps
+- **Test on target hardware**: Generate sample, play on actual event headphones to verify quality meets standards
 
 **Warning signs:**
-- Duplicate entries in analytics dashboard
-- Operators report "sometimes audio plays twice"
-- Testing reveals clicking "Start" rapidly creates chaos
-- Echo/feedback in recordings
+- Hissing or compression artifacts in sibilants (s, z, sh sounds)
+- Muffled high frequencies compared to professional voiceover
+- Pops or clicks when concatenating segments
+- Inconsistent volume levels between clips
 
 **Phase to address:**
-Phase 1 (Core State Machine) for transition guards, Phase 3 (Polish & Resilience) for edge case testing
+Phase 2 (Audio Generation) — Set output format and bitrate. Phase 3 (Quality Validation) — Hardware testing with event equipment.
 
 ---
 
-### Pitfall 7: Browser Tab Backgrounding Throttles Timers and Audio
+### Pitfall 7: Cost Explosion from Inflection Tag Character Count
 
 **What goes wrong:**
-Operator switches browser tab to check admin dashboard. Visitor is mid-journey. When operator returns to visitor tab, audio is choppy/stuttering, or timeouts fired all at once, or state machine is stuck. Journey breaks.
+Developers assume tags are "free" metadata, but `[whispering thoughtfully]` adds 25 characters to credit consumption. Extensive tag usage doubles script length and API costs unexpectedly.
 
 **Why it happens:**
-Browsers throttle background tabs:
-- `setTimeout`/`setInterval` minimum interval increases to 1000ms
-- `requestAnimationFrame` stops entirely
-- Audio playback may pause or glitch
-- Web Audio API nodes may disconnect
+ElevenLabs charges per character including markup. A 1,000-character script with 20 tags (average 15 chars each) becomes 1,300 characters = 30% cost increase. v3 already costs more compute than v2; tags amplify this.
 
 **How to avoid:**
-1. **Page Visibility API monitoring:**
-```javascript
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) {
-    // Pause journey, show "Tab backgrounded, please return" on screen
-    pauseSession();
-  } else {
-    // Resume from paused state (don't skip ahead)
-    resumeSession();
-  }
-});
-```
-2. **Dedicated station tabs:**
-   - Each station = one dedicated browser window (not tab)
-   - Operator dashboard = separate device or window
-   - Train operators: never switch away from visitor window
-3. **Web Audio API vs. HTML5 Audio:**
-   - Web Audio API more resilient to backgrounding
-   - Use `AudioContext.resume()` on visibility return
-4. **Fullscreen mode:**
-   - Launch webapp in fullscreen (F11) to prevent accidental tab switching
-   - Operator training: "Do not press Alt+Tab or click other windows"
+- **Audit tag overhead**: Calculate `(script length + tag length) / base script length` ratio — keep under 1.15x (15% overhead)
+- **Use shorter tag aliases**: Document supports short forms — use `[sad]` not `[sadly speaking]`
+- **Remove redundant tags**: If punctuation conveys the emotion, skip the tag
+- **Reserve v3 for critical moments**: Use Flash/Turbo for expository narration, v3 only for emotional peaks (questions, revelations)
+- **Batch processing discount**: If generating 25 MP3s, subscribe to annual Creator plan for 20% discount vs. pay-as-you-go
 
 **Warning signs:**
-- Testers report "sometimes the experience freezes"
-- Audio glitches when window loses focus
-- Timeouts fire incorrectly after returning to tab
+- Bill 2x higher than v2 generation for same script length
+- Character count in API response much higher than input script
+- Burning through monthly credits in days instead of weeks
 
 **Phase to address:**
-Phase 3 (Polish & Resilience) — Testing with realistic operator workflow patterns
+Phase 1 (Script Preparation) — Tag budget: max 15% character overhead. Phase 2 (Audio Generation) — Cost tracking per segment to catch overruns early.
 
 ---
 
-### Pitfall 8: Internet Connection Drop Mid-Journey with No Recovery Path
+### Pitfall 8: V3 Static Noise Bug Recurrence
 
 **What goes wrong:**
-Venue WiFi drops connection (common at conferences with 200-500 attendees on shared network). Visitor is mid-journey. Next TTS request fails. System shows error or infinite loading. Visitor stuck. Operator must manually refresh page, losing entire session progress.
+ElevenLabs experienced a v3 bug in February 2026 where ~1.5% of requests returned static noise instead of clean audio. Issue resolved but may recur as model evolves. Production systems assuming 100% clean output fail silently.
 
 **Why it happens:**
-- No offline fallback for TTS audio
-- No retry logic for API failures
-- State machine assumes APIs always succeed
-- No UX for "connection lost, attempting reconnection"
+v3 is explicitly labeled "experimental" by ElevenLabs. Model updates can introduce regressions. High model complexity increases chance of edge-case failures.
 
 **How to avoid:**
-1. **Offline-first critical path:**
-   - Pre-record all non-personalized audio (opening, questions, fallbacks) as MP3 files
-   - Store in `/public/audio/` directory (served statically, no API dependency)
-   - Only dynamic responses require API
-2. **Graceful degradation:**
-```javascript
-async function getTTS(text, fallbackAudioPath) {
-  try {
-    return await elevenLabsAPI.textToSpeech(text);
-  } catch (error) {
-    console.error('TTS failed, using fallback audio', error);
-    return fallbackAudioPath; // Play pre-recorded generic version
-  }
-}
-```
-3. **Connection monitoring:**
-```javascript
-window.addEventListener('online', () => {
-  // Connection restored, retry failed requests
-});
-
-window.addEventListener('offline', () => {
-  // Switch to degraded mode, show "connection lost" indicator
-});
-```
-4. **Retry logic with exponential backoff:**
-```javascript
-async function retryRequest(fn, maxRetries = 3) {
-  for (let i = 0; i < maxRetries; i++) {
-    try {
-      return await fn();
-    } catch (error) {
-      if (i === maxRetries - 1) throw error;
-      await new Promise(r => setTimeout(r, 1000 * Math.pow(2, i)));
-    }
-  }
-}
-```
-5. **State machine persistence:**
-   - Save current state to localStorage every transition
-   - On page reload, offer "Resume journey" vs. "Start over"
-6. **Physical backup plan:**
-   - Mobile hotspot (4G/5G) as WiFi backup
-   - Test failover before event: disconnect WiFi, verify hotspot seamlessly takes over
+- **Implement audio validation**: Check generated MP3 for noise floor levels before saving — reject if RMS power spikes above threshold
+- **Retry with backoff**: If API returns noisy audio, retry request 2-3 times before failing
+- **Monitor ElevenLabs status page**: Subscribe to status.elevenlabs.io for incident alerts during production runs
+- **Cache validated audio**: Once an MP3 passes validation, store with checksum to avoid re-generation
+- **Fallback to v2**: If v3 reliability drops during event, have pre-generated v2 versions as backup
 
 **Warning signs:**
-- Venue WiFi speed test shows packet loss >5%
-- Event organizers report "WiFi was unreliable at last year's event"
-- Testing API calls from venue (pre-event) shows intermittent failures
+- Random static bursts in otherwise clean audio
+- Consistent noise at start or end of clips
+- API latency spikes (may indicate backend issues)
 
 **Phase to address:**
-Phase 3 (Polish & Resilience) — Failover strategy must be tested under realistic network conditions
-
----
-
-### Pitfall 9: Audio Context Suspension on Mobile (if any mobile testing planned)
-
-**What goes wrong:**
-If testing on tablet/mobile devices, AudioContext automatically suspends to save battery. Audio doesn't play despite no errors. Calling `play()` silently fails.
-
-**Why it happens:**
-Mobile browsers aggressively suspend AudioContext when page is inactive or user hasn't interacted recently.
-
-**How to avoid:**
-1. **Resume AudioContext before playback:**
-```javascript
-if (audioContext.state === 'suspended') {
-  await audioContext.resume();
-}
-```
-2. **Check context state in state machine guards:**
-```javascript
-guards: {
-  canPlayAudio: () => audioContext.state === 'running'
-}
-```
-3. **Note:** Since project specifies laptops + Chrome/Edge, this is lower priority but worth awareness for testing
-
-**Warning signs:**
-- Works on desktop, silent on mobile
-- AudioContext.state shows 'suspended' in console
-
-**Phase to address:**
-Phase 1 (Core State Machine) if mobile testing is in scope, otherwise defer
-
----
-
-### Pitfall 10: LGPD Violation Through Unintended Audio Persistence
-
-**What goes wrong:**
-Browser cache stores audio blobs. DevTools Network tab shows recorded audio available for playback. Audio lingers in memory after session end. Analytics accidentally logs transcription text. LGPD compliance violated.
-
-**Why it happens:**
-- Blob URLs created from MediaRecorder aren't explicitly revoked
-- Audio data stored in React state persists beyond session
-- Supabase analytics logs include `transcription` field when should only log `classification_result`
-- Browser memory not cleared between visitors
-
-**How to avoid:**
-1. **Explicit audio cleanup:**
-```javascript
-function cleanupSession() {
-  // Revoke all blob URLs
-  if (audioBlobUrl) {
-    URL.revokeObjectURL(audioBlobUrl);
-  }
-
-  // Clear audio from state
-  setAudioBlob(null);
-  setTranscription(null);
-
-  // Stop all media tracks
-  mediaStream.getTracks().forEach(track => track.stop());
-}
-```
-2. **Analytics schema enforcement:**
-```sql
--- Supabase table should NOT have transcription column
-CREATE TABLE sessions (
-  id UUID PRIMARY KEY,
-  created_at TIMESTAMP,
-  path_chosen TEXT, -- "inferno", "purgatorio", etc.
-  fallback_count INTEGER,
-  completion_status TEXT,
-  -- NO transcription, NO audio_url
-);
-```
-3. **Memory-only processing:**
-   - Audio blob → Whisper API → Classification → Discard blob immediately
-   - Never write audio to disk, IndexedDB, or localStorage
-   - Never send audio to analytics
-4. **Session boundary enforcement:**
-   - On session end, call `cleanupSession()`
-   - On new session start, verify state is clean
-5. **Operator training:**
-   - "Never open DevTools on station laptops during event"
-   - "Do not screenshot or record visitor sessions"
-
-**Warning signs:**
-- Code review finds `localStorage.setItem('audio', ...)`
-- Analytics database contains transcription text
-- DevTools shows audio blobs persisting after session end
-
-**Phase to address:**
-Phase 1 (Core State Machine) for architecture, Phase 3 (Polish & Resilience) for audit/verification
+Phase 2 (Audio Generation) — Automated quality checks post-generation. Phase 3 (Pre-Event Testing) — Backup v2 audio library.
 
 ---
 
@@ -485,115 +225,104 @@ Phase 1 (Core State Machine) for architecture, Phase 3 (Polish & Resilience) for
 
 | Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
 |----------|-------------------|----------------|-----------------|
-| Using HTML5 `<audio>` tag instead of Web Audio API | Simpler code, faster implementation | Less control over playback, harder to implement crossfade, worse reliability with autoplay policies | Never — Web Audio API is necessary for professional audio experience |
-| Storing TTS responses in Supabase for reuse | Reduces API costs, faster playback for repeated phrases | Storage costs, LGPD risk if visitor-specific, cache invalidation complexity | Only for static content (questions, fallbacks) with careful LGPD review |
-| Skipping retry logic for API calls | Faster development | Event failure from transient network issues | Never — retry logic is critical for live event resilience |
-| Using keyword matching instead of NLU | Cheaper (no Claude API calls), faster (~50ms vs 500ms) | Brittle, fails on synonyms/typos, poor UX when visitor uses unexpected phrasing | Acceptable for MVP testing, must upgrade to NLU before production |
-| Hardcoding audio file paths instead of CMS | Faster development, no database dependency | Requires code deploy to update content, operators can't fix issues day-of | Acceptable for v1.0 (content is fixed), problematic if roteiro evolves during event |
-| Skipping session resumption on page refresh | Simpler state management | Visitor must restart journey if browser crashes or operator refreshes | Acceptable if sessions are <10min and browser crashes are rare |
+| Use default 128kbps output | Saves credits, faster generation | Noticeably lower quality for event playback | Never for final production; OK for script testing |
+| Skip tag testing with cloned voice | Faster script writing | Tags may not work; wasted generation credits | Never — testing is cheap, regeneration is expensive |
+| Copy v2 settings to v3 | No learning curve | Poor quality, tags don't work, artifacts | Never — v3 requires new baseline |
+| One long API call instead of segmentation | Simpler code | Hits 5k limit, truncated audio | Only if script guaranteed under 4.5k chars |
+| Skip punctuation normalization | Faster script prep | Robotic prosody, mispronunciations | Never for PT-BR — language-specific rules critical |
+| Use v3 for all audio | Maximum expressiveness | 3-5x cost vs. Flash/Turbo | Only for emotionally critical sections; use cheaper models for rest |
 
 ## Integration Gotchas
 
 | Integration | Common Mistake | Correct Approach |
 |-------------|----------------|------------------|
-| ElevenLabs TTS | Sending entire paragraph at once (2000+ chars) | Chunk into sentences, stream responses, start playback on first chunk |
-| Whisper STT | Sending raw MediaRecorder blob (might be webm/unsupported format) | Convert to WAV or MP3, verify format compatibility, send with correct MIME type |
-| Claude Haiku NLU | Generic prompt "classify this: {transcription}" | Structured prompt with examples, expected categories, fallback handling: "Classify as A or B. Transcription may be imperfect due to STT errors. A = words related to light, courage, acceptance. B = words related to darkness, fear, denial. Respond JSON: {choice: 'A' or 'B', confidence: 0-1}" |
-| Supabase Analytics | Sending analytics after user action (loses data on crash) | Send analytics before state transition, use upsert pattern, include session_id for deduplication |
-| MediaRecorder API | Starting recording without checking `state` property | Always check `mediaRecorder.state !== 'recording'` before calling `start()` |
-| AudioContext | Creating new AudioContext for each playback | Create once globally, reuse throughout session, check `state` before use |
+| ElevenLabs v3 API | Send 10k character script assuming v2 limits | Check docs: v3 max is 5k chars. Segment at natural boundaries or use Flash for long form. |
+| ElevenLabs v3 API | Use stability percentage from v2 | Set stability mode: 'Creative' for tags, 'Natural' for default, never 'Robust' with inflection. |
+| ElevenLabs v3 API | Assume tags are metadata (free) | Count tag characters: `[whispering]` = 12 chars = 12 credits. Budget 15% overhead. |
+| PT-BR text normalization | Send "Dr. Silva" raw | Expand: "Dr." → "Doutor", "R$ 1.000" → "mil reais". Test with TTS preview. |
+| Cloned voice + v3 | Use Professional Voice Clone (PVC) | Use Instant Voice Clone (IVC). Official docs: PVC not optimized for v3 yet. |
+| Audio concatenation | Join MP3 files with `cat` | Use audio editor to crossfade 50ms at seams, normalize RMS levels across clips. |
 
 ## Performance Traps
 
 | Trap | Symptoms | Prevention | When It Breaks |
 |------|----------|------------|----------------|
-| Creating new AudioContext for each TTS playback | Memory leak, audio glitches after 10+ utterances | Singleton pattern, create once on app init | After 10-15 playback cycles |
-| Not cleaning up MediaStream tracks | Microphone LED stays on, memory grows, browser slows | Call `track.stop()` on all tracks when session ends | After 3-5 sessions without cleanup |
-| Loading all pre-recorded audio files on page load | Slow initial load, wasted bandwidth if visitor doesn't complete | Lazy load audio, prefetch only next expected state's audio | When total audio >10MB |
-| Sending full audio blob to analytics | Supabase storage costs explode, slow inserts, LGPD violation | Never send audio to analytics, only metadata (duration, classification result) | Immediately (LGPD violation + cost) |
-| Polling for session status every 100ms | CPU spike, battery drain, unnecessary network requests | Use WebSocket for real-time updates or poll at 5s intervals | With 3 concurrent stations + operator dashboard = ~50 req/s |
+| V3 latency for real-time use | 2-5 second generation time per request | Use Flash/Turbo for conversational AI; v3 only for pre-recorded content | Any real-time application |
+| Character limit hit during live generation | API 400 error mid-session | Segment scripts at natural breaks, validate length pre-flight | Scripts > 4.5k chars |
+| Tag processing overhead | API timeouts or slow response | Reduce tag density to <1 per sentence; benchmark your tag patterns | Dense tagging (>1 tag per 50 chars) |
+| Static noise in ~1.5% of requests | Users report crackling audio | Validate RMS noise floor post-generation; retry if above threshold | Any batch generation (law of large numbers) |
 
 ## Security Mistakes
 
 | Mistake | Risk | Prevention |
 |---------|------|------------|
-| Exposing API keys in client-side code | ElevenLabs/Claude API keys stolen, abused, unlimited charges to your account | All API calls through Next.js API routes, keys in server-side env vars only |
-| No rate limiting on session creation endpoint | Malicious user creates thousands of sessions, drains API quota | Implement rate limiting (max 10 sessions per IP per hour) using middleware |
-| Storing audio in publicly-accessible Supabase bucket | Audio URLs guessable, LGPD violation if visitor audio accessible | Never store visitor audio; if storing pre-recorded audio, use private bucket with signed URLs |
-| CORS misconfiguration allowing any origin | Third-party sites can call your API endpoints, waste quota | Whitelist only your domain in CORS policy |
-| No HTTPS enforcement | Man-in-the-middle attacks, microphone permission blocked by browsers on HTTP | Enforce HTTPS via Vercel config, test locally with `localhost` (exempt from HTTPS requirement) |
+| Hardcoding API key in client-side code | Key leaked in browser DevTools → credit theft | Always call ElevenLabs from Next.js API route, key in env var server-side only |
+| Sending user input directly to TTS API | Injection of malicious tags or long text → cost attack | Sanitize input: strip all brackets, limit length to 500 chars for user-provided text |
+| Storing raw API responses without validation | Noisy audio served to users → poor UX | Validate audio quality before saving to public folder |
 
 ## UX Pitfalls
 
 | Pitfall | User Impact | Better Approach |
 |---------|-------------|-----------------|
-| No visual feedback during 3-8s API latency | Visitor assumes it's broken, clicks away | Show animated "listening" → "thinking" → "responding" states with progress indication |
-| Fallback response repeats the same error message | After 2nd identical fallback, visitor knows it's broken and leaves | Have 3 variations of fallback responses, escalating in poeticness, 3rd one gracefully ends session |
-| No indication of how far into journey | Visitor doesn't know if 2min or 8min remaining, anxiety builds | Subtle visual progress indicator (e.g., 3 circles representing Inferno/Purgatorio/Paraíso, current one highlighted) |
-| Error messages in English | Breaks immersion for Portuguese-speaking audience | All error states in Portuguese, poetic/in-character (e.g., "O véu entre mundos se desfaz..." instead of "Connection error") |
-| Abrupt session end after final question | Anti-climactic, visitor confused if experience is over | Clear closing sequence: final TTS → 3s pause → fade to black → "Sua jornada se completa" → reset screen |
-| No way to restart if visitor wants to try different path | Visitor must ask operator for help | After completion, show "Recomeçar jornada" button with 10s delay (prevents accidental clicks) |
+| Overusing emotional tags | "Emotional whiplash" — voice too dramatic, sounds fake | Use tags sparingly: reserve for narrative peaks, rely on punctuation otherwise |
+| Ignoring PT-BR prosody norms | Sounds like English speaker reading Portuguese — unnatural rhythm | Test with native speakers; adjust pause lengths, sentence stress patterns |
+| Inconsistent voice energy between segments | Jarring transitions ruin immersion | Use consistent context: if ending segment is calm, start next segment calm |
+| Audible concatenation seams | Users notice "glitches" between audio files | Crossfade 50-100ms at seams using audio editor, normalize volume levels |
+| Using v2 and v3 mixed in experience | Voice subtly changes between sections — uncanny valley | Commit to one model version for entire experience (preferably v3 if budget allows) |
 
 ## "Looks Done But Isn't" Checklist
 
-- [ ] **Audio playback:** Tested autoplay policy unlock in production (not just localhost)
-- [ ] **Microphone permissions:** Tested permission denial flow, recovery UX works
-- [ ] **Network resilience:** Disconnected WiFi during session, verified fallback audio plays
-- [ ] **Rate limiting:** Sent 10 concurrent TTS requests, verified no 429 errors or graceful handling
-- [ ] **LGPD compliance:** Audited all code paths, confirmed audio never persists beyond session
-- [ ] **Cross-browser testing:** Tested on Chrome, Edge, Firefox on Windows (event laptop OS)
-- [ ] **State machine edge cases:** Tested double-click start, rapid speech during TTS, browser back button
-- [ ] **Analytics accuracy:** Verified session counts match expectations, no duplicates, no PII leaked
-- [ ] **Operator workflow:** Tested admin dashboard + visitor station simultaneously, verified no interference
-- [ ] **Audio quality:** Tested with actual event headphones (not developer's high-end headset)
-- [ ] **Venue simulation:** Tested with background noise (play crowd ambience during testing)
-- [ ] **Multi-station isolation:** Ran 3 stations simultaneously, verified no shared state or interference
-- [ ] **Timeout handling:** Waited 30s without speaking, verified graceful timeout behavior
-- [ ] **Error states:** Manually triggered every error condition, verified UI shows something sensible (not white screen or console errors only)
-- [ ] **Session cleanup:** Completed 5 sessions back-to-back, verified no memory leaks (check DevTools Memory tab)
+- [ ] **Audio files generated:** Often missing quality validation — verify RMS noise floor <-60dB, no clipping, consistent loudness
+- [ ] **Tags in script:** Often missing compatibility testing — verify each tag works with your cloned voice via sample generation
+- [ ] **PT-BR punctuation normalized:** Often missing abbreviation expansion — grep script for "Dr.", "Sr.", "R$", "etc." and expand
+- [ ] **V3 settings configured:** Often missing stability mode selection — verify using 'Natural' or 'Creative', not 'Robust' if using tags
+- [ ] **Cost estimated:** Often missing tag character overhead — calculate (script + tags) length, multiply by v3 credit rate
+- [ ] **Concatenation tested:** Often missing seam audibility check — listen to all transitions at playback volume on event hardware
+- [ ] **Backup v2 audio generated:** Often missing failover plan — verify working v2 versions exist if v3 has runtime issues at event
 
 ## Recovery Strategies
 
 | Pitfall | Recovery Cost | Recovery Steps |
 |---------|---------------|----------------|
-| Autoplay policy blocking audio | LOW | Operator instructs visitor to click anywhere on page, audio unlocks, continue session |
-| Microphone permission denied | MEDIUM | Operator refreshes page, instructs visitor to click "Allow" when prompted, restart session |
-| Network connection lost mid-session | LOW | System automatically plays fallback audio, session continues in degraded mode (generic responses instead of personalized) |
-| TTS API rate limit hit | MEDIUM | Switch to pre-recorded audio for all stations, continue with reduced personalization |
-| STT consistently mis-transcribing | HIGH | Operator switches to manual mode: listens to visitor, clicks classification button on admin panel (requires admin UI feature) |
-| State machine stuck/crashed | HIGH | Operator refreshes page, session lost, visitor restarts (under 10min so acceptable loss) |
-| Browser completely frozen | MEDIUM | Force quit browser, relaunch, visitor restarts journey, usually under 30s downtime |
-| All 3 stations experiencing issues | CRITICAL | Operator announces "technical difficulty, 5-minute pause", checks internet connection, restarts stations, worst case: mobile hotspot failover |
+| Audio has static noise bug | LOW | Retry API call 2-3 times; if persistent, regenerate entire batch during next stable period |
+| Tags being read aloud instead of applied | MEDIUM | Remove tags, rely on punctuation and text; or switch to v2 Flash for that segment |
+| PT-BR mispronunciations discovered at event | HIGH | Create pronunciation dictionary with alias tags (phonetic respellings); regenerate audio files overnight |
+| Cost overrun from tag overhead | LOW | Switch non-critical segments to Flash/Turbo; keep v3 for key emotional moments only |
+| Cloned voice doesn't support inflection tags | HIGH | Either: (1) Use pre-built voice from library, or (2) Re-clone with diverse emotional samples, or (3) Drop tags, rely on script quality |
+| Concatenation seams audible | MEDIUM | Export audio to DAW, add 50ms crossfades, normalize RMS, re-export — 1 hour manual work for 25 files |
 
 ## Pitfall-to-Phase Mapping
 
 | Pitfall | Prevention Phase | Verification |
 |---------|------------------|--------------|
-| Autoplay policy blocking | Phase 1: Core State Machine | Test production build on remote device (not localhost), first TTS plays successfully |
-| Microphone permission issues | Phase 1: Core State Machine | Test permission denial flow, recovery UX works without page refresh |
-| Network latency issues | Phase 2: Voice Integration | Measure p95 latency <3s for full response cycle, test on throttled connection (DevTools Network: Fast 3G) |
-| ElevenLabs rate limiting | Phase 2: Voice Integration | Load test 3 concurrent sessions, monitor for 429 errors, verify cost projections |
-| Whisper transcription accuracy | Phase 2: Voice Integration | Test accuracy >80% for target phrases, including whispered speech with background noise |
-| State machine race conditions | Phase 1: Core State Machine + Phase 3: Polish & Resilience | Rapidly click all UI elements, speak during TTS, verify no duplicate sessions or crashes |
-| Browser backgrounding | Phase 3: Polish & Resilience | Switch tabs during session, return, verify audio resumes correctly |
-| Internet connection drop | Phase 3: Polish & Resilience | Disconnect WiFi mid-session, verify fallback audio plays and journey continues |
-| LGPD compliance | Phase 1: Core State Machine + Phase 3: Polish & Resilience | Code audit + DevTools inspection, zero audio persistence, analytics contains no PII |
-| Mobile AudioContext suspension | Phase 1: Core State Machine (if mobile in scope) | Test on mobile device, verify audio plays after app backgrounded |
+| Audio tag overuse instability | Phase 1 (Script Prep) | Tag density <1 per sentence; generate test samples, check for speed-ups/artifacts |
+| PT-BR punctuation traps | Phase 1 (Script Prep) | PT-BR style guide applied; all abbreviations expanded; test with native speaker |
+| Cloned voice + tags mismatch | Phase 1 (Voice Testing) | Document which tags work with cloned voice; allowlist created before scripting |
+| V3 character limit segmentation | Phase 1 (Script Prep) | All segments <4.5k chars; boundaries at sentence/paragraph breaks |
+| V3 settings don't transfer from v2 | Phase 1 (Config Baseline) | A/B test all three stability modes; settings locked in project config |
+| Audio quality degradation | Phase 2 (Audio Generation) | Output format set to 192kbps MP3; test on event hardware |
+| Cost explosion from tag overhead | Phase 1 (Tag Budget) | Character overhead tracked; <15% increase from tags; v3 reserved for critical moments |
+| V3 static noise bug | Phase 2 (Quality Validation) | Automated RMS noise floor check; retry logic; backup v2 audio exists |
 
 ## Sources
 
-- MDN Web Docs: Web Audio API, MediaStream Recording API, Autoplay Policy (training data through Jan 2025)
-- Browser vendor documentation: Chrome/Edge/Firefox autoplay policies and microphone permission flows
-- ElevenLabs API documentation patterns (training data)
-- Whisper API behavior patterns for short-form speech (training data)
-- LGPD compliance requirements for audio data (training data)
-- Common live event technical failure modes (training data synthesis)
-
-**Confidence note:** All findings based on documented browser API specifications and TTS/STT system behavior patterns from training data through January 2025. Browser APIs are stable specifications (Web Audio API, MediaStream API). ElevenLabs/Whisper patterns based on documented API behavior. Live event failure modes based on established technical patterns.
-
-**Recommended verification:** Before event, test all critical paths (autoplay, microphone, network failover) in production environment with actual hardware.
+- [ElevenLabs Audio Tags: More control over AI Voices](https://elevenlabs.io/blog/v3-audiotags)
+- [Best practices | ElevenLabs Documentation](https://elevenlabs.io/docs/overview/capabilities/text-to-speech/best-practices)
+- [How do audio tags work with Eleven v3? | ElevenLabs](https://help.elevenlabs.io/hc/en-us/articles/35869142561297-How-do-audio-tags-work-with-Eleven-v3)
+- [Models | ElevenLabs Documentation](https://elevenlabs.io/docs/overview/models)
+- [What audio formats do you support? | ElevenLabs](https://help.elevenlabs.io/hc/en-us/articles/15754340124305-What-audio-formats-do-you-support)
+- [Voice Cloning overview | ElevenLabs Documentation](https://elevenlabs.io/docs/eleven-creative/voices/voice-cloning)
+- [Professional Voice Cloning | ElevenLabs Documentation](https://elevenlabs.io/docs/eleven-creative/voices/voice-cloning/professional-voice-cloning)
+- [Troubleshooting | ElevenLabs Documentation](https://elevenlabs.io/docs/eleven-creative/troubleshooting)
+- [Why is my voice mispronouncing certain words? | ElevenLabs](https://help.elevenlabs.io/hc/en-us/articles/19448694780177-Why-is-my-voice-mispronouncing-certain-words)
+- [The Complete Guide to ElevenLabs Plans Overages and Usage Based Pricing in 2026 | Flexprice](https://flexprice.io/blog/elevenlabs-pricing-breakdown)
+- [Optimizing LLM costs | ElevenLabs Documentation](https://elevenlabs.io/docs/eleven-agents/customization/llm/optimizing-costs)
+- [ElevenLabs v3 Static Noise Incident (February 2026)](https://status.elevenlabs.io/incidents/01KHDRZJ5NGS88YZZRFWBNRZ4S)
+- [Voice Settings | ElevenLabs Documentation](https://elevenlabs-sdk.mintlify.app/speech-synthesis/voice-settings)
+- [How can I add pauses? | ElevenLabs](https://help.elevenlabs.io/hc/en-us/articles/13416374683665-How-can-I-add-pauses)
+- [How do TTS systems handle punctuation and formatting cues? | Zilliz](https://zilliz.com/ai-faq/how-do-tts-systems-handle-punctuation-and-formatting-cues)
 
 ---
-*Pitfalls research for: Live Voice-Interactive Installation (O Oráculo)*
-*Researched: 2026-03-24*
-*Confidence: MEDIUM (specifications-based, pre-verification recommended)*
+*Pitfalls research for: ElevenLabs v3 upgrade for PT-BR narration with inflection tags*
+*Researched: 2026-03-26*
+*Confidence: MEDIUM — Official ElevenLabs docs + community reports verified. PT-BR specific punctuation pitfalls inferred from general TTS best practices (no PT-BR specific v3 documentation found). All technical pitfalls verified from official sources.*

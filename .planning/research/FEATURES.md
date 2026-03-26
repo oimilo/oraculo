@@ -1,273 +1,198 @@
-# Feature Research
+# Feature Landscape: Realistic AI Narration with ElevenLabs v3
 
-**Domain:** Interactive Voice-First Art Installation
-**Researched:** 2026-03-24
-**Confidence:** MEDIUM
+**Domain:** Text-to-speech narration for literary voice experience
+**Researched:** 2026-03-26
+**Context:** Dante-inspired interactive voice journey for art event. 25 MP3s pre-recorded with eleven_multilingual_v2 + SSML breaks. Voice cloned (AcSHc9S7hdxvGEJVWFzo). PT-BR script with literary references.
 
-## Feature Landscape
+---
 
-### Table Stakes (Users Expect These)
+## Table Stakes
 
-Features users assume exist. Missing these = experience feels broken.
+Features users expect from realistic AI narration. Missing = narration feels robotic or flat.
 
 | Feature | Why Expected | Complexity | Notes |
 |---------|--------------|------------|-------|
-| **Clear audio feedback** | Users need confirmation the system heard them | LOW | Visual "listening" indicator + audible acknowledgment before response |
-| **Graceful failure handling** | Voice recognition fails ~10-20% in real environments | MEDIUM | Cannot just error out — must have poetic/contextual fallback |
-| **Predictable response timing** | Silence after speaking creates confusion | MEDIUM | Max 2-3s from speech end to system response start |
-| **Ambient noise tolerance** | Museum/event spaces are never silent | MEDIUM | Voice activity detection (VAD) + noise gating to filter background |
-| **Consistent voice identity** | Voice changing randomly breaks immersion | LOW | Same voice throughout, but parameters (speed/pitch) can vary by phase |
-| **Session continuity** | Experience shouldn't reset mid-flow | LOW | State machine must be resilient to network hiccups |
-| **Accessible volume control** | Physical spaces have varying acoustics | LOW | Operator-accessible volume controls per station |
-| **Start/restart mechanism** | Users need clear entry point | LOW | Explicit start trigger (button/gesture), not auto-start |
+| **Emotion control per segment** | Literary script requires mood shifts (calm → thoughtful → determined) | Medium | v3 audio tags: `[calm]`, `[thoughtful]`, `[determined]`. Replace v2's monotone output. |
+| **Natural pause handling** | Pauses carry meaning in literary narration. "..." vs dialog break vs reflection pause | Low-Medium | v3: `[pause]`, `[short pause]`, `[long pause]` replace SSML `<break>`. PT-BR ellipsis (...) already signals pause naturally. |
+| **PT-BR accent fidelity** | Brazilian Portuguese has distinct rhythm/pronunciation from European | Low | v3 supports 70+ languages including PT-BR. Use `language_code: 'pt'` in API. Already implemented. |
+| **Segment-level voice direction** | Each phase has different delivery: grave (Inferno), intimate (Purgatorio), whispered (Paraiso) | Medium | v3 audio tags persistent until new tag. Apply `[whispers]` at Paraiso start, persists through segment. |
+| **Punctuation-driven pacing** | Em-dashes (—), ellipsis (...), capitalization affect delivery rhythm | Low | v3 interprets punctuation semantically. Already in script. No code change needed. |
 
-### Differentiators (Competitive Advantage)
+**Dependencies:**
+- Existing: voice_id (cloned voice), script.ts with text segments, PHASE_VOICE settings
+- New: Migrate `eleven_multilingual_v2` → v3 model, replace SSML breaks with audio tags
 
-Features that set the product apart. Not required, but valuable for this domain.
+---
+
+## Differentiators
+
+Features that set narration apart. Not expected, but valued for literary/artistic context.
 
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|
-| **Intentional pauses as design** | Most systems minimize silence — treating it as content creates dramatic tension | MEDIUM | Requires precise timing control in TTS pipeline, 2-4s gaps between phrases |
-| **Adaptive voice parameters** | Voice characteristics shift with narrative phases (Inferno vs Paradise) | MEDIUM | ElevenLabs stability/similarity sliders per phase, not just pitch shift |
-| **NLU-based binary classification** | Understanding intent vs keyword matching creates natural conversation | HIGH | Claude Haiku classifies free-form PT-BR speech into binary choices |
-| **Poetic fallback narrative** | Most systems say "I didn't understand" — staying in character preserves immersion | HIGH | Pre-scripted fallback that feels like Virgil admitting limits, not error message |
-| **Layered ambient soundscape** | Background audio shifts with narrative phases, not just TTS over silence | MEDIUM | 3-5 ambient tracks per phase, crossfade on transitions (2-3s overlap) |
-| **Timeout as narrative choice** | Silence becomes a valid answer, not just error state | MEDIUM | Different timeout defaults per phase (Inferno→Silence, Purgatory→contextual) |
-| **Anonymous session analytics** | Track patterns without privacy violation | LOW | Session ID + timestamp + path taken, zero PII |
-| **Literary reflection variants** | Personalized closing based on path, not generic ending | MEDIUM | 4 pre-written reflections mapped to decision tree outcomes |
+| **Reaction sounds (sighs, breaths)** | Humanizes AI guide. "Eu não consigo sonhar [sigh]" conveys vulnerability | Low | v3: `[sigh]`, `[gasps]`, `[gulps]`. Add 2-3 strategic reactions per phase. Non-verbal storytelling. |
+| **Cognitive pauses (hesitates, stammers)** | AI acknowledges limits: "Eu... [hesitates] não sei o que te moveu" | Medium | v3: `[hesitates]`, `[stammers]`, `[pauses]`. Requires script revision to find natural insertion points. |
+| **Tone layering (multiple tags)** | Combine emotional state + delivery: `[nervously][whispers]` for complex moments | Medium | v3 supports tag stacking. Test how cloned voice handles combinations. May require experimentation. |
+| **Rhythm variation per phase** | Inferno: grave/slow. Purgatorio: natural pacing. Paraiso: whispered/drawn out | Medium | v3: `[rushed]`, `[drawn out]`. Layer with existing speed settings (0.80-0.90). |
+| **Situational awareness (context-driven delivery)** | "Virgílio sabia que não podia entrar no Paraíso [resigned tone]" | High | v3 interprets context from surrounding text. Requires careful tag placement + testing. May be voice-dependent. |
 
-### Anti-Features (Commonly Requested, Often Problematic)
+**Dependencies:**
+- Script revision to insert audio tags at narratively appropriate moments
+- Voice testing: cloned voice must support target emotions (some voices handle `[whispers]` better than `[SHOUTING]`)
+- Iteration budget: v3 is nondeterministic, may need 2-3 generations per segment to find best take
 
-Features that seem good but create problems in voice-first installations.
+---
 
-| Feature | Why Requested | Why Problematic | Alternative |
-|---------|---------------|-----------------|-------------|
-| **Free-form conversation** | "Real AI would let you talk about anything" | Breaks narrative structure, requires safety guardrails, unpredictable duration | Guided experience with NLU classification of free-form input into structured choices |
-| **Visual script display** | "Accessibility for hearing-impaired" | Visitors read ahead, breaks dramatic timing, becomes text experience not voice | Separate accessible mode if needed, not default — maintain voice-first design |
-| **Voice interruption/barge-in** | "Let users interrupt the AI" | Narrative is carefully timed, interruption breaks flow, complex state management | Fixed script with clear response windows, visual "listening" indicator |
-| **Dynamic content generation** | "AI should create unique responses per user" | Unpredictable quality, latency spikes, loses literary precision | Pre-scripted narrative with NLU-driven branching — quality controlled |
-| **Multi-language support** | "Translate to English/Spanish" | TTS quality varies by language, NLU accuracy drops, doubles testing surface | PT-BR only for v1 — quality over breadth |
-| **Mobile app native** | "Better than web" | Distribution complexity, install friction at event, platform fragmentation | PWA via browser — zero install, works on any device |
-| **Offline-first architecture** | "What if internet fails?" | ElevenLabs/Whisper/Claude are cloud APIs, offline TTS quality is poor | Pre-cache monologues as fallback, accept internet dependency for interactive parts |
-| **Real-time transcript display** | "Show what system heard" | Breaks immersion, visitors focus on text accuracy not experience | Visual listening indicator only, no text shown during experience |
+## Anti-Features
+
+Features to explicitly NOT build.
+
+| Anti-Feature | Why Avoid | What to Do Instead |
+|--------------|-----------|-------------------|
+| **SSML `<break>` tags in v3** | v3 dropped SSML support. Will be ignored or cause errors. | Use `[pause]`, `[short pause]`, `[long pause]` audio tags. Migrate existing pauseAfter logic to tags. |
+| **Excessive audio tags** | Over-directing kills naturalness. "The model will still speak out the emotional delivery guides" — tags appear in output. | Use tags sparingly (1-2 per 2-3 sentences). Trust v3's contextual interpretation + punctuation. |
+| **Phoneme/IPA pronunciation tags** | v3 handles PT-BR natively. Micro-managing pronunciation breaks flow. | Only use for proper nouns/neologisms if TTS mispronounces. Test first. |
+| **Multi-speaker dialogue API** | Oráculo is single narrator. Text-to-Dialogue endpoint adds complexity for zero benefit. | Single voice, multiple emotions. Use audio tags for variety. |
+| **Tag persistence without reset** | Audio tags persist until new tag applied. Forgetting to reset causes emotional bleed. | Explicitly reset tags between phases: `[calm] Você chegou num lugar aberto...` after `[resigned tone]` in prior segment. |
+
+---
 
 ## Feature Dependencies
 
 ```
-[State Machine Flow Control]
-    └──requires──> [Audio Playback System]
-                       └──requires──> [TTS Generation]
-    └──requires──> [Transition Timing Logic]
-                       └──requires──> [Pause/Crossfade System]
+Emotion control per segment → Script revision (insert tags)
+                            → Model migration (v2 → v3)
 
-[Voice Input Classification]
-    └──requires──> [STT Transcription]
-                       └──requires──> [Voice Activity Detection]
-    └──requires──> [NLU Binary Classifier]
-    └──requires──> [Timeout Handler]
+Natural pause handling → Script revision (SSML → audio tags)
+                       → Test ellipsis behavior (may be sufficient without tags)
 
-[Ambient Audio System]
-    └──requires──> [Multi-track Audio Mixer]
-    └──requires──> [Crossfade Controller]
-    └──enhances──> [State Machine Flow] (phase transitions trigger audio shifts)
+Segment-level voice direction → Tag persistence verification
+                              → Phase boundary tag resets
 
-[Fallback Handling]
-    └──requires──> [NLU Confidence Scoring]
-    └──requires──> [Pre-scripted Fallback Content]
-    └──requires──> [Retry Counter] (max 1-2 retries before default choice)
+Reaction sounds → Script revision (identify 5-10 insertion points)
+                → Voice testing (does cloned voice handle [sigh]?)
 
-[Session Analytics]
-    └──requires──> [State Machine Events]
-    └──requires──> [Anonymous Session ID]
-    └──requires──> [Database Persistence]
+Tone layering → Emotion control (foundation)
+              → Experimentation budget (non-deterministic output)
 
-[Multi-station Support]
-    └──requires──> [Session Isolation] (state per station)
-    └──requires──> [Admin Dashboard] (monitor all stations)
-    └──conflicts──> [Shared State] (each session must be independent)
+Rhythm variation per phase → Existing speed settings (already differentiated)
+                            → Audio tags as overlay ([drawn out])
 ```
 
-### Dependency Notes
+---
 
-- **State Machine requires Pause/Crossfade:** Intentional pauses are narrative beats, not just gaps — state machine must control timing precisely
-- **NLU requires STT:** Cannot classify speech until transcribed, but transcription alone is insufficient (need intent classification)
-- **Ambient Audio enhances State Machine:** Phase transitions drive audio crossfades, creating seamless narrative flow
-- **Fallback requires Confidence Scoring:** Need to know when NLU is uncertain to trigger poetic fallback vs accepting classification
-- **Multi-station conflicts with Shared State:** Each visitor's session must be isolated — no crosstalk between stations
-- **Timeout Handler is critical path:** Cannot block indefinitely on user input — silence must resolve to default choice after 8-12s
+## MVP Recommendation
 
-## MVP Definition
+Prioritize:
 
-### Launch With (v1 — May 2026)
+1. **Model migration (v2 → v3)** — Foundation for all other features. Change `model_id: 'eleven_multilingual_v2'` → `'eleven_turbo_v3'` or `'eleven_multilingual_v3'` in generate-audio.mjs.
 
-Minimum viable product for Bienal event.
+2. **Replace SSML breaks with audio tags** — v3 doesn't support `<break>`. Replace `buildTextWithPauses()` logic:
+   ```javascript
+   // OLD (v2):
+   text += ` <break time="2.1s" /> `;
 
-- [x] **State machine with full scripted flow** — 3 questions, 4 paths, 4 reflections mapped to decision tree
-- [x] **TTS with variable voice parameters** — ElevenLabs streaming, stability/similarity settings per phase
-- [x] **STT + NLU binary classification** — Whisper PT-BR transcription → Claude Haiku intent classification
-- [x] **Ambient audio layering** — 3-5 tracks per phase, crossfade on transitions (2-3s overlap)
-- [x] **Intentional pause system** — 2-4s gaps between phrases, controlled via state machine timing
-- [x] **Poetic fallback handling** — Pre-scripted Virgil response when NLU confidence low, max 1 retry
-- [x] **Timeout with default choice** — 8-12s silence → default path (Inferno→Silence, Purgatory→contextual)
-- [x] **Minimal visual UI** — Start button, phase indicator, listening feedback, abstract animation
-- [x] **Anonymous session analytics** — Session ID, timestamp, path taken, fallback count, duration
-- [x] **Multi-station support** — 2-3 simultaneous isolated sessions
-- [x] **Admin dashboard** — Real-time station status, session metrics, error monitoring
+   // NEW (v3):
+   text += ` [long pause] `;
+   // or preserve ellipsis + let v3 interpret naturally
+   ```
 
-### Add After Validation (v1.x)
+3. **Basic emotion tags per phase** — One tag per phase establishes mood:
+   - APRESENTACAO: `[calm]`
+   - INFERNO: `[grave]` (test if supported, else `[serious]`)
+   - PURGATORIO: `[thoughtful]`
+   - PARAISO: `[whispers]`
+   - DEVOLUCAO: `[warm]` or `[calm]`
 
-Features to add once core experience is validated at event.
+4. **PT-BR punctuation review** — Verify script uses:
+   - Em-dash (—) for dialog/interruption (already correct in script)
+   - Ellipsis (...) for pauses (already correct)
+   - Proper accent marks (já, você, Paraíso) — v3 interprets these for pronunciation
 
-- [ ] **Pre-cached monologue fallbacks** — Trigger: If API failures occur during event (>5% sessions impacted)
-- [ ] **Voice adaptation based on ambient noise** — Trigger: Operators report difficulty hearing in noisy periods
-- [ ] **A/B test different timeout durations** — Trigger: Analytics show >30% timeout rate (too short) or <5% (too long)
-- [ ] **Enhanced admin controls** — Trigger: Operators request mid-session intervention (pause/restart/skip)
-- [ ] **Session replay for debugging** — Trigger: Unexpected flow branches or classification errors in production
+Defer:
 
-### Future Consideration (v2+)
+- **Reaction sounds ([sigh], [gasps])** — Nice-to-have. Requires script revision + testing. Add in Phase 2 if time permits after core migration works.
+- **Tone layering ([nervously][whispers])** — Complex. Non-deterministic. High risk of over-directing. Only attempt if basic emotions work perfectly.
+- **Cognitive pauses ([hesitates])** — Subtle. May not add enough value vs. simple `[pause]`. Test after core features validated.
 
-Features to defer until post-event analysis.
+---
 
-- [ ] **Visitor return detection** — Why defer: Requires persistent identifier (privacy concern), unclear value for one-time event
-- [ ] **Voice emotion analysis** — Why defer: Adds latency, unclear how to use emotionally in current script
-- [ ] **Multi-language support** — Why defer: PT-BR quality critical for v1, translation doubles testing surface
-- [ ] **Generative narrative variants** — Why defer: Literary quality must be controlled, unpredictable latency
-- [ ] **Physical interaction sensors** — Why defer: Original water basin idea cut, no other physical triggers defined
+## PT-BR Specific Considerations
 
-## Feature Prioritization Matrix
+### What Works Well
+- **Native PT-BR support:** v3's 70+ language model includes Brazilian Portuguese. No special configuration beyond `language_code: 'pt'`.
+- **Accent marks:** Properly rendered in script (já, você, Paraíso, Virgílio) signal correct pronunciation.
+- **Ellipsis (...):** PT-BR uses ellipsis for trailing thought/pause. v3 interprets this naturally without explicit `[pause]` tag.
+- **Em-dash (—):** Used for direct speech in PT-BR (instead of quotation marks). Script already uses correctly: "— você atravessou."
 
-| Feature | User Value | Implementation Cost | Priority |
-|---------|------------|---------------------|----------|
-| State machine with full flow | HIGH | HIGH | P1 |
-| TTS with variable parameters | HIGH | MEDIUM | P1 |
-| STT + NLU classification | HIGH | HIGH | P1 |
-| Poetic fallback handling | HIGH | MEDIUM | P1 |
-| Timeout with default choice | HIGH | MEDIUM | P1 |
-| Ambient audio layering | MEDIUM | MEDIUM | P1 |
-| Intentional pause system | MEDIUM | LOW | P1 |
-| Minimal visual UI | MEDIUM | LOW | P1 |
-| Anonymous session analytics | MEDIUM | LOW | P1 |
-| Multi-station support | HIGH | MEDIUM | P1 |
-| Admin dashboard | MEDIUM | MEDIUM | P1 |
-| Pre-cached fallbacks | LOW | MEDIUM | P2 |
-| Voice adaptation to noise | LOW | HIGH | P2 |
-| A/B timeout testing | LOW | LOW | P2 |
-| Enhanced admin controls | MEDIUM | MEDIUM | P2 |
-| Session replay debugging | LOW | MEDIUM | P2 |
-| Visitor return detection | LOW | MEDIUM | P3 |
-| Voice emotion analysis | LOW | HIGH | P3 |
-| Multi-language support | MEDIUM | HIGH | P3 |
-| Generative narrative variants | LOW | HIGH | P3 |
+### Potential Issues
+- **Diacritical marks in tag context:** If inserting audio tags mid-sentence near accented words, verify spacing doesn't break pronunciation. Test: `"Você [pause] saiu"` vs `"Você[pause] saiu"`.
+- **Contractions:** PT-BR informal speech (cê = você, pra = para). Script uses formal literary style. No issue.
+- **European vs Brazilian accent confusion:** Some TTS mixes accents. ElevenLabs v3 with cloned Brazilian voice should avoid this. Validate in first generation.
+- **Literary vocabulary:** Words like "elaborado," "metabolizado," "limiar" are formal/rare. v3 should handle via context, but spot-check pronunciation in generated audio.
 
-**Priority key:**
-- P1: Must have for launch (May 2026 Bienal)
-- P2: Should have, add when possible (post-event iteration)
-- P3: Nice to have, future consideration (v2+ if experience expands)
+---
 
-## Implementation Complexity Notes
+## Quality Validation Strategy
 
-### High Complexity Features
+### Objective Metrics
+1. **Mean Opinion Score (MOS):** 5-point scale (1=robotic, 5=human-like). Target: 4.0+ average across 25 clips.
+   - Measure naturalness, intelligibility, expressiveness
+   - Use open-source tools: WVMOS, UTMOS for automated MOS estimation
+2. **Pause accuracy:** Compare intended pause duration (script annotations) vs actual silence in waveform. Tolerance: ±300ms.
+3. **Emotion tag effectiveness:** A/B test segments with/without tags. Blind listener survey: "Which sounds more [thoughtful/grave/calm]?"
 
-**State Machine with Full Flow (P1)**
-- **Why complex:** 3 questions × binary choices = 4 distinct paths + Paradise question (no classification) + 4 reflection variants
-- **Challenges:** Timeout handling per question, fallback retry logic, transition timing, ambient audio sync
-- **Mitigation:** Use XState for visualization + testing, comprehensive state chart before coding
+### Subjective Assessment
+1. **Native PT-BR speaker review:** Does accent sound Brazilian (not European)? Any mispronunciations?
+2. **Literary flow:** Read script aloud while listening to TTS. Does pacing feel natural for poetry/literary prose?
+3. **Emotional coherence:** Do phase transitions feel smooth? Does `[calm]` → `[thoughtful]` → `[whispers]` progression support narrative arc?
+4. **AI character consistency:** Does voice sound like the same "Virgílio guide" across all 25 clips despite emotion shifts?
 
-**STT + NLU Classification (P1)**
-- **Why complex:** Real-time PT-BR transcription → intent classification → binary choice mapping
-- **Challenges:** Whisper latency (~1-2s), Claude Haiku classification (~100-200ms), confidence thresholding, fallback triggers
-- **Mitigation:** Pipeline optimization (parallel where possible), pre-tested confidence thresholds, comprehensive fallback coverage
+### Red Flags
+- **Robotic monotone:** If v3 tags don't affect output, cloned voice may be too stable. Lower stability setting (0.75 → 0.65).
+- **Tag bleed:** Emotion from previous segment persists incorrectly. Solution: Explicit tag reset at phase boundaries.
+- **Over-acting:** Tags make delivery sound theatrical/fake. Solution: Remove excessive tags, trust punctuation + context.
+- **Pronunciation errors:** Rare words mispronounced. Solution: Phoneme tags (last resort) or rephrase if possible.
 
-**Voice Emotion Analysis (P3)**
-- **Why complex:** Real-time emotion detection adds latency, requires additional API, unclear narrative integration
-- **Challenges:** PT-BR emotion models less accurate, adds 200-500ms latency, how to adapt script dynamically
-- **Mitigation:** Defer until v2+, focus on scripted excellence first
+---
 
-### Medium Complexity Features
+## Implementation Notes
 
-**TTS with Variable Parameters (P1)**
-- **Why medium:** ElevenLabs supports stability/similarity/style settings, need per-phase configuration
-- **Challenges:** Finding right settings per phase (Inferno vs Paradise), streaming vs pre-generation tradeoff
-- **Mitigation:** Pre-test voice settings, pre-generate monologues, stream only interactive responses
+### Migration Checklist
+- [ ] Update `generate-audio.mjs`: `model_id: 'eleven_multilingual_v2'` → `'eleven_turbo_v3'` (faster) or `'eleven_multilingual_v3'` (highest quality)
+- [ ] Refactor `buildTextWithPauses()` function:
+  - Remove SSML `<break>` generation
+  - Add audio tag insertion based on pauseAfter duration:
+    - < 1s: no tag (natural pause)
+    - 1-2s: `[short pause]`
+    - 2-3s: `[pause]`
+    - 3s+: `[long pause]`
+- [ ] Insert phase emotion tags at segment[0] of each phase key in SCRIPT
+- [ ] Test single file generation before batch (avoid quota waste on errors)
+- [ ] Validate output: listen to 3 samples (APRESENTACAO, INFERNO, PARAISO) before generating all 25
 
-**Ambient Audio Layering (P1)**
-- **Why medium:** 3-5 tracks per phase, crossfade on transitions, volume balancing with TTS
-- **Challenges:** Web Audio API mixing, crossfade timing (2-3s overlap), ducking TTS vs ambient
-- **Mitigation:** Use Howler.js or Tone.js for robust audio management, pre-test crossfade curves
+### Cost Considerations
+- **v3 pricing:** Same as v2 (character-based). Existing $50 budget for 300 visitors still applies.
+- **Re-generation cost:** v3 nondeterministic = may need 2-3 takes per segment. Budget 1.5x generation cost vs v2.
+- **Testing strategy:** Generate 5 samples first (1 per phase), validate quality, then batch-generate remaining 20.
 
-**Poetic Fallback Handling (P1)**
-- **Why medium:** Pre-scripted fallback must feel like Virgil character, not error message
-- **Challenges:** Max 1 retry before default choice, maintaining immersion, timeout coordination
-- **Mitigation:** Literary fallback script (already written), confidence threshold tuning, user testing
-
-**Timeout with Default Choice (P1)**
-- **Why medium:** Different timeout durations per question, different default choices per phase
-- **Challenges:** Finding right timeout (8-12s typical), contextual defaults (Inferno→Silence, Purgatory varies)
-- **Mitigation:** A/B test timeout durations in rehearsal, analytics to validate production settings
-
-**Multi-station Support (P1)**
-- **Why medium:** 2-3 simultaneous sessions, isolated state, shared admin dashboard
-- **Challenges:** Session ID management, database concurrency, real-time dashboard updates
-- **Mitigation:** Supabase handles concurrency, WebSocket for real-time, session ID in URL param
-
-**Admin Dashboard (P1)**
-- **Why medium:** Real-time station status, session metrics, error monitoring
-- **Challenges:** Real-time updates without polling overhead, operator-friendly UX
-- **Mitigation:** Supabase real-time subscriptions, simple table-based UI
-
-### Low Complexity Features
-
-**Intentional Pause System (P1)**
-- **Why low:** State machine controls timing, TTS generation includes SSML pauses
-- **Implementation:** XState delayed transitions (2-4s), ElevenLabs SSML `<break time="2s"/>` tags
-
-**Minimal Visual UI (P1)**
-- **Why low:** Start button, phase indicator, listening feedback, abstract animation
-- **Implementation:** React components, Web Audio API visualizer, CSS animations
-
-**Anonymous Session Analytics (P1)**
-- **Why low:** Session ID + timestamp + path + metrics, zero PII
-- **Implementation:** Supabase insert on state transitions, no user tracking
-
-## Competitor Feature Analysis
-
-| Feature | Museum Audio Guides | Voice Games (Alexa Skills) | Art Installations | Our Approach |
-|---------|---------------------|----------------------------|-------------------|--------------|
-| **Scripted Flow** | Linear narration, GPS-triggered | Branching dialogue trees, keyword choices | Fixed narrative or generative | Branching with NLU classification, fixed literary script |
-| **Voice Input** | Rare (mostly playback) | Keywords or simple phrases | Often absent or generative chat | Free-form PT-BR → NLU binary classification |
-| **Ambient Audio** | Music/SFX on narration tracks | Music loops, simple SFX | Spatial audio, multi-channel | Layered tracks per phase, crossfade on transitions |
-| **Failure Handling** | N/A (no input) | "I didn't understand, try again" | System restarts or loops | Poetic fallback in character, max 1 retry |
-| **Timeout** | N/A (no input) | 5-8s → prompt repeat or exit | Variable or none | 8-12s → contextual default choice |
-| **Analytics** | Basic playback tracking | Utterance logs, intent metrics | Often none | Anonymous session path + metrics |
-| **Multi-user** | One guide per device | One skill per device | Often single-user or shared space | 2-3 isolated sessions, admin dashboard |
-
-**Key Differentiators:**
-1. **NLU-based classification** — Voice games use keywords, we use intent understanding for natural PT-BR speech
-2. **Poetic fallback** — Staying in character (Virgil) vs generic error messages
-3. **Intentional pauses** — Designed silences vs minimizing dead air
-4. **Layered ambient audio** — Narrative soundscape vs background music
-5. **Timeout as choice** — Silence is valid answer vs error state
+---
 
 ## Sources
 
-**Research approach:**
-- Analysis based on established patterns in voice-first interactive experiences (museum audio guides, voice-controlled games, conversational AI installations)
-- Industry standards for voice UI design (VUI best practices, timeout handling, fallback strategies)
-- Web Audio API capabilities for ambient audio layering and crossfading
-- ElevenLabs TTS documentation for voice parameter control
-- Whisper + NLU pipeline patterns for speech-to-intent classification
+### High Confidence (Official Documentation)
+- [ElevenLabs v3 Audio Tags Overview](https://elevenlabs.io/blog/v3-audiotags) — Tag syntax, categories, examples
+- [ElevenLabs Best Practices for TTS](https://elevenlabs.io/docs/overview/capabilities/text-to-speech/best-practices) — v3 vs v2 differences, SSML deprecation
+- [ElevenLabs SSML and v3 Support](https://help.elevenlabs.io/hc/en-us/articles/24352686926609-Do-pauses-and-SSML-phoneme-tags-work-with-the-API) — "Eleven v3 does not support SSML break tags"
+- [ElevenLabs Pause Control Guide](https://help.elevenlabs.io/hc/en-us/articles/13416374683665-How-can-I-add-pauses) — v3 pause alternatives
 
-**Confidence: MEDIUM**
-- HIGH confidence: Core voice UI patterns (timeout, fallback, VAD) are well-established
-- MEDIUM confidence: Specific implementation details for art installation context (less documented than commercial voice apps)
-- LOW confidence: PT-BR NLU accuracy expectations (language-specific performance data limited in training)
+### Medium Confidence (Third-Party Reviews + Official Sources)
+- [ElevenLabs v3 Model Overview](https://elevenlabs.io/blog/eleven-v3) — 70+ languages, emotion control
+- [ElevenLabs Models Documentation](https://elevenlabs.io/docs/overview/models) — Model IDs, language support
+- [ElevenLabs v3 Quality Assessment 2026](https://hackceleration.com/elevenlabs-review/) — MOS metrics, naturalness testing
+- [TTS Benchmark 2025: MOS Validation](https://smallest.ai/blog/tts-benchmark-2025-smallestai-vs-elevenlabs-report) — WVMOS/UTMOS tools
 
-**Limitations:**
-- WebSearch unavailable — relied on training data for voice UI patterns, museum installation practices, and conversational AI design
-- No access to recent 2025-2026 art installation case studies
-- ElevenLabs streaming API specifics may have evolved since training cutoff (Jan 2025)
-
----
-*Feature research for: O Oráculo — Interactive Voice-First Art Installation*
-*Researched: 2026-03-24*
-*Confidence: MEDIUM (established patterns, limited recent case studies)*
+### Low Confidence (WebSearch Only — Validate Before Production)
+- [Audio Tag Complete Guide (third-party)](https://audio-generation-plugin.com/elevenlabs-v3/) — Claims 1806+ tags. Unverified count, but categories align with official docs.
+- [PT-BR TTS Challenges Discussion](https://community.openai.com/t/text-to-speech-modulating-between-european-and-brazilian-portuguese/829695) — Accent mixing reports (OpenAI TTS, not ElevenLabs). Relevant as general PT-BR concern.
+- [Portuguese Punctuation Guide](https://philipebrazuca.com/en/punctuation-marks-in-portuguese/) — Em-dash and ellipsis usage. Standard PT-BR grammar, not TTS-specific.
