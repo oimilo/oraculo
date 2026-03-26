@@ -9,7 +9,7 @@
 
 ## Phases
 
-- [ ] **Phase 7: Voice Architecture Refactor** - Clean up hook orchestration and state machine coupling
+- [x] **Phase 7: Voice Architecture Refactor** - Clean up hook orchestration and state machine coupling
 - [ ] **Phase 8: Flow Sequencing & Mic Lifecycle** - Fix TTS/mic timing and state transitions
 - [ ] **Phase 9: STT/NLU Pipeline Integration** - End-to-end voice capture to classification
 
@@ -34,7 +34,7 @@ Plans:
 - [x] 07-03-PLAN.md — Integration tests with realistic timing patterns (QUAL-04)
 
 ### Phase 8: Flow Sequencing & Mic Lifecycle
-**Goal**: Ensure narration → question → listen → response sequence with no overlaps or timing issues
+**Goal**: Ensure narration -> question -> listen -> response sequence with no overlaps or timing issues
 **Depends on**: Phase 7
 **Requirements**: FLOW-01, FLOW-02, FLOW-03, FLOW-04, FLOW-05, MIC-01, MIC-02, MIC-03, MIC-04, MIC-05
 **Success Criteria** (what must be TRUE):
@@ -43,8 +43,11 @@ Plans:
   3. Timeout redirect text plays only after 15s silence timeout, not as default question
   4. No audio overlaps occur at any decision point (Inferno/Purgatorio/Paraiso)
   5. Microphone recording captures full visitor response and stops cleanly on state exit with no orphaned streams
-**Plans**: TBD
-**UI hint**: yes
+**Plans:** 2 plans
+
+Plans:
+- [ ] 08-01-PLAN.md — TTS-gated state transitions + flow sequencing tests (FLOW-01, FLOW-02, FLOW-03, FLOW-04, FLOW-05)
+- [ ] 08-02-PLAN.md — Microphone lifecycle tests + stream cleanup hardening (MIC-01, MIC-02, MIC-03, MIC-04, MIC-05)
 
 ### Phase 9: STT/NLU Pipeline Integration
 **Goal**: Voice capture produces accurate transcription and classification that drives correct state transitions
@@ -64,8 +67,8 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 7. Voice Architecture Refactor | 0/3 | Planning complete | - |
-| 8. Flow Sequencing & Mic Lifecycle | 0/0 | Not started | - |
+| 7. Voice Architecture Refactor | 3/3 | Complete | 2026-03-25 |
+| 8. Flow Sequencing & Mic Lifecycle | 0/2 | Planning complete | - |
 | 9. STT/NLU Pipeline Integration | 0/0 | Not started | - |
 
 ---
@@ -73,7 +76,7 @@ Plans:
 ## Dependencies
 
 ```
-Phase 7: Voice Architecture Refactor (foundation)
+Phase 7: Voice Architecture Refactor (foundation) [COMPLETE]
     |
 Phase 8: Flow Sequencing & Mic Lifecycle (clean mic lifecycle depends on refactored hooks)
     |
@@ -95,10 +98,10 @@ Phase 9: STT/NLU Pipeline Integration (valid audio blobs depend on Phase 8)
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| QUAL-01 | Phase 7 | Pending |
-| QUAL-02 | Phase 7 | Pending |
-| QUAL-03 | Phase 7 | Pending |
-| QUAL-04 | Phase 7 | Pending |
+| QUAL-01 | Phase 7 | Complete |
+| QUAL-02 | Phase 7 | Complete |
+| QUAL-03 | Phase 7 | Complete |
+| QUAL-04 | Phase 7 | Complete |
 | FLOW-01 | Phase 8 | Pending |
 | FLOW-02 | Phase 8 | Pending |
 | FLOW-03 | Phase 8 | Pending |
@@ -117,4 +120,4 @@ Phase 9: STT/NLU Pipeline Integration (valid audio blobs depend on Phase 8)
 
 ---
 
-*Last updated: 2026-03-25 — Phase 7 plans created*
+*Last updated: 2026-03-25 — Phase 8 plans created*
