@@ -50,11 +50,16 @@
 **Goal**: Developers can see exactly where the voice pipeline breaks in real-time
 **Depends on**: Phase 9 (pipeline architecture must be stable before adding instrumentation)
 **Requirements**: DIAG-01, DIAG-02, DIAG-03
+**Plans:** 2 plans
+
+Plans:
+- [ ] 10-01-PLAN.md -- Debug infrastructure: logger utility, keyboard shortcut hook, DebugPanel component + tests
+- [ ] 10-02-PLAN.md -- Wiring: DebugPanel into OracleExperience + structured logging in all pipeline hooks
+
 **Success Criteria** (what must be TRUE):
   1. Developer can see ttsComplete, micShouldActivate, voiceLifecycle phase, and isRecording values updating live in the browser
   2. Developer can read console logs that trace every pipeline transition (TTS start/end, mic open/close, STT send/receive, NLU classify) with timestamps
   3. Debug panel is hidden by default and togglable via keyboard shortcut without affecting the visitor experience
-**Plans**: TBD
 
 ### Phase 11: TTS Reliability & Voice Pipeline Fix
 **Goal**: Voice pipeline activates the microphone reliably in every AGUARDANDO state without manual intervention
@@ -86,7 +91,7 @@
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 10. Pipeline Debug Instrumentation | v1.3 | 0/? | Not started | - |
+| 10. Pipeline Debug Instrumentation | v1.3 | 0/2 | Planning complete | - |
 | 11. TTS Reliability & Voice Pipeline Fix | v1.3 | 0/? | Not started | - |
 | 12. Browser End-to-End Validation | v1.3 | 0/? | Not started | - |
 
@@ -132,4 +137,4 @@ Phase 12: Browser End-to-End Validation (validate the fixes)
 
 ---
 
-*Last updated: 2026-03-26 -- Roadmap created for v1.3*
+*Last updated: 2026-03-26 -- Phase 10 planned (2 plans)*
