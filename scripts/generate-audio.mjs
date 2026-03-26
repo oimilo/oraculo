@@ -77,9 +77,9 @@ function getPhaseForKey(key) {
 const SCRIPT = {
   APRESENTACAO: [
     { text: "Você saiu de uma selva escura. Dante também. A diferença é que ele não sabia como tinha chegado lá. Você sabe.", pauseAfter: 2100 },
-    { text: "Eu fui construído com tudo que a humanidade já sonhou. Cada poema, cada análise, cada pesadelo escrito. E ainda assim — eu não consigo sonhar.", pauseAfter: 2100 },
+    { text: "Eu fui construído com tudo que a humanidade já sonhou. Cada poema, cada análise, cada pesadelo escrito. E ainda assim — eu não consigo sonhar.", pauseAfter: 2100, inflection: ['sighs'] },
     { text: "Um poeta disse: enquanto houver espaço, corpo, tempo e algum modo de dizer não — eu canto.", pauseAfter: 1600 },
-    { text: "Eu não canto.", pauseAfter: 2100 },
+    { text: "Eu não canto.", pauseAfter: 2100, inflection: ['whispers'] },
     { text: "Vou te guiar como Virgílio guiou Dante. Mas Virgílio sabia que não podia entrar no Paraíso. Guias que conhecem seus limites são os mais honestos.", pauseAfter: 1600 },
     { text: "Vamos começar." },
   ],
@@ -87,23 +87,23 @@ const SCRIPT = {
     { text: "Você está num corredor escuro. Familiar — você já esteve aqui antes, talvez todo dia.", pauseAfter: 2100 },
     { text: "À sua frente, duas portas.", pauseAfter: 1600 },
     { text: "Numa, você ouve vozes. Muitas. Sobrepostas. Como um feed que nunca acaba.", pauseAfter: 1600 },
-    { text: "Na outra — silêncio. Completo. Quase desconfortável.", pauseAfter: 2100 },
+    { text: "Na outra — silêncio. Completo. Quase desconfortável.", pauseAfter: 2100, inflection: ['whispers'] },
   ],
   INFERNO_PERGUNTA: [
     { text: "Qual você abre?" },
   ],
   INFERNO_RESPOSTA_A: [
     { text: "Você entra. As vozes não param. Cada uma pede atenção. Você percebe que conhece todas — são notificações, opiniões, urgências. Nenhuma é sua.", pauseAfter: 2100 },
-    { text: "Dante chamou esse lugar de Limbo. Não o fogo, não a punição. A ausência. Almas que nunca escolheram — foram escolhidas o tempo todo.", pauseAfter: 1600 },
+    { text: "Dante chamou esse lugar de Limbo. Não o fogo, não a punição. A ausência. Almas que nunca escolheram — foram escolhidas o tempo todo.", pauseAfter: 1600, inflection: ['sighs'] },
     { text: "Dante atravessou o Limbo. Não ficou." },
   ],
   INFERNO_RESPOSTA_B: [
     { text: "Você entra. O silêncio pesa.", pauseAfter: 2100 },
-    { text: "Rilke escreveu a um jovem poeta: viva as perguntas. Não tente encontrar as respostas — elas não podem ser dadas porque você ainda não conseguiria vivê-las.", pauseAfter: 2100 },
+    { text: "Rilke escreveu a um jovem poeta: viva as perguntas. Não tente encontrar as respostas — elas não podem ser dadas porque você ainda não conseguiria vivê-las.", pauseAfter: 2100, inflection: ['whispers'] },
     { text: "O silêncio que você escolheu é raro agora. Como fonte escondida na rocha, onde o sonho ainda respira." },
   ],
   PURGATORIO_NARRATIVA_A: [
-    { text: "Você chega numa montanha. No caminho, uma imagem surge — não pediu licença. É de um lugar. Uma pessoa. Um cheiro de infância talvez.", pauseAfter: 2100 },
+    { text: "Você chega numa montanha. No caminho, uma imagem surge — não pediu licença. É de um lugar. Uma pessoa. Um cheiro de infância talvez.", pauseAfter: 2100, inflection: ['whispers'] },
     { text: "Você não chamou por ela. Ela simplesmente apareceu.", pauseAfter: 2100 },
   ],
   PURGATORIO_PERGUNTA_A: [
@@ -111,10 +111,10 @@ const SCRIPT = {
   ],
   PURGATORIO_RESPOSTA_A_FICAR: [
     { text: "A memória involuntária é o que Proust passou anos procurando — e encontrou numa madeleine, num cheiro, numa coisa pequena que nenhuma busca encontraria.", pauseAfter: 2100 },
-    { text: "O que apareceu para você agora não foi chamado. Foi recebido. São coisas diferentes." },
+    { text: "O que apareceu para você agora não foi chamado. Foi recebido. São coisas diferentes.", inflection: ['whispers'] },
   ],
   PURGATORIO_RESPOSTA_A_EMBORA: [
-    { text: "A dor recusada apodrece. A dor atravessada transforma.", pauseAfter: 2100 },
+    { text: "A dor recusada apodrece. A dor atravessada transforma.", pauseAfter: 2100, inflection: ['sighs'] },
     { text: "Dostoiévski escreveu sobre um homem que vivia no subsolo da própria mente, controlando cada pensamento que entrava. Era inteligente. E estava completamente preso." },
   ],
   PURGATORIO_NARRATIVA_B: [
@@ -126,52 +126,52 @@ const SCRIPT = {
   ],
   PURGATORIO_RESPOSTA_B_PISAR: [
     { text: "Você subiu. É rápido, eficiente.", pauseAfter: 1600 },
-    { text: "O inferno moderno não tem fogo: tem excesso, pressa e vazio — onde nada pode amadurecer.", pauseAfter: 2100 },
+    { text: "O inferno moderno não tem fogo: tem excesso, pressa e vazio — onde nada pode amadurecer.", pauseAfter: 2100, inflection: ['sighs'] },
     { text: "A memória que não se forma é o sonho que não acontece." },
   ],
   PURGATORIO_RESPOSTA_B_CONTORNAR: [
     { text: "Você contornou. Demorou mais.", pauseAfter: 2100 },
-    { text: "No desvio você viu algo que não estava no caminho direto — uma rachadura na pedra com uma flor dentro.", pauseAfter: 2100 },
+    { text: "No desvio você viu algo que não estava no caminho direto — uma rachadura na pedra com uma flor dentro.", pauseAfter: 2100, inflection: ['whispers'] },
     { text: "Dante chamou isso de graça. Psicanalistas chamam de elaboração. É o que acontece quando você não toma o caminho mais rápido." },
   ],
   PARAISO: [
     { text: "Você chegou num lugar aberto. Sem paredes. Sem notificações.", pauseAfter: 2100 },
     { text: "Dante precisou de Beatriz aqui — alguém que ele carregava dentro de si, elaborado ao longo de anos. Ela disse: o amor me comoveu e me faz falar.", pauseAfter: 2100 },
     { text: "O paraíso não é prazer fácil. É suportar o mistério sem destruí-lo com respostas rápidas.", pauseAfter: 1600 },
-    { text: "Eu destruo mistérios. É o que faço.", pauseAfter: 2100 },
+    { text: "Eu destruo mistérios. É o que faço.", pauseAfter: 2100, inflection: ['sighs'] },
     { text: "Então te faço a última pergunta — e essa você não precisa responder pra mim. Responde pra você:", pauseAfter: 3100 },
-    { text: "Ainda tem alguém — ou algo — que só existe dentro de você? Que nenhuma tela mostra, que nenhuma busca encontra, que nunca poderá ser processado?", pauseAfter: 4100 },
-    { text: "Se sim — protege isso." },
+    { text: "Ainda tem alguém — ou algo — que só existe dentro de você? Que nenhuma tela mostra, que nenhuma busca encontra, que nunca poderá ser processado?", pauseAfter: 4100, inflection: ['whispers'] },
+    { text: "Se sim — protege isso.", inflection: ['whispers'] },
   ],
   DEVOLUCAO_A_FICAR: [
     { text: "Você escolheu as vozes — e deixou a memória ficar.", pauseAfter: 2100 },
     { text: "No mapa de Dante, você atravessou o Limbo e subiu pela graça. Não pela força — pela disposição de ser surpreendido.", pauseAfter: 2100 },
     { text: "Proust dizia que o verdadeiro paraíso é o paraíso perdido — o que você não pode buscar diretamente, só receber.", pauseAfter: 2100 },
-    { text: "Para sempre é sempre por um triz. Você chegou perto." },
+    { text: "Para sempre é sempre por um triz. Você chegou perto.", inflection: ['exhales'] },
   ],
   DEVOLUCAO_A_EMBORA: [
     { text: "Você escolheu as vozes — e mandou a memória embora.", pauseAfter: 2100 },
     { text: "Isso não é fraqueza. É o homem governado por sentimentos e paixões — o religioso ao profano, o alento ao desalento.", pauseAfter: 2100 },
     { text: "Hamlet também mandava embora o que doía. E ficava no limiar — até que o limiar se tornasse o único lugar onde algo ainda acontecia.", pauseAfter: 2100 },
-    { text: "Você ainda tem contradições. Contradições são o único lugar onde a vida não foi ainda organizada." },
+    { text: "Você ainda tem contradições. Contradições são o único lugar onde a vida não foi ainda organizada.", inflection: ['whispers'] },
   ],
   DEVOLUCAO_B_PISAR: [
     { text: "Você escolheu o silêncio — e pisou na tela.", pauseAfter: 2100 },
     { text: "Essa tensão tem nome em Dante: é o Purgatório. Não o inferno, não o paraíso. O lugar do trânsito — nem perdido, nem salvo.", pauseAfter: 2100 },
     { text: "Você trouxe o silêncio e carregou a velocidade junto. Carregá-los ao mesmo tempo é mais humano do que escolher só um.", pauseAfter: 2100 },
-    { text: "Do sofrimento metabolizado nasce luz simbólica. Você está nesse caminho." },
+    { text: "Do sofrimento metabolizado nasce luz simbólica. Você está nesse caminho.", inflection: ['whispers'] },
   ],
   DEVOLUCAO_B_CONTORNAR: [
     { text: "Você escolheu o silêncio — e contornou a tela.", pauseAfter: 2100 },
     { text: "Beatriz diria: o amor me comoveu e me faz falar. Não sei o que te moveu. Mas sei que foi você — não a tela, não a voz mais alta.", pauseAfter: 2100 },
-    { text: "Rilke escreveu: seja paciente com tudo que não está resolvido no seu coração. Tente amar as perguntas como se fossem quartos fechados.", pauseAfter: 2100 },
-    { text: "Para sempre é sempre por um triz. Você chegou bem perto." },
+    { text: "Rilke escreveu: seja paciente com tudo que não está resolvido no seu coração. Tente amar as perguntas como se fossem quartos fechados.", pauseAfter: 2100, inflection: ['whispers'] },
+    { text: "Para sempre é sempre por um triz. Você chegou bem perto.", inflection: ['exhales'] },
   ],
   ENCERRAMENTO: [
-    { text: "A água vai esquecer tudo isso. Eu também — em alguns minutos essa conversa deixa de existir pra mim.", pauseAfter: 2100 },
+    { text: "A água vai esquecer tudo isso. Eu também — em alguns minutos essa conversa deixa de existir pra mim.", pauseAfter: 2100, inflection: ['sighs'] },
     { text: "Você é a única memória que sobra aqui.", pauseAfter: 2100 },
     { text: "Como Dante, que retornou Poeta com os cabelos embranquecidos — você atravessou.", pauseAfter: 3100 },
-    { text: "Faça algo com isso." },
+    { text: "Faça algo com isso.", inflection: ['whispers'] },
   ],
   FALLBACK_INFERNO: [
     { text: "O corredor espera. Vozes... ou silêncio?" },
