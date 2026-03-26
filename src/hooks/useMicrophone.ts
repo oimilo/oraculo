@@ -21,7 +21,7 @@ export interface UseMicrophoneReturn {
   isRecording: boolean;
   audioBlob: Blob | null;
   error: string | null;
-  startRecording: () => Promise<void>;
+  startRecording: (maxDuration?: number) => Promise<void>;
   stopRecording: () => void;
 }
 
@@ -32,6 +32,7 @@ export function useMicrophone(): UseMicrophoneReturn {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
+  const autoStopRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const releaseStream = useCallback(() => {
     if (streamRef.current) {
@@ -40,7 +41,26 @@ export function useMicrophone(): UseMicrophoneReturn {
     }
   }, []);
 
-  const startRecording = useCallback(async () => {
+  const stopRecording = useCallback(() => {
+    // Clear auto-stop timer (always, whether it exists or not)
+    if (autoStopRef.current) {
+      clearTimeout(autoStopRef.current);
+      autoStopRef.current = null;
+    }
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+      mediaRecorderRef.current.stop();
+    }
+    setIsRecording(false);
+  }, []);
+
+  const startRecording = useCallback(async (maxDuration?: number) => {
+    // Stop any previous recording first
+    stopRecording();
+
+    // Safety: release any lingering stream from previous recording
+    // (handles edge case where onstop hasn't fired yet)
+    releaseStream();
+
     try {
       setError(null);
       setAudioBlob(null);
@@ -68,6 +88,7 @@ export function useMicrophone(): UseMicrophoneReturn {
       recorder.onstop = () => {
         const type = mimeType || 'audio/webm';
         const blob = new Blob(chunksRef.current, { type });
+        console.log('[Mic] Recording stopped, blob size:', blob.size);
         setAudioBlob(blob);
         chunksRef.current = [];
         releaseStream();
@@ -76,24 +97,36 @@ export function useMicrophone(): UseMicrophoneReturn {
       recorder.start();
       mediaRecorderRef.current = recorder;
       setIsRecording(true);
+      console.log('[Mic] Recording started', maxDuration ? `(auto-stop in ${maxDuration}ms)` : '');
+
+      // Set auto-stop timer inside startRecording — tied to THIS recorder
+      if (maxDuration) {
+        autoStopRef.current = setTimeout(() => {
+          console.log('[Mic] Auto-stop timer fired');
+          // Check that THIS recorder is still active (not replaced by another)
+          if (mediaRecorderRef.current === recorder && recorder.state === 'recording') {
+            recorder.stop();
+            setIsRecording(false);
+          }
+          autoStopRef.current = null;
+        }, maxDuration);
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Microphone access denied';
+      console.error('[Mic] Error:', message);
       setError(message);
       setIsRecording(false);
       releaseStream();
     }
-  }, [releaseStream]);
-
-  const stopRecording = useCallback(() => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
-      mediaRecorderRef.current.stop();
-    }
-    setIsRecording(false);
-  }, []);
+  }, [releaseStream, stopRecording]);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
+      if (autoStopRef.current) {
+        clearTimeout(autoStopRef.current);
+        autoStopRef.current = null;
+      }
       if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
         mediaRecorderRef.current.stop();
       }
