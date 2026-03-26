@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Narração Realista com ElevenLabs v3
-status: planning
-stopped_at: v1.3 closed, v2.0 roadmap created
-last_updated: "2026-03-26T18:00:00.000Z"
+status: executing
+stopped_at: Completed 13-01-PLAN.md
+last_updated: "2026-03-26T17:59:55.961Z"
 last_activity: 2026-03-26
 progress:
   total_phases: 3
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 2
+  completed_plans: 1
   percent: 0
 ---
 
@@ -22,14 +22,14 @@ progress:
 
 **Current Milestone:** v2.0 Narração Realista com ElevenLabs v3
 
-**Current Focus:** Planning Phase 13 (Voice Infrastructure & v3 Migration)
+**Current Focus:** Phase 13 — voice-infrastructure-v3-migration
 
 ## Current Position
 
-Phase: 13 - Voice Infrastructure & v3 Migration
-Plan: —
-Status: Planning
-Last activity: 2026-03-26 — v1.3 closed, v2.0 roadmap created
+Phase: 13 (voice-infrastructure-v3-migration) — EXECUTING
+Plan: 2 of 2
+Status: Ready to execute
+Last activity: 2026-03-26
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -73,6 +73,8 @@ Recent decisions affecting current work:
 - [Phase 8]: micShouldActivate = isAguardando && ttsComplete
 - [Phase 11]: waitForVoices timeout resolves with empty array (not reject) for graceful fallback
 - [Phase 11]: Activation logging uses separate createLogger('Activation') namespace
+- [Phase 13]: Pause thresholds: <500ms=none, 500-1500ms=[pause], >1500ms=[long pause] for v3 audio tags
+- [Phase 13]: Inflection tags prepend directly to text without space: [tag]Text
 
 ### v2.0 Research Highlights
 
@@ -96,6 +98,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-26
-Stopped at: v1.3 closed, v2.0 roadmap created
+Last session: 2026-03-26T17:59:55.958Z
+Stopped at: Completed 13-01-PLAN.md
 Resume: /gsd:plan-phase 13

@@ -60,9 +60,9 @@
 **Goal**: ElevenLabs v3 API integration working with cloned voice, SSML-to-audio-tag conversion, and backward compatibility
 **Depends on**: Phase 11 (voice pipeline must be stable)
 **Requirements**: VINF-01, VINF-02, VINF-03
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 Plans:
-- [ ] 13-01-PLAN.md -- Data model + v3 audio tag conversion layer (buildV3Text, convertPauseToTag)
+- [x] 13-01-PLAN.md -- Data model + v3 audio tag conversion layer (buildV3Text, convertPauseToTag)
 - [ ] 13-02-PLAN.md -- API route v2/v3 dual-mode + generation script v3 migration
 **Success Criteria** (what must be TRUE):
   1. Voice `AcSHc9S7hdxvGEJVWFzo` verified as IVC and confirmed working with v3 audio tags
@@ -96,7 +96,7 @@ Plans:
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 13. Voice Infrastructure & v3 Migration | v2.0 | 0/2 | Planning complete | - |
+| 13. Voice Infrastructure & v3 Migration | v2.0 | 1/2 | In Progress|  |
 | 14. Script Preparation & Tag Strategy | v2.0 | 0/? | Not started | - |
 | 15. Audio Generation & Quality Validation | v2.0 | 0/? | Not started | - |
 
