@@ -18,6 +18,10 @@ import ChoiceButtons from './ChoiceButtons';
 import EndFade from './EndFade';
 import WaveformVisualizer from '../audio/WaveformVisualizer';
 import ListeningIndicator from '../audio/ListeningIndicator';
+import DebugPanel from '@/components/debug/DebugPanel';
+import { createLogger } from '@/lib/debug/logger';
+
+const logger = createLogger('TTS');
 
 // Choice configurations for each AGUARDANDO state
 const INFERNO_CHOICE: ChoiceConfig = {
@@ -198,6 +202,8 @@ export default function OracleExperience() {
     const scriptKey = getScriptKey(state);
     const stateKey = JSON.stringify(state.value);
 
+    logger.log('Effect A triggered', { scriptKey, stateKey });
+
     if (!scriptKey) {
       // Non-speech states (AGUARDANDO, IDLE, FIM): don't touch ttsComplete
       return;
@@ -214,16 +220,18 @@ export default function OracleExperience() {
     speakTimeoutRef.current = setTimeout(() => {
       if (cancelled) return;
 
+      logger.log('speak START', { phase: state.context.currentPhase });
       tts.speak(SCRIPT[scriptKey], state.context.currentPhase)
         .then(() => {
           if (!cancelled) {
+            logger.log('speak END — success', { stateKey });
             ttsForStateRef.current = stateKey;
             setTtsComplete(true);
           }
         })
         .catch((err) => {
           if (err.message !== 'Speech cancelled') {
-            console.error('Speech error:', err);
+            logger.error('speak FAILED', { error: err.message });
           }
           if (!cancelled && err.message !== 'Speech cancelled') {
             ttsForStateRef.current = stateKey;
@@ -233,6 +241,7 @@ export default function OracleExperience() {
     }, 0);
 
     return () => {
+      logger.log('Effect A CLEANUP');
       cancelled = true;
       if (speakTimeoutRef.current) clearTimeout(speakTimeoutRef.current);
       tts.cancel();
@@ -258,6 +267,7 @@ export default function OracleExperience() {
     const stateKey = JSON.stringify(state.value);
     if (ttsForStateRef.current !== stateKey) return;
 
+    logger.log('Effect B — sending NARRATIVA_DONE', { state: JSON.stringify(state.value) });
     send({ type: 'NARRATIVA_DONE' });
   }, [ttsComplete, isAguardando, state, send]);
 
@@ -286,12 +296,18 @@ export default function OracleExperience() {
   useEffect(() => {
     if (!voiceChoice.choiceResult) return;
 
+    logger.log('Choice result received', {
+      eventType: voiceChoice.choiceResult.eventType,
+      confidence: voiceChoice.choiceResult.confidence,
+      wasDefault: voiceChoice.choiceResult.wasDefault,
+    });
+
     // Send the event to state machine
     send({ type: voiceChoice.choiceResult.eventType as any });
 
     // Reset voice choice for next AGUARDANDO state
     voiceChoice.reset();
-  }, [voiceChoice.choiceResult, send]);
+  }, [voiceChoice.choiceResult, send, voiceChoice]);
 
   // Voice choice lifecycle is now managed internally by the hook via `active` flag
 
@@ -371,6 +387,17 @@ export default function OracleExperience() {
         >
           Skip &raquo;
         </button>
+      )}
+
+      {process.env.NODE_ENV === 'development' && (
+        <DebugPanel
+          ttsComplete={ttsComplete}
+          micShouldActivate={micShouldActivate}
+          voiceLifecyclePhase={voiceChoice.lifecycle.phase}
+          isRecording={voiceChoice.isListening}
+          currentState={JSON.stringify(state.value)}
+          attemptCount={voiceChoice.attemptCount}
+        />
       )}
     </PhaseBackground>
   );
