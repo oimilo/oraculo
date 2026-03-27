@@ -6,7 +6,8 @@
 - v1.1 Real API Integration (Paused -- Phase 6 Supabase deferred)
 - v1.2 Voice Flow Stabilization (shipped 2026-03-26)
 - v1.3 Voice Capture Debug & Fix (shipped 2026-03-26)
-- v2.0 Narração Realista com ElevenLabs v3 (in progress)
+- v2.0 Narração Realista com ElevenLabs v3 (shipped 2026-03-27)
+- v3.0 Narrative Redesign — 6 Choices (in progress)
 
 ## Phases
 
@@ -46,96 +47,108 @@
 
 </details>
 
-### v2.0 Narração Realista com ElevenLabs v3 (In Progress)
+<details>
+<summary>v2.0 Narração Realista com ElevenLabs v3 (Phase 13) - SHIPPED 2026-03-27</summary>
 
 - [x] **Phase 13: Voice Infrastructure & v3 Migration** - Verify voice IVC, update API to eleven_v3, convert SSML to audio tags (completed 2026-03-26)
-- [ ] **Phase 14: Script Preparation & Tag Strategy** - PT-BR punctuation audit, inflection tag annotation, character budgeting
-- [ ] **Phase 15: Audio Generation & Quality Validation** - Regenerate 25 MP3s with v3, quality validation, A/B comparison
+- ~~Phase 14: Script Preparation & Tag Strategy~~ - Absorbed into v3.0 Phase 16
+- ~~Phase 15: Audio Generation & Quality Validation~~ - Absorbed into v3.0 Phase 19
+
+</details>
+
+### v3.0 Narrative Redesign — 6 Choices (In Progress)
+
+- [ ] **Phase 16: Script Writing** - Complete PT-BR script with 6 choices, 12 responses, 8-12 devoluções, inflection tags
+  **Plans:** 2 plans
+  Plans:
+  - [ ] 16-01-PLAN.md — ScriptDataV3 interface + APRESENTACAO + INFERNO (Q1, Q2) + PURGATORIO (Q3, Q4)
+  - [ ] 16-02-PLAN.md — PARAISO (Q5, Q6) + 8 devoluções + ENCERRAMENTO + fallbacks + timeouts
+- [ ] **Phase 17: State Machine & Data** - XState redesign for 6 linear choices (~28 states), pattern tracking, NLU keyword maps
+- [ ] **Phase 18: Components & Services** - OracleExperience.tsx, FallbackTTS, useVoiceChoice updates for 6 choice points
+- [ ] **Phase 19: Audio Generation** - Generate ~50 MP3s with ElevenLabs v3 for new script
+- [ ] **Phase 20: Testing** - Update all tests for new 6-choice structure
 
 ---
 
 ## Phase Details
 
-### Phase 13: Voice Infrastructure & v3 Migration
-**Goal**: ElevenLabs v3 API integration working with cloned voice, SSML-to-audio-tag conversion, and backward compatibility
-**Depends on**: Phase 11 (voice pipeline must be stable)
-**Requirements**: VINF-01, VINF-02, VINF-03
-**Plans:** 2/2 plans complete
-Plans:
-- [x] 13-01-PLAN.md -- Data model + v3 audio tag conversion layer (buildV3Text, convertPauseToTag)
-- [x] 13-02-PLAN.md -- API route v2/v3 dual-mode + generation script v3 migration
-**Success Criteria** (what must be TRUE):
-  1. Voice `AcSHc9S7hdxvGEJVWFzo` verified as IVC and confirmed working with v3 audio tags
-  2. API route and generation script use `eleven_v3` model with correct parameters (no `speed`, no `speaker_boost`, `language_code: 'pt-BR'`)
-  3. `buildV3Text()` converts `pauseAfter` to audio tags (`[pause]`, `[long pause]`) and prepends inflection tags
-  4. Both v2 and v3 paths work via env flag for safe testing
+### Phase 16: Script Writing
+**Goal**: Complete narrative script with 6 binary choices across Inferno/Purgatório/Paraíso, pattern-based devoluções, and ElevenLabs v3 inflection tags
+**Depends on**: Research synthesis (complete)
+**Requirements**: SCRV3-01 (6 choices), SCRV3-02 (devoluções), SCRV3-03 (inflection tags)
+**Plans:** 2 plans
+**Success Criteria**:
+  1. All 6 choice scenarios written in PT-BR with escalating depth (Light->Medium->Deep->Profound)
+  2. 8-12 pattern-based devoluções covering Seeker/Guardian/Contradicted/Pivot archetypes
+  3. All segments annotated with v3 inflection tags, max 1 per sentence
+  4. Script data structure matches new ScriptDataV3 interface
 
-### Phase 14: Script Preparation & Tag Strategy
-**Goal**: All 25 script segments annotated with correct PT-BR punctuation and strategic inflection tags
-**Depends on**: Phase 13 (voice compatibility must be verified before tagging)
-**Requirements**: SCRP-01, SCRP-02, SCRP-03
-**Success Criteria** (what must be TRUE):
-  1. All script segments pass PT-BR punctuation validation (accents, travessão, vírgulas)
-  2. Each segment has inflection tags matching PRD voice directions (calmo/grave/intimo/sussurro/determinado)
-  3. Tag density is max 1 per sentence, total tag overhead under 15% of character count per segment
+### Phase 17: State Machine & Data
+**Goal**: XState v5 machine redesigned for 6 linear choices with pattern tracking
+**Depends on**: Phase 16 (script must exist for state mapping)
+**Requirements**: SMV3-01 (linear flow), SMV3-02 (pattern tracking), SMV3-03 (devolução routing)
+**Success Criteria**:
+  1. Machine has ~28 states: 6x(SETUP->PERGUNTA->AGUARDANDO->RESPOSTA_A/B) + intro/devolução/encerramento
+  2. Context tracks choices as ChoiceAB[] array of 6 entries
+  3. Devolução routing uses pattern-matching function (not combinatorial guards)
+  4. NLU keyword maps defined per question
 
-### Phase 15: Audio Generation & Quality Validation
-**Goal**: 25 high-quality MP3s with emotional inflection replace v2 pre-recorded audio
-**Depends on**: Phase 14 (script must be annotated before generation)
-**Requirements**: AGEN-01, AGEN-02, AGEN-03
-**Success Criteria** (what must be TRUE):
-  1. All 25 MP3s regenerated at 192kbps minimum with `eleven_v3` model
-  2. No MP3 has audible static, tag read-aloud artifacts, or robotic delivery
-  3. Emotional tone matches PRD directions per phase and voice is consistent across all 25 clips
+### Phase 18: Components & Services
+**Goal**: All UI components and services updated for 6-choice flow
+**Depends on**: Phase 17 (machine must be defined)
+**Requirements**: CMPV3-01 (OracleExperience), CMPV3-02 (FallbackTTS), CMPV3-03 (ChoiceButtons)
+**Success Criteria**:
+  1. OracleExperience getScriptKey/getBreathingDelay/getFallbackScript handle all ~28 states
+  2. FallbackTTS PRERECORDED_URLS updated for ~50 audio keys
+  3. 6 ChoiceConfig objects with per-question NLU context and keywords
+
+### Phase 19: Audio Generation
+**Goal**: Generate all MP3s for new script using ElevenLabs v3
+**Depends on**: Phase 16 (script text), Phase 18 (PRERECORDED_URLS)
+**Requirements**: AUDV3-01 (generation), AUDV3-02 (quality)
+**Success Criteria**:
+  1. ~50 MP3s generated with eleven_v3 model and inflection tags
+  2. No audible artifacts, consistent voice across all clips
+
+### Phase 20: Testing
+**Goal**: All tests updated and passing for v3 structure
+**Depends on**: Phase 18 (all code changes complete)
+**Requirements**: TSTV3-01 (machine tests), TSTV3-02 (component tests), TSTV3-03 (integration)
+**Success Criteria**:
+  1. State machine tests cover all 6 choice points, pattern tracking, devolução routing
+  2. OracleExperience tests verify script key mapping and breathing delays
+  3. All existing tests pass (no regressions)
 
 ---
 
 ## Progress
 
-**Execution Order:** Phase 13 -> Phase 14 -> Phase 15
+**Execution Order:** Phase 16 -> Phase 17 -> Phase 18 -> Phase 19 -> Phase 20
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 13. Voice Infrastructure & v3 Migration | v2.0 | 2/2 | Complete    | 2026-03-26 |
-| 14. Script Preparation & Tag Strategy | v2.0 | 0/? | Not started | - |
-| 15. Audio Generation & Quality Validation | v2.0 | 0/? | Not started | - |
+| 16. Script Writing | v3.0 | 0/2 | In Progress | - |
+| 17. State Machine & Data | v3.0 | - | Not started | - |
+| 18. Components & Services | v3.0 | - | Not started | - |
+| 19. Audio Generation | v3.0 | - | Not started | - |
+| 20. Testing | v3.0 | - | Not started | - |
 
 ---
 
 ## Dependencies
 
 ```
-Phase 13: Voice Infrastructure & v3 Migration (verify voice + API compatibility)
+Phase 16: Script Writing (narrative content)
     |
-Phase 14: Script Preparation & Tag Strategy (annotate script with validated tags)
+Phase 17: State Machine & Data (XState + types)
     |
-Phase 15: Audio Generation & Quality Validation (generate final MP3s)
+Phase 18: Components & Services (wire everything)
+    |
+Phase 19: Audio Generation (MP3s from script)
+    |
+Phase 20: Testing (validate all)
 ```
 
 ---
 
-## Coverage
-
-**Total v2.0 Requirements:** 9
-
-- Voice Infrastructure: 3 (VINF-01 to VINF-03)
-- Script Quality: 3 (SCRP-01 to SCRP-03)
-- Audio Generation: 3 (AGEN-01 to AGEN-03)
-
-**Mapped to Phases:** 9/9
-
-| Requirement | Phase | Status |
-|-------------|-------|--------|
-| VINF-01 | Phase 13 | Pending |
-| VINF-02 | Phase 13 | Pending |
-| VINF-03 | Phase 13 | Pending |
-| SCRP-01 | Phase 14 | Pending |
-| SCRP-02 | Phase 14 | Pending |
-| SCRP-03 | Phase 14 | Pending |
-| AGEN-01 | Phase 15 | Pending |
-| AGEN-02 | Phase 15 | Pending |
-| AGEN-03 | Phase 15 | Pending |
-
----
-
-*Last updated: 2026-03-26 -- Phase 13 planned (2 plans, 2 waves)*
+*Last updated: 2026-03-27 — Phase 16 planned (2 plans), v3.0 in progress*
