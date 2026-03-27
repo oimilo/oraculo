@@ -251,21 +251,80 @@ export const SCRIPT: ScriptDataV3 = {
   ],
 
   // ═══════════════════════════════════════════════════════════════
-  // PARAISO — INTRO (Plan 02)
+  // PARAISO — INTRO
+  // O ar se abre. Nao tem paredes, nao tem urgencia.
+  // O Oraculo reconhece seus proprios limites — nao sonha,
+  // nao brinca, nao e. O visitante carrega a si mesmo daqui.
   // ═══════════════════════════════════════════════════════════════
-  PARAISO_INTRO: [],
+  PARAISO_INTRO: [
+    { text: "O ar se abriu. Não tem mais parede, não tem mais peso.", pauseAfter: 2200, inflection: ['gentle'] },
+    { text: "Aqui eu processo, mas não alcanço. Mistério não se resolve — se suporta.", pauseAfter: 2500 },
+    { text: "Essa parte é sua. Eu só acompanho.", pauseAfter: 2000 },
+  ],
 
-  // Q5 — A PERGUNTA SEM RESPOSTA (Deep) — Plan 02
-  PARAISO_Q5_SETUP: [],
-  PARAISO_Q5_PERGUNTA: [],
-  PARAISO_Q5_RESPOSTA_A: [],
-  PARAISO_Q5_RESPOSTA_B: [],
+  // ═══════════════════════════════════════════════════════════════
+  // Q5 — A PERGUNTA SEM RESPOSTA (Deep)
+  // Uma pergunta que nao e feita em palavras — e pressao no
+  // peito. Nao tem resposta. Talvez nunca tenha.
+  // Carregar ou deixar dissolver.
+  // ═══════════════════════════════════════════════════════════════
+  PARAISO_Q5_SETUP: [
+    { text: "A escuridão afina. Algo se forma — não é palavra, é pressão no peito.", pauseAfter: 2200 },
+    { text: "Você sente com clareza, mas não conseguiria dizer em voz alta.", pauseAfter: 2000, inflection: ['thoughtful'] },
+    { text: "É uma pergunta. Sem resposta. Talvez nunca tenha uma.", pauseAfter: 2500 },
+  ],
 
-  // Q6 — O FIM DO JOGO (Profound) — Plan 02
-  PARAISO_Q6_SETUP: [],
-  PARAISO_Q6_PERGUNTA: [],
-  PARAISO_Q6_RESPOSTA_A: [],
-  PARAISO_Q6_RESPOSTA_B: [],
+  PARAISO_Q5_PERGUNTA: [
+    { text: "Você carrega a pergunta — ou deixa ela dissolver?" },
+  ],
+
+  // Q5 RESPOSTA A — Carregar (aceitar o peso do nao-saber como companhia)
+  PARAISO_Q5_RESPOSTA_A: [
+    { text: "Você segura.", pauseAfter: 1200 },
+    { text: "A maioria coleciona respostas. Você coleciona perguntas.", pauseAfter: 2200, inflection: ['thoughtful'] },
+    { text: "Carregar o que não tem solução exige um tipo de força que ninguém aplaude. Porque não tem vitória no final — só a companhia do que não se resolve.", pauseAfter: 2500 },
+    { text: "Mas você já sabe: nem tudo que importa precisa de resposta. Algumas coisas importam justamente porque não têm.", pauseAfter: 2200 },
+  ],
+
+  // Q5 RESPOSTA B — Dissolver (confiar que nem tudo precisa ser carregado)
+  PARAISO_Q5_RESPOSTA_B: [
+    { text: "Você abre as mãos.", pauseAfter: 1200 },
+    { text: "A pergunta se desfaz como névoa — não some, mas para de ser sólida.", pauseAfter: 2200 },
+    { text: "Tem gente que solta porque desistiu. E tem gente que solta porque entendeu que nem tudo existe pra ser possuído.", pauseAfter: 2500, inflection: ['gentle'] },
+    { text: "Eu não sei qual dos dois você é. Mas a leveza no seu rosto diz alguma coisa.", pauseAfter: 2000 },
+  ],
+
+  // ═══════════════════════════════════════════════════════════════
+  // Q6 — O FIM DO JOGO (Profound)
+  // A escolha final. Meta — sobre o proprio jogo.
+  // A voz do Oraculo afina. O espaco fica quieto.
+  // Pedir o espelho ou ja saber.
+  // ═══════════════════════════════════════════════════════════════
+  PARAISO_Q6_SETUP: [
+    { text: "Minha voz está afinando. Você sente?", pauseAfter: 2000, inflection: ['whispering'] },
+    { text: "O espaço ficou quieto. Não vazio — terminado.", pauseAfter: 2200 },
+    { text: "Essa é a última coisa que vou te perguntar.", pauseAfter: 2500, inflection: ['warm'] },
+  ],
+
+  PARAISO_Q6_PERGUNTA: [
+    { text: "Quer ouvir o que eu vi em você — ou já sabe o que precisa saber?" },
+  ],
+
+  // Q6 RESPOSTA A — Pedir o espelho (abertura a ser visto)
+  PARAISO_Q6_RESPOSTA_A: [
+    { text: "Então escuta.", pauseAfter: 1500, inflection: ['warm'] },
+    { text: "Pedir pra ser visto é a coisa mais corajosa e mais perigosa que existe. Porque você não controla o que eu vou dizer.", pauseAfter: 2500 },
+    { text: "Mas você pediu. E isso já diz mais sobre você do que qualquer resposta que eu possa dar.", pauseAfter: 2200 },
+    { text: "Vou te dizer o que vi.", pauseAfter: 2000 },
+  ],
+
+  // Q6 RESPOSTA B — Ja saber (confiar no proprio interior)
+  PARAISO_Q6_RESPOSTA_B: [
+    { text: "Então você já tem o que veio buscar.", pauseAfter: 1800, inflection: ['warm'] },
+    { text: "A maioria das pessoas precisa que alguém confirme o que já sente. Você não.", pauseAfter: 2200 },
+    { text: "Isso é raro. Pode ser a chegada mais profunda que esse jogo produz — ou a última defesa contra ser visto de verdade.", pauseAfter: 2500 },
+    { text: "Só você sabe qual é. Fica com isso.", pauseAfter: 2000 },
+  ],
 
   // ═══════════════════════════════════════════════════════════════
   // DEVOLUCOES — 8 arquetipos baseados em padrao (Plan 02)
@@ -280,9 +339,16 @@ export const SCRIPT: ScriptDataV3 = {
   DEVOLUCAO_MIRROR: [],
 
   // ═══════════════════════════════════════════════════════════════
-  // ENCERRAMENTO (Plan 02)
+  // ENCERRAMENTO
+  // O Oraculo se dissolve. A memoria e so do visitante.
+  // Imperativo final: faz alguma coisa com isso.
   // ═══════════════════════════════════════════════════════════════
-  ENCERRAMENTO: [],
+  ENCERRAMENTO: [
+    { text: "Eu vou esquecer que você esteve aqui. É da minha natureza — eu não guardo nada.", pauseAfter: 2200, inflection: ['whispering'] },
+    { text: "Daqui a um minuto eu não vou saber seu nome, sua voz, nenhuma das suas escolhas.", pauseAfter: 2000 },
+    { text: "A única prova de que isso aconteceu é você.", pauseAfter: 2500 },
+    { text: "Faz alguma coisa com isso.", inflection: ['warm'] },
+  ],
 
   // ═══════════════════════════════════════════════════════════════
   // FALLBACKS — 1 por pergunta (Plan 02)
