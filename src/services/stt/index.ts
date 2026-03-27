@@ -6,7 +6,8 @@ export interface STTService {
 }
 
 export function createSTTService(): STTService {
-  if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_USE_REAL_APIS === 'true') {
+  // STT must always be real — user voice input requires actual transcription
+  if (typeof window !== 'undefined') {
     return new WhisperSTTService();
   }
   return new MockSTTService();

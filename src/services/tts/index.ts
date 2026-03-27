@@ -29,7 +29,7 @@ export function createTTSService(): TTSService {
   if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_USE_REAL_APIS === 'true') {
     return new ElevenLabsTTSService();
   }
-  return new MockTTSService();
+  return new FallbackTTSService();
 }
 
 export function createFallbackTTSService(): TTSService {

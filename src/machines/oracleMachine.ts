@@ -97,7 +97,7 @@ export const oracleMachine = setup({
           },
           AGUARDANDO: {
             after: {
-              15000: {
+              25000: {
                 target: 'TIMEOUT_REDIRECT',
                 actions: assign({ choice1: 'B' }),
               },
@@ -160,7 +160,7 @@ export const oracleMachine = setup({
           },
           AGUARDANDO: {
             after: {
-              15000: {
+              25000: {
                 target: 'RESPOSTA_FICAR',
                 actions: assign({ choice2: 'FICAR' }),
               },
@@ -218,7 +218,7 @@ export const oracleMachine = setup({
           },
           AGUARDANDO: {
             after: {
-              15000: {
+              25000: {
                 target: 'RESPOSTA_CONTORNAR',
                 actions: assign({ choice2: 'CONTORNAR' }),
               },

@@ -62,7 +62,7 @@ export interface UseVoiceChoiceReturn {
 
 const MAX_ATTEMPTS_DEFAULT = 2;
 const CONFIDENCE_THRESHOLD_DEFAULT = 0.7;
-const LISTENING_DURATION_DEFAULT = 6000;
+const LISTENING_DURATION_DEFAULT = 4000;
 
 const logger = createLogger('VoiceChoice');
 

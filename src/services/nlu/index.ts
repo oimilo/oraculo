@@ -16,7 +16,8 @@ export interface NLUService {
 }
 
 export function createNLUService(): NLUService {
-  if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_USE_REAL_APIS === 'true') {
+  // NLU must always be real — user response classification requires LLM
+  if (typeof window !== 'undefined') {
     return new ClaudeNLUService();
   }
   return new MockNLUService();
