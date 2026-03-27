@@ -289,9 +289,161 @@ describe('pauseAfter values', () => {
       ...SCRIPT.INFERNO_Q2_SETUP,
       ...SCRIPT.INFERNO_Q2_RESPOSTA_A,
       ...SCRIPT.INFERNO_Q2_RESPOSTA_B,
+      ...SCRIPT.PURGATORIO_INTRO,
+      ...SCRIPT.PURGATORIO_Q3_SETUP,
+      ...SCRIPT.PURGATORIO_Q3_RESPOSTA_A,
+      ...SCRIPT.PURGATORIO_Q3_RESPOSTA_B,
+      ...SCRIPT.PURGATORIO_Q4_SETUP,
+      ...SCRIPT.PURGATORIO_Q4_RESPOSTA_A,
+      ...SCRIPT.PURGATORIO_Q4_RESPOSTA_B,
     ];
     const withPause = allSegments.filter(s => s.pauseAfter !== undefined);
     // At least 60% should have pauseAfter
     expect(withPause.length / allSegments.length).toBeGreaterThan(0.5);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// PURGATORIO TESTS — Task 2
+// ═══════════════════════════════════════════════════════════════
+
+describe('PURGATORIO_INTRO', () => {
+  it('has 2-3 segments', () => {
+    expect(SCRIPT.PURGATORIO_INTRO.length).toBeGreaterThanOrEqual(2);
+    expect(SCRIPT.PURGATORIO_INTRO.length).toBeLessThanOrEqual(3);
+  });
+
+  it('has valid structure', () => {
+    assertValidSegments(SCRIPT.PURGATORIO_INTRO, 'PURGATORIO_INTRO');
+  });
+
+  it('has no author references', () => {
+    assertNoAuthorReferences(SCRIPT.PURGATORIO_INTRO, 'PURGATORIO_INTRO');
+  });
+
+  it('is in PT-BR', () => {
+    assertPTBR(SCRIPT.PURGATORIO_INTRO, 'PURGATORIO_INTRO');
+  });
+});
+
+describe('PURGATORIO Q3 — Garden That Will Burn', () => {
+  it('SETUP has 2-4 segments', () => {
+    expect(SCRIPT.PURGATORIO_Q3_SETUP.length).toBeGreaterThanOrEqual(2);
+    expect(SCRIPT.PURGATORIO_Q3_SETUP.length).toBeLessThanOrEqual(4);
+  });
+
+  it('PERGUNTA has 1 segment', () => {
+    expect(SCRIPT.PURGATORIO_Q3_PERGUNTA.length).toBe(1);
+  });
+
+  it('PERGUNTA has pauseAfter 0 or undefined', () => {
+    const p = SCRIPT.PURGATORIO_Q3_PERGUNTA[0];
+    expect(p.pauseAfter === undefined || p.pauseAfter === 0).toBe(true);
+  });
+
+  it('RESPOSTA_A has 3-5 segments', () => {
+    expect(SCRIPT.PURGATORIO_Q3_RESPOSTA_A.length).toBeGreaterThanOrEqual(3);
+    expect(SCRIPT.PURGATORIO_Q3_RESPOSTA_A.length).toBeLessThanOrEqual(5);
+  });
+
+  it('RESPOSTA_B has 3-5 segments', () => {
+    expect(SCRIPT.PURGATORIO_Q3_RESPOSTA_B.length).toBeGreaterThanOrEqual(3);
+    expect(SCRIPT.PURGATORIO_Q3_RESPOSTA_B.length).toBeLessThanOrEqual(5);
+  });
+
+  it('all Q3 segments are valid SpeechSegments', () => {
+    assertValidSegments(SCRIPT.PURGATORIO_Q3_SETUP, 'Q3_SETUP');
+    assertValidSegments(SCRIPT.PURGATORIO_Q3_PERGUNTA, 'Q3_PERGUNTA');
+    assertValidSegments(SCRIPT.PURGATORIO_Q3_RESPOSTA_A, 'Q3_RESPOSTA_A');
+    assertValidSegments(SCRIPT.PURGATORIO_Q3_RESPOSTA_B, 'Q3_RESPOSTA_B');
+  });
+
+  it('all Q3 text is PT-BR', () => {
+    assertPTBR(SCRIPT.PURGATORIO_Q3_SETUP, 'Q3_SETUP');
+    assertPTBR(SCRIPT.PURGATORIO_Q3_PERGUNTA, 'Q3_PERGUNTA');
+    assertPTBR(SCRIPT.PURGATORIO_Q3_RESPOSTA_A, 'Q3_RESPOSTA_A');
+    assertPTBR(SCRIPT.PURGATORIO_Q3_RESPOSTA_B, 'Q3_RESPOSTA_B');
+  });
+
+  it('has no author references', () => {
+    assertNoAuthorReferences(SCRIPT.PURGATORIO_Q3_SETUP, 'Q3_SETUP');
+    assertNoAuthorReferences(SCRIPT.PURGATORIO_Q3_PERGUNTA, 'Q3_PERGUNTA');
+    assertNoAuthorReferences(SCRIPT.PURGATORIO_Q3_RESPOSTA_A, 'Q3_RESPOSTA_A');
+    assertNoAuthorReferences(SCRIPT.PURGATORIO_Q3_RESPOSTA_B, 'Q3_RESPOSTA_B');
+  });
+});
+
+describe('PURGATORIO Q4 — Two Waters', () => {
+  it('SETUP has 2-4 segments', () => {
+    expect(SCRIPT.PURGATORIO_Q4_SETUP.length).toBeGreaterThanOrEqual(2);
+    expect(SCRIPT.PURGATORIO_Q4_SETUP.length).toBeLessThanOrEqual(4);
+  });
+
+  it('PERGUNTA has 1 segment', () => {
+    expect(SCRIPT.PURGATORIO_Q4_PERGUNTA.length).toBe(1);
+  });
+
+  it('PERGUNTA has pauseAfter 0 or undefined', () => {
+    const p = SCRIPT.PURGATORIO_Q4_PERGUNTA[0];
+    expect(p.pauseAfter === undefined || p.pauseAfter === 0).toBe(true);
+  });
+
+  it('RESPOSTA_A has 3-5 segments', () => {
+    expect(SCRIPT.PURGATORIO_Q4_RESPOSTA_A.length).toBeGreaterThanOrEqual(3);
+    expect(SCRIPT.PURGATORIO_Q4_RESPOSTA_A.length).toBeLessThanOrEqual(5);
+  });
+
+  it('RESPOSTA_B has 3-5 segments', () => {
+    expect(SCRIPT.PURGATORIO_Q4_RESPOSTA_B.length).toBeGreaterThanOrEqual(3);
+    expect(SCRIPT.PURGATORIO_Q4_RESPOSTA_B.length).toBeLessThanOrEqual(5);
+  });
+
+  it('all Q4 segments are valid SpeechSegments', () => {
+    assertValidSegments(SCRIPT.PURGATORIO_Q4_SETUP, 'Q4_SETUP');
+    assertValidSegments(SCRIPT.PURGATORIO_Q4_PERGUNTA, 'Q4_PERGUNTA');
+    assertValidSegments(SCRIPT.PURGATORIO_Q4_RESPOSTA_A, 'Q4_RESPOSTA_A');
+    assertValidSegments(SCRIPT.PURGATORIO_Q4_RESPOSTA_B, 'Q4_RESPOSTA_B');
+  });
+
+  it('all Q4 text is PT-BR', () => {
+    assertPTBR(SCRIPT.PURGATORIO_Q4_SETUP, 'Q4_SETUP');
+    assertPTBR(SCRIPT.PURGATORIO_Q4_PERGUNTA, 'Q4_PERGUNTA');
+    assertPTBR(SCRIPT.PURGATORIO_Q4_RESPOSTA_A, 'Q4_RESPOSTA_A');
+    assertPTBR(SCRIPT.PURGATORIO_Q4_RESPOSTA_B, 'Q4_RESPOSTA_B');
+  });
+
+  it('has no author references', () => {
+    assertNoAuthorReferences(SCRIPT.PURGATORIO_Q4_SETUP, 'Q4_SETUP');
+    assertNoAuthorReferences(SCRIPT.PURGATORIO_Q4_PERGUNTA, 'Q4_PERGUNTA');
+    assertNoAuthorReferences(SCRIPT.PURGATORIO_Q4_RESPOSTA_A, 'Q4_RESPOSTA_A');
+    assertNoAuthorReferences(SCRIPT.PURGATORIO_Q4_RESPOSTA_B, 'Q4_RESPOSTA_B');
+  });
+});
+
+describe('PURGATORIO depth escalation', () => {
+  it('Q3 and Q4 have distinct narrative weight (Q4 deeper)', () => {
+    // Q4 (Deep) should have longer segments on average than Q3 (Medium)
+    const q3Total = SCRIPT.PURGATORIO_Q3_RESPOSTA_A.reduce((sum, s) => sum + s.text.length, 0) +
+                    SCRIPT.PURGATORIO_Q3_RESPOSTA_B.reduce((sum, s) => sum + s.text.length, 0);
+    const q4Total = SCRIPT.PURGATORIO_Q4_RESPOSTA_A.reduce((sum, s) => sum + s.text.length, 0) +
+                    SCRIPT.PURGATORIO_Q4_RESPOSTA_B.reduce((sum, s) => sum + s.text.length, 0);
+    // Q4 should be at least 80% of Q3 total text (both substantial)
+    expect(q4Total).toBeGreaterThan(q3Total * 0.8);
+  });
+});
+
+describe('inflection tags across PURGATORIO', () => {
+  it('PURGATORIO sections have some inflection tags', () => {
+    const allPurgSegments = [
+      ...SCRIPT.PURGATORIO_INTRO,
+      ...SCRIPT.PURGATORIO_Q3_SETUP,
+      ...SCRIPT.PURGATORIO_Q3_RESPOSTA_A,
+      ...SCRIPT.PURGATORIO_Q3_RESPOSTA_B,
+      ...SCRIPT.PURGATORIO_Q4_SETUP,
+      ...SCRIPT.PURGATORIO_Q4_RESPOSTA_A,
+      ...SCRIPT.PURGATORIO_Q4_RESPOSTA_B,
+    ];
+    const withInflection = allPurgSegments.filter(s => s.inflection && s.inflection.length > 0);
+    expect(withInflection.length).toBeGreaterThanOrEqual(3);
   });
 });

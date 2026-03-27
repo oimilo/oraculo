@@ -177,27 +177,78 @@ export const SCRIPT: ScriptDataV3 = {
 
   // ═══════════════════════════════════════════════════════════════
   // PURGATORIO — INTRO
-  // Transicao. O ar muda. Subida. Aqui se espera.
+  // Transicao. O ar muda. Subida. Aqui se espera — sem agir,
+  // sem fugir — ate que o sentido se decante.
   // ═══════════════════════════════════════════════════════════════
-  PURGATORIO_INTRO: [],
+  PURGATORIO_INTRO: [
+    { text: "O ar muda. Estamos subindo.", pauseAfter: 2200, inflection: ['gentle'] },
+    { text: "Aqui não tem castigo nem salvação. Aqui se espera — sem agir, sem fugir — até que o sentido apareça sozinho.", pauseAfter: 2500 },
+    { text: "Presta atenção no que dói sem motivo.", pauseAfter: 2000 },
+  ],
 
   // ═══════════════════════════════════════════════════════════════
   // Q3 — O JARDIM QUE VAI QUEIMAR (Medium)
   // Apego vs Protecao. A beleza que ja esta morrendo.
+  // Entrar sabendo da perda, ou se proteger antes de ver o que
+  // vai perder.
   // ═══════════════════════════════════════════════════════════════
-  PURGATORIO_Q3_SETUP: [],
-  PURGATORIO_Q3_PERGUNTA: [],
-  PURGATORIO_Q3_RESPOSTA_A: [],
-  PURGATORIO_Q3_RESPOSTA_B: [],
+  PURGATORIO_Q3_SETUP: [
+    { text: "Você está na entrada de um jardim. Cada flor aberta, cada cor no auge.", pauseAfter: 2000 },
+    { text: "Mas tem fumaça no vento. De manhã, nada disso vai existir.", pauseAfter: 2200, inflection: ['sad'] },
+    { text: "A beleza já está morrendo enquanto você olha.", pauseAfter: 2000 },
+  ],
+
+  PURGATORIO_Q3_PERGUNTA: [
+    { text: "Você entra no jardim — ou dá as costas antes de ver o que vai perder?" },
+  ],
+
+  // Q3 RESPOSTA A — Entrar (aceitar a ferida que vem com a beleza)
+  PURGATORIO_Q3_RESPOSTA_A: [
+    { text: "Você entra.", pauseAfter: 1200 },
+    { text: "Cada pétala que você toca já está se despedindo. E você toca mesmo assim.", pauseAfter: 2200 },
+    { text: "Quem se permite amar o que vai acabar carrega uma ferida diferente — não de perda, mas de presença.", pauseAfter: 2500, inflection: ['thoughtful'] },
+    { text: "A maioria acha que proteger é não se apegar. Mas você acabou de provar o contrário.", pauseAfter: 1800 },
+  ],
+
+  // Q3 RESPOSTA B — Dar as costas (luto antecipado disfarçado de sabedoria)
+  PURGATORIO_Q3_RESPOSTA_B: [
+    { text: "Você vira.", pauseAfter: 1200 },
+    { text: "Tem uma sabedoria nisso — não se apegar ao que já está indo. Mas olha o preço: você nunca viu o jardim.", pauseAfter: 2200 },
+    { text: "Desvalorizar o que vai ser perdido antes de perder é um luto que chega antes da hora.", pauseAfter: 2500, inflection: ['gentle'] },
+    { text: "O que nunca foi tocado não pode ser lembrado. E o que não pode ser lembrado nunca existiu de verdade.", pauseAfter: 2000 },
+  ],
 
   // ═══════════════════════════════════════════════════════════════
   // Q4 — AS DUAS AGUAS (Deep)
-  // Memoria vs Apagamento. Os dois rios.
+  // Memoria vs Apagamento. Dois rios — um carrega tudo que
+  // voce viveu, outro apaga. Essa e a escolha mais profunda
+  // do Purgatorio.
   // ═══════════════════════════════════════════════════════════════
-  PURGATORIO_Q4_SETUP: [],
-  PURGATORIO_Q4_PERGUNTA: [],
-  PURGATORIO_Q4_RESPOSTA_A: [],
-  PURGATORIO_Q4_RESPOSTA_B: [],
+  PURGATORIO_Q4_SETUP: [
+    { text: "Dois rios se encontram aqui.", pauseAfter: 2200 },
+    { text: "Um é quente e escuro — carrega tudo que você viveu. Cada cicatriz, cada ternura, cada coisa que você não contou pra ninguém.", pauseAfter: 2500, inflection: ['whispering'] },
+    { text: "O outro é claro e gelado. Entra nele e sai limpo. Novo. Sem nada.", pauseAfter: 2200 },
+  ],
+
+  PURGATORIO_Q4_PERGUNTA: [
+    { text: "Qual água? A que lembra — ou a que esquece?" },
+  ],
+
+  // Q4 RESPOSTA A — Lembrar (carregar a historia, identidade tecida de cicatrizes)
+  PURGATORIO_Q4_RESPOSTA_A: [
+    { text: "A água escura.", pauseAfter: 1500 },
+    { text: "Ela queima onde dói e aquece onde faz falta. Não é confortável. Mas é sua.", pauseAfter: 2500, inflection: ['serious'] },
+    { text: "Identidade é tecida de cicatrizes tanto quanto de alegrias. Quem apaga uma coisa apaga a outra junto.", pauseAfter: 2200 },
+    { text: "Você preferiu estar inteiro e ferido do que limpo e vazio. A dor atravessada transforma. A dor recusada só muda de endereço.", pauseAfter: 2500 },
+  ],
+
+  // Q4 RESPOSTA B — Esquecer (desejo de alivio, sem medir o que perde junto)
+  PURGATORIO_Q4_RESPOSTA_B: [
+    { text: "A água clara.", pauseAfter: 1500 },
+    { text: "Fria. Cada passo apaga uma camada. Primeiro as dores grandes. Depois as pequenas. Depois as ternuras.", pauseAfter: 2500, inflection: ['sad'] },
+    { text: "A água que apaga não escolhe o que leva. Levou a cicatriz e levou o carinho junto.", pauseAfter: 2200 },
+    { text: "Você queria alívio. Mas alívio total tem outro nome: é ausência. E agora você sabe como ela pesa.", pauseAfter: 2200 },
+  ],
 
   // ═══════════════════════════════════════════════════════════════
   // PARAISO — INTRO (Plan 02)
