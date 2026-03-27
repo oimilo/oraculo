@@ -27,7 +27,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Parse and validate request body
+    console.log('[NLU] Request received');
     const body: Partial<NLURequestBody> = await request.json();
+    console.log('[NLU] Input:', JSON.stringify({ transcript: body.transcript, options: body.options }));
 
     if (!body.transcript || body.transcript.trim() === '') {
       return NextResponse.json(
@@ -120,6 +122,7 @@ export async function POST(request: NextRequest) {
         };
       }
 
+      console.log('[NLU] Result:', JSON.stringify(classification));
       return NextResponse.json(classification);
     } catch (fetchError) {
       clearTimeout(timeoutId);

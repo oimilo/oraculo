@@ -15,8 +15,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Parse FormData from request
+    console.log('[STT] Request received');
     const formData = await request.formData();
     const audioFile = formData.get('audio') as File | null;
+    console.log('[STT] Audio file:', audioFile ? `${audioFile.size} bytes, type=${audioFile.type}` : 'MISSING');
 
     // Validate audio file
     if (!audioFile) {
@@ -61,6 +63,7 @@ export async function POST(request: NextRequest) {
       // Handle Whisper error response
       if (!whisperResponse.ok) {
         const errorText = await whisperResponse.text();
+        console.error('[STT] Whisper API error:', whisperResponse.status, errorText);
         return NextResponse.json(
           { error: `Whisper API error: ${whisperResponse.status}` },
           { status: 502 }
@@ -69,7 +72,19 @@ export async function POST(request: NextRequest) {
 
       // Parse and return transcription
       const result = await whisperResponse.json();
-      return NextResponse.json({ text: result.text });
+      console.log('[STT] Whisper raw:', JSON.stringify(result));
+
+      // Filter known Whisper hallucinations (produced when audio is silence/noise)
+      const HALLUCINATION_PATTERNS = [
+        'amara.org', 'legendas', 'subtítulos', 'transcrição por',
+        'obrigado por assistir', 'inscreva-se', 'subscribe',
+      ];
+      const lower = (result.text || '').toLowerCase();
+      const isHallucination = HALLUCINATION_PATTERNS.some(p => lower.includes(p));
+      const text = isHallucination ? '' : result.text;
+      if (isHallucination) console.log('[STT] Filtered hallucination:', result.text);
+
+      return NextResponse.json({ text });
     } catch (fetchError) {
       clearTimeout(timeoutId);
 
