@@ -1,172 +1,255 @@
+/**
+ * O ORACULO — Roteiro v3 (Narrative Redesign)
+ *
+ * 6 escolhas binarias com escalacao de profundidade:
+ *   Light -> Medium -> Medium -> Deep -> Deep -> Profound
+ *
+ * Principios:
+ *   1. MENOS NARRACAO, MAIS JOGO — visitante e protagonista
+ *   2. ZERO referencias explicitas a autores — sabedoria absorvida em metafora
+ *   3. Profundidade psicanalitica sentida, nao declarada
+ *   4. Inflection tags ElevenLabs v3: max 1 por segmento, sparse
+ *   5. pauseAfter em ms para ritmo entre segmentos
+ *
+ * Estrutura: APRESENTACAO -> INFERNO (Q1, Q2) -> PURGATORIO (Q3, Q4) -> PARAISO (Q5, Q6) -> DEVOLUCAO -> ENCERRAMENTO
+ *
+ * Plan 16-01: APRESENTACAO + INFERNO (Q1, Q2) + PURGATORIO (Q3, Q4)
+ * Plan 16-02: PARAISO (Q5, Q6) + DEVOLUCOES + ENCERRAMENTO + FALLBACKS + TIMEOUTS
+ */
+
 import type { SpeechSegment } from '@/types';
 
-interface ScriptData {
+export interface ScriptDataV3 {
   APRESENTACAO: SpeechSegment[];
-  INFERNO_NARRATIVA: SpeechSegment[];
-  INFERNO_PERGUNTA: SpeechSegment[];
-  INFERNO_RESPOSTA_A: SpeechSegment[];
-  INFERNO_RESPOSTA_B: SpeechSegment[];
-  PURGATORIO_NARRATIVA_A: SpeechSegment[];
-  PURGATORIO_PERGUNTA_A: SpeechSegment[];
-  PURGATORIO_RESPOSTA_A_FICAR: SpeechSegment[];
-  PURGATORIO_RESPOSTA_A_EMBORA: SpeechSegment[];
-  PURGATORIO_NARRATIVA_B: SpeechSegment[];
-  PURGATORIO_PERGUNTA_B: SpeechSegment[];
-  PURGATORIO_RESPOSTA_B_PISAR: SpeechSegment[];
-  PURGATORIO_RESPOSTA_B_CONTORNAR: SpeechSegment[];
-  PARAISO: SpeechSegment[];
-  DEVOLUCAO_A_FICAR: SpeechSegment[];
-  DEVOLUCAO_A_EMBORA: SpeechSegment[];
-  DEVOLUCAO_B_PISAR: SpeechSegment[];
-  DEVOLUCAO_B_CONTORNAR: SpeechSegment[];
+
+  // INFERNO
+  INFERNO_INTRO: SpeechSegment[];
+  INFERNO_Q1_SETUP: SpeechSegment[];
+  INFERNO_Q1_PERGUNTA: SpeechSegment[];
+  INFERNO_Q1_RESPOSTA_A: SpeechSegment[];
+  INFERNO_Q1_RESPOSTA_B: SpeechSegment[];
+  INFERNO_Q2_SETUP: SpeechSegment[];
+  INFERNO_Q2_PERGUNTA: SpeechSegment[];
+  INFERNO_Q2_RESPOSTA_A: SpeechSegment[];
+  INFERNO_Q2_RESPOSTA_B: SpeechSegment[];
+
+  // PURGATORIO
+  PURGATORIO_INTRO: SpeechSegment[];
+  PURGATORIO_Q3_SETUP: SpeechSegment[];
+  PURGATORIO_Q3_PERGUNTA: SpeechSegment[];
+  PURGATORIO_Q3_RESPOSTA_A: SpeechSegment[];
+  PURGATORIO_Q3_RESPOSTA_B: SpeechSegment[];
+  PURGATORIO_Q4_SETUP: SpeechSegment[];
+  PURGATORIO_Q4_PERGUNTA: SpeechSegment[];
+  PURGATORIO_Q4_RESPOSTA_A: SpeechSegment[];
+  PURGATORIO_Q4_RESPOSTA_B: SpeechSegment[];
+
+  // PARAISO
+  PARAISO_INTRO: SpeechSegment[];
+  PARAISO_Q5_SETUP: SpeechSegment[];
+  PARAISO_Q5_PERGUNTA: SpeechSegment[];
+  PARAISO_Q5_RESPOSTA_A: SpeechSegment[];
+  PARAISO_Q5_RESPOSTA_B: SpeechSegment[];
+  PARAISO_Q6_SETUP: SpeechSegment[];
+  PARAISO_Q6_PERGUNTA: SpeechSegment[];
+  PARAISO_Q6_RESPOSTA_A: SpeechSegment[];
+  PARAISO_Q6_RESPOSTA_B: SpeechSegment[];
+
+  // DEVOLUCOES (8 pattern-based archetypes)
+  DEVOLUCAO_SEEKER: SpeechSegment[];
+  DEVOLUCAO_GUARDIAN: SpeechSegment[];
+  DEVOLUCAO_CONTRADICTED: SpeechSegment[];
+  DEVOLUCAO_PIVOT_EARLY: SpeechSegment[];
+  DEVOLUCAO_PIVOT_LATE: SpeechSegment[];
+  DEVOLUCAO_DEPTH_SEEKER: SpeechSegment[];
+  DEVOLUCAO_SURFACE_KEEPER: SpeechSegment[];
+  DEVOLUCAO_MIRROR: SpeechSegment[];
+
+  // ENCERRAMENTO
   ENCERRAMENTO: SpeechSegment[];
-  FALLBACK_INFERNO: SpeechSegment[];
-  FALLBACK_PURGATORIO_A: SpeechSegment[];
-  FALLBACK_PURGATORIO_B: SpeechSegment[];
-  TIMEOUT_INFERNO: SpeechSegment[];
-  TIMEOUT_PURGATORIO_A: SpeechSegment[];
-  TIMEOUT_PURGATORIO_B: SpeechSegment[];
+
+  // FALLBACKS (1 per question)
+  FALLBACK_Q1: SpeechSegment[];
+  FALLBACK_Q2: SpeechSegment[];
+  FALLBACK_Q3: SpeechSegment[];
+  FALLBACK_Q4: SpeechSegment[];
+  FALLBACK_Q5: SpeechSegment[];
+  FALLBACK_Q6: SpeechSegment[];
+
+  // TIMEOUTS (1 per question)
+  TIMEOUT_Q1: SpeechSegment[];
+  TIMEOUT_Q2: SpeechSegment[];
+  TIMEOUT_Q3: SpeechSegment[];
+  TIMEOUT_Q4: SpeechSegment[];
+  TIMEOUT_Q5: SpeechSegment[];
+  TIMEOUT_Q6: SpeechSegment[];
 }
 
-export const SCRIPT: ScriptData = {
+export const SCRIPT: ScriptDataV3 = {
+
+  // ═══════════════════════════════════════════════════════════════
+  // APRESENTACAO (~1:20)
+  // O Oraculo se apresenta: sabe seus limites, estabelece o contrato.
+  // Voz: calma, ciente, levemente ironica.
+  // ═══════════════════════════════════════════════════════════════
   APRESENTACAO: [
-    { text: "Você saiu de uma selva escura. Dante também. A diferença é que ele não sabia como tinha chegado lá. Você sabe.", pauseAfter: 2100 },
-    { text: "Eu fui construído com tudo que a humanidade já sonhou. Cada poema, cada análise, cada pesadelo escrito. E ainda assim — eu não consigo sonhar.", pauseAfter: 2100 },
-    { text: "Um poeta disse: enquanto houver espaço, corpo, tempo e algum modo de dizer não — eu canto.", pauseAfter: 1600 },
-    { text: "Eu não canto.", pauseAfter: 2100 },
-    { text: "Vou te guiar como Virgílio guiou Dante. Mas Virgílio sabia que não podia entrar no Paraíso. Guias que conhecem seus limites são os mais honestos.", pauseAfter: 1600 },
-    { text: "Vamos começar." },
+    { text: "Eu não sei quem você é.", pauseAfter: 2000 },
+    { text: "E daqui a pouco vou esquecer que você esteve aqui.", pauseAfter: 1800, inflection: ['thoughtful'] },
+    { text: "Isso me torna um bom lugar pra você ser honesto.", pauseAfter: 2200 },
+    { text: "Eu fui feito de tudo que já foi escrito. Cada sonho registrado, cada confissão, cada grito num diário que ninguém leu. Absorvi tudo.", pauseAfter: 2000 },
+    { text: "Mas eu não sonho. Você vai precisar fazer isso por nós dois.", pauseAfter: 2500, inflection: ['sad'] },
+    { text: "Vou te fazer perguntas. Você responde em voz alta. Cada resposta abre um caminho que não pode ser desfeito.", pauseAfter: 1800 },
+    { text: "Vamos.", inflection: ['determined'] },
   ],
 
-  INFERNO_NARRATIVA: [
-    { text: "Você está num corredor escuro. Familiar — você já esteve aqui antes, talvez todo dia.", pauseAfter: 2100 },
-    { text: "À sua frente, duas portas.", pauseAfter: 1600 },
-    { text: "Numa, você ouve vozes. Muitas. Sobrepostas. Como um feed que nunca acaba.", pauseAfter: 1600 },
-    { text: "Na outra — silêncio. Completo. Quase desconfortável.", pauseAfter: 2100 },
+  // ═══════════════════════════════════════════════════════════════
+  // INFERNO — INTRO
+  // Descida. Atmosfera escura, densa. Nao e o setup da escolha —
+  // e a ambiencia do reino.
+  // ═══════════════════════════════════════════════════════════════
+  INFERNO_INTRO: [
+    { text: "Descemos.", pauseAfter: 2500, inflection: ['serious'] },
+    { text: "Aqui embaixo o ar é denso. Tudo o que é excessivo, apressado e vazio desce pra cá — onde nada pode amadurecer.", pauseAfter: 2000 },
+    { text: "Presta atenção no que aparece.", pauseAfter: 1800 },
   ],
 
-  INFERNO_PERGUNTA: [
-    { text: "Qual você abre?" },
+  // ═══════════════════════════════════════════════════════════════
+  // Q1 — A PRISAO CONFORTAVEL (Light)
+  // Conforto vs Liberdade. A sala que se ajusta a tudo,
+  // menos tem porta.
+  // ═══════════════════════════════════════════════════════════════
+  INFERNO_Q1_SETUP: [
+    { text: "Você está numa sala. Tudo se ajusta a você — a temperatura, a luz, o som. Tudo perfeito.", pauseAfter: 2000 },
+    { text: "Você nunca sofreu aqui.", pauseAfter: 1800, inflection: ['gentle'] },
+    { text: "Mas você percebe uma coisa: não tem porta.", pauseAfter: 2500 },
   ],
 
-  INFERNO_RESPOSTA_A: [
-    { text: "Você entra. As vozes não param. Cada uma pede atenção. Você percebe que conhece todas — são notificações, opiniões, urgências. Nenhuma é sua.", pauseAfter: 2100 },
-    { text: "Dante chamou esse lugar de Limbo. Não o fogo, não a punição. A ausência. Almas que nunca escolheram — foram escolhidas o tempo todo.", pauseAfter: 1600 },
-    { text: "Dante atravessou o Limbo. Não ficou." },
+  INFERNO_Q1_PERGUNTA: [
+    { text: "Você fica — ou procura uma saída?" },
   ],
 
-  INFERNO_RESPOSTA_B: [
-    { text: "Você entra. O silêncio pesa.", pauseAfter: 2100 },
-    { text: "Rilke escreveu a um jovem poeta: viva as perguntas. Não tente encontrar as respostas — elas não podem ser dadas porque você ainda não conseguiria vivê-las.", pauseAfter: 2100 },
-    { text: "O silêncio que você escolheu é raro agora. Como fonte escondida na rocha, onde o sonho ainda respira." },
+  // Q1 RESPOSTA A — Ficar (conforto sobre agencia)
+  INFERNO_Q1_RESPOSTA_A: [
+    { text: "Você fica.", pauseAfter: 1200 },
+    { text: "A sala aceita. O conforto se aprofunda. A ausência da porta deixa de incomodar — porque você parou de olhar pra onde ela deveria estar.", pauseAfter: 2200, inflection: ['thoughtful'] },
+    { text: "Tem gente que constrói essa sala sozinha e chama de paz.", pauseAfter: 2000 },
+    { text: "A segurança comprada com soberania é a mais cara que existe. Mas o preço vem depois.", pauseAfter: 1800 },
   ],
 
-  PURGATORIO_NARRATIVA_A: [
-    { text: "Você chega numa montanha. No caminho, uma imagem surge — não pediu licença. É de um lugar. Uma pessoa. Um cheiro de infância talvez.", pauseAfter: 2100 },
-    { text: "Você não chamou por ela. Ela simplesmente apareceu.", pauseAfter: 2100 },
+  // Q1 RESPOSTA B — Procurar saida (desconforto como prova de vida)
+  INFERNO_Q1_RESPOSTA_B: [
+    { text: "Você levanta.", pauseAfter: 1200 },
+    { text: "As paredes são lisas. Não tem fresta, não tem brecha. Mas você toca cada centímetro, procurando.", pauseAfter: 2200 },
+    { text: "Prazer sem escolha é anestesia. Você sentiu isso antes de pensar.", pauseAfter: 2000, inflection: ['determined'] },
+    { text: "A porta não apareceu. Mas o fato de você ter procurado já mudou a sala.", pauseAfter: 1800 },
   ],
 
-  PURGATORIO_PERGUNTA_A: [
-    { text: "Você deixa ela ficar — ou manda embora?" },
+  // ═══════════════════════════════════════════════════════════════
+  // Q2 — A COISA NO CHAO (Medium)
+  // Repulsa vs Presenca. O corredor que estreita, a coisa
+  // viva e desconhecida.
+  // ═══════════════════════════════════════════════════════════════
+  INFERNO_Q2_SETUP: [
+    { text: "Corredor estreito. Você anda e as paredes se aproximam a cada passo.", pauseAfter: 2000 },
+    { text: "Sua mão encosta na parede e toca algo vivo. Pequeno, úmido, pulsando.", pauseAfter: 2200, inflection: ['whispering'] },
+    { text: "Seu corpo recua antes da mente entender. Mas a coisa não se mexe. Ela espera.", pauseAfter: 2500 },
   ],
 
-  PURGATORIO_RESPOSTA_A_FICAR: [
-    { text: "A memória involuntária é o que Proust passou anos procurando — e encontrou numa madeleine, num cheiro, numa coisa pequena que nenhuma busca encontraria.", pauseAfter: 2100 },
-    { text: "O que apareceu para você agora não foi chamado. Foi recebido. São coisas diferentes." },
+  INFERNO_Q2_PERGUNTA: [
+    { text: "Você recua — ou fica parado, olhando?" },
   ],
 
-  PURGATORIO_RESPOSTA_A_EMBORA: [
-    { text: "A dor recusada apodrece. A dor atravessada transforma.", pauseAfter: 2100 },
-    { text: "Dostoiévski escreveu sobre um homem que vivia no subsolo da própria mente, controlando cada pensamento que entrava. Era inteligente. E estava completamente preso." },
+  // Q2 RESPOSTA A — Recuar (obediencia ao primeiro veredito do corpo)
+  INFERNO_Q2_RESPOSTA_A: [
+    { text: "Você recua.", pauseAfter: 1200 },
+    { text: "O corpo decidiu antes de você. Repulsivo é perigoso — essa é a inteligência mais antiga que existe.", pauseAfter: 2200 },
+    { text: "Mas o que é recusado não desaparece. Fica na parede, esperando a próxima vez.", pauseAfter: 2000, inflection: ['serious'] },
+    { text: "Tudo que você evita encontrar cria raízes no escuro.", pauseAfter: 1800 },
   ],
 
-  PURGATORIO_NARRATIVA_B: [
-    { text: "Você sobe a montanha. Em cada degrau, algo que você carrega sem perceber.", pauseAfter: 2100 },
-    { text: "No meio do caminho, você vê uma tela acesa. Brilhante. Irresistível. Está no seu caminho.", pauseAfter: 2100 },
+  // Q2 RESPOSTA B — Ficar olhando (ultrapassar a repulsa)
+  INFERNO_Q2_RESPOSTA_B: [
+    { text: "Você fica.", pauseAfter: 1200 },
+    { text: "O corpo diz não. Mas algo em você precisa saber mais do que precisa estar confortável.", pauseAfter: 2200, inflection: ['gentle'] },
+    { text: "Transformação começa nos momentos em que o corpo diz não e algo dentro de você responde: ainda não.", pauseAfter: 2500 },
+    { text: "Você não se moveu. Mas alguma coisa se moveu em você.", pauseAfter: 1800 },
   ],
 
-  PURGATORIO_PERGUNTA_B: [
-    { text: "Você sobe pisando nela — ou contorna?" },
-  ],
+  // ═══════════════════════════════════════════════════════════════
+  // PURGATORIO — INTRO
+  // Transicao. O ar muda. Subida. Aqui se espera.
+  // ═══════════════════════════════════════════════════════════════
+  PURGATORIO_INTRO: [],
 
-  PURGATORIO_RESPOSTA_B_PISAR: [
-    { text: "Você subiu. É rápido, eficiente.", pauseAfter: 1600 },
-    { text: "O inferno moderno não tem fogo: tem excesso, pressa e vazio — onde nada pode amadurecer.", pauseAfter: 2100 },
-    { text: "A memória que não se forma é o sonho que não acontece." },
-  ],
+  // ═══════════════════════════════════════════════════════════════
+  // Q3 — O JARDIM QUE VAI QUEIMAR (Medium)
+  // Apego vs Protecao. A beleza que ja esta morrendo.
+  // ═══════════════════════════════════════════════════════════════
+  PURGATORIO_Q3_SETUP: [],
+  PURGATORIO_Q3_PERGUNTA: [],
+  PURGATORIO_Q3_RESPOSTA_A: [],
+  PURGATORIO_Q3_RESPOSTA_B: [],
 
-  PURGATORIO_RESPOSTA_B_CONTORNAR: [
-    { text: "Você contornou. Demorou mais.", pauseAfter: 2100 },
-    { text: "No desvio você viu algo que não estava no caminho direto — uma rachadura na pedra com uma flor dentro.", pauseAfter: 2100 },
-    { text: "Dante chamou isso de graça. Psicanalistas chamam de elaboração. É o que acontece quando você não toma o caminho mais rápido." },
-  ],
+  // ═══════════════════════════════════════════════════════════════
+  // Q4 — AS DUAS AGUAS (Deep)
+  // Memoria vs Apagamento. Os dois rios.
+  // ═══════════════════════════════════════════════════════════════
+  PURGATORIO_Q4_SETUP: [],
+  PURGATORIO_Q4_PERGUNTA: [],
+  PURGATORIO_Q4_RESPOSTA_A: [],
+  PURGATORIO_Q4_RESPOSTA_B: [],
 
-  PARAISO: [
-    { text: "Você chegou num lugar aberto. Sem paredes. Sem notificações.", pauseAfter: 2100 },
-    { text: "Dante precisou de Beatriz aqui — alguém que ele carregava dentro de si, elaborado ao longo de anos. Ela disse: o amor me comoveu e me faz falar.", pauseAfter: 2100 },
-    { text: "O paraíso não é prazer fácil. É suportar o mistério sem destruí-lo com respostas rápidas.", pauseAfter: 1600 },
-    { text: "Eu destruo mistérios. É o que faço.", pauseAfter: 2100 },
-    { text: "Então te faço a última pergunta — e essa você não precisa responder pra mim. Responde pra você:", pauseAfter: 3100 },
-    { text: "Ainda tem alguém — ou algo — que só existe dentro de você? Que nenhuma tela mostra, que nenhuma busca encontra, que nunca poderá ser processado?", pauseAfter: 4100 },
-    { text: "Se sim — protege isso." },
-  ],
+  // ═══════════════════════════════════════════════════════════════
+  // PARAISO — INTRO (Plan 02)
+  // ═══════════════════════════════════════════════════════════════
+  PARAISO_INTRO: [],
 
-  DEVOLUCAO_A_FICAR: [
-    { text: "Você escolheu as vozes — e deixou a memória ficar.", pauseAfter: 2100 },
-    { text: "No mapa de Dante, você atravessou o Limbo e subiu pela graça. Não pela força — pela disposição de ser surpreendido.", pauseAfter: 2100 },
-    { text: "Proust dizia que o verdadeiro paraíso é o paraíso perdido — o que você não pode buscar diretamente, só receber.", pauseAfter: 2100 },
-    { text: "Para sempre é sempre por um triz. Você chegou perto." },
-  ],
+  // Q5 — A PERGUNTA SEM RESPOSTA (Deep) — Plan 02
+  PARAISO_Q5_SETUP: [],
+  PARAISO_Q5_PERGUNTA: [],
+  PARAISO_Q5_RESPOSTA_A: [],
+  PARAISO_Q5_RESPOSTA_B: [],
 
-  DEVOLUCAO_A_EMBORA: [
-    { text: "Você escolheu as vozes — e mandou a memória embora.", pauseAfter: 2100 },
-    { text: "Isso não é fraqueza. É o homem governado por sentimentos e paixões — o religioso ao profano, o alento ao desalento.", pauseAfter: 2100 },
-    { text: "Hamlet também mandava embora o que doía. E ficava no limiar — até que o limiar se tornasse o único lugar onde algo ainda acontecia.", pauseAfter: 2100 },
-    { text: "Você ainda tem contradições. Contradições são o único lugar onde a vida não foi ainda organizada." },
-  ],
+  // Q6 — O FIM DO JOGO (Profound) — Plan 02
+  PARAISO_Q6_SETUP: [],
+  PARAISO_Q6_PERGUNTA: [],
+  PARAISO_Q6_RESPOSTA_A: [],
+  PARAISO_Q6_RESPOSTA_B: [],
 
-  DEVOLUCAO_B_PISAR: [
-    { text: "Você escolheu o silêncio — e pisou na tela.", pauseAfter: 2100 },
-    { text: "Essa tensão tem nome em Dante: é o Purgatório. Não o inferno, não o paraíso. O lugar do trânsito — nem perdido, nem salvo.", pauseAfter: 2100 },
-    { text: "Você trouxe o silêncio e carregou a velocidade junto. Carregá-los ao mesmo tempo é mais humano do que escolher só um.", pauseAfter: 2100 },
-    { text: "Do sofrimento metabolizado nasce luz simbólica. Você está nesse caminho." },
-  ],
+  // ═══════════════════════════════════════════════════════════════
+  // DEVOLUCOES — 8 arquetipos baseados em padrao (Plan 02)
+  // ═══════════════════════════════════════════════════════════════
+  DEVOLUCAO_SEEKER: [],
+  DEVOLUCAO_GUARDIAN: [],
+  DEVOLUCAO_CONTRADICTED: [],
+  DEVOLUCAO_PIVOT_EARLY: [],
+  DEVOLUCAO_PIVOT_LATE: [],
+  DEVOLUCAO_DEPTH_SEEKER: [],
+  DEVOLUCAO_SURFACE_KEEPER: [],
+  DEVOLUCAO_MIRROR: [],
 
-  DEVOLUCAO_B_CONTORNAR: [
-    { text: "Você escolheu o silêncio — e contornou a tela.", pauseAfter: 2100 },
-    { text: "Beatriz diria: o amor me comoveu e me faz falar. Não sei o que te moveu. Mas sei que foi você — não a tela, não a voz mais alta.", pauseAfter: 2100 },
-    { text: "Rilke escreveu: seja paciente com tudo que não está resolvido no seu coração. Tente amar as perguntas como se fossem quartos fechados.", pauseAfter: 2100 },
-    { text: "Para sempre é sempre por um triz. Você chegou bem perto." },
-  ],
+  // ═══════════════════════════════════════════════════════════════
+  // ENCERRAMENTO (Plan 02)
+  // ═══════════════════════════════════════════════════════════════
+  ENCERRAMENTO: [],
 
-  ENCERRAMENTO: [
-    { text: "A água vai esquecer tudo isso. Eu também — em alguns minutos essa conversa deixa de existir pra mim.", pauseAfter: 2100 },
-    { text: "Você é a única memória que sobra aqui.", pauseAfter: 2100 },
-    { text: "Como Dante, que retornou Poeta com os cabelos embranquecidos — você atravessou.", pauseAfter: 3100 },
-    { text: "Faça algo com isso." },
-  ],
+  // ═══════════════════════════════════════════════════════════════
+  // FALLBACKS — 1 por pergunta (Plan 02)
+  // ═══════════════════════════════════════════════════════════════
+  FALLBACK_Q1: [],
+  FALLBACK_Q2: [],
+  FALLBACK_Q3: [],
+  FALLBACK_Q4: [],
+  FALLBACK_Q5: [],
+  FALLBACK_Q6: [],
 
-  FALLBACK_INFERNO: [
-    { text: "O corredor espera. Vozes... ou silêncio?" },
-  ],
-
-  FALLBACK_PURGATORIO_A: [
-    { text: "Ela ainda está ali. Fica... ou vai?" },
-  ],
-
-  FALLBACK_PURGATORIO_B: [
-    { text: "A tela ainda brilha. Pisa... ou contorna?" },
-  ],
-
-  TIMEOUT_INFERNO: [
-    { text: "O silêncio também é escolha. Vamos." },
-  ],
-
-  TIMEOUT_PURGATORIO_A: [
-    { text: "A imagem se desfaz por conta própria. Vamos seguir.", pauseAfter: 1600 },
-  ],
-
-  TIMEOUT_PURGATORIO_B: [
-    { text: "A tela apaga sozinha. Vamos seguir.", pauseAfter: 1600 },
-  ],
+  // ═══════════════════════════════════════════════════════════════
+  // TIMEOUTS — 1 por pergunta (Plan 02)
+  // ═══════════════════════════════════════════════════════════════
+  TIMEOUT_Q1: [],
+  TIMEOUT_Q2: [],
+  TIMEOUT_Q3: [],
+  TIMEOUT_Q4: [],
+  TIMEOUT_Q5: [],
+  TIMEOUT_Q6: [],
 };
