@@ -58,11 +58,11 @@
 
 ### v3.0 Narrative Redesign — 6 Choices (In Progress)
 
-- [ ] **Phase 16: Script Writing** - Complete PT-BR script with 6 choices, 12 responses, 8-12 devoluções, inflection tags
+- [x] **Phase 16: Script Writing** - Complete PT-BR script with 6 choices, 12 responses, 8-12 devoluções, inflection tags (completed 2026-03-27)
   **Plans:** 2 plans
   Plans:
   - [x] 16-01-PLAN.md — ScriptDataV3 interface + APRESENTACAO + INFERNO (Q1, Q2) + PURGATORIO (Q3, Q4)
-  - [ ] 16-02-PLAN.md — PARAISO (Q5, Q6) + 8 devoluções + ENCERRAMENTO + fallbacks + timeouts
+  - [x] 16-02-PLAN.md — PARAISO (Q5, Q6) + 8 devoluções + ENCERRAMENTO + fallbacks + timeouts
 - [ ] **Phase 17: State Machine & Data** - XState redesign for 6 linear choices (~28 states), pattern tracking, NLU keyword maps
 - [ ] **Phase 18: Components & Services** - OracleExperience.tsx, FallbackTTS, useVoiceChoice updates for 6 choice points
 - [ ] **Phase 19: Audio Generation** - Generate ~50 MP3s with ElevenLabs v3 for new script
@@ -76,7 +76,7 @@
 **Goal**: Complete narrative script with 6 binary choices across Inferno/Purgatório/Paraíso, pattern-based devoluções, and ElevenLabs v3 inflection tags
 **Depends on**: Research synthesis (complete)
 **Requirements**: SCRV3-01 (6 choices), SCRV3-02 (devoluções), SCRV3-03 (inflection tags)
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 **Success Criteria**:
   1. All 6 choice scenarios written in PT-BR with escalating depth (Light->Medium->Deep->Profound)
   2. 8-12 pattern-based devoluções covering Seeker/Guardian/Contradicted/Pivot archetypes
@@ -127,7 +127,7 @@
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 16. Script Writing | v3.0 | 1/2 | In Progress|  |
+| 16. Script Writing | v3.0 | 2/2 | Complete   | 2026-03-27 |
 | 17. State Machine & Data | v3.0 | - | Not started | - |
 | 18. Components & Services | v3.0 | - | Not started | - |
 | 19. Audio Generation | v3.0 | - | Not started | - |
