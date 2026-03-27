@@ -327,16 +327,84 @@ export const SCRIPT: ScriptDataV3 = {
   ],
 
   // ═══════════════════════════════════════════════════════════════
-  // DEVOLUCOES — 8 arquetipos baseados em padrao (Plan 02)
+  // DEVOLUCOES — 8 arquetipos baseados em padrao
+  // Cada devolucao le a FORMA das 6 escolhas, nao cada uma
+  // individualmente. Espelho, nao julgamento.
   // ═══════════════════════════════════════════════════════════════
-  DEVOLUCAO_SEEKER: [],
-  DEVOLUCAO_GUARDIAN: [],
-  DEVOLUCAO_CONTRADICTED: [],
-  DEVOLUCAO_PIVOT_EARLY: [],
-  DEVOLUCAO_PIVOT_LATE: [],
-  DEVOLUCAO_DEPTH_SEEKER: [],
-  DEVOLUCAO_SURFACE_KEEPER: [],
-  DEVOLUCAO_MIRROR: [],
+
+  // SEEKER — mostly toward + movement
+  // Abriu a porta, ficou olhando, entrou no jardim, lembrou, carregou, pediu o espelho.
+  DEVOLUCAO_SEEKER: [
+    { text: "Você entrou em tudo.", pauseAfter: 1800, inflection: ['thoughtful'] },
+    { text: "A sala sem porta, a coisa na parede, o jardim pegando fogo, a água que queima, a pergunta sem resposta. Nada te parou.", pauseAfter: 2500 },
+    { text: "Tem gente que chama isso de coragem. Eu chamo de fome.", pauseAfter: 2200 },
+    { text: "A pergunta que fica é essa: você corre em direção a alguma coisa — ou foge da quietude?", pauseAfter: 2500 },
+    { text: "Guarda isso. É a única pergunta que importa.", pauseAfter: 2000, inflection: ['warm'] },
+  ],
+
+  // GUARDIAN — mostly away + stillness
+  // Ficou na sala, recuou, deu as costas, esqueceu, dissolveu, ja sabia.
+  DEVOLUCAO_GUARDIAN: [
+    { text: "Você se protegeu em cada encruzilhada.", pauseAfter: 1800 },
+    { text: "A sala ficou, a coisa na parede ficou longe, o jardim nunca foi tocado, a memória foi limpa. Cada parede no lugar certo.", pauseAfter: 2500, inflection: ['gentle'] },
+    { text: "Mas você veio até aqui — pra esse escuro, pra essa voz. Isso significa que uma parte sua sabe: o que você protege pode ser o que você esconde.", pauseAfter: 2500 },
+    { text: "Não estou julgando. Proteção é inteligência. Mas toda muralha tem dois lados.", pauseAfter: 2200 },
+    { text: "Fica com isso.", pauseAfter: 1800 },
+  ],
+
+  // CONTRADICTED — mixed pattern, no consistent direction
+  DEVOLUCAO_CONTRADICTED: [
+    { text: "Você foi e voltou. Segurou e soltou. Entrou e recuou.", pauseAfter: 2000 },
+    { text: "Nenhuma direção fixa. Nenhum padrão limpo.", pauseAfter: 1800, inflection: ['thoughtful'] },
+    { text: "A maioria ia achar que isso é indecisão. Não é. É respiração. O único ritmo honesto.", pauseAfter: 2500 },
+    { text: "Quem se contradiz está vivo. Quem é coerente demais já decidiu parar de sentir.", pauseAfter: 2200 },
+    { text: "Guarda essa oscilação. Ela é mais sua do que qualquer certeza.", pauseAfter: 2000, inflection: ['warm'] },
+  ],
+
+  // PIVOT_EARLY — switches direction in first 3 choices
+  DEVOLUCAO_PIVOT_EARLY: [
+    { text: "Alguma coisa mudou em você no começo.", pauseAfter: 1800 },
+    { text: "Você começou num caminho e virou antes da terceira pergunta. A virada aconteceu antes de você perceber.", pauseAfter: 2500, inflection: ['curious'] },
+    { text: "Os primeiros encontros sacudiram o plano. E em vez de resistir, você deixou o plano cair.", pauseAfter: 2200 },
+    { text: "Quem muda cedo muda por instinto. A mente ainda não entendeu, mas o corpo já se moveu.", pauseAfter: 2500 },
+    { text: "Presta atenção nesse instinto. Ele sabe coisas que você ainda não sabe.", pauseAfter: 2000 },
+  ],
+
+  // PIVOT_LATE — switches direction in last 3 choices
+  DEVOLUCAO_PIVOT_LATE: [
+    { text: "Alguma coisa mudou em você entre a terceira e a quarta pergunta.", pauseAfter: 2000, inflection: ['curious'] },
+    { text: "Você começou de um jeito e terminou de outro. A virada veio na metade mais funda.", pauseAfter: 2500 },
+    { text: "Quem muda tarde muda de verdade. Porque já não é reação — é decisão.", pauseAfter: 2200 },
+    { text: "Essa dobradiça entre quem você era no início e quem você é agora — esse é o lugar onde você realmente vive.", pauseAfter: 2500, inflection: ['warm'] },
+    { text: "Não esquece desse ponto. Ele é mais importante do que qualquer resposta que você deu.", pauseAfter: 2000 },
+  ],
+
+  // DEPTH_SEEKER — consistently chose the "deeper" option
+  DEVOLUCAO_DEPTH_SEEKER: [
+    { text: "Você foi em direção a cada fogo.", pauseAfter: 1800, inflection: ['thoughtful'] },
+    { text: "Ficou com a coisa na parede. Entrou no jardim que ia queimar. Escolheu a água que dói. Carregou a pergunta sem resposta.", pauseAfter: 2500 },
+    { text: "Você não recua. Isso é raro.", pauseAfter: 2000 },
+    { text: "A questão é se você sabe a diferença entre coragem e compulsão. Porque os dois se parecem — até o preço chegar.", pauseAfter: 2500 },
+    { text: "Fundo é bom. Mas fundo sem ar mata igual.", pauseAfter: 2000, inflection: ['serious'] },
+  ],
+
+  // SURFACE_KEEPER — consistently chose the "safer" option
+  DEVOLUCAO_SURFACE_KEEPER: [
+    { text: "Você se manteve inteiro.", pauseAfter: 1500 },
+    { text: "Em cada encruzilhada, você escolheu o caminho que preserva. Não é fraqueza — é sofisticação. Seu sistema de proteção funciona bem.", pauseAfter: 2500, inflection: ['gentle'] },
+    { text: "Mas a proteção tem um custo que não aparece na hora. Aparece depois, no que você nunca se permitiu ver.", pauseAfter: 2500 },
+    { text: "O jardim que você não entrou continua pegando fogo na sua cabeça. A coisa na parede continua esperando.", pauseAfter: 2200 },
+    { text: "Você não precisa ir até o fundo. Mas precisa saber o que está recusando.", pauseAfter: 2000 },
+  ],
+
+  // MIRROR — alternating A/B/A/B, perfect balance
+  DEVOLUCAO_MIRROR: [
+    { text: "Equilíbrio perfeito.", pauseAfter: 1800, inflection: ['thoughtful'] },
+    { text: "Você nunca repetiu a mesma direção duas vezes seguidas. Entrou e recuou, segurou e soltou, abriu e fechou.", pauseAfter: 2500 },
+    { text: "A maioria das pessoas pende pra um lado. Você segurou o centro.", pauseAfter: 2000 },
+    { text: "Isso pode ser sabedoria — sentir os dois lados sem perder o eixo. Ou pode ser o esconderijo mais elegante que existe: nunca se comprometer de verdade com nenhuma direção.", pauseAfter: 2800 },
+    { text: "Só você sabe se o centro é uma conquista ou um refúgio. Fica com essa pergunta.", pauseAfter: 2200, inflection: ['warm'] },
+  ],
 
   // ═══════════════════════════════════════════════════════════════
   // ENCERRAMENTO
@@ -351,22 +419,50 @@ export const SCRIPT: ScriptDataV3 = {
   ],
 
   // ═══════════════════════════════════════════════════════════════
-  // FALLBACKS — 1 por pergunta (Plan 02)
+  // FALLBACKS — 1 por pergunta
+  // Reformulacao minima dentro do mundo. Sem quebrar imersao.
+  // Binario, claro, curto.
   // ═══════════════════════════════════════════════════════════════
-  FALLBACK_Q1: [],
-  FALLBACK_Q2: [],
-  FALLBACK_Q3: [],
-  FALLBACK_Q4: [],
-  FALLBACK_Q5: [],
-  FALLBACK_Q6: [],
+  FALLBACK_Q1: [
+    { text: "A sala é confortável. Você fica — ou procura a porta?" },
+  ],
+  FALLBACK_Q2: [
+    { text: "A coisa na parede espera. Você recua — ou fica olhando?" },
+  ],
+  FALLBACK_Q3: [
+    { text: "O jardim vai queimar. Você entra — ou dá as costas?" },
+  ],
+  FALLBACK_Q4: [
+    { text: "Duas águas. Uma lembra, outra esquece. Qual?" },
+  ],
+  FALLBACK_Q5: [
+    { text: "A pergunta não tem resposta. Você carrega — ou deixa dissolver?" },
+  ],
+  FALLBACK_Q6: [
+    { text: "Quer ouvir o que eu vi — ou já sabe?" },
+  ],
 
   // ═══════════════════════════════════════════════════════════════
-  // TIMEOUTS — 1 por pergunta (Plan 02)
+  // TIMEOUTS — 1 por pergunta
+  // Silencio tratado como gesto valido. Nao e falha — e resposta.
+  // Cada um tem carater proprio.
   // ═══════════════════════════════════════════════════════════════
-  TIMEOUT_Q1: [],
-  TIMEOUT_Q2: [],
-  TIMEOUT_Q3: [],
-  TIMEOUT_Q4: [],
-  TIMEOUT_Q5: [],
-  TIMEOUT_Q6: [],
+  TIMEOUT_Q1: [
+    { text: "O silêncio ficou. Quem não se move numa sala confortável já escolheu ficar.", pauseAfter: 1400 },
+  ],
+  TIMEOUT_Q2: [
+    { text: "Seu corpo recuou sozinho. O silêncio é do corpo — e o corpo decidiu primeiro.", pauseAfter: 1400 },
+  ],
+  TIMEOUT_Q3: [
+    { text: "Você não entrou. Às vezes virar as costas não é decisão — é o que acontece quando a decisão não vem.", pauseAfter: 1400 },
+  ],
+  TIMEOUT_Q4: [
+    { text: "Nenhuma água. O silêncio não lembra nem esquece. Seguimos.", pauseAfter: 1200 },
+  ],
+  TIMEOUT_Q5: [
+    { text: "A pergunta se dissolveu sozinha. Nem tudo precisa de você pra desaparecer.", pauseAfter: 1400 },
+  ],
+  TIMEOUT_Q6: [
+    { text: "O silêncio no final é a resposta mais antiga que existe. Você já sabe.", pauseAfter: 1600 },
+  ],
 };
