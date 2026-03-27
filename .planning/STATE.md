@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v2.0
-milestone_name: Narração Realista com ElevenLabs v3
-status: verifying
-stopped_at: Completed 260326-noe quick task (awaiting human verification of MP3 quality)
-last_updated: "2026-03-26T20:16:19.521Z"
-last_activity: 2026-03-26
+milestone: v3.0
+milestone_name: Narrative Redesign — 6 Choices
+status: executing
+stopped_at: Completed 16-01-PLAN.md (ScriptDataV3 + APRESENTACAO + INFERNO + PURGATORIO)
+last_updated: "2026-03-27T23:24:31.380Z"
+last_activity: 2026-03-27
 progress:
-  total_phases: 3
-  completed_phases: 1
+  total_phases: 5
+  completed_phases: 0
   total_plans: 2
-  completed_plans: 2
+  completed_plans: 1
   percent: 0
 ---
 
@@ -22,14 +22,14 @@ progress:
 
 **Current Milestone:** v2.0 Narração Realista com ElevenLabs v3
 
-**Current Focus:** Phase 13 — voice-infrastructure-v3-migration
+**Current Focus:** Phase 16 — Script Writing
 
 ## Current Position
 
-Phase: 14
-Plan: Not started
-Status: Phase complete — ready for verification
-Last activity: 2026-03-26
+Phase: 16 (Script Writing) — EXECUTING
+Plan: 2 of 2
+Status: Ready to execute
+Last activity: 2026-03-27
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -79,6 +79,9 @@ Recent decisions affecting current work:
 - [Phase 13]: v3 mode omits speed and use_speaker_boost (not supported by eleven_v3)
 - [Phase 13]: Generation script reimplements convertPauseToTag inline (mjs cannot import ts)
 - [Phase quick-260326-noe]: eleven_v3 does not support language_code param -- removed, v3 auto-detects language
+- [Phase 16]: ScriptDataV3 replaces ScriptData with 47 keys for v3 narrative (6 choices, 8 devoluções, fallbacks, timeouts)
+- [Phase 16]: Oracle voice: calm, knowing, slightly ironic, second person, short punchy sentences, game-like, zero author references
+- [Phase 16]: Inflection tags sparse: max 2-3 per section, max 1 per SpeechSegment; pauseAfter 1200-2500ms normal, 0 for section finals and perguntas
 
 ### v2.0 Research Highlights
 
@@ -102,6 +105,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-26T20:16:18.345Z
-Stopped at: Completed 260326-noe quick task (awaiting human verification of MP3 quality)
+Last session: 2026-03-27T23:24:31.377Z
+Stopped at: Completed 16-01-PLAN.md (ScriptDataV3 + APRESENTACAO + INFERNO + PURGATORIO)
 Resume: /gsd:plan-phase 13
