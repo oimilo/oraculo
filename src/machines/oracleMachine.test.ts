@@ -98,7 +98,7 @@ describe('Oracle State Machine', () => {
   });
 
   describe('Test 6 - INFERNO timeout', () => {
-    it('should timeout after 15000ms and default to CHOICE_B', () => {
+    it('should timeout after 25000ms and default to CHOICE_B', () => {
       const actor = createActor(oracleMachine);
       actor.start();
       actor.send({ type: 'START' });
@@ -110,7 +110,7 @@ describe('Oracle State Machine', () => {
       expect(actor.getSnapshot().context.choice1).toBeNull();
 
       // Advance 15000ms for timeout
-      vi.advanceTimersByTime(15000);
+      vi.advanceTimersByTime(25000);
 
       expect(actor.getSnapshot().value).toEqual({ INFERNO: 'TIMEOUT_REDIRECT' });
       expect(actor.getSnapshot().context.choice1).toBe('B');
@@ -191,7 +191,7 @@ describe('Oracle State Machine', () => {
   });
 
   describe('Test 10 - PURGATORIO_A timeout', () => {
-    it('should timeout after 15000ms and default to FICAR', () => {
+    it('should timeout after 25000ms and default to FICAR', () => {
       const actor = createActor(oracleMachine);
       actor.start();
       actor.send({ type: 'START' });
@@ -205,7 +205,7 @@ describe('Oracle State Machine', () => {
 
       expect(actor.getSnapshot().value).toEqual({ PURGATORIO_A: 'AGUARDANDO' });
 
-      vi.advanceTimersByTime(15000);
+      vi.advanceTimersByTime(25000);
 
       expect(actor.getSnapshot().value).toEqual({ PURGATORIO_A: 'RESPOSTA_FICAR' });
       expect(actor.getSnapshot().context.choice2).toBe('FICAR');
@@ -281,7 +281,7 @@ describe('Oracle State Machine', () => {
   });
 
   describe('Test 14 - PURGATORIO_B timeout', () => {
-    it('should timeout after 15000ms and default to CONTORNAR', () => {
+    it('should timeout after 25000ms and default to CONTORNAR', () => {
       const actor = createActor(oracleMachine);
       actor.start();
       actor.send({ type: 'START' });
@@ -295,7 +295,7 @@ describe('Oracle State Machine', () => {
 
       expect(actor.getSnapshot().value).toEqual({ PURGATORIO_B: 'AGUARDANDO' });
 
-      vi.advanceTimersByTime(15000);
+      vi.advanceTimersByTime(25000);
 
       expect(actor.getSnapshot().value).toEqual({ PURGATORIO_B: 'RESPOSTA_CONTORNAR' });
       expect(actor.getSnapshot().context.choice2).toBe('CONTORNAR');

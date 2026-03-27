@@ -122,7 +122,7 @@ describe('Voice Flow Integration', () => {
       vi.useRealTimers();
     });
 
-    it('should timeout after 15s and transition to TIMEOUT_REDIRECT then RESPOSTA_B', () => {
+    it('should timeout after 25s and transition to TIMEOUT_REDIRECT then RESPOSTA_B', () => {
       const actor = createActor(oracleMachine);
       actor.start();
 
@@ -134,8 +134,8 @@ describe('Voice Flow Integration', () => {
 
       expect(actor.getSnapshot().matches({ INFERNO: 'AGUARDANDO' })).toBe(true);
 
-      // Advance time by 15 seconds (XState timer in AGUARDANDO)
-      vi.advanceTimersByTime(15000);
+      // Advance time by 25 seconds (XState timer in AGUARDANDO)
+      vi.advanceTimersByTime(25000);
 
       // Machine should transition to TIMEOUT_REDIRECT
       let currentState = actor.getSnapshot();

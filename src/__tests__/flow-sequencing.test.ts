@@ -125,7 +125,7 @@ describe('Flow Sequencing', () => {
       actor.send({ type: 'NARRATIVA_DONE' }); // INFERNO.PERGUNTA -> INFERNO.AGUARDANDO
 
       // Trigger timeout
-      vi.advanceTimersByTime(15000);
+      vi.advanceTimersByTime(25000);
 
       const state = actor.getSnapshot();
       expect(state.matches({ INFERNO: 'TIMEOUT_REDIRECT' })).toBe(true);

@@ -1,12 +1,14 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import type { STTService } from '../index';
 import { createSTTService } from '../index';
+import { MockSTTService } from '../mock';
 
 describe('STT Service Interface', () => {
   let sttService: STTService;
 
   beforeEach(() => {
-    sttService = createSTTService();
+    // Use mock directly for interface tests (real service needs API)
+    sttService = new MockSTTService();
   });
 
   it('should create an STTService with transcribe method', () => {
@@ -23,9 +25,10 @@ describe('STT Service Interface', () => {
     expect(typeof transcript).toBe('string');
   });
 
-  it('should return mock implementation when NEXT_PUBLIC_USE_REAL_APIS is not true', () => {
+  it('should return real STT in browser context (always real for voice input)', () => {
     const service = createSTTService();
     expect(service).toBeDefined();
-    expect(service.constructor.name).toBe('MockSTTService');
+    // In jsdom (window exists), factory returns real service
+    expect(service.constructor.name).toBe('WhisperSTTService');
   });
 });

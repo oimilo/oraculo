@@ -1,12 +1,14 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import type { NLUService, ClassificationResult } from '../index';
 import { createNLUService } from '../index';
+import { MockNLUService } from '../mock';
 
 describe('NLU Service Interface', () => {
   let nluService: NLUService;
 
   beforeEach(() => {
-    nluService = createNLUService();
+    // Use mock directly for interface tests (real service needs API)
+    nluService = new MockNLUService();
   });
 
   it('should create an NLUService with classify method', () => {
@@ -43,9 +45,10 @@ describe('NLU Service Interface', () => {
     expect(typeof result.reasoning).toBe('string');
   });
 
-  it('should return mock implementation when NEXT_PUBLIC_USE_REAL_APIS is not true', () => {
+  it('should return real NLU in browser context (always real for voice input)', () => {
     const service = createNLUService();
     expect(service).toBeDefined();
-    expect(service.constructor.name).toBe('MockNLUService');
+    // In jsdom (window exists), factory returns real service
+    expect(service.constructor.name).toBe('ClaudeNLUService');
   });
 });

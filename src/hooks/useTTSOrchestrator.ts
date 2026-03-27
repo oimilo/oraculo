@@ -56,7 +56,12 @@ export function useTTSOrchestrator(): UseTTSOrchestratorReturn {
       await ttsRef.current.speak(segments, PHASE_VOICE_SETTINGS[phase]);
       logger.log('speak END — success');
     } catch (err) {
-      logger.error('speak END — error', { error: err instanceof Error ? err.message : String(err) });
+      const msg = err instanceof Error ? err.message : String(err);
+      if (msg === 'Speech cancelled') {
+        logger.log('speak END — cancelled');
+      } else {
+        logger.error('speak END — error', msg);
+      }
       throw err;
     } finally {
       isSpeakingRef.current = false;

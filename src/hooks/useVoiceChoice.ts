@@ -216,6 +216,8 @@ export function useVoiceChoice(config: ChoiceConfig, active: boolean): UseVoiceC
     return () => {
       logger.log('Cleanup — stopping recording');
       stopRecording();
+      // Reset so StrictMode re-invocation (or re-activation) restarts recording
+      activationHandledRef.current = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active]);

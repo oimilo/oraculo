@@ -68,7 +68,7 @@ describe('TTS Service Interface', () => {
     // Factory should return mock by default
     const service = createTTSService();
     expect(service).toBeDefined();
-    expect(service.constructor.name).toBe('MockTTSService');
+    expect(service.constructor.name).toBe('FallbackTTSService');
   });
 });
 

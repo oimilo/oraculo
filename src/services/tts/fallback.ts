@@ -50,6 +50,7 @@ export class FallbackTTSService implements TTSService {
   private audioContext: AudioContext | null = null;
   private currentSource: AudioBufferSourceNode | null = null;
   private cancelled = false;
+  private speakGeneration = 0;
   private audioBufferCache = new Map<string, AudioBuffer>();
 
   constructor(context?: AudioContext) {
@@ -61,6 +62,8 @@ export class FallbackTTSService implements TTSService {
    * Matches segment text against SCRIPT entries to find the correct audio file.
    */
   async speak(segments: SpeechSegment[], voiceSettings: VoiceSettings): Promise<void> {
+    // Bump generation so stale onended callbacks from previous speak() are ignored
+    const generation = ++this.speakGeneration;
     this.cancelled = false;
 
     // Find matching script key by comparing first segment text
@@ -110,7 +113,7 @@ export class FallbackTTSService implements TTSService {
       }
 
       // Play the audio
-      await this.playBuffer(buffer);
+      await this.playBuffer(buffer, generation);
     } catch (error) {
       if (this.cancelled || (error instanceof Error && error.message === 'Speech cancelled')) {
         throw new Error('Speech cancelled');
@@ -183,8 +186,9 @@ export class FallbackTTSService implements TTSService {
 
   /**
    * Plays an audio buffer using Web Audio API.
+   * Uses generation token to ignore stale onended callbacks from previous speak() calls.
    */
-  private async playBuffer(buffer: AudioBuffer): Promise<void> {
+  private async playBuffer(buffer: AudioBuffer, generation: number): Promise<void> {
     if (!this.audioContext) {
       throw new Error('Audio context not initialized');
     }
@@ -202,6 +206,8 @@ export class FallbackTTSService implements TTSService {
       this.currentSource = source;
 
       source.onended = () => {
+        // Ignore stale callbacks from previous speak() calls
+        if (generation !== this.speakGeneration) return;
         this.currentSource = null;
         if (this.cancelled) {
           reject(new Error('Speech cancelled'));
