@@ -63,11 +63,11 @@
   Plans:
   - [x] 16-01-PLAN.md — ScriptDataV3 interface + APRESENTACAO + INFERNO (Q1, Q2) + PURGATORIO (Q3, Q4)
   - [x] 16-02-PLAN.md — PARAISO (Q5, Q6) + 8 devoluções + ENCERRAMENTO + fallbacks + timeouts
-- [ ] **Phase 17: State Machine & Data** - XState redesign for 6 linear choices (~28 states), pattern tracking, NLU keyword maps
+- [x] **Phase 17: State Machine & Data** - XState redesign for 6 linear choices (~28 states), pattern tracking, NLU keyword maps (completed 2026-03-28)
   **Plans:** 2 plans
   Plans:
   - [x] 17-01-PLAN.md — v3 types (OracleContextV3, events, updateChoice) + pattern matching utility (determineArchetype, 8 archetype guards)
-  - [ ] 17-02-PLAN.md — Rewrite oracleMachine.ts for v3 linear flow (INFERNO Q1+Q2, PURGATORIO Q3+Q4, PARAISO Q5+Q6, 8 devolucao routes) + tests
+  - [x] 17-02-PLAN.md — Rewrite oracleMachine.ts for v3 linear flow (INFERNO Q1+Q2, PURGATORIO Q3+Q4, PARAISO Q5+Q6, 8 devolucao routes) + tests
 - [ ] **Phase 18: Components & Services** - OracleExperience.tsx, FallbackTTS, useVoiceChoice updates for 6 choice points
 - [ ] **Phase 19: Audio Generation** - Generate ~50 MP3s with ElevenLabs v3 for new script
 - [ ] **Phase 20: Testing** - Update all tests for new 6-choice structure
@@ -91,7 +91,7 @@
 **Goal**: XState v5 machine redesigned for 6 linear choices with pattern tracking
 **Depends on**: Phase 16 (script must exist for state mapping)
 **Requirements**: SMV3-01 (linear flow), SMV3-02 (pattern tracking), SMV3-03 (devolução routing)
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 **Success Criteria**:
   1. Machine has ~28 states: 6x(SETUP->PERGUNTA->AGUARDANDO->RESPOSTA_A/B) + intro/devolução/encerramento
   2. Context tracks choices as ChoiceAB[] array of 6 entries
@@ -133,7 +133,7 @@
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 16. Script Writing | v3.0 | 2/2 | Complete    | 2026-03-27 |
-| 17. State Machine & Data | v3.0 | 1/2 | In Progress|  |
+| 17. State Machine & Data | v3.0 | 2/2 | Complete   | 2026-03-28 |
 | 18. Components & Services | v3.0 | - | Not started | - |
 | 19. Audio Generation | v3.0 | - | Not started | - |
 | 20. Testing | v3.0 | - | Not started | - |
