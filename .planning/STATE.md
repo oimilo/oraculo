@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v3.1
 milestone_name: Script Mastery
-status: verifying
-stopped_at: Completed 21-01-PLAN.md
-last_updated: "2026-03-28T10:24:51.022Z"
+status: executing
+stopped_at: Completed 22-01-PLAN.md
+last_updated: "2026-03-28T11:23:46.093Z"
 last_activity: 2026-03-28
 progress:
-  total_phases: 14
+  total_phases: 15
   completed_phases: 13
-  total_plans: 33
-  completed_plans: 33
+  total_plans: 36
+  completed_plans: 34
   percent: 0
 ---
 
@@ -22,13 +22,13 @@ progress:
 
 **Current Milestone:** v2.0 Narração Realista com ElevenLabs v3
 
-**Current Focus:** Phase 21 — Script Audit & Framework Integration
+**Current Focus:** Phase 22 — core-narrative-rewrite
 
 ## Current Position
 
-Phase: 21 (Script Audit & Framework Integration) — EXECUTING
-Plan: 2 of 2
-Status: Phase complete — ready for verification
+Phase: 22 (core-narrative-rewrite) — EXECUTING
+Plan: 2 of 3
+Status: Ready to execute
 Last activity: 2026-03-28
 
 Progress: [░░░░░░░░░░] 0%
@@ -91,6 +91,8 @@ Recent decisions affecting current work:
 - [Phase 21-01]: Framework anchor point mapping with exact text enables surgical improvements rather than wholesale rewrites
 - [Phase 21]: 3-layer devolução structure: Winnicott pattern + Lacan structure + Bion transformation reading
 - [Phase 21]: Gold phrase absorption: 89% (4 full, 4 partial, 1 absent) - surgical integration targets identified
+- [Phase 22]: Gold phrases metabolized into Oracle voice rather than quoted -- circulos becomes circulo perfeito de conforto, atalhos becomes travessia trocada por atalho
+- [Phase 22]: Lacanian return mechanism in Q2_RESPOSTA_A uses three concrete symptom forms (dream, displaced pain, somatic) instead of abstract language
 
 ### v2.0 Research Highlights
 
@@ -114,6 +116,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-28T10:18:34.786Z
-Stopped at: Completed 21-01-PLAN.md
+Last session: 2026-03-28T11:23:46.090Z
+Stopped at: Completed 22-01-PLAN.md
 Resume: /gsd:plan-phase 13
