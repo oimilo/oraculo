@@ -233,7 +233,9 @@ export const SCRIPT: ScriptDataV3 = {
   PURGATORIO_Q4_SETUP: [
     { text: "Dois rios se encontram aqui.", pauseAfter: 2200 },
     { text: "Um é quente e escuro — carrega tudo que você viveu. Cada cicatriz, cada ternura, cada coisa que você não contou pra ninguém.", pauseAfter: 2500, inflection: ['whispering'] },
-    { text: "O outro é claro e gelado. Entra nele e sai limpo. Novo. Sem nada.", pauseAfter: 2200 },
+    { text: "A água escura não carrega o que aconteceu. Carrega o que você decidiu que aconteceu. Cada cicatriz tem uma história que você contou pra si mesmo.", pauseAfter: 2500 },
+    { text: "O outro rio é claro e gelado. Entra nele e sai limpo. Novo. Sem nada.", pauseAfter: 2200 },
+    { text: "A água clara não pergunta o que você quer guardar. Leva tudo. E você sai vazio do jeito que um copo lavado é vazio.", pauseAfter: 2500 },
   ],
 
   PURGATORIO_Q4_PERGUNTA: [
@@ -244,16 +246,17 @@ export const SCRIPT: ScriptDataV3 = {
   PURGATORIO_Q4_RESPOSTA_A: [
     { text: "A água escura.", pauseAfter: 1500 },
     { text: "Ela queima onde dói e aquece onde faz falta. Não é confortável. Mas é sua.", pauseAfter: 2500, inflection: ['serious'] },
-    { text: "Identidade é tecida de cicatrizes tanto quanto de alegrias. Quem apaga uma coisa apaga a outra junto.", pauseAfter: 2200 },
-    { text: "Você preferiu estar inteiro e ferido do que limpo e vazio. A dor atravessada transforma. A dor recusada só muda de endereço.", pauseAfter: 2500 },
+    { text: "Você não carrega o que aconteceu. Carrega quem você decidiu ser por causa do que aconteceu. Identidade é tecida de cicatrizes tanto quanto de alegrias.", pauseAfter: 2500 },
+    { text: "Cicatriz não é ferida. É prova de que algo foi atravessado e integrado.", pauseAfter: 2000 },
+    { text: "A dor atravessada transforma. A dor recusada só muda de endereço.", pauseAfter: 2200 },
   ],
 
   // Q4 RESPOSTA B — Esquecer (desejo de alivio, sem medir o que perde junto)
   PURGATORIO_Q4_RESPOSTA_B: [
     { text: "A água clara.", pauseAfter: 1500 },
     { text: "Fria. Cada passo apaga uma camada. Primeiro as dores grandes. Depois as pequenas. Depois as ternuras.", pauseAfter: 2500, inflection: ['sad'] },
-    { text: "A água que apaga não escolhe o que leva. Levou a cicatriz e levou o carinho junto.", pauseAfter: 2200 },
-    { text: "Você queria alívio. Mas alívio total tem outro nome: é ausência. E agora você sabe como ela pesa.", pauseAfter: 2200 },
+    { text: "A água que apaga não escolhe o que leva. Levou a cicatriz e levou junto o cheiro de quem partiu, o som do riso que ninguém mais lembra, o gosto da última vez que algo foi bom.", pauseAfter: 2800 },
+    { text: "Você queria alívio. Mas alívio total tem outro nome: ausência. E agora você sabe como ela pesa.", pauseAfter: 2200 },
   ],
 
   // ═══════════════════════════════════════════════════════════════
