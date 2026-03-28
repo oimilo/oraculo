@@ -185,7 +185,8 @@ export const SCRIPT: ScriptDataV3 = {
   // sem fugir — ate que o sentido se decante.
   // ═══════════════════════════════════════════════════════════════
   PURGATORIO_INTRO: [
-    { text: "O ar muda. Estamos subindo.", pauseAfter: 2200, inflection: ['gentle'] },
+    { text: "O ar muda. Você sente? Estamos subindo.", pauseAfter: 2500, inflection: ['gentle'] },
+    { text: "O que queimou lá embaixo, o que amadureceu no meio — virou luz aqui. Não a luz que alegra. A que ilumina.", pauseAfter: 2200 },
     { text: "Aqui não tem castigo nem salvação. Aqui se espera — sem agir, sem fugir — até que o sentido apareça sozinho.", pauseAfter: 2500 },
     { text: "Presta atenção no que dói sem motivo.", pauseAfter: 2000 },
   ],
@@ -210,8 +211,9 @@ export const SCRIPT: ScriptDataV3 = {
   PURGATORIO_Q3_RESPOSTA_A: [
     { text: "Você entra.", pauseAfter: 1200 },
     { text: "Cada pétala que você toca já está se despedindo. E você toca mesmo assim.", pauseAfter: 2200 },
-    { text: "Quem se permite amar o que vai acabar carrega uma ferida diferente — não de perda, mas de presença.", pauseAfter: 2500, inflection: ['thoughtful'] },
-    { text: "A maioria acha que proteger é não se apegar. Mas você acabou de provar o contrário.", pauseAfter: 1800 },
+    { text: "O que está morrendo puxa mais forte. Não porque é bonito. Porque nunca vai ser seu.", pauseAfter: 2500, inflection: ['thoughtful'] },
+    { text: "Quem se permite amar o que vai acabar carrega uma ferida diferente — não de perda, mas de presença.", pauseAfter: 2200 },
+    { text: "Você esteve aqui. Inteiro. Num instante que não fica. E isso ninguém tira.", pauseAfter: 2000 },
   ],
 
   // Q3 RESPOSTA B — Dar as costas (luto antecipado disfarçado de sabedoria)
@@ -219,7 +221,7 @@ export const SCRIPT: ScriptDataV3 = {
     { text: "Você vira.", pauseAfter: 1200 },
     { text: "Tem uma sabedoria nisso — não se apegar ao que já está indo. Mas olha o preço: você nunca viu o jardim.", pauseAfter: 2200 },
     { text: "Desvalorizar o que vai ser perdido antes de perder é um luto que chega antes da hora.", pauseAfter: 2500, inflection: ['gentle'] },
-    { text: "O que nunca foi tocado não pode ser lembrado. E o que não pode ser lembrado nunca existiu de verdade.", pauseAfter: 2000 },
+    { text: "O que nunca foi recebido não vira memória. Vira ausência. E ausência pesa mais que qualquer perda.", pauseAfter: 2200 },
   ],
 
   // ═══════════════════════════════════════════════════════════════
