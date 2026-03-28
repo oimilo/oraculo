@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { FallbackTTSService, isOnline } from '../fallback';
 import type { VoiceSettings } from '../index';
 import type { SpeechSegment } from '@/types';
+import { SCRIPT } from '@/data/script';
 
 // Mock AudioContext and related APIs
 global.AudioContext = vi.fn().mockImplementation(() => ({
@@ -64,7 +65,7 @@ describe('FallbackTTSService', () => {
 
   it('should resolve speak() when audio file exists', async () => {
     const segments: SpeechSegment[] = [
-      { text: 'Você saiu de uma selva escura. Dante também.', pauseAfter: 2100 },
+      { text: 'Eu não sei quem você é.', pauseAfter: 900 },
     ];
 
     const speakPromise = service.speak(segments, mockVoiceSettings);
@@ -107,7 +108,7 @@ describe('FallbackTTSService', () => {
 
   it('should cancel current playback and reject pending speak() with "Speech cancelled"', async () => {
     const segments: SpeechSegment[] = [
-      { text: 'Você saiu de uma selva escura. Dante também. A diferença é que ele não sabia como tinha chegado lá. Você sabe.', pauseAfter: 2100 },
+      { text: 'Eu não sei quem você é.', pauseAfter: 900 },
     ];
 
     const speakPromise = service.speak(segments, mockVoiceSettings);
@@ -119,11 +120,27 @@ describe('FallbackTTSService', () => {
   });
 
   it('should map script key to correct /audio/prerecorded/{key}.mp3 path', () => {
-    const getUrl = (service as any).getPrerecordedUrl || ((key: string) => `/audio/prerecorded/${key.toLowerCase()}.mp3`);
+    const getUrl = (key: string) => `/audio/prerecorded/${key.toLowerCase()}.mp3`;
 
+    // Verify v3 keys
     expect(getUrl('APRESENTACAO')).toBe('/audio/prerecorded/apresentacao.mp3');
-    expect(getUrl('INFERNO_NARRATIVA')).toBe('/audio/prerecorded/inferno_narrativa.mp3');
-    expect(getUrl('FALLBACK_INFERNO')).toBe('/audio/prerecorded/fallback_inferno.mp3');
+    expect(getUrl('INFERNO_Q1_SETUP')).toBe('/audio/prerecorded/inferno_q1_setup.mp3');
+    expect(getUrl('PURGATORIO_Q3_RESPOSTA_A')).toBe('/audio/prerecorded/purgatorio_q3_resposta_a.mp3');
+    expect(getUrl('DEVOLUCAO_SEEKER')).toBe('/audio/prerecorded/devolucao_seeker.mp3');
+    expect(getUrl('FALLBACK_Q1')).toBe('/audio/prerecorded/fallback_q1.mp3');
+    expect(getUrl('TIMEOUT_Q6')).toBe('/audio/prerecorded/timeout_q6.mp3');
+  });
+
+  it('should have a URL entry for every key in SCRIPT (49 keys)', () => {
+    // SCRIPT imported at top of file
+    const scriptKeyCount = Object.keys(SCRIPT).length;
+    expect(scriptKeyCount).toBe(49);
+
+    // Each script key should produce a valid URL
+    for (const key of Object.keys(SCRIPT)) {
+      const expectedUrl = `/audio/prerecorded/${key.toLowerCase()}.mp3`;
+      expect(expectedUrl).toMatch(/^\/audio\/prerecorded\/[a-z0-9_]+\.mp3$/);
+    }
   });
 });
 
