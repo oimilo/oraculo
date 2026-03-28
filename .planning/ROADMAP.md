@@ -80,6 +80,9 @@
   - [x] 22-03-PLAN.md — PARAISO realm rewrite (INTRO + Q5 Unanswerable + Q6 End of Game to depth 5)
 - [x] **Phase 23: Devoluções & Bookends** - Reescrita das 8 devoluções, Apresentação, Encerramento, fallbacks e timeouts. (completed 2026-03-28)
 - [ ] **Phase 24: Rhythm, Inflection & Final Validation** - Timing, inflection tags, read-through completo, validação contra 10 minutos.
+  **Plans:** 1 plan
+  Plans:
+  - [ ] 24-01-PLAN.md — SCR-06 validation tests + pauseAfter optimization for 10-min target
 
 ### v3.2 Integration & Audio (Pending — after v3.1)
 
@@ -130,13 +133,15 @@
 **Goal**: Polish final — timing, inflection tags, read-through, 10-min target
 **Depends on**: Phase 23 (all content final)
 **Requirements**: SCR-06
+**Plans:** 1 plan
 **Success Criteria**:
-  1. pauseAfter varia 1200-2800ms (não uniforme)
-  2. Inflection tags em ≤40% dos segmentos
-  3. Word count ≤10 minutos (~130 wpm PT-BR)
-  4. Nenhuma frase >40 palavras
-  5. Testes TypeScript passam
-  6. Script "read-through ready"
+  1. pauseAfter varia 800-2000ms (não uniforme)
+  2. Inflection tags em <=40% dos segmentos
+  3. Max-path word count <=1300 (~10 min at 130 wpm PT-BR)
+  4. Max-path playback (speech + pauses) <=10.5 min
+  5. Nenhuma frase >40 palavras
+  6. Testes TypeScript passam
+  7. Script "read-through ready"
 
 ### Phase 18: Components & Services (v3.2)
 **Goal**: All UI components and services updated for 6-choice flow
@@ -175,7 +180,7 @@
 | 21. Script Audit | v3.1 | 2/2 | Complete   | 2026-03-28 |
 | 22. Core Narrative Rewrite | v3.1 | 3/3 | Complete    | 2026-03-28 |
 | 23. Devoluções & Bookends | v3.1 | 2/2 | Complete    | 2026-03-28 |
-| 24. Rhythm & Validation | v3.1 | - | Not started | - |
+| 24. Rhythm & Validation | v3.1 | 0/1 | Planned | - |
 | 18. Components & Services | v3.2 | - | Not started | - |
 | 19. Audio Generation | v3.2 | - | Not started | - |
 | 20. Testing | v3.2 | - | Not started | - |
@@ -195,4 +200,4 @@ v3.2 Integration & Audio:                                           |
 
 ---
 
-*Last updated: 2026-03-28 — Phase 22 planned (3 plans), v3.1 in progress*
+*Last updated: 2026-03-28 — Phase 24 planned (1 plan), v3.1 final phase*
