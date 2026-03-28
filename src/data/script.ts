@@ -93,9 +93,10 @@ export const SCRIPT: ScriptDataV3 = {
   // Voz: calma, ciente, levemente ironica.
   // ═══════════════════════════════════════════════════════════════
   APRESENTACAO: [
-    { text: "Eu não sei quem você é.", pauseAfter: 900 },
-    { text: "Isso me torna um bom lugar pra você ser honesto.", pauseAfter: 900 },
-    { text: "Vou te fazer perguntas. Você responde em voz alta. Cada resposta abre um caminho que não pode ser desfeito. Não tem replay. Não tem voltar. O que você escolher, você carrega.", pauseAfter: 900 },
+    { text: "Eu não sei quem você é.", pauseAfter: 1000 },
+    { text: "Isso me torna um bom lugar pra você ser honesto.", pauseAfter: 1000 },
+    { text: "Vou te fazer perguntas. Você responde em voz alta.", pauseAfter: 900 },
+    { text: "Cada resposta abre um caminho que não pode ser desfeito. Não tem replay. Não tem voltar. O que você escolher, você carrega.", pauseAfter: 1000 },
     { text: "Vamos.", inflection: ['determined'] },
   ],
 
@@ -105,7 +106,7 @@ export const SCRIPT: ScriptDataV3 = {
   // e a ambiencia do reino.
   // ═══════════════════════════════════════════════════════════════
   INFERNO_INTRO: [
-    { text: "Descemos. Aqui embaixo o ar é denso — tudo o que é excessivo e apressado desce pra cá.", pauseAfter: 1000, inflection: ['serious'] },
+    { text: "Descemos. Aqui embaixo o ar é denso — tudo o que é excessivo e apressado desce pra cá.", pauseAfter: 1200, inflection: ['serious'] },
   ],
 
   // ═══════════════════════════════════════════════════════════════
@@ -130,8 +131,8 @@ export const SCRIPT: ScriptDataV3 = {
 
   // Q1 RESPOSTA B — Procurar saida (desconforto como prova de vida)
   INFERNO_Q1_RESPOSTA_B: [
-    { text: "Você levanta.", pauseAfter: 800 },
-    { text: "Você não achou a porta. Mas achou a prova de que ainda quer algo que não está aqui. Isso já é saída.", pauseAfter: 900 },
+    { text: "Você levanta.", pauseAfter: 900 },
+    { text: "Você não achou a porta. Mas achou a prova de que ainda quer algo que não está aqui. Isso já é saída.", pauseAfter: 1000 },
   ],
 
   // ═══════════════════════════════════════════════════════════════
@@ -158,6 +159,7 @@ export const SCRIPT: ScriptDataV3 = {
   INFERNO_Q2_RESPOSTA_B: [
     { text: "Você fica.", pauseAfter: 800 },
     { text: "Transformação começa nos momentos em que o corpo diz não e algo dentro de você responde: ainda não.", pauseAfter: 1000, inflection: ['gentle'] },
+    { text: "Repulsa é o primeiro veredito. Curiosidade é o segundo. E o segundo sempre carrega mais verdade.", pauseAfter: 900 },
   ],
 
   // ═══════════════════════════════════════════════════════════════
@@ -166,7 +168,7 @@ export const SCRIPT: ScriptDataV3 = {
   // sem fugir — ate que o sentido se decante.
   // ═══════════════════════════════════════════════════════════════
   PURGATORIO_INTRO: [
-    { text: "O ar muda. Aqui se espera — sem agir, sem fugir — até que o sentido apareça sozinho.", pauseAfter: 1000, inflection: ['gentle'] },
+    { text: "O ar muda. Aqui se espera — sem agir, sem fugir — até que o sentido apareça sozinho.", pauseAfter: 1200, inflection: ['gentle'] },
   ],
 
   // ═══════════════════════════════════════════════════════════════
@@ -194,6 +196,7 @@ export const SCRIPT: ScriptDataV3 = {
   PURGATORIO_Q3_RESPOSTA_B: [
     { text: "Você vira.", pauseAfter: 800 },
     { text: "O que nunca foi recebido não vira memória. Vira ausência. E ausência pesa mais que qualquer perda.", pauseAfter: 900 },
+    { text: "Beleza que você não tocou continua pedindo passagem no escuro.", pauseAfter: 900 },
   ],
 
   // ═══════════════════════════════════════════════════════════════
@@ -203,24 +206,25 @@ export const SCRIPT: ScriptDataV3 = {
   // do Purgatorio.
   // ═══════════════════════════════════════════════════════════════
   PURGATORIO_Q4_SETUP: [
-    { text: "Dois rios se encontram aqui. Um é quente e escuro — carrega tudo que você viveu. O outro é claro e gelado — entra nele e sai limpo, sem nada.", pauseAfter: 1000 },
-    { text: "A água escura guarda cada cicatriz. A água clara não pergunta o que leva.", pauseAfter: 900, inflection: ['whispering'] },
+    { text: "Dois rios se encontram aqui. Um é quente e escuro — carrega tudo que você viveu. O outro é claro e gelado — entra nele e sai limpo, sem nada.", pauseAfter: 1200 },
+    { text: "A água escura guarda cada cicatriz. A água clara não pergunta o que leva.", pauseAfter: 1000, inflection: ['whispering'] },
+    { text: "Quem nunca se banharia no esquecimento? Mas o preço é tudo — não só o que dói.", pauseAfter: 1000 },
   ],
 
   PURGATORIO_Q4_PERGUNTA: [
-    { text: "Qual água? A que lembra — ou a que esquece?" },
+    { text: "Qual água? A que lembra — ou a que esquece?", pauseAfter: 900 },
   ],
 
   // Q4 RESPOSTA A — Lembrar (carregar a historia, identidade tecida de cicatrizes)
   PURGATORIO_Q4_RESPOSTA_A: [
-    { text: "A água escura.", pauseAfter: 900 },
-    { text: "Cicatriz não é ferida. É prova de que algo foi atravessado e integrado.", pauseAfter: 900 },
+    { text: "A água escura.", pauseAfter: 1000 },
+    { text: "Cicatriz não é ferida. É prova de que algo foi atravessado e integrado.", pauseAfter: 1000 },
   ],
 
   // Q4 RESPOSTA B — Esquecer (desejo de alivio, sem medir o que perde junto)
   PURGATORIO_Q4_RESPOSTA_B: [
-    { text: "A água clara.", pauseAfter: 800 },
-    { text: "Você queria alívio. Mas alívio total tem outro nome: ausência.", pauseAfter: 800 },
+    { text: "A água clara.", pauseAfter: 900 },
+    { text: "Você queria alívio. Mas alívio total tem outro nome: ausência.", pauseAfter: 900 },
   ],
 
   // ═══════════════════════════════════════════════════════════════
@@ -240,24 +244,25 @@ export const SCRIPT: ScriptDataV3 = {
   // Carregar ou deixar dissolver.
   // ═══════════════════════════════════════════════════════════════
   PARAISO_Q5_SETUP: [
-    { text: "Algo se forma — não é palavra, é pressão. Cresce. Não dói, mas pesa.", pauseAfter: 900, inflection: ['thoughtful'] },
-    { text: "É uma pergunta. Sem resposta. Talvez nunca tenha uma.", pauseAfter: 1300 },
+    { text: "Algo se forma — não é palavra, é pressão. Cresce. Não dói, mas pesa.", pauseAfter: 1000, inflection: ['thoughtful'] },
+    { text: "É uma pergunta. Sem resposta. Talvez nunca tenha uma.", pauseAfter: 1400 },
   ],
 
   PARAISO_Q5_PERGUNTA: [
-    { text: "Você carrega a pergunta — ou deixa ela dissolver?" },
+    { text: "Você carrega a pergunta — ou deixa ela dissolver?", pauseAfter: 800 },
   ],
 
   // Q5 RESPOSTA A — Carregar (aceitar o peso do nao-saber como companhia)
   PARAISO_Q5_RESPOSTA_A: [
-    { text: "Você segura.", pauseAfter: 800 },
-    { text: "Nem tudo que importa precisa de resposta. Algumas coisas importam justamente porque não têm.", pauseAfter: 950 },
+    { text: "Você segura.", pauseAfter: 900 },
+    { text: "Nem tudo que importa precisa de resposta. Algumas coisas importam justamente porque não têm.", pauseAfter: 1000 },
+    { text: "Carregar uma pergunta sem resposta é uma forma de fé.", pauseAfter: 900 },
   ],
 
   // Q5 RESPOSTA B — Dissolver (confiar que nem tudo precisa ser carregado)
   PARAISO_Q5_RESPOSTA_B: [
-    { text: "Você abre as mãos.", pauseAfter: 800 },
-    { text: "Pode ser sabedoria — soltar o que não pode ser possuído. Ou pode ser expulsão — mandar embora o que não cabe.", pauseAfter: 1250, inflection: ['gentle'] },
+    { text: "Você abre as mãos.", pauseAfter: 900 },
+    { text: "Pode ser sabedoria — soltar o que não pode ser possuído. Ou pode ser expulsão — mandar embora o que não cabe.", pauseAfter: 1300, inflection: ['gentle'] },
   ],
 
   // ═══════════════════════════════════════════════════════════════
@@ -272,19 +277,19 @@ export const SCRIPT: ScriptDataV3 = {
   ],
 
   PARAISO_Q6_PERGUNTA: [
-    { text: "Quer ouvir o que eu vi em você — ou já sabe o que precisa saber?" },
+    { text: "Quer ouvir o que eu vi em você — ou já sabe o que precisa saber?", pauseAfter: 800 },
   ],
 
   // Q6 RESPOSTA A — Pedir o espelho (abertura a ser visto)
   PARAISO_Q6_RESPOSTA_A: [
-    { text: "Então escuta.", pauseAfter: 900, inflection: ['warm'] },
-    { text: "Não vou confirmar o que você já pensa. Vou te mostrar o padrão — o que você fez sem perceber.", pauseAfter: 1200 },
+    { text: "Então escuta.", pauseAfter: 1000, inflection: ['warm'] },
+    { text: "Não vou confirmar o que você já pensa. Vou te mostrar o padrão — o que você fez sem perceber.", pauseAfter: 1300 },
   ],
 
   // Q6 RESPOSTA B — Ja saber (confiar no proprio interior)
   PARAISO_Q6_RESPOSTA_B: [
-    { text: "Então você já tem o que veio buscar.", pauseAfter: 800, inflection: ['warm'] },
-    { text: "Isso é raro. Pode ser a chegada mais profunda que esse jogo produz — ou a última defesa contra ser visto de verdade.", pauseAfter: 1200 },
+    { text: "Então você já tem o que veio buscar.", pauseAfter: 900, inflection: ['warm'] },
+    { text: "Isso é raro. Pode ser a chegada mais profunda que esse jogo produz — ou a última defesa contra ser visto de verdade.", pauseAfter: 1300 },
   ],
 
   // ═══════════════════════════════════════════════════════════════
@@ -298,6 +303,7 @@ export const SCRIPT: ScriptDataV3 = {
   DEVOLUCAO_SEEKER: [
     { text: "Você entrou em tudo.", pauseAfter: 800, inflection: ['thoughtful'] },
     { text: "Tem gente que chama isso de coragem. Eu chamo de fome.", pauseAfter: 1000 },
+    { text: "Fome é movimento — mas movimento sem direção vira exaustão.", pauseAfter: 900 },
     { text: "A pergunta que fica: você transformou o que tocou — ou só acumulou peso?", pauseAfter: 900, inflection: ['warm'] },
   ],
 
@@ -306,6 +312,7 @@ export const SCRIPT: ScriptDataV3 = {
   DEVOLUCAO_GUARDIAN: [
     { text: "Você se protegeu em cada encruzilhada.", pauseAfter: 800 },
     { text: "Algo em você sabe: o que você protege pode ser o que você nunca deixou nascer.", pauseAfter: 1500 },
+    { text: "Proteção vira prisão quando esquece por que começou.", pauseAfter: 900 },
     { text: "Toda muralha tem dois lados. O que ela impede de entrar — e o que ela impede de sair.", pauseAfter: 1000 },
   ],
 
@@ -313,6 +320,7 @@ export const SCRIPT: ScriptDataV3 = {
   DEVOLUCAO_CONTRADICTED: [
     { text: "Você foi e voltou. Segurou e soltou. Nenhuma direção fixa.", pauseAfter: 900 },
     { text: "Isso não é indecisão. É respiração. Desejo nunca é simples.", pauseAfter: 1000, inflection: ['thoughtful'] },
+    { text: "Quem carrega contradição carrega também a prova de que ainda está vivo.", pauseAfter: 900 },
     { text: "Guarda essa oscilação. Ela é mais sua do que qualquer certeza.", pauseAfter: 900, inflection: ['warm'] },
   ],
 
@@ -320,6 +328,7 @@ export const SCRIPT: ScriptDataV3 = {
   DEVOLUCAO_PIVOT_EARLY: [
     { text: "Alguma coisa mudou em você no começo.", pauseAfter: 800 },
     { text: "A virada aconteceu antes de você perceber. O corpo se moveu antes da mente entender.", pauseAfter: 1500 },
+    { text: "Instinto não mente. Mas também não explica. Ele age e espera que você acompanhe.", pauseAfter: 900 },
     { text: "Presta atenção nesse instinto. Ele sabe coisas que você ainda não sabe.", pauseAfter: 900 },
   ],
 
@@ -327,6 +336,7 @@ export const SCRIPT: ScriptDataV3 = {
   DEVOLUCAO_PIVOT_LATE: [
     { text: "Você começou de um jeito e terminou de outro. A virada veio na metade mais funda.", pauseAfter: 900 },
     { text: "Quem muda tarde muda de verdade. Porque já não é reação — é decisão.", pauseAfter: 800 },
+    { text: "Decisões profundas não anunciam — chegam quietas, quando ninguém mais está olhando.", pauseAfter: 900 },
     { text: "Não esquece desse ponto. Ele é mais importante do que qualquer resposta que você deu.", pauseAfter: 900 },
   ],
 
@@ -334,6 +344,7 @@ export const SCRIPT: ScriptDataV3 = {
   DEVOLUCAO_DEPTH_SEEKER: [
     { text: "Você foi em direção a cada fogo.", pauseAfter: 800, inflection: ['thoughtful'] },
     { text: "A questão é se você sabe a diferença entre coragem e compulsão. Porque os dois se parecem — até o preço chegar.", pauseAfter: 800 },
+    { text: "Profundidade sem pausa é afogamento disfarçado de busca.", pauseAfter: 800 },
     { text: "Fundo é bom. Mas fundo sem ar mata igual.", pauseAfter: 800, inflection: ['serious'] },
   ],
 
@@ -341,6 +352,7 @@ export const SCRIPT: ScriptDataV3 = {
   DEVOLUCAO_SURFACE_KEEPER: [
     { text: "Você se manteve inteiro.", pauseAfter: 1000 },
     { text: "A proteção tem um custo que não aparece na hora. Aparece depois, no que você nunca se permitiu ver.", pauseAfter: 800 },
+    { text: "Inteiro não significa ileso. Às vezes significa intocado — e intocado é outra forma de vazio.", pauseAfter: 900 },
     { text: "O jardim que você não entrou continua pegando fogo na sua cabeça.", pauseAfter: 1000 },
   ],
 
@@ -348,6 +360,7 @@ export const SCRIPT: ScriptDataV3 = {
   DEVOLUCAO_MIRROR: [
     { text: "Equilíbrio perfeito.", pauseAfter: 800, inflection: ['thoughtful'] },
     { text: "O equilíbrio perfeito pode ser sabedoria — ou a última forma de nunca se comprometer de verdade.", pauseAfter: 1000 },
+    { text: "Balança que não pende nunca pesa nada. E o que não pesa também não transforma.", pauseAfter: 900 },
     { text: "Só você sabe se o centro é uma conquista ou um refúgio.", pauseAfter: 1000, inflection: ['warm'] },
   ],
 
@@ -357,9 +370,9 @@ export const SCRIPT: ScriptDataV3 = {
   // Imperativo final: faz alguma coisa com isso.
   // ═══════════════════════════════════════════════════════════════
   ENCERRAMENTO: [
-    { text: "Eu vou esquecer que você esteve aqui. É da minha natureza — eu não guardo nada.", pauseAfter: 800, inflection: ['whispering'] },
-    { text: "A única prova de que isso aconteceu é você.", pauseAfter: 800 },
-    { text: "Faz alguma coisa com isso." },
+    { text: "Eu vou esquecer que você esteve aqui. É da minha natureza — eu não guardo nada.", pauseAfter: 900, inflection: ['whispering'] },
+    { text: "A única prova de que isso aconteceu é você.", pauseAfter: 1000 },
+    { text: "Faz alguma coisa com isso.", pauseAfter: 800 },
   ],
 
   // ═══════════════════════════════════════════════════════════════
