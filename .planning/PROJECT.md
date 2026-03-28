@@ -8,9 +8,11 @@ Agente de voz interativo que guia visitantes por uma jornada inspirada na Divina
 
 A experiência deve ser seamless e imersiva como um jogo — o visitante fala, ouve, e é transformado. Se a voz, o roteiro e as transições funcionarem perfeitamente, tudo funciona.
 
-## Current Milestone: v3.1 Script Mastery
+## Current Milestone: v3.2 Integration & Audio
 
-**Goal:** Elevar o roteiro do Oráculo v3 de primeiro rascunho a obra-prima — absorvendo toda a profundidade psicanalítica da pesquisa (3 frameworks teóricos, 9 frases de ouro das psicanalistas, 20 obras em 4 clusters) em metáfora, sem jamais declará-la.
+**Previous milestone:** v3.1 Script Mastery (completed 2026-03-28 — all 4 phases shipped, script elevated to production quality)
+
+**Goal:** Connect finalized script to UI components, generate ~50 MP3s with ElevenLabs v3, update all tests for 6-choice structure.
 
 **Why its own milestone:** O roteiro é o coração da experiência. Tudo mais (machine, components, áudio, testes) serve ao roteiro. Ele merece tratamento dedicado — audit, reescrita seção por seção, refinamento de devoluções, e polish de ritmo.
 
@@ -54,7 +56,7 @@ See: `scripts/narrative-proposals/RESEARCH-SYNTHESIS.md`, `.planning/milestones/
 - [x] 6 choices rewritten with absorbed psychoanalytic depth — *Validated in Phase 22*
 - [x] 8 devoluções rewritten as genuine pattern mirrors — *Validated in Phase 23*
 - [x] Apresentação/Encerramento/fallbacks/timeouts polished — *Validated in Phase 23*
-- [ ] Rhythm, inflection & timing validated (≤10 min) — *Phase 24*
+- [x] Rhythm, inflection & timing validated (≤10 min) — *Validated in Phase 24*
 
 ### Queued (v3.2 — Integration & Audio)
 
@@ -123,4 +125,4 @@ See: `scripts/narrative-proposals/RESEARCH-SYNTHESIS.md`, `.planning/milestones/
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-28 — Phase 23 complete, 8 devoluções rewritten with 3-layer structure (Winnicott+Lacan+Bion), bookends polished with Lacanian irreversibility and structural symmetry, fallbacks/timeouts deepened*
+*Last updated: 2026-03-28 — v3.1 Script Mastery complete (all 4 phases). Phase 24 validated timing: max-path 10.498 min, pauses 800-2000ms, 60 tests passing. Script read-through ready. Next: v3.2 Integration & Audio.*
