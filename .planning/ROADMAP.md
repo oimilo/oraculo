@@ -92,10 +92,10 @@ See: `.planning/milestones/v3.1-ROADMAP.md`
 **Goal**: All UI components and services updated for 6-choice flow
 **Depends on**: Phase 24 (script must be final)
 **Requirements**: CMPV3-01, CMPV3-02, CMPV3-03
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
-- [ ] 18-01-PLAN.md — FallbackTTS PRERECORDED_URLS dynamic derivation from SCRIPT keys
+- [x] 18-01-PLAN.md — FallbackTTS PRERECORDED_URLS dynamic derivation from SCRIPT keys
 - [ ] 18-02-PLAN.md — OracleExperience v3 state mapping, ChoiceConfigs, UI wiring
 
 **Success Criteria**:
@@ -127,7 +127,7 @@ Plans:
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 18. Components & Services | v3.2 | 0/2 | Planning complete | - |
+| 18. Components & Services | v3.2 | 1/2 | In Progress|  |
 | 19. Audio Generation | v3.2 | - | Not started | - |
 | 20. Testing | v3.2 | - | Not started | - |
 
