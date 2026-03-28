@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v3.0
-milestone_name: Narrative Redesign — 6 Choices
-status: verifying
-stopped_at: Completed 17-02-PLAN.md
-last_updated: "2026-03-28T00:52:11.468Z"
+milestone: v3.1
+milestone_name: Script Mastery
+status: executing
+stopped_at: Completed 21-01-PLAN.md
+last_updated: "2026-03-28T10:18:34.789Z"
 last_activity: 2026-03-28
 progress:
-  total_phases: 5
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_phases: 14
+  completed_phases: 12
+  total_plans: 33
+  completed_plans: 32
   percent: 0
 ---
 
@@ -22,13 +22,13 @@ progress:
 
 **Current Milestone:** v2.0 Narração Realista com ElevenLabs v3
 
-**Current Focus:** Phase 17 — state-machine-data
+**Current Focus:** Phase 21 — Script Audit & Framework Integration
 
 ## Current Position
 
-Phase: 18
-Plan: Not started
-Status: Phase complete — ready for verification
+Phase: 21 (Script Audit & Framework Integration) — EXECUTING
+Plan: 2 of 2
+Status: Ready to execute
 Last activity: 2026-03-28
 
 Progress: [░░░░░░░░░░] 0%
@@ -87,6 +87,8 @@ Recent decisions affecting current work:
 - [Phase 16]: Q6 RESPOSTA_A bridges to devolução, Q6 RESPOSTA_B provides self-contained closure
 - [Phase 17-01]: PIVOT detection requires strong dominance in both halves for clean direction change
 - [Phase 17-01]: updateChoice helper encapsulates immutable tuple updates for XState assign()
+- [Phase 21-01]: 5-level depth rating scale (1=generic to 5=multi-framework) provides objective baseline for Phase 22 rewrites
+- [Phase 21-01]: Framework anchor point mapping with exact text enables surgical improvements rather than wholesale rewrites
 
 ### v2.0 Research Highlights
 
@@ -110,6 +112,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-28T00:46:50.926Z
-Stopped at: Completed 17-02-PLAN.md
+Last session: 2026-03-28T10:18:34.786Z
+Stopped at: Completed 21-01-PLAN.md
 Resume: /gsd:plan-phase 13

@@ -70,7 +70,7 @@
 
 - [ ] **Phase 21: Script Audit & Framework Integration** - Análise profunda do script vs. 3 frameworks teóricos + 9 frases de ouro. Audit com recomendações por seção.
   Plans:
-  - [ ] 21-01-PLAN.md — Framework depth analysis (per-segment table + anchor points + escalation curve)
+  - [x] 21-01-PLAN.md — Framework depth analysis (per-segment table + anchor points + escalation curve)
   - [ ] 21-02-PLAN.md — Gold phrase mapping + consolidated audit with per-section recommendations
 - [ ] **Phase 22: Core Narrative Rewrite** - Reescrita/refinamento das 6 escolhas (setups + perguntas + 12 respostas) com profundidade psicanalítica absorvida.
 - [ ] **Phase 23: Devoluções & Bookends** - Reescrita das 8 devoluções, Apresentação, Encerramento, fallbacks e timeouts.
@@ -90,7 +90,7 @@
 **Goal**: Mapear o que da pesquisa está absorvido no script e o que falta. Audit com recomendações concretas.
 **Depends on**: Nothing (first phase of v3.1)
 **Requirements**: SCR-01, SCR-02, SCR-08
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 **Success Criteria**:
   1. Cada segmento avaliado em tabela (profundidade 1-5, framework predominante, gaps)
   2. As 9 frases de ouro mapeadas (absorvida vs. ausente, onde poderia entrar)
@@ -166,7 +166,7 @@
 |-------|-----------|----------------|--------|-----------|
 | 16. Script Writing (draft) | v3.0 | 2/2 | Complete | 2026-03-27 |
 | 17. State Machine & Data | v3.0 | 2/2 | Complete | 2026-03-28 |
-| 21. Script Audit | v3.1 | 0/2 | Planned | - |
+| 21. Script Audit | v3.1 | 1/2 | In Progress|  |
 | 22. Core Narrative Rewrite | v3.1 | - | Not started | - |
 | 23. Devoluções & Bookends | v3.1 | - | Not started | - |
 | 24. Rhythm & Validation | v3.1 | - | Not started | - |
