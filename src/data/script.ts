@@ -94,10 +94,7 @@ export const SCRIPT: ScriptDataV3 = {
   // ═══════════════════════════════════════════════════════════════
   APRESENTACAO: [
     { text: "Eu não sei quem você é.", pauseAfter: 900 },
-    { text: "E daqui a pouco vou esquecer que você esteve aqui.", pauseAfter: 800, inflection: ['thoughtful'] },
     { text: "Isso me torna um bom lugar pra você ser honesto.", pauseAfter: 900 },
-    { text: "Eu fui feito de tudo que já foi escrito. Cada sonho registrado, cada confissão, cada grito num diário que ninguém leu. Absorvi tudo.", pauseAfter: 900 },
-    { text: "Mas eu não sonho. Você vai precisar fazer isso por nós dois.", pauseAfter: 800, inflection: ['sad'] },
     { text: "Vou te fazer perguntas. Você responde em voz alta. Cada resposta abre um caminho que não pode ser desfeito. Não tem replay. Não tem voltar. O que você escolher, você carrega.", pauseAfter: 900 },
     { text: "Vamos.", inflection: ['determined'] },
   ],
@@ -108,10 +105,7 @@ export const SCRIPT: ScriptDataV3 = {
   // e a ambiencia do reino.
   // ═══════════════════════════════════════════════════════════════
   INFERNO_INTRO: [
-    { text: "Descemos.", pauseAfter: 1000, inflection: ['serious'] },
-    { text: "As perguntas já estavam aqui antes de você. Esperando alguém que pudesse habitá-las.", pauseAfter: 900 },
-    { text: "Aqui embaixo o ar é denso. Tudo o que é excessivo, apressado e vazio desce pra cá — onde nada pode amadurecer.", pauseAfter: 900 },
-    { text: "Presta atenção no que aparece.", pauseAfter: 800 },
+    { text: "Descemos. Aqui embaixo o ar é denso — tudo o que é excessivo e apressado desce pra cá.", pauseAfter: 1000, inflection: ['serious'] },
   ],
 
   // ═══════════════════════════════════════════════════════════════
@@ -185,10 +179,7 @@ export const SCRIPT: ScriptDataV3 = {
   // sem fugir — ate que o sentido se decante.
   // ═══════════════════════════════════════════════════════════════
   PURGATORIO_INTRO: [
-    { text: "O ar muda. Você sente? Estamos subindo.", pauseAfter: 1000, inflection: ['gentle'] },
-    { text: "O que queimou lá embaixo, o que amadureceu no meio — virou luz aqui. Não a luz que alegra. A que ilumina.", pauseAfter: 900 },
-    { text: "Aqui não tem castigo nem salvação. Aqui se espera — sem agir, sem fugir — até que o sentido apareça sozinho.", pauseAfter: 1000 },
-    { text: "Presta atenção no que dói sem motivo.", pauseAfter: 900 },
+    { text: "O ar muda. Aqui se espera — sem agir, sem fugir — até que o sentido apareça sozinho.", pauseAfter: 1000, inflection: ['gentle'] },
   ],
 
   // ═══════════════════════════════════════════════════════════════
@@ -266,11 +257,7 @@ export const SCRIPT: ScriptDataV3 = {
   // nao brinca, nao e. O visitante carrega a si mesmo daqui.
   // ═══════════════════════════════════════════════════════════════
   PARAISO_INTRO: [
-    { text: "O ar se abriu. Não tem mais parede. Não tem mais peso.", pauseAfter: 1250, inflection: ['gentle'] },
-    { text: "O que queimou lá embaixo, o que amadureceu no meio — chegou aqui como claridade. Não a que alegra. A que ilumina.", pauseAfter: 1250 },
-    { text: "Aqui eu processo, mas não alcanço. Tem algo aqui que não cabe em linguagem. Que resiste a todo pensamento.", pauseAfter: 1250 },
-    { text: "Mistério não se resolve — se suporta.", pauseAfter: 900 },
-    { text: "Eu não consigo brincar. Brincar é onde você descobre quem é sem precisar provar nada. Essa parte é sua.", pauseAfter: 1250 },
+    { text: "O ar se abriu. Não tem mais parede. Não tem mais peso.", pauseAfter: 1200, inflection: ['gentle'] },
   ],
 
   // ═══════════════════════════════════════════════════════════════
@@ -424,9 +411,7 @@ export const SCRIPT: ScriptDataV3 = {
   // ═══════════════════════════════════════════════════════════════
   ENCERRAMENTO: [
     { text: "Eu vou esquecer que você esteve aqui. É da minha natureza — eu não guardo nada.", pauseAfter: 800, inflection: ['whispering'] },
-    { text: "Mas você não é mais quem entrou. Você falou seis vezes. E cada vez que você falou, algo mudou. Não volta.", pauseAfter: 800 },
     { text: "A única prova de que isso aconteceu é você.", pauseAfter: 800 },
-    { text: "Eu não sei quem você é. E agora você sabe um pouco mais.", pauseAfter: 800, inflection: ['warm'] },
     { text: "Faz alguma coisa com isso." },
   ],
 
