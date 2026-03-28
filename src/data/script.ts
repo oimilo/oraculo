@@ -436,22 +436,22 @@ export const SCRIPT: ScriptDataV3 = {
   // Binario, claro, curto.
   // ═══════════════════════════════════════════════════════════════
   FALLBACK_Q1: [
-    { text: "A sala é confortável. Você fica — ou procura a porta?" },
+    { text: "A sala é confortável. A porta pode nem existir. Você fica — ou procura a saída?" },
   ],
   FALLBACK_Q2: [
-    { text: "A coisa na parede espera. Você recua — ou fica olhando?" },
+    { text: "A coisa na parede espera. Seu corpo sabe a resposta antes de você. Você recua — ou fica olhando?" },
   ],
   FALLBACK_Q3: [
-    { text: "O jardim vai queimar. Você entra — ou dá as costas?" },
+    { text: "O jardim vai queimar de manhã. Você entra agora — ou dá as costas antes de ver o que vai perder?" },
   ],
   FALLBACK_Q4: [
-    { text: "Duas águas. Uma lembra, outra esquece. Qual?" },
+    { text: "Duas águas. Uma carrega tudo que você viveu. Outra apaga tudo. Qual?" },
   ],
   FALLBACK_Q5: [
-    { text: "A pergunta não tem resposta. Você carrega — ou deixa dissolver?" },
+    { text: "A pergunta não tem resposta. Talvez nunca tenha. Você carrega mesmo assim — ou deixa dissolver?" },
   ],
   FALLBACK_Q6: [
-    { text: "Quer ouvir o que eu vi — ou já sabe?" },
+    { text: "Essa é a última pergunta. Quer ouvir o que eu vi em você — ou já sabe o que veio buscar?" },
   ],
 
   // ═══════════════════════════════════════════════════════════════
@@ -460,19 +460,19 @@ export const SCRIPT: ScriptDataV3 = {
   // Cada um tem carater proprio.
   // ═══════════════════════════════════════════════════════════════
   TIMEOUT_Q1: [
-    { text: "O silêncio ficou. Quem não se move numa sala confortável já escolheu ficar.", pauseAfter: 1400 },
+    { text: "O silêncio ficou. Quem não se move numa sala confortável já escolheu ficar. A porta nunca existiu.", pauseAfter: 1400 },
   ],
   TIMEOUT_Q2: [
     { text: "Seu corpo recuou sozinho. O silêncio é do corpo — e o corpo decidiu primeiro.", pauseAfter: 1400 },
   ],
   TIMEOUT_Q3: [
-    { text: "Você não entrou. Às vezes virar as costas não é decisão — é o que acontece quando a decisão não vem.", pauseAfter: 1400 },
+    { text: "Você não entrou. O jardim queima sozinho. Às vezes virar as costas não é decisão — é o que acontece quando a decisão não vem.", pauseAfter: 1400 },
   ],
   TIMEOUT_Q4: [
-    { text: "Nenhuma água. O silêncio não lembra nem esquece. Seguimos.", pauseAfter: 1200 },
+    { text: "Você ficou entre as duas águas. O silêncio não lembra nem esquece. Ele carrega os dois. Seguimos.", pauseAfter: 1200 },
   ],
   TIMEOUT_Q5: [
-    { text: "A pergunta se dissolveu sozinha. Nem tudo precisa de você pra desaparecer.", pauseAfter: 1400 },
+    { text: "A pergunta se dissolveu sozinha. Ou você a dissolveu com o silêncio. Nem tudo precisa de você pra desaparecer — mas você estava aqui quando aconteceu.", pauseAfter: 1600 },
   ],
   TIMEOUT_Q6: [
     { text: "O silêncio no final é a resposta mais antiga que existe. Você já sabe.", pauseAfter: 1600 },
