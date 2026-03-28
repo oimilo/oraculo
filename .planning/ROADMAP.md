@@ -79,10 +79,10 @@
   - [x] 22-02-PLAN.md — PURGATORIO realm rewrite (INTRO + Q3 Garden responses + Q4 Two Waters to depth 5)
   - [x] 22-03-PLAN.md — PARAISO realm rewrite (INTRO + Q5 Unanswerable + Q6 End of Game to depth 5)
 - [x] **Phase 23: Devoluções & Bookends** - Reescrita das 8 devoluções, Apresentação, Encerramento, fallbacks e timeouts. (completed 2026-03-28)
-- [ ] **Phase 24: Rhythm, Inflection & Final Validation** - Timing, inflection tags, read-through completo, validação contra 10 minutos.
+- [x] **Phase 24: Rhythm, Inflection & Final Validation** - Timing, inflection tags, read-through completo, validação contra 10 minutos. (completed 2026-03-28)
   **Plans:** 1 plan
   Plans:
-  - [ ] 24-01-PLAN.md — SCR-06 validation tests + pauseAfter optimization for 10-min target
+  - [x] 24-01-PLAN.md — SCR-06 validation tests + pauseAfter optimization for 10-min target
 
 ### v3.2 Integration & Audio (Pending — after v3.1)
 
@@ -133,7 +133,7 @@
 **Goal**: Polish final — timing, inflection tags, read-through, 10-min target
 **Depends on**: Phase 23 (all content final)
 **Requirements**: SCR-06
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 **Success Criteria**:
   1. pauseAfter varia 800-2000ms (não uniforme)
   2. Inflection tags em <=40% dos segmentos
@@ -180,7 +180,7 @@
 | 21. Script Audit | v3.1 | 2/2 | Complete   | 2026-03-28 |
 | 22. Core Narrative Rewrite | v3.1 | 3/3 | Complete    | 2026-03-28 |
 | 23. Devoluções & Bookends | v3.1 | 2/2 | Complete    | 2026-03-28 |
-| 24. Rhythm & Validation | v3.1 | 0/1 | Planned | - |
+| 24. Rhythm & Validation | v3.1 | 1/1 | Complete   | 2026-03-28 |
 | 18. Components & Services | v3.2 | - | Not started | - |
 | 19. Audio Generation | v3.2 | - | Not started | - |
 | 20. Testing | v3.2 | - | Not started | - |
