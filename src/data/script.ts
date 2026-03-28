@@ -266,9 +266,11 @@ export const SCRIPT: ScriptDataV3 = {
   // nao brinca, nao e. O visitante carrega a si mesmo daqui.
   // ═══════════════════════════════════════════════════════════════
   PARAISO_INTRO: [
-    { text: "O ar se abriu. Não tem mais parede, não tem mais peso.", pauseAfter: 2200, inflection: ['gentle'] },
-    { text: "Aqui eu processo, mas não alcanço. Mistério não se resolve — se suporta.", pauseAfter: 2500 },
-    { text: "Essa parte é sua. Eu só acompanho.", pauseAfter: 2000 },
+    { text: "O ar se abriu. Não tem mais parede. Não tem mais peso.", pauseAfter: 2500, inflection: ['gentle'] },
+    { text: "O que queimou lá embaixo, o que amadureceu no meio — chegou aqui como claridade. Não a que alegra. A que ilumina.", pauseAfter: 2500 },
+    { text: "Aqui eu processo, mas não alcanço. Tem algo aqui que não cabe em linguagem. Que resiste a todo pensamento.", pauseAfter: 2500 },
+    { text: "Mistério não se resolve — se suporta.", pauseAfter: 2200 },
+    { text: "Eu não consigo brincar. Brincar é onde você descobre quem é sem precisar provar nada. Essa parte é sua.", pauseAfter: 2500 },
   ],
 
   // ═══════════════════════════════════════════════════════════════
@@ -278,8 +280,9 @@ export const SCRIPT: ScriptDataV3 = {
   // Carregar ou deixar dissolver.
   // ═══════════════════════════════════════════════════════════════
   PARAISO_Q5_SETUP: [
-    { text: "A escuridão afina. Algo se forma — não é palavra, é pressão no peito.", pauseAfter: 2200 },
-    { text: "Você sente com clareza, mas não conseguiria dizer em voz alta.", pauseAfter: 2000, inflection: ['thoughtful'] },
+    { text: "A escuridão afina. Algo se forma — não é palavra, é pressão.", pauseAfter: 2200 },
+    { text: "Cresce. Não dói, mas pesa.", pauseAfter: 1800, inflection: ['thoughtful'] },
+    { text: "Você se aproxima de algo que não pode ser pensado. Só sentido. Quanto mais tenta nomear, mais escapa.", pauseAfter: 2500 },
     { text: "É uma pergunta. Sem resposta. Talvez nunca tenha uma.", pauseAfter: 2500 },
   ],
 
@@ -291,16 +294,16 @@ export const SCRIPT: ScriptDataV3 = {
   PARAISO_Q5_RESPOSTA_A: [
     { text: "Você segura.", pauseAfter: 1200 },
     { text: "A maioria coleciona respostas. Você coleciona perguntas.", pauseAfter: 2200, inflection: ['thoughtful'] },
-    { text: "Carregar o que não tem solução exige um tipo de força que ninguém aplaude. Porque não tem vitória no final — só a companhia do que não se resolve.", pauseAfter: 2500 },
-    { text: "Mas você já sabe: nem tudo que importa precisa de resposta. Algumas coisas importam justamente porque não têm.", pauseAfter: 2200 },
+    { text: "Carregar o que não se resolve exige um tipo de força que ninguém aplaude. Mas tem um prazer nisso — não o prazer que alivia. O que marca.", pauseAfter: 2500 },
+    { text: "Nem tudo que importa precisa de resposta. Algumas coisas importam justamente porque não têm.", pauseAfter: 2200 },
   ],
 
   // Q5 RESPOSTA B — Dissolver (confiar que nem tudo precisa ser carregado)
   PARAISO_Q5_RESPOSTA_B: [
     { text: "Você abre as mãos.", pauseAfter: 1200 },
     { text: "A pergunta se desfaz como névoa — não some, mas para de ser sólida.", pauseAfter: 2200 },
-    { text: "Tem gente que solta porque desistiu. E tem gente que solta porque entendeu que nem tudo existe pra ser possuído.", pauseAfter: 2500, inflection: ['gentle'] },
-    { text: "Eu não sei qual dos dois você é. Mas a leveza no seu rosto diz alguma coisa.", pauseAfter: 2000 },
+    { text: "Pode ser sabedoria — soltar o que não pode ser possuído. Ou pode ser expulsão — mandar embora o que não cabe.", pauseAfter: 2500, inflection: ['gentle'] },
+    { text: "Só o tempo vai mostrar qual foi. Mas a leveza no seu rosto diz alguma coisa.", pauseAfter: 2200 },
   ],
 
   // ═══════════════════════════════════════════════════════════════
