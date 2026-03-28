@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Narrative Redesign — 6 Choices
 status: executing
-stopped_at: Completed 16-02-PLAN.md (PARAISO + devoluções + ENCERRAMENTO + fallbacks + timeouts — complete v3 script)
-last_updated: "2026-03-28T00:28:05.996Z"
-last_activity: 2026-03-28 -- Phase 17 execution started
+stopped_at: Completed 17-01-PLAN.md (Type contracts + pattern matching)
+last_updated: "2026-03-28T00:34:45.587Z"
+last_activity: 2026-03-28
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 2
-  completed_plans: 0
+  completed_plans: 1
   percent: 0
 ---
 
@@ -27,9 +27,9 @@ progress:
 ## Current Position
 
 Phase: 17 (state-machine-data) — EXECUTING
-Plan: 1 of 2
-Status: Executing Phase 17
-Last activity: 2026-03-28 -- Phase 17 execution started
+Plan: 2 of 2
+Status: Ready to execute
+Last activity: 2026-03-28
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -85,6 +85,8 @@ Recent decisions affecting current work:
 - [Phase 16]: Devoluções read pattern SHAPE across Movement/Stillness and Toward/Away axes, not individual choices
 - [Phase 16]: ENCERRAMENTO mirrors APRESENTACAO opening for structural symmetry; closes with imperative (Faz alguma coisa com isso)
 - [Phase 16]: Q6 RESPOSTA_A bridges to devolução, Q6 RESPOSTA_B provides self-contained closure
+- [Phase 17-01]: PIVOT detection requires strong dominance in both halves for clean direction change
+- [Phase 17-01]: updateChoice helper encapsulates immutable tuple updates for XState assign()
 
 ### v2.0 Research Highlights
 
@@ -108,6 +110,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T23:32:01.696Z
-Stopped at: Completed 16-02-PLAN.md (PARAISO + devoluções + ENCERRAMENTO + fallbacks + timeouts — complete v3 script)
+Last session: 2026-03-28T00:34:45.584Z
+Stopped at: Completed 17-01-PLAN.md (Type contracts + pattern matching)
 Resume: /gsd:plan-phase 13
