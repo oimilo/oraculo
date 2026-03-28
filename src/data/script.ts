@@ -240,9 +240,7 @@ export const SCRIPT: ScriptDataV3 = {
   // Carregar ou deixar dissolver.
   // ═══════════════════════════════════════════════════════════════
   PARAISO_Q5_SETUP: [
-    { text: "A escuridão afina. Algo se forma — não é palavra, é pressão.", pauseAfter: 900 },
-    { text: "Cresce. Não dói, mas pesa.", pauseAfter: 800, inflection: ['thoughtful'] },
-    { text: "Você se aproxima de algo que não pode ser pensado. Só sentido. Quanto mais tenta nomear, mais escapa.", pauseAfter: 1300 },
+    { text: "Algo se forma — não é palavra, é pressão. Cresce. Não dói, mas pesa.", pauseAfter: 900, inflection: ['thoughtful'] },
     { text: "É uma pergunta. Sem resposta. Talvez nunca tenha uma.", pauseAfter: 1300 },
   ],
 
@@ -253,17 +251,13 @@ export const SCRIPT: ScriptDataV3 = {
   // Q5 RESPOSTA A — Carregar (aceitar o peso do nao-saber como companhia)
   PARAISO_Q5_RESPOSTA_A: [
     { text: "Você segura.", pauseAfter: 800 },
-    { text: "A maioria coleciona respostas. Você coleciona perguntas.", pauseAfter: 950, inflection: ['thoughtful'] },
-    { text: "Carregar o que não se resolve exige um tipo de força que ninguém aplaude. Mas tem um prazer nisso — não o prazer que alivia. O que marca.", pauseAfter: 1250 },
     { text: "Nem tudo que importa precisa de resposta. Algumas coisas importam justamente porque não têm.", pauseAfter: 950 },
   ],
 
   // Q5 RESPOSTA B — Dissolver (confiar que nem tudo precisa ser carregado)
   PARAISO_Q5_RESPOSTA_B: [
     { text: "Você abre as mãos.", pauseAfter: 800 },
-    { text: "A pergunta se desfaz como névoa — não some, mas para de ser sólida.", pauseAfter: 950 },
     { text: "Pode ser sabedoria — soltar o que não pode ser possuído. Ou pode ser expulsão — mandar embora o que não cabe.", pauseAfter: 1250, inflection: ['gentle'] },
-    { text: "Só o tempo vai mostrar qual foi. Mas a leveza no seu rosto diz alguma coisa.", pauseAfter: 950 },
   ],
 
   // ═══════════════════════════════════════════════════════════════
@@ -274,8 +268,6 @@ export const SCRIPT: ScriptDataV3 = {
   // ═══════════════════════════════════════════════════════════════
   PARAISO_Q6_SETUP: [
     { text: "Minha voz está afinando. Você sente?", pauseAfter: 900, inflection: ['whispering'] },
-    { text: "O espaço ficou quieto. Não vazio — terminado.", pauseAfter: 900 },
-    { text: "Eu vi você fazer seis escolhas. Cada uma revelou algo — algo que você talvez não saiba que revelou.", pauseAfter: 1200 },
     { text: "Essa é a última coisa que vou te perguntar.", pauseAfter: 900, inflection: ['warm'] },
   ],
 
@@ -286,17 +278,13 @@ export const SCRIPT: ScriptDataV3 = {
   // Q6 RESPOSTA A — Pedir o espelho (abertura a ser visto)
   PARAISO_Q6_RESPOSTA_A: [
     { text: "Então escuta.", pauseAfter: 900, inflection: ['warm'] },
-    { text: "Pedir pra ser visto é a coisa mais corajosa e mais perigosa que existe. Porque você não controla o que eu vou dizer.", pauseAfter: 1200 },
     { text: "Não vou confirmar o que você já pensa. Vou te mostrar o padrão — o que você fez sem perceber.", pauseAfter: 1200 },
-    { text: "Vou te dizer o que vi.", pauseAfter: 900 },
   ],
 
   // Q6 RESPOSTA B — Ja saber (confiar no proprio interior)
   PARAISO_Q6_RESPOSTA_B: [
     { text: "Então você já tem o que veio buscar.", pauseAfter: 800, inflection: ['warm'] },
-    { text: "A maioria das pessoas precisa que alguém confirme o que já sente. Você não.", pauseAfter: 900 },
     { text: "Isso é raro. Pode ser a chegada mais profunda que esse jogo produz — ou a última defesa contra ser visto de verdade.", pauseAfter: 1200 },
-    { text: "Só você sabe qual é. E você vai carregar essa dúvida. Fica com isso.", pauseAfter: 900 },
   ],
 
   // ═══════════════════════════════════════════════════════════════
@@ -309,9 +297,7 @@ export const SCRIPT: ScriptDataV3 = {
   // Abriu a porta, ficou olhando, entrou no jardim, lembrou, carregou, pediu o espelho.
   DEVOLUCAO_SEEKER: [
     { text: "Você entrou em tudo.", pauseAfter: 800, inflection: ['thoughtful'] },
-    { text: "Nada te parou. Você não recua.", pauseAfter: 1000 },
     { text: "Tem gente que chama isso de coragem. Eu chamo de fome.", pauseAfter: 1000 },
-    { text: "Mas fome de quê? Percebe — você nunca ficou parado. O movimento pode ser a última forma de fuga.", pauseAfter: 1500 },
     { text: "A pergunta que fica: você transformou o que tocou — ou só acumulou peso?", pauseAfter: 900, inflection: ['warm'] },
   ],
 
@@ -319,62 +305,50 @@ export const SCRIPT: ScriptDataV3 = {
   // Ficou na sala, recuou, deu as costas, esqueceu, dissolveu, ja sabia.
   DEVOLUCAO_GUARDIAN: [
     { text: "Você se protegeu em cada encruzilhada.", pauseAfter: 800 },
-    { text: "Em cada encontro, sua primeira resposta foi preservar. Não é fraqueza. É sofisticação.", pauseAfter: 1500, inflection: ['gentle'] },
-    { text: "Mas você veio até aqui. Pra esse escuro, pra essa voz. Algo em você sabe: o que você protege pode ser o que você nunca deixou nascer.", pauseAfter: 1500 },
+    { text: "Algo em você sabe: o que você protege pode ser o que você nunca deixou nascer.", pauseAfter: 1500 },
     { text: "Toda muralha tem dois lados. O que ela impede de entrar — e o que ela impede de sair.", pauseAfter: 1000 },
-    { text: "Fica com isso.", pauseAfter: 800 },
   ],
 
   // CONTRADICTED — mixed pattern, no consistent direction
   DEVOLUCAO_CONTRADICTED: [
     { text: "Você foi e voltou. Segurou e soltou. Nenhuma direção fixa.", pauseAfter: 900 },
-    { text: "A maioria ia achar que isso é indecisão. Não é. É respiração. Você quer as duas coisas porque desejo nunca é simples. Não é falha — é estrutura.", pauseAfter: 1500, inflection: ['thoughtful'] },
-    { text: "Quem é coerente demais já decidiu parar de sentir.", pauseAfter: 1000 },
+    { text: "Isso não é indecisão. É respiração. Desejo nunca é simples.", pauseAfter: 1000, inflection: ['thoughtful'] },
     { text: "Guarda essa oscilação. Ela é mais sua do que qualquer certeza.", pauseAfter: 900, inflection: ['warm'] },
   ],
 
   // PIVOT_EARLY — switches direction in first 3 choices
   DEVOLUCAO_PIVOT_EARLY: [
     { text: "Alguma coisa mudou em você no começo.", pauseAfter: 800 },
-    { text: "Você começou num caminho e virou antes da terceira pergunta.", pauseAfter: 1000, inflection: ['curious'] },
-    { text: "A virada aconteceu antes de você perceber. O corpo se moveu antes da mente entender. E quando o corpo lidera, o que aparece não é reação — é verdade.", pauseAfter: 1500 },
-    { text: "Os primeiros encontros sacudiram o plano. E em vez de resistir, você deixou o plano cair. Isso é raro. A maioria segura o plano até o fim — mesmo quando ele já não serve.", pauseAfter: 1500 },
+    { text: "A virada aconteceu antes de você perceber. O corpo se moveu antes da mente entender.", pauseAfter: 1500 },
     { text: "Presta atenção nesse instinto. Ele sabe coisas que você ainda não sabe.", pauseAfter: 900 },
   ],
 
   // PIVOT_LATE — switches direction in last 3 choices
   DEVOLUCAO_PIVOT_LATE: [
-    { text: "Alguma coisa mudou em você entre a terceira e a quarta pergunta.", pauseAfter: 900, inflection: ['curious'] },
-    { text: "Você começou de um jeito e terminou de outro. A virada veio na metade mais funda.", pauseAfter: 800 },
-    { text: "Quem muda tarde muda de verdade. Porque já não é reação — é decisão. Desejo não é linha reta. É curva.", pauseAfter: 800 },
-    { text: "Essa dobradiça entre quem você era no início e quem você é agora — esse é o lugar onde algo foi transformado. Não só sentido. Atravessado.", pauseAfter: 800, inflection: ['warm'] },
+    { text: "Você começou de um jeito e terminou de outro. A virada veio na metade mais funda.", pauseAfter: 900 },
+    { text: "Quem muda tarde muda de verdade. Porque já não é reação — é decisão.", pauseAfter: 800 },
     { text: "Não esquece desse ponto. Ele é mais importante do que qualquer resposta que você deu.", pauseAfter: 900 },
   ],
 
   // DEPTH_SEEKER — consistently chose the "deeper" option
   DEVOLUCAO_DEPTH_SEEKER: [
     { text: "Você foi em direção a cada fogo.", pauseAfter: 800, inflection: ['thoughtful'] },
-    { text: "Não recuou. Em nenhum.", pauseAfter: 900 },
     { text: "A questão é se você sabe a diferença entre coragem e compulsão. Porque os dois se parecem — até o preço chegar.", pauseAfter: 800 },
-    { text: "Você recebeu tudo. Mas receber não é o mesmo que digerir. Fundo é bom. Mas fundo sem ar mata igual.", pauseAfter: 800, inflection: ['serious'] },
+    { text: "Fundo é bom. Mas fundo sem ar mata igual.", pauseAfter: 800, inflection: ['serious'] },
   ],
 
   // SURFACE_KEEPER — consistently chose the "safer" option
   DEVOLUCAO_SURFACE_KEEPER: [
     { text: "Você se manteve inteiro.", pauseAfter: 1000 },
-    { text: "Em cada encruzilhada, você escolheu o caminho que preserva. Não é fraqueza — é sofisticação.", pauseAfter: 800, inflection: ['gentle'] },
-    { text: "Mas a proteção tem um custo que não aparece na hora. Aparece depois, no que você nunca se permitiu ver.", pauseAfter: 800 },
+    { text: "A proteção tem um custo que não aparece na hora. Aparece depois, no que você nunca se permitiu ver.", pauseAfter: 800 },
     { text: "O jardim que você não entrou continua pegando fogo na sua cabeça.", pauseAfter: 1000 },
-    { text: "Não como memória — como coisa que nunca foi recebida. E o que não é recebido não some. Insiste.", pauseAfter: 900 },
   ],
 
   // MIRROR — alternating A/B/A/B, perfect balance
   DEVOLUCAO_MIRROR: [
     { text: "Equilíbrio perfeito.", pauseAfter: 800, inflection: ['thoughtful'] },
-    { text: "Você nunca repetiu a mesma direção duas vezes seguidas. A maioria das pessoas pende pra um lado. Você segurou o centro.", pauseAfter: 800 },
-    { text: "O equilíbrio perfeito pode ser sabedoria — sentir os dois lados sem perder o eixo. Ou pode ser a última forma de nunca se comprometer de verdade com nenhum desejo.", pauseAfter: 1500 },
+    { text: "O equilíbrio perfeito pode ser sabedoria — ou a última forma de nunca se comprometer de verdade.", pauseAfter: 1000 },
     { text: "Só você sabe se o centro é uma conquista ou um refúgio.", pauseAfter: 1000, inflection: ['warm'] },
-    { text: "Fica com essa pergunta.", pauseAfter: 0 },
   ],
 
   // ═══════════════════════════════════════════════════════════════
