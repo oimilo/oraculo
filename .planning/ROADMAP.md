@@ -80,7 +80,7 @@ See: `.planning/milestones/v3.1-ROADMAP.md`
 
 ### v3.2 Integration & Audio (Pending)
 
-- [ ] **Phase 18: Components & Services** - OracleExperience.tsx, FallbackTTS, useVoiceChoice updates for 6 choice points
+- [x] **Phase 18: Components & Services** - OracleExperience.tsx, FallbackTTS, useVoiceChoice updates for 6 choice points (completed 2026-03-28)
 - [ ] **Phase 19: Audio Generation** - Generate ~50 MP3s with ElevenLabs v3 for final script
 - [ ] **Phase 20: Testing** - Update all tests for new 6-choice structure
 
@@ -92,11 +92,11 @@ See: `.planning/milestones/v3.1-ROADMAP.md`
 **Goal**: All UI components and services updated for 6-choice flow
 **Depends on**: Phase 24 (script must be final)
 **Requirements**: CMPV3-01, CMPV3-02, CMPV3-03
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [x] 18-01-PLAN.md — FallbackTTS PRERECORDED_URLS dynamic derivation from SCRIPT keys
-- [ ] 18-02-PLAN.md — OracleExperience v3 state mapping, ChoiceConfigs, UI wiring
+- [x] 18-02-PLAN.md — OracleExperience v3 state mapping, ChoiceConfigs, UI wiring
 
 **Success Criteria**:
   1. OracleExperience handles all ~42 states
@@ -127,7 +127,7 @@ Plans:
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 18. Components & Services | v3.2 | 1/2 | In Progress|  |
+| 18. Components & Services | v3.2 | 2/2 | Complete   | 2026-03-28 |
 | 19. Audio Generation | v3.2 | - | Not started | - |
 | 20. Testing | v3.2 | - | Not started | - |
 

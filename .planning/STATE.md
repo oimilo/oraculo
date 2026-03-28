@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v3.2
 milestone_name: Integration & Audio
-status: executing
-stopped_at: Completed 18-01-PLAN.md
-last_updated: "2026-03-28T19:50:03.194Z"
+status: verifying
+stopped_at: Completed 18-02-PLAN.md (OracleExperience v3 state mapping)
+last_updated: "2026-03-28T19:51:11.732Z"
 last_activity: 2026-03-28
 progress:
   total_phases: 18
-  completed_phases: 16
+  completed_phases: 17
   total_plans: 41
-  completed_plans: 40
+  completed_plans: 41
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ progress:
 
 Phase: 18 (components-services) — EXECUTING
 Plan: 2 of 2
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-03-28
 
 Progress: [░░░░░░░░░░] 0%
@@ -83,6 +83,8 @@ Recent decisions affecting current work:
 - [v3.1]: Pause range compressed from 1200-2800ms to 800-2000ms for 10.5-min target
 - [v3.1]: Max-path playback validated at 10.498 min with CV > 0.15
 - [Phase 18-01]: Dynamic URL generation from SCRIPT keys eliminates manual sync
+- [Phase 18]: All 6 ChoiceConfigs use QUESTION_META data for labels/context — single source of truth
+- [Phase 18]: Single universal ChoiceButtons block replaces 3 separate blocks — labels from activeChoiceConfig
 
 ### v2.0 Research Highlights
 
@@ -106,6 +108,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-28T19:50:03.190Z
-Stopped at: Completed 18-01-PLAN.md
+Last session: 2026-03-28T19:51:11.728Z
+Stopped at: Completed 18-02-PLAN.md (OracleExperience v3 state mapping)
 Resume: /gsd:plan-phase 18 (Components & Services)

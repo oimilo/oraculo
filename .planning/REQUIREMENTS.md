@@ -9,9 +9,9 @@ Requirements for Integration & Audio milestone. Connects finalized v3.1 script t
 
 ### Components & Services
 
-- [ ] **CMPV3-01**: OracleExperience handles all ~42 states from v3 XState machine
+- [x] **CMPV3-01**: OracleExperience handles all ~42 states from v3 XState machine
 - [x] **CMPV3-02**: FallbackTTS PRERECORDED_URLS updated for ~50 audio keys matching script.ts
-- [ ] **CMPV3-03**: useVoiceChoice provides 6 ChoiceConfig objects with per-question NLU context
+- [x] **CMPV3-03**: useVoiceChoice provides 6 ChoiceConfig objects with per-question NLU context
 
 ### Audio Generation
 
@@ -55,9 +55,9 @@ Requirements for Integration & Audio milestone. Connects finalized v3.1 script t
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CMPV3-01 | Phase 18 | Pending |
+| CMPV3-01 | Phase 18 | Complete |
 | CMPV3-02 | Phase 18 | Complete |
-| CMPV3-03 | Phase 18 | Pending |
+| CMPV3-03 | Phase 18 | Complete |
 | AUDV3-01 | Phase 19 | Pending |
 | AUDV3-02 | Phase 19 | Pending |
 | TSTV3-01 | Phase 20 | Pending |
