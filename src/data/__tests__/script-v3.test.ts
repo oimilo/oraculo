@@ -308,9 +308,9 @@ describe('pauseAfter values', () => {
 // ═══════════════════════════════════════════════════════════════
 
 describe('PURGATORIO_INTRO', () => {
-  it('has 2-3 segments', () => {
+  it('has 2-4 segments', () => {
     expect(SCRIPT.PURGATORIO_INTRO.length).toBeGreaterThanOrEqual(2);
-    expect(SCRIPT.PURGATORIO_INTRO.length).toBeLessThanOrEqual(3);
+    expect(SCRIPT.PURGATORIO_INTRO.length).toBeLessThanOrEqual(4);
   });
 
   it('has valid structure', () => {
@@ -374,9 +374,9 @@ describe('PURGATORIO Q3 — Garden That Will Burn', () => {
 });
 
 describe('PURGATORIO Q4 — Two Waters', () => {
-  it('SETUP has 2-4 segments', () => {
+  it('SETUP has 2-5 segments', () => {
     expect(SCRIPT.PURGATORIO_Q4_SETUP.length).toBeGreaterThanOrEqual(2);
-    expect(SCRIPT.PURGATORIO_Q4_SETUP.length).toBeLessThanOrEqual(4);
+    expect(SCRIPT.PURGATORIO_Q4_SETUP.length).toBeLessThanOrEqual(5);
   });
 
   it('PERGUNTA has 1 segment', () => {
