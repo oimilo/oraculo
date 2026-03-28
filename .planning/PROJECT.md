@@ -45,7 +45,9 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 
 ### Active (v4.0 — Game Flow)
 
-(Defined in REQUIREMENTS.md)
+- [x] All segments trimmed to 5-7 min max-path (pacing validated at 5:00.1 min) — *Validated in Phase 25*
+
+(Remaining v4.0 requirements defined in REQUIREMENTS.md)
 
 ### Shipped (v3.1 — Script Mastery)
 
@@ -78,7 +80,7 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 
 **Setup físico:** 2-3 laptops com headphone (mic embutido). Webapp rodando no browser. Um operador por estação para instruir visitantes e ajustar volume.
 
-**Roteiro v3.1 (production quality):** 6 escolhas binárias com escalação Light→Profound, baseadas em pesquisa de 20 obras psicanalíticas. 3 frameworks (Lacan, Winnicott, Bion) absorvidos em metáfora. 8 devoluções com 3-layer mirror structure. Max-path: 10.498 min, 60 testes passando. Padrões: Seeker, Guardian, Contradicted, Pivot, Depth Seeker, Surface Keeper, Mirror, Pivot Late.
+**Roteiro v4.0 (pacing-trimmed):** 6 escolhas binárias com escalação Light→Profound. 3 frameworks absorvidos em metáfora. 8 devoluções com 3-layer mirror. Max-path: 5:00.1 min (validated). Timing script: `scripts/validate-timing.ts`.
 
 **Decisões de UX já tomadas:**
 - Input por voz apenas (NLU inteligente, não keywords)
@@ -120,4 +122,4 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-28 — Milestone v4.0 Game Flow started*
+*Last updated: 2026-03-28 — Phase 25 complete (script pacing trimmed to 5:00 min)*
