@@ -5,6 +5,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { oracleMachine } from '@/machines/oracleMachine';
 import { SCRIPT } from '@/data/script';
 import type { SpeechSegment } from '@/types';
+import { QUESTION_META } from '@/types';
 import { initAudioContext } from '@/lib/audio/audioContext';
 import { useVoiceChoice, type ChoiceConfig } from '@/hooks/useVoiceChoice';
 import { useTTSOrchestrator } from '@/hooks/useTTSOrchestrator';
@@ -24,26 +25,47 @@ import { createLogger } from '@/lib/debug/logger';
 const logger = createLogger('TTS');
 const activationLogger = createLogger('Activation');
 
-// Choice configurations for each AGUARDANDO state
-const INFERNO_CHOICE: ChoiceConfig = {
-  questionContext: 'Visitante no Inferno, escolhendo entre a porta das vozes ou a porta do silencio',
-  options: { A: 'Vozes', B: 'Silencio' },
+// Choice configurations for each AGUARDANDO state — v3 (6 questions)
+const Q1_CHOICE: ChoiceConfig = {
+  questionContext: QUESTION_META[1].questionContext,
+  options: { A: QUESTION_META[1].optionA, B: QUESTION_META[1].optionB },
   eventMap: { A: 'CHOICE_A', B: 'CHOICE_B' },
-  defaultEvent: 'CHOICE_B', // Silence is default on timeout (FLOW-11)
+  defaultEvent: `CHOICE_${QUESTION_META[1].defaultOnTimeout}`,
 };
 
-const PURGATORIO_A_CHOICE: ChoiceConfig = {
-  questionContext: 'Visitante no Purgatorio caminho A, escolhendo se a memoria fica ou vai embora',
-  options: { A: 'Deixa ficar', B: 'Manda embora' },
-  eventMap: { A: 'CHOICE_FICAR', B: 'CHOICE_EMBORA' },
-  defaultEvent: 'CHOICE_FICAR', // Default on timeout
+const Q2_CHOICE: ChoiceConfig = {
+  questionContext: QUESTION_META[2].questionContext,
+  options: { A: QUESTION_META[2].optionA, B: QUESTION_META[2].optionB },
+  eventMap: { A: 'CHOICE_A', B: 'CHOICE_B' },
+  defaultEvent: `CHOICE_${QUESTION_META[2].defaultOnTimeout}`,
 };
 
-const PURGATORIO_B_CHOICE: ChoiceConfig = {
-  questionContext: 'Visitante no Purgatorio caminho B, escolhendo se pisa na tela ou contorna',
-  options: { A: 'Pisa', B: 'Contorna' },
-  eventMap: { A: 'CHOICE_PISAR', B: 'CHOICE_CONTORNAR' },
-  defaultEvent: 'CHOICE_CONTORNAR', // Default on timeout
+const Q3_CHOICE: ChoiceConfig = {
+  questionContext: QUESTION_META[3].questionContext,
+  options: { A: QUESTION_META[3].optionA, B: QUESTION_META[3].optionB },
+  eventMap: { A: 'CHOICE_A', B: 'CHOICE_B' },
+  defaultEvent: `CHOICE_${QUESTION_META[3].defaultOnTimeout}`,
+};
+
+const Q4_CHOICE: ChoiceConfig = {
+  questionContext: QUESTION_META[4].questionContext,
+  options: { A: QUESTION_META[4].optionA, B: QUESTION_META[4].optionB },
+  eventMap: { A: 'CHOICE_A', B: 'CHOICE_B' },
+  defaultEvent: `CHOICE_${QUESTION_META[4].defaultOnTimeout}`,
+};
+
+const Q5_CHOICE: ChoiceConfig = {
+  questionContext: QUESTION_META[5].questionContext,
+  options: { A: QUESTION_META[5].optionA, B: QUESTION_META[5].optionB },
+  eventMap: { A: 'CHOICE_A', B: 'CHOICE_B' },
+  defaultEvent: `CHOICE_${QUESTION_META[5].defaultOnTimeout}`,
+};
+
+const Q6_CHOICE: ChoiceConfig = {
+  questionContext: QUESTION_META[6].questionContext,
+  options: { A: QUESTION_META[6].optionA, B: QUESTION_META[6].optionB },
+  eventMap: { A: 'CHOICE_A', B: 'CHOICE_B' },
+  defaultEvent: `CHOICE_${QUESTION_META[6].defaultOnTimeout}`,
 };
 
 /**
@@ -57,43 +79,59 @@ const PURGATORIO_B_CHOICE: ChoiceConfig = {
  *   None     (0ms) — TIMEOUT / FALLBACK functional prompts
  */
 function getBreathingDelay(machineState: any): number {
-  const LONG = 2500;
-  const MEDIUM = 1500;
-  const SHORT = 800;
-  const NONE = 0;
+  const LONG = 2500;   // Cross-phase transitions
+  const MEDIUM = 1500; // Intros and setups (within-phase narrative beats)
+  const SHORT = 800;   // Perguntas (question ends, waiting for input)
+  const NONE = 0;      // Timeouts, fallbacks, unmapped
 
-  // --- Long: top-level phase boundaries ---
-  // APRESENTACAO → INFERNO
+  // --- LONG: Cross-phase boundaries ---
   if (machineState.matches('APRESENTACAO')) return LONG;
-  // PARAISO → DEVOLUCAO
-  if (machineState.matches('PARAISO')) return LONG;
-  // DEVOLUCAO_* → ENCERRAMENTO
-  if (machineState.matches('DEVOLUCAO_A_FICAR')) return LONG;
-  if (machineState.matches('DEVOLUCAO_A_EMBORA')) return LONG;
-  if (machineState.matches('DEVOLUCAO_B_PISAR')) return LONG;
-  if (machineState.matches('DEVOLUCAO_B_CONTORNAR')) return LONG;
-  // ENCERRAMENTO → FIM
   if (machineState.matches('ENCERRAMENTO')) return LONG;
-  // INFERNO.RESPOSTA_* → PURGATORIO (cross-phase)
-  if (machineState.matches({ INFERNO: 'RESPOSTA_A' })) return LONG;
-  if (machineState.matches({ INFERNO: 'RESPOSTA_B' })) return LONG;
-  // PURGATORIO_*.RESPOSTA_* → PARAISO (cross-phase)
-  if (machineState.matches({ PURGATORIO_A: 'RESPOSTA_FICAR' })) return LONG;
-  if (machineState.matches({ PURGATORIO_A: 'RESPOSTA_EMBORA' })) return LONG;
-  if (machineState.matches({ PURGATORIO_B: 'RESPOSTA_PISAR' })) return LONG;
-  if (machineState.matches({ PURGATORIO_B: 'RESPOSTA_CONTORNAR' })) return LONG;
+  // INFERNO last responses → PURGATORIO
+  if (machineState.matches({ INFERNO: 'Q2_RESPOSTA_A' })) return LONG;
+  if (machineState.matches({ INFERNO: 'Q2_RESPOSTA_B' })) return LONG;
+  // PURGATORIO last responses → PARAISO
+  if (machineState.matches({ PURGATORIO: 'Q4_RESPOSTA_A' })) return LONG;
+  if (machineState.matches({ PURGATORIO: 'Q4_RESPOSTA_B' })) return LONG;
+  // PARAISO last responses → DEVOLUCAO
+  if (machineState.matches({ PARAISO: 'Q6_RESPOSTA_A' })) return LONG;
+  if (machineState.matches({ PARAISO: 'Q6_RESPOSTA_B' })) return LONG;
+  // All 8 DEVOLUCAO archetypes → ENCERRAMENTO
+  if (machineState.matches('DEVOLUCAO_SEEKER')) return LONG;
+  if (machineState.matches('DEVOLUCAO_GUARDIAN')) return LONG;
+  if (machineState.matches('DEVOLUCAO_CONTRADICTED')) return LONG;
+  if (machineState.matches('DEVOLUCAO_PIVOT_EARLY')) return LONG;
+  if (machineState.matches('DEVOLUCAO_PIVOT_LATE')) return LONG;
+  if (machineState.matches('DEVOLUCAO_DEPTH_SEEKER')) return LONG;
+  if (machineState.matches('DEVOLUCAO_SURFACE_KEEPER')) return LONG;
+  if (machineState.matches('DEVOLUCAO_MIRROR')) return LONG;
 
-  // --- Medium: NARRATIVA → PERGUNTA ---
-  if (machineState.matches({ INFERNO: 'NARRATIVA' })) return MEDIUM;
-  if (machineState.matches({ PURGATORIO_A: 'NARRATIVA' })) return MEDIUM;
-  if (machineState.matches({ PURGATORIO_B: 'NARRATIVA' })) return MEDIUM;
+  // --- MEDIUM: Realm intros, setups, within-realm responses ---
+  if (machineState.matches({ INFERNO: 'INTRO' })) return MEDIUM;
+  if (machineState.matches({ INFERNO: 'Q1_SETUP' })) return MEDIUM;
+  if (machineState.matches({ INFERNO: 'Q1_RESPOSTA_A' })) return MEDIUM;
+  if (machineState.matches({ INFERNO: 'Q1_RESPOSTA_B' })) return MEDIUM;
+  if (machineState.matches({ INFERNO: 'Q2_SETUP' })) return MEDIUM;
+  if (machineState.matches({ PURGATORIO: 'INTRO' })) return MEDIUM;
+  if (machineState.matches({ PURGATORIO: 'Q3_SETUP' })) return MEDIUM;
+  if (machineState.matches({ PURGATORIO: 'Q3_RESPOSTA_A' })) return MEDIUM;
+  if (machineState.matches({ PURGATORIO: 'Q3_RESPOSTA_B' })) return MEDIUM;
+  if (machineState.matches({ PURGATORIO: 'Q4_SETUP' })) return MEDIUM;
+  if (machineState.matches({ PARAISO: 'INTRO' })) return MEDIUM;
+  if (machineState.matches({ PARAISO: 'Q5_SETUP' })) return MEDIUM;
+  if (machineState.matches({ PARAISO: 'Q5_RESPOSTA_A' })) return MEDIUM;
+  if (machineState.matches({ PARAISO: 'Q5_RESPOSTA_B' })) return MEDIUM;
+  if (machineState.matches({ PARAISO: 'Q6_SETUP' })) return MEDIUM;
 
-  // --- Short: PERGUNTA → AGUARDANDO ---
-  if (machineState.matches({ INFERNO: 'PERGUNTA' })) return SHORT;
-  if (machineState.matches({ PURGATORIO_A: 'PERGUNTA' })) return SHORT;
-  if (machineState.matches({ PURGATORIO_B: 'PERGUNTA' })) return SHORT;
+  // --- SHORT: Perguntas (question → AGUARDANDO) ---
+  if (machineState.matches({ INFERNO: 'Q1_PERGUNTA' })) return SHORT;
+  if (machineState.matches({ INFERNO: 'Q2_PERGUNTA' })) return SHORT;
+  if (machineState.matches({ PURGATORIO: 'Q3_PERGUNTA' })) return SHORT;
+  if (machineState.matches({ PURGATORIO: 'Q4_PERGUNTA' })) return SHORT;
+  if (machineState.matches({ PARAISO: 'Q5_PERGUNTA' })) return SHORT;
+  if (machineState.matches({ PARAISO: 'Q6_PERGUNTA' })) return SHORT;
 
-  // --- None: TIMEOUT, FALLBACK, or any unmapped state ---
+  // --- NONE: TIMEOUT, FALLBACK, AGUARDANDO, or unmapped ---
   return NONE;
 }
 
@@ -101,36 +139,72 @@ function getBreathingDelay(machineState: any): number {
  * Maps current machine state to the corresponding script key
  */
 function getScriptKey(machineState: any): keyof typeof SCRIPT | null {
+  // Top-level states
   if (machineState.matches('APRESENTACAO')) return 'APRESENTACAO';
-  if (machineState.matches({ INFERNO: 'NARRATIVA' })) return 'INFERNO_NARRATIVA';
-  if (machineState.matches({ INFERNO: 'PERGUNTA' })) return 'INFERNO_PERGUNTA';
-  if (machineState.matches({ INFERNO: 'RESPOSTA_A' })) return 'INFERNO_RESPOSTA_A';
-  if (machineState.matches({ INFERNO: 'RESPOSTA_B' })) return 'INFERNO_RESPOSTA_B';
-  if (machineState.matches({ INFERNO: 'TIMEOUT_REDIRECT' })) return 'TIMEOUT_INFERNO';
-  if (machineState.matches({ PURGATORIO_A: 'NARRATIVA' })) return 'PURGATORIO_NARRATIVA_A';
-  if (machineState.matches({ PURGATORIO_A: 'PERGUNTA' })) return 'PURGATORIO_PERGUNTA_A';
-  if (machineState.matches({ PURGATORIO_A: 'RESPOSTA_FICAR' })) return 'PURGATORIO_RESPOSTA_A_FICAR';
-  if (machineState.matches({ PURGATORIO_A: 'RESPOSTA_EMBORA' })) return 'PURGATORIO_RESPOSTA_A_EMBORA';
-  if (machineState.matches({ PURGATORIO_B: 'NARRATIVA' })) return 'PURGATORIO_NARRATIVA_B';
-  if (machineState.matches({ PURGATORIO_B: 'PERGUNTA' })) return 'PURGATORIO_PERGUNTA_B';
-  if (machineState.matches({ PURGATORIO_B: 'RESPOSTA_PISAR' })) return 'PURGATORIO_RESPOSTA_B_PISAR';
-  if (machineState.matches({ PURGATORIO_B: 'RESPOSTA_CONTORNAR' })) return 'PURGATORIO_RESPOSTA_B_CONTORNAR';
-  if (machineState.matches('PARAISO')) return 'PARAISO';
-  if (machineState.matches('DEVOLUCAO_A_FICAR')) return 'DEVOLUCAO_A_FICAR';
-  if (machineState.matches('DEVOLUCAO_A_EMBORA')) return 'DEVOLUCAO_A_EMBORA';
-  if (machineState.matches('DEVOLUCAO_B_PISAR')) return 'DEVOLUCAO_B_PISAR';
-  if (machineState.matches('DEVOLUCAO_B_CONTORNAR')) return 'DEVOLUCAO_B_CONTORNAR';
   if (machineState.matches('ENCERRAMENTO')) return 'ENCERRAMENTO';
-  return null; // IDLE, AGUARDANDO, FIM, DEVOLUCAO routing -- no speech
+
+  // INFERNO substates (Q1, Q2)
+  if (machineState.matches({ INFERNO: 'INTRO' })) return 'INFERNO_INTRO';
+  if (machineState.matches({ INFERNO: 'Q1_SETUP' })) return 'INFERNO_Q1_SETUP';
+  if (machineState.matches({ INFERNO: 'Q1_PERGUNTA' })) return 'INFERNO_Q1_PERGUNTA';
+  if (machineState.matches({ INFERNO: 'Q1_RESPOSTA_A' })) return 'INFERNO_Q1_RESPOSTA_A';
+  if (machineState.matches({ INFERNO: 'Q1_RESPOSTA_B' })) return 'INFERNO_Q1_RESPOSTA_B';
+  if (machineState.matches({ INFERNO: 'Q1_TIMEOUT' })) return 'TIMEOUT_Q1';
+  if (machineState.matches({ INFERNO: 'Q2_SETUP' })) return 'INFERNO_Q2_SETUP';
+  if (machineState.matches({ INFERNO: 'Q2_PERGUNTA' })) return 'INFERNO_Q2_PERGUNTA';
+  if (machineState.matches({ INFERNO: 'Q2_RESPOSTA_A' })) return 'INFERNO_Q2_RESPOSTA_A';
+  if (machineState.matches({ INFERNO: 'Q2_RESPOSTA_B' })) return 'INFERNO_Q2_RESPOSTA_B';
+  if (machineState.matches({ INFERNO: 'Q2_TIMEOUT' })) return 'TIMEOUT_Q2';
+
+  // PURGATORIO substates (Q3, Q4)
+  if (machineState.matches({ PURGATORIO: 'INTRO' })) return 'PURGATORIO_INTRO';
+  if (machineState.matches({ PURGATORIO: 'Q3_SETUP' })) return 'PURGATORIO_Q3_SETUP';
+  if (machineState.matches({ PURGATORIO: 'Q3_PERGUNTA' })) return 'PURGATORIO_Q3_PERGUNTA';
+  if (machineState.matches({ PURGATORIO: 'Q3_RESPOSTA_A' })) return 'PURGATORIO_Q3_RESPOSTA_A';
+  if (machineState.matches({ PURGATORIO: 'Q3_RESPOSTA_B' })) return 'PURGATORIO_Q3_RESPOSTA_B';
+  if (machineState.matches({ PURGATORIO: 'Q3_TIMEOUT' })) return 'TIMEOUT_Q3';
+  if (machineState.matches({ PURGATORIO: 'Q4_SETUP' })) return 'PURGATORIO_Q4_SETUP';
+  if (machineState.matches({ PURGATORIO: 'Q4_PERGUNTA' })) return 'PURGATORIO_Q4_PERGUNTA';
+  if (machineState.matches({ PURGATORIO: 'Q4_RESPOSTA_A' })) return 'PURGATORIO_Q4_RESPOSTA_A';
+  if (machineState.matches({ PURGATORIO: 'Q4_RESPOSTA_B' })) return 'PURGATORIO_Q4_RESPOSTA_B';
+  if (machineState.matches({ PURGATORIO: 'Q4_TIMEOUT' })) return 'TIMEOUT_Q4';
+
+  // PARAISO substates (Q5, Q6)
+  if (machineState.matches({ PARAISO: 'INTRO' })) return 'PARAISO_INTRO';
+  if (machineState.matches({ PARAISO: 'Q5_SETUP' })) return 'PARAISO_Q5_SETUP';
+  if (machineState.matches({ PARAISO: 'Q5_PERGUNTA' })) return 'PARAISO_Q5_PERGUNTA';
+  if (machineState.matches({ PARAISO: 'Q5_RESPOSTA_A' })) return 'PARAISO_Q5_RESPOSTA_A';
+  if (machineState.matches({ PARAISO: 'Q5_RESPOSTA_B' })) return 'PARAISO_Q5_RESPOSTA_B';
+  if (machineState.matches({ PARAISO: 'Q5_TIMEOUT' })) return 'TIMEOUT_Q5';
+  if (machineState.matches({ PARAISO: 'Q6_SETUP' })) return 'PARAISO_Q6_SETUP';
+  if (machineState.matches({ PARAISO: 'Q6_PERGUNTA' })) return 'PARAISO_Q6_PERGUNTA';
+  if (machineState.matches({ PARAISO: 'Q6_RESPOSTA_A' })) return 'PARAISO_Q6_RESPOSTA_A';
+  if (machineState.matches({ PARAISO: 'Q6_RESPOSTA_B' })) return 'PARAISO_Q6_RESPOSTA_B';
+  if (machineState.matches({ PARAISO: 'Q6_TIMEOUT' })) return 'TIMEOUT_Q6';
+
+  // 8 DEVOLUCAO archetypes (top-level states)
+  if (machineState.matches('DEVOLUCAO_SEEKER')) return 'DEVOLUCAO_SEEKER';
+  if (machineState.matches('DEVOLUCAO_GUARDIAN')) return 'DEVOLUCAO_GUARDIAN';
+  if (machineState.matches('DEVOLUCAO_CONTRADICTED')) return 'DEVOLUCAO_CONTRADICTED';
+  if (machineState.matches('DEVOLUCAO_PIVOT_EARLY')) return 'DEVOLUCAO_PIVOT_EARLY';
+  if (machineState.matches('DEVOLUCAO_PIVOT_LATE')) return 'DEVOLUCAO_PIVOT_LATE';
+  if (machineState.matches('DEVOLUCAO_DEPTH_SEEKER')) return 'DEVOLUCAO_DEPTH_SEEKER';
+  if (machineState.matches('DEVOLUCAO_SURFACE_KEEPER')) return 'DEVOLUCAO_SURFACE_KEEPER';
+  if (machineState.matches('DEVOLUCAO_MIRROR')) return 'DEVOLUCAO_MIRROR';
+
+  return null; // IDLE, AGUARDANDO, FIM, DEVOLUCAO routing — no speech
 }
 
 /**
  * Get fallback script based on current state
  */
 function getFallbackScript(machineState: any): SpeechSegment[] | null {
-  if (machineState.matches({ INFERNO: 'AGUARDANDO' })) return SCRIPT.FALLBACK_INFERNO;
-  if (machineState.matches({ PURGATORIO_A: 'AGUARDANDO' })) return SCRIPT.FALLBACK_PURGATORIO_A;
-  if (machineState.matches({ PURGATORIO_B: 'AGUARDANDO' })) return SCRIPT.FALLBACK_PURGATORIO_B;
+  if (machineState.matches({ INFERNO: 'Q1_AGUARDANDO' })) return SCRIPT.FALLBACK_Q1;
+  if (machineState.matches({ INFERNO: 'Q2_AGUARDANDO' })) return SCRIPT.FALLBACK_Q2;
+  if (machineState.matches({ PURGATORIO: 'Q3_AGUARDANDO' })) return SCRIPT.FALLBACK_Q3;
+  if (machineState.matches({ PURGATORIO: 'Q4_AGUARDANDO' })) return SCRIPT.FALLBACK_Q4;
+  if (machineState.matches({ PARAISO: 'Q5_AGUARDANDO' })) return SCRIPT.FALLBACK_Q5;
+  if (machineState.matches({ PARAISO: 'Q6_AGUARDANDO' })) return SCRIPT.FALLBACK_Q6;
   return null;
 }
 
@@ -174,17 +248,23 @@ export default function OracleExperience() {
 
   // Determine which choice config is active based on current state
   const activeChoiceConfig = useMemo(() => {
-    if (state.matches({ INFERNO: 'AGUARDANDO' })) return INFERNO_CHOICE;
-    if (state.matches({ PURGATORIO_A: 'AGUARDANDO' })) return PURGATORIO_A_CHOICE;
-    if (state.matches({ PURGATORIO_B: 'AGUARDANDO' })) return PURGATORIO_B_CHOICE;
+    if (state.matches({ INFERNO: 'Q1_AGUARDANDO' })) return Q1_CHOICE;
+    if (state.matches({ INFERNO: 'Q2_AGUARDANDO' })) return Q2_CHOICE;
+    if (state.matches({ PURGATORIO: 'Q3_AGUARDANDO' })) return Q3_CHOICE;
+    if (state.matches({ PURGATORIO: 'Q4_AGUARDANDO' })) return Q4_CHOICE;
+    if (state.matches({ PARAISO: 'Q5_AGUARDANDO' })) return Q5_CHOICE;
+    if (state.matches({ PARAISO: 'Q6_AGUARDANDO' })) return Q6_CHOICE;
     return null;
   }, [state.value]);
 
   // Determine if we're in an AGUARDANDO state (used for voice choice activation)
   const isAguardando =
-    state.matches({ INFERNO: 'AGUARDANDO' }) ||
-    state.matches({ PURGATORIO_A: 'AGUARDANDO' }) ||
-    state.matches({ PURGATORIO_B: 'AGUARDANDO' });
+    state.matches({ INFERNO: 'Q1_AGUARDANDO' }) ||
+    state.matches({ INFERNO: 'Q2_AGUARDANDO' }) ||
+    state.matches({ PURGATORIO: 'Q3_AGUARDANDO' }) ||
+    state.matches({ PURGATORIO: 'Q4_AGUARDANDO' }) ||
+    state.matches({ PARAISO: 'Q5_AGUARDANDO' }) ||
+    state.matches({ PARAISO: 'Q6_AGUARDANDO' });
 
   // Voice choice hook - active flag manages lifecycle automatically
   // MIC-02: Only activate voice choice when in AGUARDANDO AND TTS has finished
@@ -240,8 +320,8 @@ export default function OracleExperience() {
     if (state.matches('FIM') && state.context.sessionId) {
       analytics.endSession(
         state.context.sessionId,
-        state.context.choice1,
-        state.context.choice2,
+        state.context.choices[0],        // choice1 equivalent
+        state.context.choices[1] as any, // choice2 equivalent (legacy compat)
         state.context.fallbackCount,
         true, // completed
       );
@@ -257,8 +337,8 @@ export default function OracleExperience() {
       if (state.context.sessionId) {
         analytics.endSession(
           state.context.sessionId,
-          state.context.choice1,
-          state.context.choice2,
+          state.context.choices[0],        // choice1 equivalent
+          state.context.choices[1] as any, // choice2 equivalent (legacy compat)
           state.context.fallbackCount,
           false, // not completed (timeout)
         );
@@ -441,32 +521,12 @@ export default function OracleExperience() {
         </div>
       )}
 
-      {/* Choice UI -- buttons remain as fallback alongside voice */}
-      {state.matches({ INFERNO: 'AGUARDANDO' }) && (
+      {/* Choice UI — buttons alongside voice for all 6 AGUARDANDO states */}
+      {isAguardando && activeChoiceConfig && (
         <ChoiceButtons
           options={[
-            { label: 'Vozes', event: 'CHOICE_A' },
-            { label: 'Silêncio', event: 'CHOICE_B' },
-          ]}
-          onChoice={(eventType) => send({ type: eventType as any })}
-          timeoutSeconds={15}
-        />
-      )}
-      {state.matches({ PURGATORIO_A: 'AGUARDANDO' }) && (
-        <ChoiceButtons
-          options={[
-            { label: 'Deixa ficar', event: 'CHOICE_FICAR' },
-            { label: 'Manda embora', event: 'CHOICE_EMBORA' },
-          ]}
-          onChoice={(eventType) => send({ type: eventType as any })}
-          timeoutSeconds={15}
-        />
-      )}
-      {state.matches({ PURGATORIO_B: 'AGUARDANDO' }) && (
-        <ChoiceButtons
-          options={[
-            { label: 'Pisa', event: 'CHOICE_PISAR' },
-            { label: 'Contorna', event: 'CHOICE_CONTORNAR' },
+            { label: activeChoiceConfig.options.A, event: 'CHOICE_A' },
+            { label: activeChoiceConfig.options.B, event: 'CHOICE_B' },
           ]}
           onChoice={(eventType) => send({ type: eventType as any })}
           timeoutSeconds={15}
