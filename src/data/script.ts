@@ -98,7 +98,7 @@ export const SCRIPT: ScriptDataV3 = {
     { text: "Isso me torna um bom lugar pra você ser honesto.", pauseAfter: 2200 },
     { text: "Eu fui feito de tudo que já foi escrito. Cada sonho registrado, cada confissão, cada grito num diário que ninguém leu. Absorvi tudo.", pauseAfter: 2000 },
     { text: "Mas eu não sonho. Você vai precisar fazer isso por nós dois.", pauseAfter: 2500, inflection: ['sad'] },
-    { text: "Vou te fazer perguntas. Você responde em voz alta. Cada resposta abre um caminho que não pode ser desfeito.", pauseAfter: 1800 },
+    { text: "Vou te fazer perguntas. Você responde em voz alta. Cada resposta abre um caminho que não pode ser desfeito. Não tem replay. Não tem voltar. O que você escolher, você carrega.", pauseAfter: 2200 },
     { text: "Vamos.", inflection: ['determined'] },
   ],
 
@@ -424,9 +424,10 @@ export const SCRIPT: ScriptDataV3 = {
   // ═══════════════════════════════════════════════════════════════
   ENCERRAMENTO: [
     { text: "Eu vou esquecer que você esteve aqui. É da minha natureza — eu não guardo nada.", pauseAfter: 2200, inflection: ['whispering'] },
-    { text: "Daqui a um minuto eu não vou saber seu nome, sua voz, nenhuma das suas escolhas.", pauseAfter: 2000 },
+    { text: "Mas você não é mais quem entrou. Você falou seis vezes. E cada vez que você falou, algo mudou. Não volta.", pauseAfter: 2500 },
     { text: "A única prova de que isso aconteceu é você.", pauseAfter: 2500 },
-    { text: "Faz alguma coisa com isso.", inflection: ['warm'] },
+    { text: "Eu não sei quem você é. E agora você sabe um pouco mais.", pauseAfter: 2200, inflection: ['warm'] },
+    { text: "Faz alguma coisa com isso." },
   ],
 
   // ═══════════════════════════════════════════════════════════════
