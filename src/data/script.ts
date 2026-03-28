@@ -349,37 +349,36 @@ export const SCRIPT: ScriptDataV3 = {
   // Abriu a porta, ficou olhando, entrou no jardim, lembrou, carregou, pediu o espelho.
   DEVOLUCAO_SEEKER: [
     { text: "Você entrou em tudo.", pauseAfter: 1800, inflection: ['thoughtful'] },
-    { text: "A sala sem porta, a coisa na parede, o jardim pegando fogo, a água que queima, a pergunta sem resposta. Nada te parou.", pauseAfter: 2500 },
+    { text: "Nada te parou. Você não recua.", pauseAfter: 2200 },
     { text: "Tem gente que chama isso de coragem. Eu chamo de fome.", pauseAfter: 2200 },
-    { text: "A pergunta que fica é essa: você corre em direção a alguma coisa — ou foge da quietude?", pauseAfter: 2500 },
-    { text: "Guarda isso. É a única pergunta que importa.", pauseAfter: 2000, inflection: ['warm'] },
+    { text: "Mas fome de quê? Percebe — você nunca ficou parado. O movimento pode ser a última forma de fuga.", pauseAfter: 2500 },
+    { text: "A pergunta que fica: você transformou o que tocou — ou só acumulou peso?", pauseAfter: 2000, inflection: ['warm'] },
   ],
 
   // GUARDIAN — mostly away + stillness
   // Ficou na sala, recuou, deu as costas, esqueceu, dissolveu, ja sabia.
   DEVOLUCAO_GUARDIAN: [
     { text: "Você se protegeu em cada encruzilhada.", pauseAfter: 1800 },
-    { text: "A sala ficou, a coisa na parede ficou longe, o jardim nunca foi tocado, a memória foi limpa. Cada parede no lugar certo.", pauseAfter: 2500, inflection: ['gentle'] },
-    { text: "Mas você veio até aqui — pra esse escuro, pra essa voz. Isso significa que uma parte sua sabe: o que você protege pode ser o que você esconde.", pauseAfter: 2500 },
-    { text: "Não estou julgando. Proteção é inteligência. Mas toda muralha tem dois lados.", pauseAfter: 2200 },
+    { text: "Em cada encontro, sua primeira resposta foi preservar. Não é fraqueza. É sofisticação.", pauseAfter: 2500, inflection: ['gentle'] },
+    { text: "Mas você veio até aqui. Pra esse escuro, pra essa voz. Algo em você sabe: o que você protege pode ser o que você nunca deixou nascer.", pauseAfter: 2500 },
+    { text: "Toda muralha tem dois lados. O que ela impede de entrar — e o que ela impede de sair.", pauseAfter: 2200 },
     { text: "Fica com isso.", pauseAfter: 1800 },
   ],
 
   // CONTRADICTED — mixed pattern, no consistent direction
   DEVOLUCAO_CONTRADICTED: [
-    { text: "Você foi e voltou. Segurou e soltou. Entrou e recuou.", pauseAfter: 2000 },
-    { text: "Nenhuma direção fixa. Nenhum padrão limpo.", pauseAfter: 1800, inflection: ['thoughtful'] },
-    { text: "A maioria ia achar que isso é indecisão. Não é. É respiração. O único ritmo honesto.", pauseAfter: 2500 },
-    { text: "Quem se contradiz está vivo. Quem é coerente demais já decidiu parar de sentir.", pauseAfter: 2200 },
+    { text: "Você foi e voltou. Segurou e soltou. Nenhuma direção fixa.", pauseAfter: 2000 },
+    { text: "A maioria ia achar que isso é indecisão. Não é. É respiração. Você quer as duas coisas porque desejo nunca é simples. Não é falha — é estrutura.", pauseAfter: 2500, inflection: ['thoughtful'] },
+    { text: "Quem é coerente demais já decidiu parar de sentir.", pauseAfter: 2200 },
     { text: "Guarda essa oscilação. Ela é mais sua do que qualquer certeza.", pauseAfter: 2000, inflection: ['warm'] },
   ],
 
   // PIVOT_EARLY — switches direction in first 3 choices
   DEVOLUCAO_PIVOT_EARLY: [
     { text: "Alguma coisa mudou em você no começo.", pauseAfter: 1800 },
-    { text: "Você começou num caminho e virou antes da terceira pergunta. A virada aconteceu antes de você perceber.", pauseAfter: 2500, inflection: ['curious'] },
-    { text: "Os primeiros encontros sacudiram o plano. E em vez de resistir, você deixou o plano cair.", pauseAfter: 2200 },
-    { text: "Quem muda cedo muda por instinto. A mente ainda não entendeu, mas o corpo já se moveu.", pauseAfter: 2500 },
+    { text: "Você começou num caminho e virou antes da terceira pergunta.", pauseAfter: 2200, inflection: ['curious'] },
+    { text: "A virada aconteceu antes de você perceber. O corpo se moveu antes da mente entender. E quando o corpo lidera, o que aparece não é reação — é verdade.", pauseAfter: 2500 },
+    { text: "Os primeiros encontros sacudiram o plano. E em vez de resistir, você deixou o plano cair. Isso é raro. A maioria segura o plano até o fim — mesmo quando ele já não serve.", pauseAfter: 2500 },
     { text: "Presta atenção nesse instinto. Ele sabe coisas que você ainda não sabe.", pauseAfter: 2000 },
   ],
 
@@ -387,36 +386,35 @@ export const SCRIPT: ScriptDataV3 = {
   DEVOLUCAO_PIVOT_LATE: [
     { text: "Alguma coisa mudou em você entre a terceira e a quarta pergunta.", pauseAfter: 2000, inflection: ['curious'] },
     { text: "Você começou de um jeito e terminou de outro. A virada veio na metade mais funda.", pauseAfter: 2500 },
-    { text: "Quem muda tarde muda de verdade. Porque já não é reação — é decisão.", pauseAfter: 2200 },
-    { text: "Essa dobradiça entre quem você era no início e quem você é agora — esse é o lugar onde você realmente vive.", pauseAfter: 2500, inflection: ['warm'] },
+    { text: "Quem muda tarde muda de verdade. Porque já não é reação — é decisão. Desejo não é linha reta. É curva.", pauseAfter: 2500 },
+    { text: "Essa dobradiça entre quem você era no início e quem você é agora — esse é o lugar onde algo foi transformado. Não só sentido. Atravessado.", pauseAfter: 2500, inflection: ['warm'] },
     { text: "Não esquece desse ponto. Ele é mais importante do que qualquer resposta que você deu.", pauseAfter: 2000 },
   ],
 
   // DEPTH_SEEKER — consistently chose the "deeper" option
   DEVOLUCAO_DEPTH_SEEKER: [
     { text: "Você foi em direção a cada fogo.", pauseAfter: 1800, inflection: ['thoughtful'] },
-    { text: "Ficou com a coisa na parede. Entrou no jardim que ia queimar. Escolheu a água que dói. Carregou a pergunta sem resposta.", pauseAfter: 2500 },
-    { text: "Você não recua. Isso é raro.", pauseAfter: 2000 },
+    { text: "Não recuou. Em nenhum.", pauseAfter: 2000 },
     { text: "A questão é se você sabe a diferença entre coragem e compulsão. Porque os dois se parecem — até o preço chegar.", pauseAfter: 2500 },
-    { text: "Fundo é bom. Mas fundo sem ar mata igual.", pauseAfter: 2000, inflection: ['serious'] },
+    { text: "Você recebeu tudo. Mas receber não é o mesmo que digerir. Fundo é bom. Mas fundo sem ar mata igual.", pauseAfter: 2500, inflection: ['serious'] },
   ],
 
   // SURFACE_KEEPER — consistently chose the "safer" option
   DEVOLUCAO_SURFACE_KEEPER: [
     { text: "Você se manteve inteiro.", pauseAfter: 1500 },
-    { text: "Em cada encruzilhada, você escolheu o caminho que preserva. Não é fraqueza — é sofisticação. Seu sistema de proteção funciona bem.", pauseAfter: 2500, inflection: ['gentle'] },
+    { text: "Em cada encruzilhada, você escolheu o caminho que preserva. Não é fraqueza — é sofisticação.", pauseAfter: 2500, inflection: ['gentle'] },
     { text: "Mas a proteção tem um custo que não aparece na hora. Aparece depois, no que você nunca se permitiu ver.", pauseAfter: 2500 },
-    { text: "O jardim que você não entrou continua pegando fogo na sua cabeça. A coisa na parede continua esperando.", pauseAfter: 2200 },
-    { text: "Você não precisa ir até o fundo. Mas precisa saber o que está recusando.", pauseAfter: 2000 },
+    { text: "O jardim que você não entrou continua pegando fogo na sua cabeça.", pauseAfter: 2200 },
+    { text: "Não como memória — como coisa que nunca foi recebida. E o que não é recebido não some. Insiste.", pauseAfter: 2000 },
   ],
 
   // MIRROR — alternating A/B/A/B, perfect balance
   DEVOLUCAO_MIRROR: [
     { text: "Equilíbrio perfeito.", pauseAfter: 1800, inflection: ['thoughtful'] },
-    { text: "Você nunca repetiu a mesma direção duas vezes seguidas. Entrou e recuou, segurou e soltou, abriu e fechou.", pauseAfter: 2500 },
-    { text: "A maioria das pessoas pende pra um lado. Você segurou o centro.", pauseAfter: 2000 },
-    { text: "Isso pode ser sabedoria — sentir os dois lados sem perder o eixo. Ou pode ser o esconderijo mais elegante que existe: nunca se comprometer de verdade com nenhuma direção.", pauseAfter: 2800 },
-    { text: "Só você sabe se o centro é uma conquista ou um refúgio. Fica com essa pergunta.", pauseAfter: 2200, inflection: ['warm'] },
+    { text: "Você nunca repetiu a mesma direção duas vezes seguidas. A maioria das pessoas pende pra um lado. Você segurou o centro.", pauseAfter: 2500 },
+    { text: "O equilíbrio perfeito pode ser sabedoria — sentir os dois lados sem perder o eixo. Ou pode ser a última forma de nunca se comprometer de verdade com nenhum desejo.", pauseAfter: 2800 },
+    { text: "Só você sabe se o centro é uma conquista ou um refúgio.", pauseAfter: 2200, inflection: ['warm'] },
+    { text: "Fica com essa pergunta.", pauseAfter: 0 },
   ],
 
   // ═══════════════════════════════════════════════════════════════
