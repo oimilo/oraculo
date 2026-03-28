@@ -101,9 +101,10 @@ See: `.planning/milestones/v3.1-ROADMAP.md`
 **Goal**: Generate all MP3s for final script using ElevenLabs v3
 **Depends on**: Phase 24 (script text final), Phase 18 (PRERECORDED_URLS)
 **Requirements**: AUDV3-01, AUDV3-02
+**Checkpoint**: ⚠️ BEFORE generating — verify ELEVENLABS_VOICE_ID in .env.local is the final chosen voice. Do NOT proceed until user confirms.
 **Success Criteria**:
   1. ~50 MP3s generated with eleven_v3 and inflection tags
-  2. No audible artifacts, consistent voice
+  2. No audible artifacts, consistent voice, 192kbps minimum
 
 ### Phase 20: Testing (v3.2)
 **Goal**: All tests updated and passing for v3 structure
@@ -136,4 +137,4 @@ v3.2 Integration & Audio:
 
 ---
 
-*Last updated: 2026-03-28 — v3.1 archived, v3.2 pending*
+*Last updated: 2026-03-28 — v3.2 milestone initialized*
