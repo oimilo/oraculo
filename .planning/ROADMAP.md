@@ -140,10 +140,10 @@ Plans:
 **Goal**: Experience runs 5-7 minutes with trimmed segments preserving psychoanalytic depth
 **Depends on**: Phase 24 (v3.1 script as baseline)
 **Requirements**: PACE-01, PACE-02, PACE-03, PACE-04, PACE-05
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
-- [ ] 25-01-PLAN.md — Surgical trim of all script sections (bookends, intros, setups, respostas, devoluções)
+- [x] 25-01-PLAN.md — Surgical trim of all script sections (bookends, intros, setups, respostas, devoluções)
 - [ ] 25-02-PLAN.md — Timing validation script + duration adjustment to hit 5-7 min target
 
 **Success Criteria** (what must be TRUE):
@@ -210,7 +210,7 @@ Plans:
 | 18. Components & Services | v3.2 | 2/2 | Complete    | 2026-03-28 |
 | 19. Audio Generation | v3.2 | 1/1 | Complete | 2026-03-28 |
 | 20. Testing | v3.2 | - | Skipped | - |
-| 25. Script Pacing | v4.0 | 0/2 | Planning | - |
+| 25. Script Pacing | v4.0 | 1/2 | In Progress|  |
 | 26. Script Branching | v4.0 | 0/? | Not started | - |
 | 27. State Machine | v4.0 | 0/? | Not started | - |
 | 28. Audio Regen | v4.0 | 0/? | Not started | - |

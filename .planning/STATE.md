@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Game Flow
-status: ready_to_plan
-stopped_at: Phase 25 ready to plan
-last_updated: "2026-03-28T22:30:00.000Z"
+status: executing
+stopped_at: Completed 25-01-PLAN.md (script surgical trim)
+last_updated: "2026-03-28T22:45:49.996Z"
 last_activity: 2026-03-28
 progress:
-  total_phases: 5
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_phases: 19
+  completed_phases: 17
+  total_plans: 43
+  completed_plans: 42
+  percent: 79
 ---
 
 # State: O Oraculo
@@ -22,14 +22,14 @@ progress:
 
 **Current Milestone:** v4.0 Game Flow
 
-**Current Focus:** Phase 25 - Script Restructure (Pacing)
+**Current Focus:** Phase 25 — script-pacing
 
 ## Current Position
 
-Phase: 25 of 29 (Script Restructure — Pacing)
-Plan: 0/? (ready to plan)
-Status: Ready to plan
-Last activity: 2026-03-28 — v4.0 roadmap created with 5 phases (25-29)
+Phase: 25 (script-pacing) — EXECUTING
+Plan: 2 of 2
+Status: Ready to execute
+Last activity: 2026-03-28
 
 Progress: [████████████████░░░░] 79% (phases 1-19 shipped, 5 phases remaining in v4.0)
 
@@ -96,6 +96,7 @@ Recent decisions affecting current work:
 - [v3.1]: Gold phrases metabolized into Oracle voice (not quoted)
 - [v3.1]: Pause range compressed from 1200-2800ms to 800-2000ms for 10.5-min target
 - [Phase 18]: Single universal ChoiceButtons block with labels from activeChoiceConfig
+- [Phase 25]: Merged phase intro openings with gold phrases for compression without losing evocative power
 
 ### Active TODOs
 
@@ -108,6 +109,6 @@ None. v4.0 ready to start — v3.1 script provides baseline for restructuring.
 
 ## Session Continuity
 
-Last session: 2026-03-28T22:30:00.000Z
-Stopped at: v4.0 roadmap created, Phase 25 ready to plan
+Last session: 2026-03-28T22:45:49.992Z
+Stopped at: Completed 25-01-PLAN.md (script surgical trim)
 Resume: `/gsd:plan-phase 25` to begin script pacing rewrite
