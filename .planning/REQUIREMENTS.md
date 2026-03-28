@@ -62,16 +62,30 @@ Requirements for Game Flow milestone. Transform the Oracle into a 5-7 min game-l
 
 ## Traceability
 
-(Populated during roadmap creation)
-
 | Requirement | Phase | Status |
 |-------------|-------|--------|
+| PACE-01 | Phase 25 | Pending |
+| PACE-02 | Phase 25 | Pending |
+| PACE-03 | Phase 25 | Pending |
+| PACE-04 | Phase 25 | Pending |
+| PACE-05 | Phase 25 | Pending |
+| BRNC-01 | Phase 26 | Pending |
+| BRNC-02 | Phase 26 | Pending |
+| BRNC-03 | Phase 26 | Pending |
+| BRNC-04 | Phase 26 | Pending |
+| MACH-01 | Phase 27 | Pending |
+| MACH-02 | Phase 27 | Pending |
+| MACH-03 | Phase 27 | Pending |
+| AUDI-01 | Phase 28 | Pending |
+| AUDI-02 | Phase 28 | Pending |
+| INTG-01 | Phase 29 | Pending |
+| INTG-02 | Phase 29 | Pending |
 
 **Coverage:**
 - v4.0 requirements: 16 total
-- Mapped to phases: 0
-- Unmapped: 16
+- Mapped to phases: 16
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-28*
-*Last updated: 2026-03-28 after milestone v4.0 initialization*
+*Last updated: 2026-03-28 — v4.0 traceability complete*

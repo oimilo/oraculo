@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Game Flow
-status: defining
-stopped_at: Defining requirements
-last_updated: "2026-03-28T22:00:00.000Z"
+status: ready_to_plan
+stopped_at: Phase 25 ready to plan
+last_updated: "2026-03-28T22:30:00.000Z"
 last_activity: 2026-03-28
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -22,16 +22,16 @@ progress:
 
 **Current Milestone:** v4.0 Game Flow
 
-**Current Focus:** Defining requirements
+**Current Focus:** Phase 25 - Script Restructure (Pacing)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-03-28 — Milestone v4.0 started
+Phase: 25 of 29 (Script Restructure — Pacing)
+Plan: 0/? (ready to plan)
+Status: Ready to plan
+Last activity: 2026-03-28 — v4.0 roadmap created with 5 phases (25-29)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [████████████████░░░░] 79% (phases 1-19 shipped, 5 phases remaining in v4.0)
 
 ## Performance Metrics
 
@@ -72,30 +72,30 @@ Progress: [░░░░░░░░░░] 0%
 - Script elevated from first draft to production quality
 - 8 requirements (SCR-01 to SCR-08) all satisfied
 
+**Milestone v3.2 (Complete):**
+
+- Phases: 2/2 (Phases 18-19, Phase 20 skipped), Plans: 3/3
+- Duration: Same day as v3.1 (2026-03-28)
+- 49 MP3s generated, components updated
+
+**Milestone v4.0 (Active):**
+
+- Phases: 0/5 (Phases 25-29), Plans: 0/?
+- Requirements: 16 (PACE-01 to INTG-02) — all mapped
+- Goal: Transform to 5-7 min game-like experience with 8-10 branching decisions
+
 ## Accumulated Context
 
 ### Decisions
 
 Recent decisions affecting current work:
 
+- [v4.0]: Branching paths over linear flow — game-like engagement, choices feel consequential
+- [v4.0]: 5-7 min target (down from 10.5) — Bienal foot traffic demands shorter sessions
 - [v3.1]: 3-layer devolucao structure: Winnicott pattern + Lacan structure + Bion transformation
 - [v3.1]: Gold phrases metabolized into Oracle voice (not quoted)
 - [v3.1]: Pause range compressed from 1200-2800ms to 800-2000ms for 10.5-min target
-- [v3.1]: Max-path playback validated at 10.498 min with CV > 0.15
-- [Phase 18-01]: Dynamic URL generation from SCRIPT keys eliminates manual sync
-- [Phase 18]: All 6 ChoiceConfigs use QUESTION_META data for labels/context — single source of truth
-- [Phase 18]: Single universal ChoiceButtons block replaces 3 separate blocks — labels from activeChoiceConfig
-
-### v2.0 Research Highlights
-
-- ElevenLabs v3 replaces SSML `<break>` with audio tags (`[pause]`, `[thoughtful]`, etc.)
-- Cloned voice must be IVC (not PVC) for v3 tag support
-- Lower stability from 0.65-0.80 to 0.40-0.70 for Natural mode
-- Remove `speaker_boost` and `speed` params (not supported in v3)
-- Tag density: max 1-2 per phrase to avoid instability
-- PT-BR punctuation needs normalization
-- 192kbps minimum output for headphone delivery
-- 5,000 char limit requires segment-aware generation
+- [Phase 18]: Single universal ChoiceButtons block with labels from activeChoiceConfig
 
 ### Active TODOs
 
@@ -104,10 +104,10 @@ Recent decisions affecting current work:
 
 ### Blockers
 
-None.
+None. v4.0 ready to start — v3.1 script provides baseline for restructuring.
 
 ## Session Continuity
 
-Last session: 2026-03-28T22:00:00.000Z
-Stopped at: Milestone v4.0 initialization
-Resume: /gsd:new-milestone v4.0 Game Flow (step 6+)
+Last session: 2026-03-28T22:30:00.000Z
+Stopped at: v4.0 roadmap created, Phase 25 ready to plan
+Resume: `/gsd:plan-phase 25` to begin script pacing rewrite
