@@ -8,7 +8,7 @@ Agente de voz interativo que guia visitantes por uma jornada inspirada na Divina
 
 A experiência deve ser seamless e imersiva como um jogo — o visitante fala, ouve, e é transformado. Se a voz, o roteiro e as transições funcionarem perfeitamente, tudo funciona.
 
-## Current Milestone: v3.2 Integration & Audio (Pending)
+## Current Milestone: v3.2 Integration & Audio
 
 **Goal:** Connect finalized script to UI components, generate ~50 MP3s with ElevenLabs v3, update all tests for 6-choice structure.
 
@@ -114,4 +114,4 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-28 after v3.1 Script Mastery milestone — script production-ready, next v3.2 Integration & Audio*
+*Last updated: 2026-03-28 after v3.2 milestone initialization — requirements defined, roadmap confirmed*

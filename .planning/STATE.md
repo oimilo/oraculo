@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: Not started
-Plan: Not started
-Status: Milestone v3.1 archived, v3.2 pending
-Last activity: 2026-03-28
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-28 — Milestone v3.2 started
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -106,5 +106,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-28
-Stopped at: v3.1 milestone archived
-Resume: /gsd:new-milestone (for v3.2 requirements + roadmap)
+Stopped at: v3.2 milestone initialized
+Resume: /gsd:plan-phase 18 (Components & Services)
