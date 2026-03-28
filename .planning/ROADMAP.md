@@ -123,8 +123,8 @@ Plans:
 **Results**: 49 MP3s, 27 MB total, mp3_44100_192 format
 **Script**: scripts/generate-audio-v3.ts (imports from src/data/script.ts directly)
 **Success Criteria**:
-  1. ✅ 49 MP3s generated with eleven_v3 and inflection tags
-  2. ✅ 192kbps format (mp3_44100_192), consistent voice
+  1. 49 MP3s generated with eleven_v3 and inflection tags
+  2. 192kbps format (mp3_44100_192), consistent voice
 
 ### Phase 20: Testing (v3.2) - SKIPPED
 **Goal**: All tests updated and passing for v3 structure
@@ -140,14 +140,18 @@ Plans:
 **Goal**: Experience runs 5-7 minutes with trimmed segments preserving psychoanalytic depth
 **Depends on**: Phase 24 (v3.1 script as baseline)
 **Requirements**: PACE-01, PACE-02, PACE-03, PACE-04, PACE-05
+**Plans:** 2 plans
+
+Plans:
+- [ ] 25-01-PLAN.md — Surgical trim of all script sections (bookends, intros, setups, respostas, devoluções)
+- [ ] 25-02-PLAN.md — Timing validation script + duration adjustment to hit 5-7 min target
+
 **Success Criteria** (what must be TRUE):
   1. Max-path experience duration is 5-7 minutes when audio is generated
   2. All respostas contain 1-2 segments maximum (down from 4-5)
   3. All setups contain 1-2 segments maximum (down from 3-5)
   4. Phase intros reduced to 1 sentence each
   5. Bookends trimmed while preserving emotional impact and structural symmetry
-**Plans**: TBD
-**UI hint**: yes
 
 ### Phase 26: Script Restructure — Branching (v4.0)
 **Goal**: Experience offers 8-10 decision points with branching paths that converge before devoluções
@@ -206,7 +210,7 @@ Plans:
 | 18. Components & Services | v3.2 | 2/2 | Complete    | 2026-03-28 |
 | 19. Audio Generation | v3.2 | 1/1 | Complete | 2026-03-28 |
 | 20. Testing | v3.2 | - | Skipped | - |
-| 25. Script Pacing | v4.0 | 0/? | Not started | - |
+| 25. Script Pacing | v4.0 | 0/2 | Planning | - |
 | 26. Script Branching | v4.0 | 0/? | Not started | - |
 | 27. State Machine | v4.0 | 0/? | Not started | - |
 | 28. Audio Regen | v4.0 | 0/? | Not started | - |
@@ -227,4 +231,4 @@ v4.0 Game Flow (active):
 
 ---
 
-*Last updated: 2026-03-28 — v4.0 roadmap created, Phase 25 ready to start*
+*Last updated: 2026-03-28 — Phase 25 planned (2 plans)*
