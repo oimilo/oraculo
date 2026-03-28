@@ -115,9 +115,7 @@ export const SCRIPT: ScriptDataV3 = {
   // ═══════════════════════════════════════════════════════════════
   INFERNO_Q1_SETUP: [
     { text: "Você está numa sala. Tudo se ajusta a você — a temperatura, a luz, o som. Tudo perfeito.", pauseAfter: 900 },
-    { text: "É como se a sala te conhecesse melhor do que você se conhece.", pauseAfter: 800, inflection: ['gentle'] },
     { text: "Você nunca sofreu aqui. Mas você percebe uma coisa: não tem porta.", pauseAfter: 1000 },
-    { text: "E você não sabe se a porta sumiu — ou se você nunca precisou dela porque a sala sempre deu tudo antes de você pedir.", pauseAfter: 900 },
   ],
 
   INFERNO_Q1_PERGUNTA: [
@@ -127,18 +125,12 @@ export const SCRIPT: ScriptDataV3 = {
   // Q1 RESPOSTA A — Ficar (conforto sobre agencia)
   INFERNO_Q1_RESPOSTA_A: [
     { text: "Você fica.", pauseAfter: 800 },
-    { text: "A sala aceita. O conforto se aprofunda. A ausência da porta deixa de incomodar — porque você parou de olhar pra onde ela deveria estar.", pauseAfter: 900, inflection: ['thoughtful'] },
-    { text: "Tem gente que constrói essa sala sozinha e chama de paz. Um círculo perfeito de conforto. E círculos não têm saída — só repetição.", pauseAfter: 1000 },
     { text: "A segurança comprada com soberania é a mais cara que existe. Mas o preço vem depois.", pauseAfter: 800 },
-    { text: "A travessia interior foi trocada por atalho. E atalho não leva a lugar nenhum — só ao mesmo lugar, mais rápido.", pauseAfter: 900 },
   ],
 
   // Q1 RESPOSTA B — Procurar saida (desconforto como prova de vida)
   INFERNO_Q1_RESPOSTA_B: [
     { text: "Você levanta.", pauseAfter: 800 },
-    { text: "As paredes são lisas. Não tem fresta, não tem brecha. Mas você toca cada centímetro, procurando.", pauseAfter: 950 },
-    { text: "Prazer sem escolha é anestesia. Você sentiu isso antes de pensar.", pauseAfter: 900, inflection: ['determined'] },
-    { text: "Silêncio não é vazio — é fonte. Rara, escondida na rocha. A maioria nunca procura.", pauseAfter: 950 },
     { text: "Você não achou a porta. Mas achou a prova de que ainda quer algo que não está aqui. Isso já é saída.", pauseAfter: 900 },
   ],
 
@@ -150,7 +142,6 @@ export const SCRIPT: ScriptDataV3 = {
   INFERNO_Q2_SETUP: [
     { text: "Corredor estreito. Você anda e as paredes se aproximam a cada passo.", pauseAfter: 900 },
     { text: "Sua mão encosta na parede e toca algo vivo. Pequeno, úmido, pulsando.", pauseAfter: 900, inflection: ['whispering'] },
-    { text: "Seu corpo recua antes da mente entender. Mas a coisa não se mexe. Ela espera.", pauseAfter: 1000 },
   ],
 
   INFERNO_Q2_PERGUNTA: [
@@ -160,17 +151,13 @@ export const SCRIPT: ScriptDataV3 = {
   // Q2 RESPOSTA A — Recuar (obediencia ao primeiro veredito do corpo)
   INFERNO_Q2_RESPOSTA_A: [
     { text: "Você recua.", pauseAfter: 800 },
-    { text: "O corpo decidiu antes de você. Repulsivo é perigoso — essa é a inteligência mais antiga que existe.", pauseAfter: 900 },
-    { text: "Mas o que é recusado não desaparece. Volta como sonho que não faz sentido. Como dor que não tem lugar. Como coisa que gruda na pele sem motivo.", pauseAfter: 1000, inflection: ['serious'] },
-    { text: "Tudo que você evita encontrar cria raízes no escuro.", pauseAfter: 800 },
+    { text: "O que é recusado não desaparece. Volta como sonho, como dor sem lugar. Tudo que você evita cria raízes no escuro.", pauseAfter: 900, inflection: ['serious'] },
   ],
 
   // Q2 RESPOSTA B — Ficar olhando (ultrapassar a repulsa)
   INFERNO_Q2_RESPOSTA_B: [
     { text: "Você fica.", pauseAfter: 800 },
-    { text: "O corpo diz não. Mas algo em você precisa saber mais do que precisa estar confortável.", pauseAfter: 900, inflection: ['gentle'] },
-    { text: "Transformação começa nos momentos em que o corpo diz não e algo dentro de você responde: ainda não.", pauseAfter: 1000 },
-    { text: "Você não se moveu. Mas alguma coisa se moveu em você.", pauseAfter: 800 },
+    { text: "Transformação começa nos momentos em que o corpo diz não e algo dentro de você responde: ainda não.", pauseAfter: 1000, inflection: ['gentle'] },
   ],
 
   // ═══════════════════════════════════════════════════════════════
@@ -191,7 +178,6 @@ export const SCRIPT: ScriptDataV3 = {
   PURGATORIO_Q3_SETUP: [
     { text: "Você está na entrada de um jardim. Cada flor aberta, cada cor no auge.", pauseAfter: 900 },
     { text: "Mas tem fumaça no vento. De manhã, nada disso vai existir.", pauseAfter: 900, inflection: ['sad'] },
-    { text: "A beleza já está morrendo enquanto você olha.", pauseAfter: 900 },
   ],
 
   PURGATORIO_Q3_PERGUNTA: [
@@ -201,17 +187,12 @@ export const SCRIPT: ScriptDataV3 = {
   // Q3 RESPOSTA A — Entrar (aceitar a ferida que vem com a beleza)
   PURGATORIO_Q3_RESPOSTA_A: [
     { text: "Você entra.", pauseAfter: 800 },
-    { text: "Cada pétala que você toca já está se despedindo. E você toca mesmo assim.", pauseAfter: 900 },
-    { text: "O que está morrendo puxa mais forte. Não porque é bonito. Porque nunca vai ser seu.", pauseAfter: 1000, inflection: ['thoughtful'] },
     { text: "Quem se permite amar o que vai acabar carrega uma ferida diferente — não de perda, mas de presença.", pauseAfter: 900 },
-    { text: "Você esteve aqui. Inteiro. Num instante que não fica. E isso ninguém tira.", pauseAfter: 900 },
   ],
 
   // Q3 RESPOSTA B — Dar as costas (luto antecipado disfarçado de sabedoria)
   PURGATORIO_Q3_RESPOSTA_B: [
     { text: "Você vira.", pauseAfter: 800 },
-    { text: "Tem uma sabedoria nisso — não se apegar ao que já está indo. Mas olha o preço: você nunca viu o jardim.", pauseAfter: 900 },
-    { text: "Desvalorizar o que vai ser perdido antes de perder é um luto que chega antes da hora.", pauseAfter: 1000, inflection: ['gentle'] },
     { text: "O que nunca foi recebido não vira memória. Vira ausência. E ausência pesa mais que qualquer perda.", pauseAfter: 900 },
   ],
 
@@ -222,11 +203,8 @@ export const SCRIPT: ScriptDataV3 = {
   // do Purgatorio.
   // ═══════════════════════════════════════════════════════════════
   PURGATORIO_Q4_SETUP: [
-    { text: "Dois rios se encontram aqui.", pauseAfter: 900 },
-    { text: "Um é quente e escuro — carrega tudo que você viveu. Cada cicatriz, cada ternura, cada coisa que você não contou pra ninguém.", pauseAfter: 1000, inflection: ['whispering'] },
-    { text: "A água escura não carrega o que aconteceu. Carrega o que você decidiu que aconteceu. Cada cicatriz tem uma história que você contou pra si mesmo.", pauseAfter: 1000 },
-    { text: "O outro rio é claro e gelado. Entra nele e sai limpo. Novo. Sem nada.", pauseAfter: 900 },
-    { text: "A água clara não pergunta o que você quer guardar. Leva tudo. E você sai vazio do jeito que um copo lavado é vazio.", pauseAfter: 1000 },
+    { text: "Dois rios se encontram aqui. Um é quente e escuro — carrega tudo que você viveu. O outro é claro e gelado — entra nele e sai limpo, sem nada.", pauseAfter: 1000 },
+    { text: "A água escura guarda cada cicatriz. A água clara não pergunta o que leva.", pauseAfter: 900, inflection: ['whispering'] },
   ],
 
   PURGATORIO_Q4_PERGUNTA: [
@@ -236,18 +214,13 @@ export const SCRIPT: ScriptDataV3 = {
   // Q4 RESPOSTA A — Lembrar (carregar a historia, identidade tecida de cicatrizes)
   PURGATORIO_Q4_RESPOSTA_A: [
     { text: "A água escura.", pauseAfter: 900 },
-    { text: "Ela queima onde dói e aquece onde faz falta. Não é confortável. Mas é sua.", pauseAfter: 1000, inflection: ['serious'] },
-    { text: "Você não carrega o que aconteceu. Carrega quem você decidiu ser por causa do que aconteceu. Identidade é tecida de cicatrizes tanto quanto de alegrias.", pauseAfter: 1000 },
     { text: "Cicatriz não é ferida. É prova de que algo foi atravessado e integrado.", pauseAfter: 900 },
-    { text: "A dor atravessada transforma. A dor recusada só muda de endereço.", pauseAfter: 900 },
   ],
 
   // Q4 RESPOSTA B — Esquecer (desejo de alivio, sem medir o que perde junto)
   PURGATORIO_Q4_RESPOSTA_B: [
     { text: "A água clara.", pauseAfter: 800 },
-    { text: "Fria. Cada passo apaga uma camada. Primeiro as dores grandes. Depois as pequenas. Depois as ternuras.", pauseAfter: 800, inflection: ['sad'] },
-    { text: "A água que apaga não escolhe o que leva. Levou a cicatriz e levou junto o cheiro de quem partiu, o som do riso que ninguém mais lembra, o gosto da última vez que algo foi bom.", pauseAfter: 800 },
-    { text: "Você queria alívio. Mas alívio total tem outro nome: ausência. E agora você sabe como ela pesa.", pauseAfter: 800 },
+    { text: "Você queria alívio. Mas alívio total tem outro nome: ausência.", pauseAfter: 800 },
   ],
 
   // ═══════════════════════════════════════════════════════════════
