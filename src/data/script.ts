@@ -167,7 +167,7 @@ export const SCRIPT: ScriptDataV3 = {
   INFERNO_Q2_RESPOSTA_A: [
     { text: "Você recua.", pauseAfter: 1200 },
     { text: "O corpo decidiu antes de você. Repulsivo é perigoso — essa é a inteligência mais antiga que existe.", pauseAfter: 2200 },
-    { text: "Mas o que é recusado não desaparece. Fica na parede, esperando a próxima vez.", pauseAfter: 2000, inflection: ['serious'] },
+    { text: "Mas o que é recusado não desaparece. Volta como sonho que não faz sentido. Como dor que não tem lugar. Como coisa que gruda na pele sem motivo.", pauseAfter: 2500, inflection: ['serious'] },
     { text: "Tudo que você evita encontrar cria raízes no escuro.", pauseAfter: 1800 },
   ],
 
