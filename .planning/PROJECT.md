@@ -38,8 +38,8 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 
 ### Active (v3.2 — Integration & Audio)
 
-- [ ] OracleExperience updated for 6 choice points — *Phase 18*
-- [ ] FallbackTTS updated for ~50 audio keys — *Phase 18*
+- [x] OracleExperience updated for 6 choice points — *Validated in Phase 18*
+- [x] FallbackTTS updated for ~50 audio keys — *Validated in Phase 18*
 - [ ] ~50 MP3s generated with ElevenLabs v3 — *Phase 19*
 - [ ] All tests passing with new v3 structure — *Phase 20*
 
@@ -114,4 +114,4 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-28 after v3.2 milestone initialization — requirements defined, roadmap confirmed*
+*Last updated: 2026-03-28 — Phase 18 complete: OracleExperience + FallbackTTS wired to v3 script/machine*
