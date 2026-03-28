@@ -2,23 +2,26 @@
 
 ## What This Is
 
-Agente de voz interativo que guia visitantes por uma jornada inspirada na Divina Comédia de Dante, para a VII Bienal de Psicanálise e Cultura da SBPRP 2026. A IA assume o papel de Virgílio — guia que reconhece seus limites — conduzindo cada pessoa por Inferno, Purgatório e Paraíso em ~10 minutos, com escolhas por voz que personalizam o percurso entre 4 finais distintos.
+Agente de voz interativo que guia visitantes por uma jornada inspirada na Divina Comédia de Dante, para a VII Bienal de Psicanálise e Cultura da SBPRP 2026. A IA assume o papel de guia — reconhece seus limites — conduzindo cada pessoa por Inferno, Purgatório e Paraíso em ~10 minutos, com 6 escolhas binárias por voz que revelam padrões psíquicos do visitante, culminando numa devolução personalizada baseada no desenho total das escolhas.
 
 ## Core Value
 
 A experiência deve ser seamless e imersiva como um jogo — o visitante fala, ouve, e é transformado. Se a voz, o roteiro e as transições funcionarem perfeitamente, tudo funciona.
 
-## Current Milestone: v2.0 Narração Realista com ElevenLabs v3
+## Current Milestone: v3.0 Narrative Redesign — 6 Choices
 
-**Goal:** Refazer toda a narração do Oráculo com qualidade natural usando ElevenLabs v3, tags de inflexão inteligente e pontuação PT-BR impecável para a voz clonada feminina.
+**Goal:** Reescrever toda a narrativa do Oráculo com 6 escolhas binárias (em vez de 3), devoluções baseadas em padrões, e profundidade psicanalítica absorvida em metáfora.
 
 **Target features:**
-- Pesquisar melhores práticas de narração por AI com ElevenLabs v3 (modelo, tags de inflexão, pontuação)
-- Revisar e corrigir pontuação do roteiro inteiro para PT-BR perfeito (acentuação, travessão, vírgulas)
-- Aplicar tags de inflexão por segmento ([thoughtful], [whispering], [sad], [determined], pausas inteligentes)
-- Atualizar script de geração para usar modelo v3 e parâmetros de inflexão
-- Regenerar todos os 25 MP3s com a voz clonada (voice_id: AcSHc9S7hdxvGEJVWFzo)
-- Validar naturalidade e expressividade em cada fase narrativa
+- 6 escolhas binárias com escalação de profundidade (Light→Medium→Deep→Profound)
+- Devoluções baseadas em padrões (Seeker/Guardian/Contradicted/Pivot) — leem a FORMA das 6 escolhas
+- Zero referências explícitas a autores — tudo absorvido em metáfora
+- Menos narração, mais decisão — cara de JOGO
+- ~50 MP3s com ElevenLabs v3 e inflection tags
+- State machine linear (não cascading): todos passam por todas as 6 escolhas
+
+**Research basis:** 20 obras analisadas, 4 clusters temáticos, 24 cenários gerados, 6 selecionados.
+See: `scripts/narrative-proposals/RESEARCH-SYNTHESIS.md`
 
 ## Requirements
 
@@ -36,13 +39,21 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 - [x] Painel admin com métricas e status das estações — *Validated in Phase 3*
 - [x] Fallback offline com áudios pré-gravados — *Validated in Phase 3 (audio files pending studio recording)*
 - [x] Inactivity timeout 30s → reset to IDLE — *Validated in Phase 3*
+- [x] v3 audio tag conversion (buildV3Text, convertPauseToTag) — *Validated in Phase 13*
+- [x] API route v2/v3 dual-mode via USE_V3_MODEL env flag — *Validated in Phase 13*
+- [x] Voice IVC compatibility documented — *Phase 13*
 
-### Active
+### Active (v3.0)
 
-- [ ] v3 audio tag conversion (buildV3Text, convertPauseToTag) — *Validated in Phase 13*
-- [ ] API route v2/v3 dual-mode via USE_V3_MODEL env flag — *Validated in Phase 13*
-- [ ] Voice IVC compatibility documented, pending live API verification — *Phase 13*
-- (remaining v2.0 requirements — see REQUIREMENTS.md for full list)
+- [ ] 6 binary choices with depth escalation across Inferno/Purgatório/Paraíso — *Phase 16*
+- [ ] Pattern-based devoluções reading shape of 6 choices — *Phase 16*
+- [ ] XState machine redesigned for 6 linear choices (~28 states) — *Phase 17*
+- [ ] Pattern tracking in machine context (ChoiceAB[] array) — *Phase 17*
+- [ ] Devolução routing via pattern-matching function — *Phase 17*
+- [ ] OracleExperience updated for 6 choice points — *Phase 18*
+- [ ] FallbackTTS updated for ~50 audio keys — *Phase 18*
+- [ ] ~50 MP3s generated with ElevenLabs v3 — *Phase 19*
+- [ ] All tests passing with new v3 structure — *Phase 20*
 
 ### Out of Scope
 
@@ -60,14 +71,14 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 
 **Setup físico:** 2-3 laptops com headphone (mic embutido). Webapp rodando no browser. Um operador por estação para instruir visitantes e ajustar volume.
 
-**Roteiro:** Literário, preciso, com referências a Dante, Proust, Rilke, Dostoiévski, Belchior. Cada frase foi escolhida com cuidado. O PRD.md contém o roteiro completo com marcações de pausa e direção de voz.
+**Roteiro v3:** 6 escolhas binárias com escalação de profundidade, baseadas em pesquisa de 20 obras psicanalíticas. Padrões revelados na devolução: Seeker, Guardian, Contradicted, Pivot. Cada frase absorve profundidade psicanalítica em metáfora — ZERO referências explícitas.
 
 **Decisões de UX já tomadas:**
 - Input por voz apenas (NLU inteligente, não keywords)
 - Redirecionamento poético quando não entende (não repetir pergunta seca)
-- Silêncio prolongado = escolha default (Inferno→Silêncio, Purgatório→default contextual)
-- A pergunta do Paraíso é reflexiva — não requer classificação
+- Silêncio prolongado = escolha default (contextual por pergunta)
 - Tela mostra apenas feedback visual abstrato, nunca texto do roteiro
+- Fluxo LINEAR: todos passam por todas as 6 escolhas (não cascading)
 
 ## Constraints
 
@@ -81,39 +92,20 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| ElevenLabs TTS (não Conversational AI) | Controle total do fluxo — somos nós que orquestramos, não o SDK deles | ✓ Good |
-| Whisper para STT | Melhor accuracy em PT-BR para falas curtas/sussurradas | ✓ Good |
-| Claude Haiku para NLU | Classificação binária rápida e barata (~100ms) | ✓ Good |
-| XState para state machine | Controle preciso de estados, transições e timeouts para fluxo guiado | ✓ Good |
-| useReducer FSM for voice choice | Explicit 5-state lifecycle eliminates impossible states (was 32 boolean combos) | ✓ Good — Phase 7 |
-| Generic guard factory | Type-safe, extensible guard creation via createChoiceGuard/createCompoundGuard | ✓ Good — Phase 7 |
-| Decoupled TTS orchestration | useTTSOrchestrator hook owns TTS state privately, no shared mutable refs | ✓ Good — Phase 7 |
-| TTS-gated state transitions | ttsComplete flag + ttsForStateRef prevent premature NARRATIVA_DONE and Strict Mode double-play | ✓ Good — Phase 8 |
-| Mic activation gating | micShouldActivate = isAguardando && ttsComplete ensures mic only opens after TTS finishes | ✓ Good — Phase 8 |
-| Frozen config snapshots | configRef.current frozen when active=true prevents stale closures in async voice pipeline | ✓ Good — Phase 9 |
-| API timeout protection | 10s AbortController timeout on STT/NLU API calls prevents stuck states | ✓ Good — Phase 9 |
-| waitForVoices timeout | Promise.race with 3s timeout prevents indefinite hang when SpeechSynthesis has no voices | ✓ Good — Phase 11 |
-| Activation verification logging | activationLogger traces BLOCKED/ACTIVATED states proving ttsComplete verified before mic | ✓ Good — Phase 11 |
-| Next.js + Supabase | SSR, API routes integradas, analytics persistidos, deploy Vercel | ✓ Good |
-| API keys server-side only | Segurança — chaves de API ficam em API routes do Next.js, nunca no cliente | ✓ Good |
-| Plain fetch (sem SDKs externos) | Simplicidade — fetch direto para ElevenLabs/Whisper/Claude, só @supabase/supabase-js | ✓ Good |
+| ElevenLabs TTS (não Conversational AI) | Controle total do fluxo — somos nós que orquestramos, não o SDK deles | Good |
+| Whisper para STT | Melhor accuracy em PT-BR para falas curtas/sussurradas | Good |
+| Claude Haiku para NLU | Classificação binária rápida e barata (~100ms) | Good |
+| XState para state machine | Controle preciso de estados, transições e timeouts para fluxo guiado | Good |
+| useReducer FSM for voice choice | Explicit 5-state lifecycle eliminates impossible states | Good — Phase 7 |
+| Frozen config snapshots | configRef.current frozen when active=true prevents stale closures | Good — Phase 9 |
+| API timeout protection | 10s AbortController timeout on STT/NLU API calls | Good — Phase 9 |
+| 6 linear choices (not cascading) | All visitors experience all 6 choices — richer pattern data for devolução | Good — v3.0 |
+| Pattern-based devoluções | Read SHAPE of 6 choices instead of combinatorial paths (64→8-12 variants) | Good — v3.0 |
+| Zero explicit references | Psychoanalytic depth felt, not declared — absorb into metaphor | Good — v3.0 |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
-**After each phase transition** (via `/gsd:transition`):
-1. Requirements invalidated? → Move to Out of Scope with reason
-2. Requirements validated? → Move to Validated with phase reference
-3. New requirements emerged? → Add to Active
-4. Decisions to log? → Add to Key Decisions
-5. "What This Is" still accurate? → Update if drifted
-
-**After each milestone** (via `/gsd:complete-milestone`):
-1. Full review of all sections
-2. Core Value check — still the right priority?
-3. Audit Out of Scope — reasons still valid?
-4. Update Context with current state
-
 ---
-*Last updated: 2026-03-26 — Phase 13 complete (v3 audio tag conversion + API dual-mode)*
+*Last updated: 2026-03-27 — v3.0 milestone created*
