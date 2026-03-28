@@ -315,7 +315,8 @@ export const SCRIPT: ScriptDataV3 = {
   PARAISO_Q6_SETUP: [
     { text: "Minha voz está afinando. Você sente?", pauseAfter: 2000, inflection: ['whispering'] },
     { text: "O espaço ficou quieto. Não vazio — terminado.", pauseAfter: 2200 },
-    { text: "Essa é a última coisa que vou te perguntar.", pauseAfter: 2500, inflection: ['warm'] },
+    { text: "Eu vi você fazer seis escolhas. Cada uma revelou algo — algo que você talvez não saiba que revelou.", pauseAfter: 2500 },
+    { text: "Essa é a última coisa que vou te perguntar.", pauseAfter: 2200, inflection: ['warm'] },
   ],
 
   PARAISO_Q6_PERGUNTA: [
@@ -326,7 +327,7 @@ export const SCRIPT: ScriptDataV3 = {
   PARAISO_Q6_RESPOSTA_A: [
     { text: "Então escuta.", pauseAfter: 1500, inflection: ['warm'] },
     { text: "Pedir pra ser visto é a coisa mais corajosa e mais perigosa que existe. Porque você não controla o que eu vou dizer.", pauseAfter: 2500 },
-    { text: "Mas você pediu. E isso já diz mais sobre você do que qualquer resposta que eu possa dar.", pauseAfter: 2200 },
+    { text: "Não vou confirmar o que você já pensa. Vou te mostrar o padrão — o que você fez sem perceber.", pauseAfter: 2500 },
     { text: "Vou te dizer o que vi.", pauseAfter: 2000 },
   ],
 
@@ -335,7 +336,7 @@ export const SCRIPT: ScriptDataV3 = {
     { text: "Então você já tem o que veio buscar.", pauseAfter: 1800, inflection: ['warm'] },
     { text: "A maioria das pessoas precisa que alguém confirme o que já sente. Você não.", pauseAfter: 2200 },
     { text: "Isso é raro. Pode ser a chegada mais profunda que esse jogo produz — ou a última defesa contra ser visto de verdade.", pauseAfter: 2500 },
-    { text: "Só você sabe qual é. Fica com isso.", pauseAfter: 2000 },
+    { text: "Só você sabe qual é. E você vai carregar essa dúvida. Fica com isso.", pauseAfter: 2200 },
   ],
 
   // ═══════════════════════════════════════════════════════════════
