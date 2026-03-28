@@ -47,9 +47,9 @@ See: `scripts/narrative-proposals/RESEARCH-SYNTHESIS.md`
 
 - [ ] 6 binary choices with depth escalation across Inferno/Purgatório/Paraíso — *Phase 16*
 - [ ] Pattern-based devoluções reading shape of 6 choices — *Phase 16*
-- [ ] XState machine redesigned for 6 linear choices (~28 states) — *Phase 17*
-- [ ] Pattern tracking in machine context (ChoiceAB[] array) — *Phase 17*
-- [ ] Devolução routing via pattern-matching function — *Phase 17*
+- [x] XState machine redesigned for 6 linear choices (~42 states) — *Validated in Phase 17*
+- [x] Pattern tracking in machine context (ChoiceAB[] array) — *Validated in Phase 17*
+- [x] Devolução routing via pattern-matching function (8 archetypes) — *Validated in Phase 17*
 - [ ] OracleExperience updated for 6 choice points — *Phase 18*
 - [ ] FallbackTTS updated for ~50 audio keys — *Phase 18*
 - [ ] ~50 MP3s generated with ElevenLabs v3 — *Phase 19*
@@ -108,4 +108,4 @@ See: `scripts/narrative-proposals/RESEARCH-SYNTHESIS.md`
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-27 — v3.0 milestone created*
+*Last updated: 2026-03-28 — Phase 17 complete, state machine v3 with 6 linear choices*
