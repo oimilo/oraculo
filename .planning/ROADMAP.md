@@ -173,7 +173,7 @@
 | 16. Script Writing (draft) | v3.0 | 2/2 | Complete | 2026-03-27 |
 | 17. State Machine & Data | v3.0 | 2/2 | Complete | 2026-03-28 |
 | 21. Script Audit | v3.1 | 2/2 | Complete   | 2026-03-28 |
-| 22. Core Narrative Rewrite | v3.1 | 3/3 | Complete   | 2026-03-28 |
+| 22. Core Narrative Rewrite | v3.1 | 3/3 | Complete    | 2026-03-28 |
 | 23. Devoluções & Bookends | v3.1 | - | Not started | - |
 | 24. Rhythm & Validation | v3.1 | - | Not started | - |
 | 18. Components & Services | v3.2 | - | Not started | - |
