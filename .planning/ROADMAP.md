@@ -180,7 +180,7 @@
 | 21. Script Audit | v3.1 | 2/2 | Complete   | 2026-03-28 |
 | 22. Core Narrative Rewrite | v3.1 | 3/3 | Complete    | 2026-03-28 |
 | 23. Devoluções & Bookends | v3.1 | 2/2 | Complete    | 2026-03-28 |
-| 24. Rhythm & Validation | v3.1 | 1/1 | Complete   | 2026-03-28 |
+| 24. Rhythm & Validation | v3.1 | 1/1 | Complete    | 2026-03-28 |
 | 18. Components & Services | v3.2 | - | Not started | - |
 | 19. Audio Generation | v3.2 | - | Not started | - |
 | 20. Testing | v3.2 | - | Not started | - |
