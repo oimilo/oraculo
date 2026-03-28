@@ -109,6 +109,7 @@ export const SCRIPT: ScriptDataV3 = {
   // ═══════════════════════════════════════════════════════════════
   INFERNO_INTRO: [
     { text: "Descemos.", pauseAfter: 2500, inflection: ['serious'] },
+    { text: "As perguntas já estavam aqui antes de você. Esperando alguém que pudesse habitá-las.", pauseAfter: 2200 },
     { text: "Aqui embaixo o ar é denso. Tudo o que é excessivo, apressado e vazio desce pra cá — onde nada pode amadurecer.", pauseAfter: 2000 },
     { text: "Presta atenção no que aparece.", pauseAfter: 1800 },
   ],
@@ -120,8 +121,9 @@ export const SCRIPT: ScriptDataV3 = {
   // ═══════════════════════════════════════════════════════════════
   INFERNO_Q1_SETUP: [
     { text: "Você está numa sala. Tudo se ajusta a você — a temperatura, a luz, o som. Tudo perfeito.", pauseAfter: 2000 },
-    { text: "Você nunca sofreu aqui.", pauseAfter: 1800, inflection: ['gentle'] },
-    { text: "Mas você percebe uma coisa: não tem porta.", pauseAfter: 2500 },
+    { text: "É como se a sala te conhecesse melhor do que você se conhece.", pauseAfter: 1800, inflection: ['gentle'] },
+    { text: "Você nunca sofreu aqui. Mas você percebe uma coisa: não tem porta.", pauseAfter: 2500 },
+    { text: "E você não sabe se a porta sumiu — ou se você nunca precisou dela porque a sala sempre deu tudo antes de você pedir.", pauseAfter: 2200 },
   ],
 
   INFERNO_Q1_PERGUNTA: [
@@ -132,8 +134,9 @@ export const SCRIPT: ScriptDataV3 = {
   INFERNO_Q1_RESPOSTA_A: [
     { text: "Você fica.", pauseAfter: 1200 },
     { text: "A sala aceita. O conforto se aprofunda. A ausência da porta deixa de incomodar — porque você parou de olhar pra onde ela deveria estar.", pauseAfter: 2200, inflection: ['thoughtful'] },
-    { text: "Tem gente que constrói essa sala sozinha e chama de paz.", pauseAfter: 2000 },
+    { text: "Tem gente que constrói essa sala sozinha e chama de paz. Um círculo perfeito de conforto. E círculos não têm saída — só repetição.", pauseAfter: 2500 },
     { text: "A segurança comprada com soberania é a mais cara que existe. Mas o preço vem depois.", pauseAfter: 1800 },
+    { text: "A travessia interior foi trocada por atalho. E atalho não leva a lugar nenhum — só ao mesmo lugar, mais rápido.", pauseAfter: 2000 },
   ],
 
   // Q1 RESPOSTA B — Procurar saida (desconforto como prova de vida)
@@ -141,7 +144,8 @@ export const SCRIPT: ScriptDataV3 = {
     { text: "Você levanta.", pauseAfter: 1200 },
     { text: "As paredes são lisas. Não tem fresta, não tem brecha. Mas você toca cada centímetro, procurando.", pauseAfter: 2200 },
     { text: "Prazer sem escolha é anestesia. Você sentiu isso antes de pensar.", pauseAfter: 2000, inflection: ['determined'] },
-    { text: "A porta não apareceu. Mas o fato de você ter procurado já mudou a sala.", pauseAfter: 1800 },
+    { text: "Silêncio não é vazio — é fonte. Rara, escondida na rocha. A maioria nunca procura.", pauseAfter: 2200 },
+    { text: "Você não achou a porta. Mas achou a prova de que ainda quer algo que não está aqui. Isso já é saída.", pauseAfter: 2000 },
   ],
 
   // ═══════════════════════════════════════════════════════════════
