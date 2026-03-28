@@ -8,27 +8,13 @@ Agente de voz interativo que guia visitantes por uma jornada inspirada na Divina
 
 A experiência deve ser seamless e imersiva como um jogo — o visitante fala, ouve, e é transformado. Se a voz, o roteiro e as transições funcionarem perfeitamente, tudo funciona.
 
-## Current Milestone: v3.2 Integration & Audio
-
-**Previous milestone:** v3.1 Script Mastery (completed 2026-03-28 — all 4 phases shipped, script elevated to production quality)
+## Current Milestone: v3.2 Integration & Audio (Pending)
 
 **Goal:** Connect finalized script to UI components, generate ~50 MP3s with ElevenLabs v3, update all tests for 6-choice structure.
 
-**Why its own milestone:** O roteiro é o coração da experiência. Tudo mais (machine, components, áudio, testes) serve ao roteiro. Ele merece tratamento dedicado — audit, reescrita seção por seção, refinamento de devoluções, e polish de ritmo.
-
-**Target:**
-- Profundidade psicanalítica sentida, não declarada — digna da Bienal
-- 3 frameworks absorvidos: Lacaniano (desejo, Real), Winnicottiano (holding, self verdadeiro), Bioniano (continente-contido, reverie)
-- 9 frases de ouro metabolizadas no script
-- Escolhas genuinamente equilibradas — nenhuma resposta "certa"
-- Devoluções como espelho — leem PADRÃO, não escolhas individuais
-- Ritmo respiratório, não metrônomo
-- ≤10 minutos total
-
-**Research basis:** 20 obras, 4 clusters, 3 frameworks teóricos, FINAL.ts synthesis.
-See: `scripts/narrative-proposals/RESEARCH-SYNTHESIS.md`, `.planning/milestones/v3.1-REQUIREMENTS.md`
-
-**Previous milestone:** v3.0 Narrative Redesign (structure shipped — Phase 16 script draft + Phase 17 state machine)
+**Previous milestones:**
+- v3.1 Script Mastery (shipped 2026-03-28) — script elevated to production quality with 3 frameworks absorbed
+- v3.0 Narrative Redesign (shipped 2026-03-28) — first draft script + XState v5 rewrite
 
 ## Requirements
 
@@ -50,20 +36,20 @@ See: `scripts/narrative-proposals/RESEARCH-SYNTHESIS.md`, `.planning/milestones/
 - [x] API route v2/v3 dual-mode via USE_V3_MODEL env flag — *Validated in Phase 13*
 - [x] Voice IVC compatibility documented — *Phase 13*
 
-### Active (v3.1 — Script Mastery)
-
-- [x] Script audited against 3 theoretical frameworks + 9 gold phrases — *Validated in Phase 21*
-- [x] 6 choices rewritten with absorbed psychoanalytic depth — *Validated in Phase 22*
-- [x] 8 devoluções rewritten as genuine pattern mirrors — *Validated in Phase 23*
-- [x] Apresentação/Encerramento/fallbacks/timeouts polished — *Validated in Phase 23*
-- [x] Rhythm, inflection & timing validated (≤10 min) — *Validated in Phase 24*
-
-### Queued (v3.2 — Integration & Audio)
+### Active (v3.2 — Integration & Audio)
 
 - [ ] OracleExperience updated for 6 choice points — *Phase 18*
 - [ ] FallbackTTS updated for ~50 audio keys — *Phase 18*
 - [ ] ~50 MP3s generated with ElevenLabs v3 — *Phase 19*
 - [ ] All tests passing with new v3 structure — *Phase 20*
+
+### Shipped (v3.1 — Script Mastery)
+
+- [x] Script audited against 3 theoretical frameworks + 9 gold phrases — *v3.1 Phase 21*
+- [x] 6 choices rewritten with absorbed psychoanalytic depth — *v3.1 Phase 22*
+- [x] 8 devoluções rewritten as genuine pattern mirrors — *v3.1 Phase 23*
+- [x] Apresentação/Encerramento/fallbacks/timeouts polished — *v3.1 Phase 23*
+- [x] Rhythm, inflection & timing validated (≤10 min) — *v3.1 Phase 24*
 
 ### Shipped (v3.0 — Structure)
 
@@ -88,7 +74,7 @@ See: `scripts/narrative-proposals/RESEARCH-SYNTHESIS.md`, `.planning/milestones/
 
 **Setup físico:** 2-3 laptops com headphone (mic embutido). Webapp rodando no browser. Um operador por estação para instruir visitantes e ajustar volume.
 
-**Roteiro v3:** 6 escolhas binárias com escalação de profundidade, baseadas em pesquisa de 20 obras psicanalíticas. Padrões revelados na devolução: Seeker, Guardian, Contradicted, Pivot. Cada frase absorve profundidade psicanalítica em metáfora — ZERO referências explícitas.
+**Roteiro v3.1 (production quality):** 6 escolhas binárias com escalação Light→Profound, baseadas em pesquisa de 20 obras psicanalíticas. 3 frameworks (Lacan, Winnicott, Bion) absorvidos em metáfora. 8 devoluções com 3-layer mirror structure. Max-path: 10.498 min, 60 testes passando. Padrões: Seeker, Guardian, Contradicted, Pivot, Depth Seeker, Surface Keeper, Mirror, Pivot Late.
 
 **Decisões de UX já tomadas:**
 - Input por voz apenas (NLU inteligente, não keywords)
@@ -119,10 +105,13 @@ See: `scripts/narrative-proposals/RESEARCH-SYNTHESIS.md`, `.planning/milestones/
 | 6 linear choices (not cascading) | All visitors experience all 6 choices — richer pattern data for devolução | Good — v3.0 |
 | Pattern-based devoluções | Read SHAPE of 6 choices instead of combinatorial paths (64→8-12 variants) | Good — v3.0 |
 | Zero explicit references | Psychoanalytic depth felt, not declared — absorb into metaphor | Good — v3.0 |
+| 3-layer devolução structure | Winnicott pattern + Lacan structure + Bion transformation — each framework reads different aspect | Good — v3.1 |
+| Gold phrase absorption (not quotation) | Metabolize essences into Oracle voice — "circulos" becomes "circulo perfeito de conforto" | Good — v3.1 |
+| Pause compression 800-2000ms | Reduced from 1200-2800ms to fit 10.5-min target while preserving relative emotional weight | Good — v3.1 |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-28 — v3.1 Script Mastery complete (all 4 phases). Phase 24 validated timing: max-path 10.498 min, pauses 800-2000ms, 60 tests passing. Script read-through ready. Next: v3.2 Integration & Audio.*
+*Last updated: 2026-03-28 after v3.1 Script Mastery milestone — script production-ready, next v3.2 Integration & Audio*
