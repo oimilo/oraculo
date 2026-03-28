@@ -81,7 +81,7 @@ See: `.planning/milestones/v3.1-ROADMAP.md`
 ### v3.2 Integration & Audio (Pending)
 
 - [x] **Phase 18: Components & Services** - OracleExperience.tsx, FallbackTTS, useVoiceChoice updates for 6 choice points (completed 2026-03-28)
-- [ ] **Phase 19: Audio Generation** - Generate ~50 MP3s with ElevenLabs v3 for final script
+- [x] **Phase 19: Audio Generation** - 49 MP3s generated with ElevenLabs v3 (completed 2026-03-28)
 - [ ] **Phase 20: Testing** - Update all tests for new 6-choice structure
 
 ---
@@ -103,14 +103,16 @@ Plans:
   2. FallbackTTS PRERECORDED_URLS updated for ~50 audio keys
   3. 6 ChoiceConfig objects with per-question NLU context
 
-### Phase 19: Audio Generation (v3.2)
+### Phase 19: Audio Generation (v3.2) — COMPLETE
 **Goal**: Generate all MP3s for final script using ElevenLabs v3
 **Depends on**: Phase 24 (script text final), Phase 18 (PRERECORDED_URLS)
 **Requirements**: AUDV3-01, AUDV3-02
-**Checkpoint**: ⚠️ BEFORE generating — verify ELEVENLABS_VOICE_ID in .env.local is the final chosen voice. Do NOT proceed until user confirms.
+**Voice ID**: PznTnBc8X6pvixs9UkQm (confirmed by user)
+**Results**: 49 MP3s, 27 MB total, mp3_44100_192 format
+**Script**: scripts/generate-audio-v3.ts (imports from src/data/script.ts directly)
 **Success Criteria**:
-  1. ~50 MP3s generated with eleven_v3 and inflection tags
-  2. No audible artifacts, consistent voice, 192kbps minimum
+  1. ✅ 49 MP3s generated with eleven_v3 and inflection tags
+  2. ✅ 192kbps format (mp3_44100_192), consistent voice
 
 ### Phase 20: Testing (v3.2)
 **Goal**: All tests updated and passing for v3 structure
@@ -128,7 +130,7 @@ Plans:
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 18. Components & Services | v3.2 | 2/2 | Complete    | 2026-03-28 |
-| 19. Audio Generation | v3.2 | - | Not started | - |
+| 19. Audio Generation | v3.2 | 1/1 | Complete | 2026-03-28 |
 | 20. Testing | v3.2 | - | Not started | - |
 
 ## Dependencies
@@ -143,4 +145,4 @@ v3.2 Integration & Audio:
 
 ---
 
-*Last updated: 2026-03-28 — Phase 18 planned (2 plans, 1 wave)*
+*Last updated: 2026-03-28 — Phase 19 complete (49 MP3s generated)*

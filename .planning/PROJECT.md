@@ -40,7 +40,7 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 
 - [x] OracleExperience updated for 6 choice points — *Validated in Phase 18*
 - [x] FallbackTTS updated for ~50 audio keys — *Validated in Phase 18*
-- [ ] ~50 MP3s generated with ElevenLabs v3 — *Phase 19*
+- [x] 49 MP3s generated with ElevenLabs v3 (27 MB, mp3_44100_192) — *Phase 19*
 - [ ] All tests passing with new v3 structure — *Phase 20*
 
 ### Shipped (v3.1 — Script Mastery)
@@ -114,4 +114,4 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-28 — Phase 18 complete: OracleExperience + FallbackTTS wired to v3 script/machine*
+*Last updated: 2026-03-28 — Phase 19 complete: 49 MP3s generated with ElevenLabs v3*

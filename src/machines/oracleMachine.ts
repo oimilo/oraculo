@@ -68,7 +68,7 @@ export const oracleMachine = setup({
         NARRATIVA_DONE: 'INFERNO',
       },
       after: {
-        120000: {
+        300000: {
           target: '#oracle.IDLE',
           actions: assign({
             sessionId: '',
@@ -85,7 +85,7 @@ export const oracleMachine = setup({
       initial: 'INTRO',
       entry: assign({ currentPhase: 'INFERNO' }),
       after: {
-        120000: {
+        300000: {
           target: '#oracle.IDLE',
           actions: assign({
             sessionId: '',
@@ -195,7 +195,7 @@ export const oracleMachine = setup({
       initial: 'INTRO',
       entry: assign({ currentPhase: 'PURGATORIO' }),
       after: {
-        120000: {
+        300000: {
           target: '#oracle.IDLE',
           actions: assign({
             sessionId: '',
@@ -305,7 +305,7 @@ export const oracleMachine = setup({
       initial: 'INTRO',
       entry: assign({ currentPhase: 'PARAISO' }),
       after: {
-        120000: {
+        300000: {
           target: '#oracle.IDLE',
           actions: assign({
             sessionId: '',
@@ -430,7 +430,7 @@ export const oracleMachine = setup({
         NARRATIVA_DONE: 'ENCERRAMENTO',
       },
       after: {
-        120000: {
+        300000: {
           target: '#oracle.IDLE',
           actions: assign({
             sessionId: '',
@@ -447,7 +447,7 @@ export const oracleMachine = setup({
         NARRATIVA_DONE: 'ENCERRAMENTO',
       },
       after: {
-        120000: {
+        300000: {
           target: '#oracle.IDLE',
           actions: assign({
             sessionId: '',
@@ -464,7 +464,7 @@ export const oracleMachine = setup({
         NARRATIVA_DONE: 'ENCERRAMENTO',
       },
       after: {
-        120000: {
+        300000: {
           target: '#oracle.IDLE',
           actions: assign({
             sessionId: '',
@@ -481,7 +481,7 @@ export const oracleMachine = setup({
         NARRATIVA_DONE: 'ENCERRAMENTO',
       },
       after: {
-        120000: {
+        300000: {
           target: '#oracle.IDLE',
           actions: assign({
             sessionId: '',
@@ -498,7 +498,7 @@ export const oracleMachine = setup({
         NARRATIVA_DONE: 'ENCERRAMENTO',
       },
       after: {
-        120000: {
+        300000: {
           target: '#oracle.IDLE',
           actions: assign({
             sessionId: '',
@@ -515,7 +515,7 @@ export const oracleMachine = setup({
         NARRATIVA_DONE: 'ENCERRAMENTO',
       },
       after: {
-        120000: {
+        300000: {
           target: '#oracle.IDLE',
           actions: assign({
             sessionId: '',
@@ -532,7 +532,7 @@ export const oracleMachine = setup({
         NARRATIVA_DONE: 'ENCERRAMENTO',
       },
       after: {
-        120000: {
+        300000: {
           target: '#oracle.IDLE',
           actions: assign({
             sessionId: '',
@@ -549,7 +549,7 @@ export const oracleMachine = setup({
         NARRATIVA_DONE: 'ENCERRAMENTO',
       },
       after: {
-        120000: {
+        300000: {
           target: '#oracle.IDLE',
           actions: assign({
             sessionId: '',
@@ -567,7 +567,7 @@ export const oracleMachine = setup({
         NARRATIVA_DONE: 'FIM',
       },
       after: {
-        120000: {
+        300000: {
           target: '#oracle.IDLE',
           actions: assign({
             sessionId: '',
