@@ -78,7 +78,7 @@
   - [x] 22-01-PLAN.md — INFERNO realm rewrite (INTRO + Q1 Comfortable Prison + Q2 Resposta A deepened)
   - [x] 22-02-PLAN.md — PURGATORIO realm rewrite (INTRO + Q3 Garden responses + Q4 Two Waters to depth 5)
   - [x] 22-03-PLAN.md — PARAISO realm rewrite (INTRO + Q5 Unanswerable + Q6 End of Game to depth 5)
-- [ ] **Phase 23: Devoluções & Bookends** - Reescrita das 8 devoluções, Apresentação, Encerramento, fallbacks e timeouts.
+- [x] **Phase 23: Devoluções & Bookends** - Reescrita das 8 devoluções, Apresentação, Encerramento, fallbacks e timeouts. (completed 2026-03-28)
 - [ ] **Phase 24: Rhythm, Inflection & Final Validation** - Timing, inflection tags, read-through completo, validação contra 10 minutos.
 
 ### v3.2 Integration & Audio (Pending — after v3.1)
@@ -174,7 +174,7 @@
 | 17. State Machine & Data | v3.0 | 2/2 | Complete | 2026-03-28 |
 | 21. Script Audit | v3.1 | 2/2 | Complete   | 2026-03-28 |
 | 22. Core Narrative Rewrite | v3.1 | 3/3 | Complete    | 2026-03-28 |
-| 23. Devoluções & Bookends | v3.1 | 1/2 | In Progress|  |
+| 23. Devoluções & Bookends | v3.1 | 2/2 | Complete   | 2026-03-28 |
 | 24. Rhythm & Validation | v3.1 | - | Not started | - |
 | 18. Components & Services | v3.2 | - | Not started | - |
 | 19. Audio Generation | v3.2 | - | Not started | - |
