@@ -157,13 +157,18 @@ Plans:
 **Goal**: Experience offers 8-10 decision points with branching paths that converge before devoluções
 **Depends on**: Phase 25 (trimmed script as foundation)
 **Requirements**: BRNC-01, BRNC-02, BRNC-03, BRNC-04
+**Plans:** 2 plans
+
+Plans:
+- [ ] 26-01-PLAN.md — Type contracts (ChoicePattern variable-length, QUESTION_META 7-8) + branch script content (Q2B, Q4B)
+- [ ] 26-02-PLAN.md — Percentage-based pattern matching + branch-aware timing validation
+
 **Success Criteria** (what must be TRUE):
   1. Experience has 8-10 total decision points (up from 6)
   2. At least 2 branching points where choice A leads to different scenario than choice B
   3. All branch paths converge before devoluções (no orphaned endings)
   4. Branch-specific content maintains depth 4-5 psychoanalytic quality
   5. NLU keyword maps updated for all new decision points
-**Plans**: TBD
 **UI hint**: yes
 
 ### Phase 27: State Machine Redesign (v4.0)
@@ -211,7 +216,7 @@ Plans:
 | 19. Audio Generation | v3.2 | 1/1 | Complete | 2026-03-28 |
 | 20. Testing | v3.2 | - | Skipped | - |
 | 25. Script Pacing | v4.0 | 2/2 | Complete    | 2026-03-28 |
-| 26. Script Branching | v4.0 | 0/? | Not started | - |
+| 26. Script Branching | v4.0 | 0/2 | Planned | - |
 | 27. State Machine | v4.0 | 0/? | Not started | - |
 | 28. Audio Regen | v4.0 | 0/? | Not started | - |
 | 29. Integration | v4.0 | 0/? | Not started | - |
@@ -231,4 +236,4 @@ v4.0 Game Flow (active):
 
 ---
 
-*Last updated: 2026-03-28 — Phase 25 planned (2 plans)*
+*Last updated: 2026-03-28 — Phase 26 planned (2 plans)*
