@@ -7,7 +7,9 @@
 - v1.2 Voice Flow Stabilization (shipped 2026-03-26)
 - v1.3 Voice Capture Debug & Fix (shipped 2026-03-26)
 - v2.0 Narração Realista com ElevenLabs v3 (shipped 2026-03-27)
-- v3.0 Narrative Redesign — 6 Choices (in progress)
+- v3.0 Narrative Redesign — 6 Choices (structure shipped 2026-03-28)
+- v3.1 Script Mastery (in progress)
+- v3.2 Integration & Audio (pending — after v3.1)
 
 ## Phases
 
@@ -56,104 +58,135 @@
 
 </details>
 
-### v3.0 Narrative Redesign — 6 Choices (In Progress)
+<details>
+<summary>v3.0 Narrative Redesign — Structure (Phases 16-17) - SHIPPED 2026-03-28</summary>
 
-- [x] **Phase 16: Script Writing** - Complete PT-BR script with 6 choices, 12 responses, 8-12 devoluções, inflection tags (completed 2026-03-27)
-  **Plans:** 2 plans
+- [x] **Phase 16: Script Writing** - First draft PT-BR script with 6 choices, 12 responses, 8 devoluções, inflection tags (completed 2026-03-27)
+- [x] **Phase 17: State Machine & Data** - XState redesign for 6 linear choices (~42 states), pattern tracking, NLU keyword maps (completed 2026-03-28)
+
+</details>
+
+### v3.1 Script Mastery (In Progress)
+
+- [ ] **Phase 21: Script Audit & Framework Integration** - Análise profunda do script vs. 3 frameworks teóricos + 9 frases de ouro. Audit com recomendações por seção.
   Plans:
-  - [x] 16-01-PLAN.md — ScriptDataV3 interface + APRESENTACAO + INFERNO (Q1, Q2) + PURGATORIO (Q3, Q4)
-  - [x] 16-02-PLAN.md — PARAISO (Q5, Q6) + 8 devoluções + ENCERRAMENTO + fallbacks + timeouts
-- [x] **Phase 17: State Machine & Data** - XState redesign for 6 linear choices (~28 states), pattern tracking, NLU keyword maps (completed 2026-03-28)
-  **Plans:** 2 plans
-  Plans:
-  - [x] 17-01-PLAN.md — v3 types (OracleContextV3, events, updateChoice) + pattern matching utility (determineArchetype, 8 archetype guards)
-  - [x] 17-02-PLAN.md — Rewrite oracleMachine.ts for v3 linear flow (INFERNO Q1+Q2, PURGATORIO Q3+Q4, PARAISO Q5+Q6, 8 devolucao routes) + tests
+  - [ ] 21-01-PLAN.md — Framework depth analysis (per-segment table + anchor points + escalation curve)
+  - [ ] 21-02-PLAN.md — Gold phrase mapping + consolidated audit with per-section recommendations
+- [ ] **Phase 22: Core Narrative Rewrite** - Reescrita/refinamento das 6 escolhas (setups + perguntas + 12 respostas) com profundidade psicanalítica absorvida.
+- [ ] **Phase 23: Devoluções & Bookends** - Reescrita das 8 devoluções, Apresentação, Encerramento, fallbacks e timeouts.
+- [ ] **Phase 24: Rhythm, Inflection & Final Validation** - Timing, inflection tags, read-through completo, validação contra 10 minutos.
+
+### v3.2 Integration & Audio (Pending — after v3.1)
+
 - [ ] **Phase 18: Components & Services** - OracleExperience.tsx, FallbackTTS, useVoiceChoice updates for 6 choice points
-- [ ] **Phase 19: Audio Generation** - Generate ~50 MP3s with ElevenLabs v3 for new script
+- [ ] **Phase 19: Audio Generation** - Generate ~50 MP3s with ElevenLabs v3 for final script
 - [ ] **Phase 20: Testing** - Update all tests for new 6-choice structure
 
 ---
 
 ## Phase Details
 
-### Phase 16: Script Writing
-**Goal**: Complete narrative script with 6 binary choices across Inferno/Purgatório/Paraíso, pattern-based devoluções, and ElevenLabs v3 inflection tags
-**Depends on**: Research synthesis (complete)
-**Requirements**: SCRV3-01 (6 choices), SCRV3-02 (devoluções), SCRV3-03 (inflection tags)
-**Plans:** 2/2 plans complete
+### Phase 21: Script Audit & Framework Integration
+**Goal**: Mapear o que da pesquisa está absorvido no script e o que falta. Audit com recomendações concretas.
+**Depends on**: Nothing (first phase of v3.1)
+**Requirements**: SCR-01, SCR-02, SCR-08
+**Plans:** 2 plans
 **Success Criteria**:
-  1. All 6 choice scenarios written in PT-BR with escalating depth (Light->Medium->Deep->Profound)
-  2. 8-12 pattern-based devoluções covering Seeker/Guardian/Contradicted/Pivot archetypes
-  3. All segments annotated with v3 inflection tags, max 1 per sentence
-  4. Script data structure matches new ScriptDataV3 interface
+  1. Cada segmento avaliado em tabela (profundidade 1-5, framework predominante, gaps)
+  2. As 9 frases de ouro mapeadas (absorvida vs. ausente, onde poderia entrar)
+  3. Os 3 frameworks com pontos de ancoragem atuais + oportunidades
+  4. Audit document com recomendações concretas por seção
 
-### Phase 17: State Machine & Data
-**Goal**: XState v5 machine redesigned for 6 linear choices with pattern tracking
-**Depends on**: Phase 16 (script must exist for state mapping)
-**Requirements**: SMV3-01 (linear flow), SMV3-02 (pattern tracking), SMV3-03 (devolução routing)
-**Plans:** 2/2 plans complete
+### Phase 22: Core Narrative Rewrite
+**Goal**: Reescrever/refinar 6 escolhas com profundidade psicanalítica metabolizada
+**Depends on**: Phase 21 (audit guides the rewrite)
+**Requirements**: SCR-01, SCR-02, SCR-03, SCR-05, SCR-08
 **Success Criteria**:
-  1. Machine has ~28 states: 6x(SETUP->PERGUNTA->AGUARDANDO->RESPOSTA_A/B) + intro/devolução/encerramento
-  2. Context tracks choices as ChoiceAB[] array of 6 entries
-  3. Devolução routing uses pattern-matching function (not combinatorial guards)
-  4. NLU keyword maps defined per question
+  1. 6 perguntas criam tensão genuína (nenhuma tem resposta "óbvia")
+  2. 12 respostas validam escolha E revelam custo/sombra
+  3. Escalação Light→Medium→Deep→Profound perceptível na progressão
+  4. Cada framework tem ≥2 pontos de ancoragem verificáveis
+  5. Voz do Oráculo consistente mas evolui entre reinos
 
-### Phase 18: Components & Services
+### Phase 23: Devoluções & Bookends
+**Goal**: Reescrever 8 devoluções como espelho genuíno + refinar Apresentação/Encerramento/fallbacks/timeouts
+**Depends on**: Phase 22 (core narrative defines what patterns mean)
+**Requirements**: SCR-04, SCR-05, SCR-07, SCR-08
+**Success Criteria**:
+  1. Cada devolução nomeia PADRÃO (não lista escolhas)
+  2. Cada devolução termina com pergunta/imagem persistente
+  3. Apresentação estabelece contrato + limites do Oráculo
+  4. Encerramento dissolve Oráculo + imperativo final
+  5. Fallbacks reformulam no vocabulário do cenário
+  6. Timeouts interpretam silêncio como gesto
+
+### Phase 24: Rhythm, Inflection & Final Validation
+**Goal**: Polish final — timing, inflection tags, read-through, 10-min target
+**Depends on**: Phase 23 (all content final)
+**Requirements**: SCR-06
+**Success Criteria**:
+  1. pauseAfter varia 1200-2800ms (não uniforme)
+  2. Inflection tags em ≤40% dos segmentos
+  3. Word count ≤10 minutos (~130 wpm PT-BR)
+  4. Nenhuma frase >40 palavras
+  5. Testes TypeScript passam
+  6. Script "read-through ready"
+
+### Phase 18: Components & Services (v3.2)
 **Goal**: All UI components and services updated for 6-choice flow
-**Depends on**: Phase 17 (machine must be defined)
-**Requirements**: CMPV3-01 (OracleExperience), CMPV3-02 (FallbackTTS), CMPV3-03 (ChoiceButtons)
+**Depends on**: Phase 24 (script must be final)
+**Requirements**: CMPV3-01, CMPV3-02, CMPV3-03
 **Success Criteria**:
-  1. OracleExperience getScriptKey/getBreathingDelay/getFallbackScript handle all ~28 states
+  1. OracleExperience handles all ~42 states
   2. FallbackTTS PRERECORDED_URLS updated for ~50 audio keys
-  3. 6 ChoiceConfig objects with per-question NLU context and keywords
+  3. 6 ChoiceConfig objects with per-question NLU context
 
-### Phase 19: Audio Generation
-**Goal**: Generate all MP3s for new script using ElevenLabs v3
-**Depends on**: Phase 16 (script text), Phase 18 (PRERECORDED_URLS)
-**Requirements**: AUDV3-01 (generation), AUDV3-02 (quality)
+### Phase 19: Audio Generation (v3.2)
+**Goal**: Generate all MP3s for final script using ElevenLabs v3
+**Depends on**: Phase 24 (script text final), Phase 18 (PRERECORDED_URLS)
+**Requirements**: AUDV3-01, AUDV3-02
 **Success Criteria**:
-  1. ~50 MP3s generated with eleven_v3 model and inflection tags
-  2. No audible artifacts, consistent voice across all clips
+  1. ~50 MP3s generated with eleven_v3 and inflection tags
+  2. No audible artifacts, consistent voice
 
-### Phase 20: Testing
+### Phase 20: Testing (v3.2)
 **Goal**: All tests updated and passing for v3 structure
 **Depends on**: Phase 18 (all code changes complete)
-**Requirements**: TSTV3-01 (machine tests), TSTV3-02 (component tests), TSTV3-03 (integration)
+**Requirements**: TSTV3-01, TSTV3-02, TSTV3-03
 **Success Criteria**:
-  1. State machine tests cover all 6 choice points, pattern tracking, devolução routing
-  2. OracleExperience tests verify script key mapping and breathing delays
-  3. All existing tests pass (no regressions)
+  1. Machine tests cover all 6 choices, pattern tracking, devolução routing
+  2. Component tests verify script key mapping
+  3. All tests pass (no regressions)
 
 ---
 
 ## Progress
 
-**Execution Order:** Phase 16 -> Phase 17 -> Phase 18 -> Phase 19 -> Phase 20
-
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 16. Script Writing | v3.0 | 2/2 | Complete    | 2026-03-27 |
-| 17. State Machine & Data | v3.0 | 2/2 | Complete    | 2026-03-28 |
-| 18. Components & Services | v3.0 | - | Not started | - |
-| 19. Audio Generation | v3.0 | - | Not started | - |
-| 20. Testing | v3.0 | - | Not started | - |
-
----
+| 16. Script Writing (draft) | v3.0 | 2/2 | Complete | 2026-03-27 |
+| 17. State Machine & Data | v3.0 | 2/2 | Complete | 2026-03-28 |
+| 21. Script Audit | v3.1 | 0/2 | Planned | - |
+| 22. Core Narrative Rewrite | v3.1 | - | Not started | - |
+| 23. Devoluções & Bookends | v3.1 | - | Not started | - |
+| 24. Rhythm & Validation | v3.1 | - | Not started | - |
+| 18. Components & Services | v3.2 | - | Not started | - |
+| 19. Audio Generation | v3.2 | - | Not started | - |
+| 20. Testing | v3.2 | - | Not started | - |
 
 ## Dependencies
 
 ```
-Phase 16: Script Writing (narrative content)
-    |
-Phase 17: State Machine & Data (XState + types)
-    |
-Phase 18: Components & Services (wire everything)
-    |
-Phase 19: Audio Generation (MP3s from script)
-    |
-Phase 20: Testing (validate all)
+v3.0 (shipped):
+  Phase 16: Script Draft → Phase 17: State Machine
+                                        |
+v3.1 Script Mastery:                    |
+  Phase 21: Audit → Phase 22: Rewrite → Phase 23: Devoluções → Phase 24: Polish
+                                                                    |
+v3.2 Integration & Audio:                                           |
+  Phase 18: Components → Phase 19: Audio → Phase 20: Testing
 ```
 
 ---
 
-*Last updated: 2026-03-27 — Phase 17 planned (2 plans), v3.0 in progress*
+*Last updated: 2026-03-28 — Phase 21 planned (2 plans), v3.1 in progress*
