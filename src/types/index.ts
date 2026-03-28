@@ -17,8 +17,8 @@ export type NarrativePhase =
 /** Binary choice for any question */
 export type ChoiceAB = 'A' | 'B' | null;
 
-/** Complete path through experience — array of 6 choices */
-export type ChoicePattern = [ChoiceAB, ChoiceAB, ChoiceAB, ChoiceAB, ChoiceAB, ChoiceAB];
+/** Complete path through experience — array of 6-10 choices (variable due to branching) */
+export type ChoicePattern = ChoiceAB[];
 
 /** Devolução archetype derived from pattern analysis */
 export type DevolucaoArchetype =
@@ -82,7 +82,7 @@ export interface QuestionMeta {
   defaultOnTimeout: 'A' | 'B';
 }
 
-/** NLU metadata for all 6 questions */
+/** NLU metadata for all questions (6 base + 2 branch) */
 export const QUESTION_META: Record<number, QuestionMeta> = {
   1: {
     questionContext: 'Visitante numa sala confortável, escolhendo entre ficar no conforto ou procurar a porta de saída',
@@ -131,5 +131,22 @@ export const QUESTION_META: Record<number, QuestionMeta> = {
     keywordsA: ['espelho', 'pedir', 'ver', 'mostrar', 'quero', 'sim', 'olhar'],
     keywordsB: ['sei', 'já sei', 'não', 'confio', 'saber', 'conheço', 'dispenso'],
     defaultOnTimeout: 'B',
+  },
+  // Branch questions — conditional, only appear for specific choice patterns
+  7: {
+    questionContext: 'Visitante que ficou na sala E recuou da coisa no chao agora encontra uma segunda coisa pulsando no corredor, escolhendo entre tocar ou passar reto',
+    optionA: 'Tocar',
+    optionB: 'Passar reto',
+    keywordsA: ['tocar', 'toco', 'pegar', 'encostar', 'mao', 'sim', 'quero'],
+    keywordsB: ['passar', 'reto', 'seguir', 'nao', 'embora', 'ir', 'andar', 'ignorar'],
+    defaultOnTimeout: 'A',
+  },
+  8: {
+    questionContext: 'Visitante que entrou no jardim E escolheu lembrar agora encontra uma memoria especifica que insiste em voltar, escolhendo entre reviver ou arquivar',
+    optionA: 'Reviver',
+    optionB: 'Arquivar',
+    keywordsA: ['reviver', 'revivo', 'voltar', 'lembrar', 'sim', 'quero', 'abrir', 'ver'],
+    keywordsB: ['arquivar', 'guardar', 'fechar', 'nao', 'esquecer', 'passar', 'deixar'],
+    defaultOnTimeout: 'A',
   },
 };
