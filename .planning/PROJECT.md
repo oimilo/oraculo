@@ -8,20 +8,25 @@ Agente de voz interativo que guia visitantes por uma jornada inspirada na Divina
 
 A experiência deve ser seamless e imersiva como um jogo — o visitante fala, ouve, e é transformado. Se a voz, o roteiro e as transições funcionarem perfeitamente, tudo funciona.
 
-## Current Milestone: v3.0 Narrative Redesign — 6 Choices
+## Current Milestone: v3.1 Script Mastery
 
-**Goal:** Reescrever toda a narrativa do Oráculo com 6 escolhas binárias (em vez de 3), devoluções baseadas em padrões, e profundidade psicanalítica absorvida em metáfora.
+**Goal:** Elevar o roteiro do Oráculo v3 de primeiro rascunho a obra-prima — absorvendo toda a profundidade psicanalítica da pesquisa (3 frameworks teóricos, 9 frases de ouro das psicanalistas, 20 obras em 4 clusters) em metáfora, sem jamais declará-la.
 
-**Target features:**
-- 6 escolhas binárias com escalação de profundidade (Light→Medium→Deep→Profound)
-- Devoluções baseadas em padrões (Seeker/Guardian/Contradicted/Pivot) — leem a FORMA das 6 escolhas
-- Zero referências explícitas a autores — tudo absorvido em metáfora
-- Menos narração, mais decisão — cara de JOGO
-- ~50 MP3s com ElevenLabs v3 e inflection tags
-- State machine linear (não cascading): todos passam por todas as 6 escolhas
+**Why its own milestone:** O roteiro é o coração da experiência. Tudo mais (machine, components, áudio, testes) serve ao roteiro. Ele merece tratamento dedicado — audit, reescrita seção por seção, refinamento de devoluções, e polish de ritmo.
 
-**Research basis:** 20 obras analisadas, 4 clusters temáticos, 24 cenários gerados, 6 selecionados.
-See: `scripts/narrative-proposals/RESEARCH-SYNTHESIS.md`
+**Target:**
+- Profundidade psicanalítica sentida, não declarada — digna da Bienal
+- 3 frameworks absorvidos: Lacaniano (desejo, Real), Winnicottiano (holding, self verdadeiro), Bioniano (continente-contido, reverie)
+- 9 frases de ouro metabolizadas no script
+- Escolhas genuinamente equilibradas — nenhuma resposta "certa"
+- Devoluções como espelho — leem PADRÃO, não escolhas individuais
+- Ritmo respiratório, não metrônomo
+- ≤10 minutos total
+
+**Research basis:** 20 obras, 4 clusters, 3 frameworks teóricos, FINAL.ts synthesis.
+See: `scripts/narrative-proposals/RESEARCH-SYNTHESIS.md`, `.planning/milestones/v3.1-REQUIREMENTS.md`
+
+**Previous milestone:** v3.0 Narrative Redesign (structure shipped — Phase 16 script draft + Phase 17 state machine)
 
 ## Requirements
 
@@ -43,17 +48,27 @@ See: `scripts/narrative-proposals/RESEARCH-SYNTHESIS.md`
 - [x] API route v2/v3 dual-mode via USE_V3_MODEL env flag — *Validated in Phase 13*
 - [x] Voice IVC compatibility documented — *Phase 13*
 
-### Active (v3.0)
+### Active (v3.1 — Script Mastery)
 
-- [ ] 6 binary choices with depth escalation across Inferno/Purgatório/Paraíso — *Phase 16*
-- [ ] Pattern-based devoluções reading shape of 6 choices — *Phase 16*
-- [x] XState machine redesigned for 6 linear choices (~42 states) — *Validated in Phase 17*
-- [x] Pattern tracking in machine context (ChoiceAB[] array) — *Validated in Phase 17*
-- [x] Devolução routing via pattern-matching function (8 archetypes) — *Validated in Phase 17*
+- [x] Script audited against 3 theoretical frameworks + 9 gold phrases — *Validated in Phase 21*
+- [x] 6 choices rewritten with absorbed psychoanalytic depth — *Validated in Phase 22*
+- [ ] 8 devoluções rewritten as genuine pattern mirrors — *Phase 23*
+- [ ] Apresentação/Encerramento/fallbacks/timeouts polished — *Phase 23*
+- [ ] Rhythm, inflection & timing validated (≤10 min) — *Phase 24*
+
+### Queued (v3.2 — Integration & Audio)
+
 - [ ] OracleExperience updated for 6 choice points — *Phase 18*
 - [ ] FallbackTTS updated for ~50 audio keys — *Phase 18*
 - [ ] ~50 MP3s generated with ElevenLabs v3 — *Phase 19*
 - [ ] All tests passing with new v3 structure — *Phase 20*
+
+### Shipped (v3.0 — Structure)
+
+- [x] First draft script with 6 choices, 8 devoluções, inflection tags — *Phase 16*
+- [x] XState machine redesigned for 6 linear choices (~42 states) — *Phase 17*
+- [x] Pattern tracking in machine context (ChoiceAB[] array) — *Phase 17*
+- [x] Devolução routing via pattern-matching function (8 archetypes) — *Phase 17*
 
 ### Out of Scope
 
@@ -108,4 +123,4 @@ See: `scripts/narrative-proposals/RESEARCH-SYNTHESIS.md`
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-28 — Phase 17 complete, state machine v3 with 6 linear choices*
+*Last updated: 2026-03-28 — Phase 22 complete, 6 choices rewritten with multi-framework psychoanalytic depth (Lacanian/Winnicottian/Bionian), 9 gold phrases absorbed*
