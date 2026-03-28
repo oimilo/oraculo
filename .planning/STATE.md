@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v3.1
 milestone_name: Script Mastery
-status: executing
-stopped_at: Completed 22-02-PLAN.md
-last_updated: "2026-03-28T11:29:16.948Z"
+status: verifying
+stopped_at: Completed 22-03-PLAN.md
+last_updated: "2026-03-28T11:34:45.149Z"
 last_activity: 2026-03-28
 progress:
   total_phases: 15
-  completed_phases: 13
+  completed_phases: 14
   total_plans: 36
-  completed_plans: 35
+  completed_plans: 36
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ progress:
 
 Phase: 22 (core-narrative-rewrite) — EXECUTING
 Plan: 3 of 3
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-03-28
 
 Progress: [░░░░░░░░░░] 0%
@@ -96,6 +96,10 @@ Recent decisions affecting current work:
 - [Phase 22]: Gold phrase #9 metabolized as 'virou luz aqui' in PURGATORIO_INTRO -- felt not declared
 - [Phase 22]: Q4_SETUP expanded 3->5 segments to fix Q3-Q4 escalation flattening; visitor now FEELS weight before choosing
 - [Phase 22]: Winnicottian specificity in Q4_RESPOSTA_B uses concrete sensory moments (cheiro, riso, gosto) instead of abstract language
+- [Phase 22]: Gold phrase #9 metabolized as 'chegou aqui como claridade' in PARAISO_INTRO
+- [Phase 22]: Lacanian jouissance in Q5_RESPOSTA_A: painful satisfaction of carrying the unanswerable
+- [Phase 22]: Q6 meta-frame: Oracle names 6 choices, each revealed something; analytic act as surprise not confirmation
+- [Phase 22]: Q6_RESPOSTA_B doubt as gift: visitor carries the question of whether choice was arrival or defense
 
 ### v2.0 Research Highlights
 
@@ -119,6 +123,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-28T11:29:16.945Z
-Stopped at: Completed 22-02-PLAN.md
+Last session: 2026-03-28T11:34:38.473Z
+Stopped at: Completed 22-03-PLAN.md
 Resume: /gsd:plan-phase 13

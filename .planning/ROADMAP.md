@@ -72,12 +72,12 @@
   Plans:
   - [x] 21-01-PLAN.md — Framework depth analysis (per-segment table + anchor points + escalation curve)
   - [x] 21-02-PLAN.md — Gold phrase mapping + consolidated audit with per-section recommendations
-- [ ] **Phase 22: Core Narrative Rewrite** - Reescrita/refinamento das 6 escolhas (setups + perguntas + 12 respostas) com profundidade psicanalítica absorvida.
+- [x] **Phase 22: Core Narrative Rewrite** - Reescrita/refinamento das 6 escolhas (setups + perguntas + 12 respostas) com profundidade psicanalítica absorvida. (completed 2026-03-28)
   **Plans:** 3 plans
   Plans:
   - [x] 22-01-PLAN.md — INFERNO realm rewrite (INTRO + Q1 Comfortable Prison + Q2 Resposta A deepened)
   - [x] 22-02-PLAN.md — PURGATORIO realm rewrite (INTRO + Q3 Garden responses + Q4 Two Waters to depth 5)
-  - [ ] 22-03-PLAN.md — PARAISO realm rewrite (INTRO + Q5 Unanswerable + Q6 End of Game to depth 5)
+  - [x] 22-03-PLAN.md — PARAISO realm rewrite (INTRO + Q5 Unanswerable + Q6 End of Game to depth 5)
 - [ ] **Phase 23: Devoluções & Bookends** - Reescrita das 8 devoluções, Apresentação, Encerramento, fallbacks e timeouts.
 - [ ] **Phase 24: Rhythm, Inflection & Final Validation** - Timing, inflection tags, read-through completo, validação contra 10 minutos.
 
@@ -106,7 +106,7 @@
 **Goal**: Reescrever/refinar 6 escolhas com profundidade psicanalítica metabolizada
 **Depends on**: Phase 21 (audit guides the rewrite)
 **Requirements**: SCR-01, SCR-02, SCR-03, SCR-05, SCR-08
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 **Success Criteria**:
   1. 6 perguntas criam tensão genuína (nenhuma tem resposta "óbvia")
   2. 12 respostas validam escolha E revelam custo/sombra
@@ -173,7 +173,7 @@
 | 16. Script Writing (draft) | v3.0 | 2/2 | Complete | 2026-03-27 |
 | 17. State Machine & Data | v3.0 | 2/2 | Complete | 2026-03-28 |
 | 21. Script Audit | v3.1 | 2/2 | Complete   | 2026-03-28 |
-| 22. Core Narrative Rewrite | v3.1 | 2/3 | In Progress|  |
+| 22. Core Narrative Rewrite | v3.1 | 3/3 | Complete   | 2026-03-28 |
 | 23. Devoluções & Bookends | v3.1 | - | Not started | - |
 | 24. Rhythm & Validation | v3.1 | - | Not started | - |
 | 18. Components & Services | v3.2 | - | Not started | - |
