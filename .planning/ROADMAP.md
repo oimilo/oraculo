@@ -210,7 +210,7 @@ Plans:
 | 18. Components & Services | v3.2 | 2/2 | Complete    | 2026-03-28 |
 | 19. Audio Generation | v3.2 | 1/1 | Complete | 2026-03-28 |
 | 20. Testing | v3.2 | - | Skipped | - |
-| 25. Script Pacing | v4.0 | 2/2 | Complete   | 2026-03-28 |
+| 25. Script Pacing | v4.0 | 2/2 | Complete    | 2026-03-28 |
 | 26. Script Branching | v4.0 | 0/? | Not started | - |
 | 27. State Machine | v4.0 | 0/? | Not started | - |
 | 28. Audio Regen | v4.0 | 0/? | Not started | - |
