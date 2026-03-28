@@ -2,17 +2,18 @@
 
 ## What This Is
 
-Agente de voz interativo que guia visitantes por uma jornada inspirada na Divina Comédia de Dante, para a VII Bienal de Psicanálise e Cultura da SBPRP 2026. A IA assume o papel de guia — reconhece seus limites — conduzindo cada pessoa por Inferno, Purgatório e Paraíso em ~10 minutos, com 6 escolhas binárias por voz que revelam padrões psíquicos do visitante, culminando numa devolução personalizada baseada no desenho total das escolhas.
+Agente de voz interativo que guia visitantes por uma jornada inspirada na Divina Comédia de Dante, para a VII Bienal de Psicanálise e Cultura da SBPRP 2026. A IA assume o papel de guia — reconhece seus limites — conduzindo cada pessoa por Inferno, Purgatório e Paraíso em 5-7 minutos, com ~8-10 escolhas por voz (incluindo caminhos ramificados) que revelam padrões psíquicos do visitante, culminando numa devolução personalizada. Ritmo de jogo: mais decisões, menos monólogo.
 
 ## Core Value
 
 A experiência deve ser seamless e imersiva como um jogo — o visitante fala, ouve, e é transformado. Se a voz, o roteiro e as transições funcionarem perfeitamente, tudo funciona.
 
-## Current Milestone: v3.2 Integration & Audio
+## Current Milestone: v4.0 Game Flow
 
-**Goal:** Connect finalized script to UI components, generate ~50 MP3s with ElevenLabs v3, update all tests for 6-choice structure.
+**Goal:** Transform the Oracle into a 5-7 min game-like experience with ~8-10 branching decision points, trimmed narration, and regenerated audio.
 
 **Previous milestones:**
+- v3.2 Integration & Audio (shipped 2026-03-28) — components updated for 6-choice, 49 MP3s generated
 - v3.1 Script Mastery (shipped 2026-03-28) — script elevated to production quality with 3 frameworks absorbed
 - v3.0 Narrative Redesign (shipped 2026-03-28) — first draft script + XState v5 rewrite
 
@@ -36,12 +37,15 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 - [x] API route v2/v3 dual-mode via USE_V3_MODEL env flag — *Validated in Phase 13*
 - [x] Voice IVC compatibility documented — *Phase 13*
 
-### Active (v3.2 — Integration & Audio)
+### Shipped (v3.2 — Integration & Audio)
 
 - [x] OracleExperience updated for 6 choice points — *Validated in Phase 18*
 - [x] FallbackTTS updated for ~50 audio keys — *Validated in Phase 18*
 - [x] 49 MP3s generated with ElevenLabs v3 (27 MB, mp3_44100_192) — *Phase 19*
-- [ ] All tests passing with new v3 structure — *Phase 20*
+
+### Active (v4.0 — Game Flow)
+
+(Defined in REQUIREMENTS.md)
 
 ### Shipped (v3.1 — Script Mastery)
 
@@ -108,10 +112,12 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 | 3-layer devolução structure | Winnicott pattern + Lacan structure + Bion transformation — each framework reads different aspect | Good — v3.1 |
 | Gold phrase absorption (not quotation) | Metabolize essences into Oracle voice — "circulos" becomes "circulo perfeito de conforto" | Good — v3.1 |
 | Pause compression 800-2000ms | Reduced from 1200-2800ms to fit 10.5-min target while preserving relative emotional weight | Good — v3.1 |
+| Branching paths over linear flow | More game-like engagement, choices feel consequential, replayability increases | — v4.0 |
+| 5-7 min target (down from 10.5) | Bienal foot traffic demands shorter sessions; game pacing keeps engagement high | — v4.0 |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-28 — Phase 19 complete: 49 MP3s generated with ElevenLabs v3*
+*Last updated: 2026-03-28 — Milestone v4.0 Game Flow started*

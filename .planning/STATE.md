@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v3.2
-milestone_name: Integration & Audio
-status: verifying
-stopped_at: Completed 18-02-PLAN.md (OracleExperience v3 state mapping)
-last_updated: "2026-03-28T19:56:52.896Z"
+milestone: v4.0
+milestone_name: Game Flow
+status: defining
+stopped_at: Defining requirements
+last_updated: "2026-03-28T22:00:00.000Z"
 last_activity: 2026-03-28
 progress:
-  total_phases: 18
-  completed_phases: 17
-  total_plans: 41
-  completed_plans: 41
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
   percent: 0
 ---
 
@@ -20,16 +20,16 @@ progress:
 
 **Core Value:** Experiencia seamless e imersiva como um jogo -- o visitante fala, ouve, e e transformado. Se a voz, o roteiro e as transicoes funcionarem perfeitamente, tudo funciona.
 
-**Current Milestone:** v3.2 Integration & Audio
+**Current Milestone:** v4.0 Game Flow
 
-**Current Focus:** Phase 18 — components-services
+**Current Focus:** Defining requirements
 
 ## Current Position
 
-Phase: 21
-Plan: Not started
-Status: Phase complete — ready for verification
-Last activity: 2026-03-28
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-28 — Milestone v4.0 started
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -108,6 +108,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-28T19:51:11.728Z
-Stopped at: Completed 18-02-PLAN.md (OracleExperience v3 state mapping)
-Resume: /gsd:plan-phase 18 (Components & Services)
+Last session: 2026-03-28T22:00:00.000Z
+Stopped at: Milestone v4.0 initialization
+Resume: /gsd:new-milestone v4.0 Game Flow (step 6+)
