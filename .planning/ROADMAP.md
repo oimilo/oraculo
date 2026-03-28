@@ -92,6 +92,12 @@ See: `.planning/milestones/v3.1-ROADMAP.md`
 **Goal**: All UI components and services updated for 6-choice flow
 **Depends on**: Phase 24 (script must be final)
 **Requirements**: CMPV3-01, CMPV3-02, CMPV3-03
+**Plans:** 2 plans
+
+Plans:
+- [ ] 18-01-PLAN.md — FallbackTTS PRERECORDED_URLS dynamic derivation from SCRIPT keys
+- [ ] 18-02-PLAN.md — OracleExperience v3 state mapping, ChoiceConfigs, UI wiring
+
 **Success Criteria**:
   1. OracleExperience handles all ~42 states
   2. FallbackTTS PRERECORDED_URLS updated for ~50 audio keys
@@ -121,7 +127,7 @@ See: `.planning/milestones/v3.1-ROADMAP.md`
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 18. Components & Services | v3.2 | - | Not started | - |
+| 18. Components & Services | v3.2 | 0/2 | Planning complete | - |
 | 19. Audio Generation | v3.2 | - | Not started | - |
 | 20. Testing | v3.2 | - | Not started | - |
 
@@ -137,4 +143,4 @@ v3.2 Integration & Audio:
 
 ---
 
-*Last updated: 2026-03-28 — v3.2 milestone initialized*
+*Last updated: 2026-03-28 — Phase 18 planned (2 plans, 1 wave)*
