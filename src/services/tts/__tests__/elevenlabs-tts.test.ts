@@ -227,7 +227,7 @@ describe('ElevenLabsTTSService', () => {
     await service.speak(segments, voiceSettings);
 
     // Verify fallback speak method was called with correct args
-    expect(mockFallbackSpeak).toHaveBeenCalledWith(segments, voiceSettings);
+    expect(mockFallbackSpeak).toHaveBeenCalledWith(segments, voiceSettings, undefined);
   });
 
   it('should fall back to FallbackTTSService when fetch throws network error', async () => {
@@ -239,7 +239,7 @@ describe('ElevenLabsTTSService', () => {
     await service.speak(segments, voiceSettings);
 
     // Verify FallbackTTSService was called
-    expect(mockFallbackSpeak).toHaveBeenCalledWith(segments, voiceSettings);
+    expect(mockFallbackSpeak).toHaveBeenCalledWith(segments, voiceSettings, undefined);
   });
 
   it('should stop currentSource when cancel() is called', async () => {

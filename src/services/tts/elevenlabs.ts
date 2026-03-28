@@ -13,7 +13,7 @@ export class ElevenLabsTTSService implements TTSService {
     this.fallbackService = new FallbackTTSService();
   }
 
-  async speak(segments: SpeechSegment[], voiceSettings: VoiceSettings): Promise<void> {
+  async speak(segments: SpeechSegment[], voiceSettings: VoiceSettings, scriptKey?: string): Promise<void> {
     this.cancelled = false;
 
     try {
@@ -71,7 +71,7 @@ export class ElevenLabsTTSService implements TTSService {
         throw new Error('Speech cancelled');
       }
       console.warn('[ElevenLabs] API failed, using fallback:', error);
-      return this.fallbackService.speak(segments, voiceSettings);
+      return this.fallbackService.speak(segments, voiceSettings, scriptKey);
     }
   }
 

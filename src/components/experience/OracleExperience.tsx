@@ -26,47 +26,23 @@ const logger = createLogger('TTS');
 const activationLogger = createLogger('Activation');
 
 // Choice configurations for each AGUARDANDO state — v3 (6 questions)
-const Q1_CHOICE: ChoiceConfig = {
-  questionContext: QUESTION_META[1].questionContext,
-  options: { A: QUESTION_META[1].optionA, B: QUESTION_META[1].optionB },
-  eventMap: { A: 'CHOICE_A', B: 'CHOICE_B' },
-  defaultEvent: `CHOICE_${QUESTION_META[1].defaultOnTimeout}`,
-};
+function buildChoiceConfig(q: number): ChoiceConfig {
+  const meta = QUESTION_META[q];
+  return {
+    questionContext: meta.questionContext,
+    options: { A: meta.optionA, B: meta.optionB },
+    keywords: { A: meta.keywordsA, B: meta.keywordsB },
+    eventMap: { A: 'CHOICE_A', B: 'CHOICE_B' },
+    defaultEvent: `CHOICE_${meta.defaultOnTimeout}`,
+  };
+}
 
-const Q2_CHOICE: ChoiceConfig = {
-  questionContext: QUESTION_META[2].questionContext,
-  options: { A: QUESTION_META[2].optionA, B: QUESTION_META[2].optionB },
-  eventMap: { A: 'CHOICE_A', B: 'CHOICE_B' },
-  defaultEvent: `CHOICE_${QUESTION_META[2].defaultOnTimeout}`,
-};
-
-const Q3_CHOICE: ChoiceConfig = {
-  questionContext: QUESTION_META[3].questionContext,
-  options: { A: QUESTION_META[3].optionA, B: QUESTION_META[3].optionB },
-  eventMap: { A: 'CHOICE_A', B: 'CHOICE_B' },
-  defaultEvent: `CHOICE_${QUESTION_META[3].defaultOnTimeout}`,
-};
-
-const Q4_CHOICE: ChoiceConfig = {
-  questionContext: QUESTION_META[4].questionContext,
-  options: { A: QUESTION_META[4].optionA, B: QUESTION_META[4].optionB },
-  eventMap: { A: 'CHOICE_A', B: 'CHOICE_B' },
-  defaultEvent: `CHOICE_${QUESTION_META[4].defaultOnTimeout}`,
-};
-
-const Q5_CHOICE: ChoiceConfig = {
-  questionContext: QUESTION_META[5].questionContext,
-  options: { A: QUESTION_META[5].optionA, B: QUESTION_META[5].optionB },
-  eventMap: { A: 'CHOICE_A', B: 'CHOICE_B' },
-  defaultEvent: `CHOICE_${QUESTION_META[5].defaultOnTimeout}`,
-};
-
-const Q6_CHOICE: ChoiceConfig = {
-  questionContext: QUESTION_META[6].questionContext,
-  options: { A: QUESTION_META[6].optionA, B: QUESTION_META[6].optionB },
-  eventMap: { A: 'CHOICE_A', B: 'CHOICE_B' },
-  defaultEvent: `CHOICE_${QUESTION_META[6].defaultOnTimeout}`,
-};
+const Q1_CHOICE = buildChoiceConfig(1);
+const Q2_CHOICE = buildChoiceConfig(2);
+const Q3_CHOICE = buildChoiceConfig(3);
+const Q4_CHOICE = buildChoiceConfig(4);
+const Q5_CHOICE = buildChoiceConfig(5);
+const Q6_CHOICE = buildChoiceConfig(6);
 
 /**
  * Breathing delay (ms) before sending NARRATIVA_DONE after TTS completes.
@@ -198,13 +174,13 @@ function getScriptKey(machineState: any): keyof typeof SCRIPT | null {
 /**
  * Get fallback script based on current state
  */
-function getFallbackScript(machineState: any): SpeechSegment[] | null {
-  if (machineState.matches({ INFERNO: 'Q1_AGUARDANDO' })) return SCRIPT.FALLBACK_Q1;
-  if (machineState.matches({ INFERNO: 'Q2_AGUARDANDO' })) return SCRIPT.FALLBACK_Q2;
-  if (machineState.matches({ PURGATORIO: 'Q3_AGUARDANDO' })) return SCRIPT.FALLBACK_Q3;
-  if (machineState.matches({ PURGATORIO: 'Q4_AGUARDANDO' })) return SCRIPT.FALLBACK_Q4;
-  if (machineState.matches({ PARAISO: 'Q5_AGUARDANDO' })) return SCRIPT.FALLBACK_Q5;
-  if (machineState.matches({ PARAISO: 'Q6_AGUARDANDO' })) return SCRIPT.FALLBACK_Q6;
+function getFallbackScript(machineState: any): { segments: SpeechSegment[]; key: string } | null {
+  if (machineState.matches({ INFERNO: 'Q1_AGUARDANDO' })) return { segments: SCRIPT.FALLBACK_Q1, key: 'FALLBACK_Q1' };
+  if (machineState.matches({ INFERNO: 'Q2_AGUARDANDO' })) return { segments: SCRIPT.FALLBACK_Q2, key: 'FALLBACK_Q2' };
+  if (machineState.matches({ PURGATORIO: 'Q3_AGUARDANDO' })) return { segments: SCRIPT.FALLBACK_Q3, key: 'FALLBACK_Q3' };
+  if (machineState.matches({ PURGATORIO: 'Q4_AGUARDANDO' })) return { segments: SCRIPT.FALLBACK_Q4, key: 'FALLBACK_Q4' };
+  if (machineState.matches({ PARAISO: 'Q5_AGUARDANDO' })) return { segments: SCRIPT.FALLBACK_Q5, key: 'FALLBACK_Q5' };
+  if (machineState.matches({ PARAISO: 'Q6_AGUARDANDO' })) return { segments: SCRIPT.FALLBACK_Q6, key: 'FALLBACK_Q6' };
   return null;
 }
 
@@ -377,7 +353,7 @@ export default function OracleExperience() {
       if (cancelled) return;
 
       logger.log('speak START', { phase: state.context.currentPhase });
-      tts.speak(SCRIPT[scriptKey], state.context.currentPhase)
+      tts.speak(SCRIPT[scriptKey], state.context.currentPhase, scriptKey)
         .then(() => {
           if (!cancelled) {
             logger.log('speak END — success', { stateKey });
@@ -457,10 +433,10 @@ export default function OracleExperience() {
   useEffect(() => {
     if (!voiceChoice.needsFallback) return;
 
-    const fallbackScript = getFallbackScript(state);
-    if (!fallbackScript) return;
+    const fallback = getFallbackScript(state);
+    if (!fallback) return;
 
-    tts.speak(fallbackScript, state.context.currentPhase)
+    tts.speak(fallback.segments, state.context.currentPhase, fallback.key)
       .then(() => {
         // After fallback TTS completes, restart listening
         voiceChoice.startListening();

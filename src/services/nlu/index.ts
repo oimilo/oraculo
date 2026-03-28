@@ -11,7 +11,8 @@ export interface NLUService {
   classify(
     transcript: string,
     questionContext: string,
-    options: { A: string; B: string }
+    options: { A: string; B: string },
+    keywords?: { A: string[]; B: string[] }
   ): Promise<ClassificationResult>;
 }
 

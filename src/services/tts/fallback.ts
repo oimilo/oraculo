@@ -40,20 +40,20 @@ export class FallbackTTSService implements TTSService {
    * Speaks the given segments using pre-recorded audio.
    * Matches segment text against SCRIPT entries to find the correct audio file.
    */
-  async speak(segments: SpeechSegment[], voiceSettings: VoiceSettings): Promise<void> {
+  async speak(segments: SpeechSegment[], voiceSettings: VoiceSettings, scriptKey?: string): Promise<void> {
     // Bump generation so stale onended callbacks from previous speak() are ignored
     const generation = ++this.speakGeneration;
     this.cancelled = false;
 
-    // Find matching script key by comparing first segment text
-    const scriptKey = this.findScriptKey(segments);
+    // Use provided scriptKey directly, or fall back to text-based lookup
+    const resolvedKey = scriptKey || this.findScriptKey(segments);
 
-    if (!scriptKey) {
+    if (!resolvedKey) {
       // No match found - fall back to browser SpeechSynthesis
       return this.fallbackToSpeechSynthesis(segments, voiceSettings);
     }
 
-    const url = PRERECORDED_URLS[scriptKey];
+    const url = PRERECORDED_URLS[resolvedKey];
     if (!url) {
       return this.fallbackToSpeechSynthesis(segments, voiceSettings);
     }
@@ -70,7 +70,7 @@ export class FallbackTTSService implements TTSService {
       }
 
       // Check cache first
-      let buffer = this.audioBufferCache.get(scriptKey);
+      let buffer = this.audioBufferCache.get(resolvedKey);
 
       if (!buffer) {
         // Fetch and decode audio
@@ -83,7 +83,7 @@ export class FallbackTTSService implements TTSService {
         buffer = await this.audioContext.decodeAudioData(arrayBuffer);
 
         // Cache for future use
-        this.audioBufferCache.set(scriptKey, buffer);
+        this.audioBufferCache.set(resolvedKey, buffer);
       }
 
       // Check for cancellation before playback

@@ -105,7 +105,7 @@ export const QUESTION_META: Record<number, QuestionMeta> = {
     optionA: 'Entrar',
     optionB: 'Dar as costas',
     keywordsA: ['entrar', 'entro', 'ir', 'dentro', 'jardim', 'sim', 'beleza', 'bonito'],
-    keywordsB: ['costas', 'embora', 'sair', 'não', 'ir embora', 'voltar', 'recuar', 'virar'],
+    keywordsB: ['costas', 'embora', 'sair', 'não', 'ir embora', 'voltar', 'recuar', 'virar', 'tchau', 'adeus'],
     defaultOnTimeout: 'A',
   },
   4: {

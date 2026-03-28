@@ -115,7 +115,8 @@ describe('useVoiceChoice', () => {
       expect(mockClassify).toHaveBeenCalledWith(
         'vozes',
         defaultConfig.questionContext,
-        defaultConfig.options
+        defaultConfig.options,
+        defaultConfig.keywords
       );
     });
   });

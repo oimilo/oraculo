@@ -9,6 +9,8 @@ export interface ChoiceConfig {
   questionContext: string;
   /** The two options for binary classification */
   options: { A: string; B: string };
+  /** Keywords for direct matching before LLM call */
+  keywords?: { A: string[]; B: string[] };
   /** Map classification result to XState event type */
   eventMap: { A: string; B: string };
   /** Confidence threshold for accepting classification. Default: 0.7 */
@@ -283,7 +285,8 @@ export function useVoiceChoice(config: ChoiceConfig, active: boolean): UseVoiceC
         const classification: ClassificationResult = await nlu.classify(
           transcript,
           snap.questionContext,
-          snap.options
+          snap.options,
+          snap.keywords
         );
 
         if (cancelled) return;

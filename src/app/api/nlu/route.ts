@@ -5,6 +5,7 @@ interface NLURequestBody {
   transcript: string;
   questionContext: string;
   options: { A: string; B: string };
+  keywords?: { A: string[]; B: string[] };
 }
 
 interface ClassificationResult {
@@ -96,20 +97,56 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(result);
     }
 
-    console.log('[NLU] No direct match, calling Claude', { normalizedTranscript, normalizedA, normalizedB });
+    // Keyword matching — check if transcript contains any keyword for A or B
+    if (body.keywords) {
+      const matchesA = (body.keywords.A || []).filter(kw => normalizedTranscript.includes(normalize(kw)));
+      const matchesB = (body.keywords.B || []).filter(kw => normalizedTranscript.includes(normalize(kw)));
+
+      // Only use keyword match if one side matches and the other doesn't (unambiguous)
+      if (matchesA.length > 0 && matchesB.length === 0) {
+        const result: ClassificationResult = {
+          choice: 'A',
+          confidence: 0.95,
+          reasoning: `Keyword match: "${body.transcript}" contém [${matchesA.join(', ')}] → opção A "${body.options.A}"`,
+        };
+        console.log('[NLU] Keyword match → A:', JSON.stringify(result));
+        return NextResponse.json(result);
+      }
+
+      if (matchesB.length > 0 && matchesA.length === 0) {
+        const result: ClassificationResult = {
+          choice: 'B',
+          confidence: 0.95,
+          reasoning: `Keyword match: "${body.transcript}" contém [${matchesB.join(', ')}] → opção B "${body.options.B}"`,
+        };
+        console.log('[NLU] Keyword match → B:', JSON.stringify(result));
+        return NextResponse.json(result);
+      }
+
+      // Both sides match or neither — fall through to LLM
+      if (matchesA.length > 0 && matchesB.length > 0) {
+        console.log('[NLU] Ambiguous keyword match, deferring to Claude', { matchesA, matchesB });
+      }
+    }
+
+    console.log('[NLU] No direct/keyword match, calling Claude', { normalizedTranscript, normalizedA, normalizedB });
 
     // Build prompts
     const systemPrompt =
-      'You are a binary classifier. ' +
-      'Given a visitor response and two options, return which option matches. ' +
+      'You are a binary classifier for an interactive art installation ("O Oráculo"). ' +
+      'The oracle presents poetic/metaphorical scenarios and asks the visitor to choose between two symbolic actions. ' +
+      'The visitor responds by voice — their words may be indirect, metaphorical, or colloquial. ' +
+      'Interpret their INTENT in the context of the scenario, not their literal words. ' +
+      'Key: farewell/goodbye/leaving phrases usually mean rejection/turning away, NOT engagement/entering. ' +
       'Return ONLY raw JSON (no markdown, no code blocks). ' +
       'Format: {"choice":"A","confidence":0.9,"reasoning":"..."}';
 
     const userMessage =
+      `Scenario: ${body.questionContext || 'No context provided'}\n` +
       `Option A: ${body.options.A}\n` +
       `Option B: ${body.options.B}\n` +
       `Visitor said: "${body.transcript}"\n\n` +
-      `Which option? Return raw JSON only, no markdown.`;
+      `Which option matches the visitor's intent? Return raw JSON only, no markdown.`;
 
     // Set up 10-second timeout to prevent stuck states
     const controller = new AbortController();

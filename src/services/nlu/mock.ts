@@ -20,7 +20,8 @@ export class MockNLUService implements NLUService {
   async classify(
     transcript: string,
     _questionContext: string,
-    options: { A: string; B: string }
+    options: { A: string; B: string },
+    _keywords?: { A: string[]; B: string[] }
   ): Promise<ClassificationResult> {
     // Simulate API latency (~200ms)
     await new Promise(resolve => setTimeout(resolve, 200));

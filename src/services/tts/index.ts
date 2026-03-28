@@ -21,7 +21,7 @@ export const PHASE_VOICE_SETTINGS: Record<NarrativePhase, VoiceSettings> = {
 };
 
 export interface TTSService {
-  speak(segments: SpeechSegment[], voiceSettings: VoiceSettings): Promise<void>;
+  speak(segments: SpeechSegment[], voiceSettings: VoiceSettings, scriptKey?: string): Promise<void>;
   cancel(): void;
 }
 
