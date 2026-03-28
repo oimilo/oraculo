@@ -447,3 +447,183 @@ describe('inflection tags across PURGATORIO', () => {
     expect(withInflection.length).toBeGreaterThanOrEqual(3);
   });
 });
+
+// ═══════════════════════════════════════════════════════════════
+// SCR-06 VALIDATION TESTS — Phase 24, Plan 01
+// ═══════════════════════════════════════════════════════════════
+
+describe('SCR-06: max-path duration', () => {
+  // Helper: word count of a section
+  function sectionWords(segments: SpeechSegment[]): number {
+    return segments.reduce((sum, s) => sum + s.text.split(/\s+/).filter(w => w.length > 0).length, 0);
+  }
+
+  // Helper: total pause ms of a section
+  function sectionPauseMs(segments: SpeechSegment[]): number {
+    return segments.reduce((sum, s) => sum + (s.pauseAfter || 0), 0);
+  }
+
+  it('max-path word count is under 1300 words (10 min at 130 WPM)', () => {
+    // Always-heard sections
+    const alwaysHeard = [
+      SCRIPT.APRESENTACAO, SCRIPT.INFERNO_INTRO,
+      SCRIPT.INFERNO_Q1_SETUP, SCRIPT.INFERNO_Q1_PERGUNTA,
+      SCRIPT.INFERNO_Q2_SETUP, SCRIPT.INFERNO_Q2_PERGUNTA,
+      SCRIPT.PURGATORIO_INTRO,
+      SCRIPT.PURGATORIO_Q3_SETUP, SCRIPT.PURGATORIO_Q3_PERGUNTA,
+      SCRIPT.PURGATORIO_Q4_SETUP, SCRIPT.PURGATORIO_Q4_PERGUNTA,
+      SCRIPT.PARAISO_INTRO,
+      SCRIPT.PARAISO_Q5_SETUP, SCRIPT.PARAISO_Q5_PERGUNTA,
+      SCRIPT.PARAISO_Q6_SETUP, SCRIPT.PARAISO_Q6_PERGUNTA,
+      SCRIPT.ENCERRAMENTO,
+    ];
+    let totalWords = alwaysHeard.reduce((sum, sec) => sum + sectionWords(sec), 0);
+
+    // For each choice, take the LONGER response
+    const choices: [SpeechSegment[], SpeechSegment[]][] = [
+      [SCRIPT.INFERNO_Q1_RESPOSTA_A, SCRIPT.INFERNO_Q1_RESPOSTA_B],
+      [SCRIPT.INFERNO_Q2_RESPOSTA_A, SCRIPT.INFERNO_Q2_RESPOSTA_B],
+      [SCRIPT.PURGATORIO_Q3_RESPOSTA_A, SCRIPT.PURGATORIO_Q3_RESPOSTA_B],
+      [SCRIPT.PURGATORIO_Q4_RESPOSTA_A, SCRIPT.PURGATORIO_Q4_RESPOSTA_B],
+      [SCRIPT.PARAISO_Q5_RESPOSTA_A, SCRIPT.PARAISO_Q5_RESPOSTA_B],
+      [SCRIPT.PARAISO_Q6_RESPOSTA_A, SCRIPT.PARAISO_Q6_RESPOSTA_B],
+    ];
+    for (const [a, b] of choices) {
+      totalWords += Math.max(sectionWords(a), sectionWords(b));
+    }
+
+    // Longest devolucao
+    const devs = [
+      SCRIPT.DEVOLUCAO_SEEKER, SCRIPT.DEVOLUCAO_GUARDIAN,
+      SCRIPT.DEVOLUCAO_CONTRADICTED, SCRIPT.DEVOLUCAO_PIVOT_EARLY,
+      SCRIPT.DEVOLUCAO_PIVOT_LATE, SCRIPT.DEVOLUCAO_DEPTH_SEEKER,
+      SCRIPT.DEVOLUCAO_SURFACE_KEEPER, SCRIPT.DEVOLUCAO_MIRROR,
+    ];
+    totalWords += Math.max(...devs.map(d => sectionWords(d)));
+
+    expect(totalWords).toBeLessThanOrEqual(1300);
+  });
+
+  it('max-path playback duration (speech + pauses) is under 10.5 minutes', () => {
+    const alwaysHeard = [
+      SCRIPT.APRESENTACAO, SCRIPT.INFERNO_INTRO,
+      SCRIPT.INFERNO_Q1_SETUP, SCRIPT.INFERNO_Q1_PERGUNTA,
+      SCRIPT.INFERNO_Q2_SETUP, SCRIPT.INFERNO_Q2_PERGUNTA,
+      SCRIPT.PURGATORIO_INTRO,
+      SCRIPT.PURGATORIO_Q3_SETUP, SCRIPT.PURGATORIO_Q3_PERGUNTA,
+      SCRIPT.PURGATORIO_Q4_SETUP, SCRIPT.PURGATORIO_Q4_PERGUNTA,
+      SCRIPT.PARAISO_INTRO,
+      SCRIPT.PARAISO_Q5_SETUP, SCRIPT.PARAISO_Q5_PERGUNTA,
+      SCRIPT.PARAISO_Q6_SETUP, SCRIPT.PARAISO_Q6_PERGUNTA,
+      SCRIPT.ENCERRAMENTO,
+    ];
+    let totalWords = alwaysHeard.reduce((sum, sec) => sum + sectionWords(sec), 0);
+    let totalPauseMs = alwaysHeard.reduce((sum, sec) => sum + sectionPauseMs(sec), 0);
+
+    const choices: [SpeechSegment[], SpeechSegment[]][] = [
+      [SCRIPT.INFERNO_Q1_RESPOSTA_A, SCRIPT.INFERNO_Q1_RESPOSTA_B],
+      [SCRIPT.INFERNO_Q2_RESPOSTA_A, SCRIPT.INFERNO_Q2_RESPOSTA_B],
+      [SCRIPT.PURGATORIO_Q3_RESPOSTA_A, SCRIPT.PURGATORIO_Q3_RESPOSTA_B],
+      [SCRIPT.PURGATORIO_Q4_RESPOSTA_A, SCRIPT.PURGATORIO_Q4_RESPOSTA_B],
+      [SCRIPT.PARAISO_Q5_RESPOSTA_A, SCRIPT.PARAISO_Q5_RESPOSTA_B],
+      [SCRIPT.PARAISO_Q6_RESPOSTA_A, SCRIPT.PARAISO_Q6_RESPOSTA_B],
+    ];
+    for (const [a, b] of choices) {
+      const wa = sectionWords(a), wb = sectionWords(b);
+      if (wa >= wb) { totalWords += wa; totalPauseMs += sectionPauseMs(a); }
+      else { totalWords += wb; totalPauseMs += sectionPauseMs(b); }
+    }
+
+    const devs = [
+      SCRIPT.DEVOLUCAO_SEEKER, SCRIPT.DEVOLUCAO_GUARDIAN,
+      SCRIPT.DEVOLUCAO_CONTRADICTED, SCRIPT.DEVOLUCAO_PIVOT_EARLY,
+      SCRIPT.DEVOLUCAO_PIVOT_LATE, SCRIPT.DEVOLUCAO_DEPTH_SEEKER,
+      SCRIPT.DEVOLUCAO_SURFACE_KEEPER, SCRIPT.DEVOLUCAO_MIRROR,
+    ];
+    let maxDevIdx = 0;
+    for (let i = 1; i < devs.length; i++) {
+      if (sectionWords(devs[i]) > sectionWords(devs[maxDevIdx])) maxDevIdx = i;
+    }
+    totalWords += sectionWords(devs[maxDevIdx]);
+    totalPauseMs += sectionPauseMs(devs[maxDevIdx]);
+
+    const speechMin = totalWords / 130;
+    const pauseMin = totalPauseMs / 60000;
+    const totalMin = speechMin + pauseMin;
+    expect(totalMin).toBeLessThanOrEqual(10.5);
+  });
+});
+
+describe('SCR-06: pause variation', () => {
+  it('pauseAfter values range between 800-2000ms (non-zero values)', () => {
+    const allSegments = Object.values(SCRIPT).flat();
+    const nonZeroPauses = allSegments
+      .map(s => s.pauseAfter)
+      .filter((p): p is number => p !== undefined && p > 0);
+
+    expect(Math.min(...nonZeroPauses)).toBeGreaterThanOrEqual(800);
+    expect(Math.max(...nonZeroPauses)).toBeLessThanOrEqual(2000);
+  });
+
+  it('pause values have sufficient variation (CV > 0.15)', () => {
+    const allSegments = Object.values(SCRIPT).flat();
+    const pauses = allSegments
+      .map(s => s.pauseAfter)
+      .filter((p): p is number => p !== undefined && p > 0);
+
+    const mean = pauses.reduce((a, b) => a + b) / pauses.length;
+    const variance = pauses.reduce((sum, p) => sum + Math.pow(p - mean, 2), 0) / pauses.length;
+    const cv = Math.sqrt(variance) / mean;
+    expect(cv).toBeGreaterThan(0.15);
+  });
+
+  it('at least 5 unique pauseAfter values are used', () => {
+    const allSegments = Object.values(SCRIPT).flat();
+    const pauses = allSegments
+      .map(s => s.pauseAfter)
+      .filter((p): p is number => p !== undefined && p > 0);
+    const unique = new Set(pauses);
+    expect(unique.size).toBeGreaterThanOrEqual(5);
+  });
+});
+
+describe('SCR-06: sentence length', () => {
+  it('no segment text exceeds 40 words', () => {
+    const allSegments = Object.values(SCRIPT).flat();
+    const violations: Array<{words: number; text: string}> = [];
+
+    allSegments.forEach(seg => {
+      const words = seg.text.split(/\s+/).filter(w => w.length > 0).length;
+      if (words > 40) {
+        violations.push({ words, text: seg.text.substring(0, 80) });
+      }
+    });
+
+    expect(violations, `Segments exceeding 40 words: ${JSON.stringify(violations)}`).toHaveLength(0);
+  });
+
+  it('average sentence length is under 20 words', () => {
+    const allSegments = Object.values(SCRIPT).flat();
+    const wordCounts = allSegments.map(s => s.text.split(/\s+/).filter(w => w.length > 0).length);
+    const avg = wordCounts.reduce((a, b) => a + b) / wordCounts.length;
+    expect(avg).toBeLessThanOrEqual(20);
+  });
+});
+
+describe('SCR-06: inflection density (full script)', () => {
+  it('inflection tags in <=40% of ALL segments globally', () => {
+    const allSegments = Object.values(SCRIPT).flat();
+    const withInflection = allSegments.filter(s => s.inflection && s.inflection.length > 0);
+    const density = withInflection.length / allSegments.length;
+    expect(density).toBeLessThanOrEqual(0.40);
+  });
+
+  it('no segment in entire script has more than 1 inflection tag', () => {
+    const allSegments = Object.values(SCRIPT).flat();
+    allSegments.forEach((seg, i) => {
+      if (seg.inflection) {
+        expect(seg.inflection.length, `Segment ${i} has ${seg.inflection.length} inflection tags`).toBeLessThanOrEqual(1);
+      }
+    });
+  });
+});
