@@ -9,7 +9,7 @@ Requirements for Game Flow milestone. Transform the Oracle into a 5-7 min game-l
 
 ### Pacing
 
-- [ ] **PACE-01**: Max-path experience duration is 5-7 minutes (down from 10.5 min)
+- [x] **PACE-01**: Max-path experience duration is 5-7 minutes (down from 10.5 min)
 - [x] **PACE-02**: Respostas contain 1-2 segments max (down from 4-5)
 - [x] **PACE-03**: Setups contain 1-2 segments max (down from 3-5)
 - [x] **PACE-04**: Phase intros reduced to 1 sentence (down from 4-5 sentences)
@@ -64,7 +64,7 @@ Requirements for Game Flow milestone. Transform the Oracle into a 5-7 min game-l
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PACE-01 | Phase 25 | Pending |
+| PACE-01 | Phase 25 | Complete |
 | PACE-02 | Phase 25 | Complete |
 | PACE-03 | Phase 25 | Complete |
 | PACE-04 | Phase 25 | Complete |

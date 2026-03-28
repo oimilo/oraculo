@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Game Flow
-status: executing
-stopped_at: Completed 25-01-PLAN.md (script surgical trim)
-last_updated: "2026-03-28T22:45:49.996Z"
+status: verifying
+stopped_at: Completed 25-02-PLAN.md (timing validation and balance)
+last_updated: "2026-03-28T22:53:55.905Z"
 last_activity: 2026-03-28
 progress:
   total_phases: 19
-  completed_phases: 17
+  completed_phases: 18
   total_plans: 43
-  completed_plans: 42
+  completed_plans: 43
   percent: 79
 ---
 
@@ -28,7 +28,7 @@ progress:
 
 Phase: 25 (script-pacing) — EXECUTING
 Plan: 2 of 2
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-03-28
 
 Progress: [████████████████░░░░] 79% (phases 1-19 shipped, 5 phases remaining in v4.0)
@@ -97,6 +97,8 @@ Recent decisions affecting current work:
 - [v3.1]: Pause range compressed from 1200-2800ms to 800-2000ms for 10.5-min target
 - [Phase 18]: Single universal ChoiceButtons block with labels from activeChoiceConfig
 - [Phase 25]: Merged phase intro openings with gold phrases for compression without losing evocative power
+- [Phase 25]: Added 4th segment to all 8 devoluções for uniform psychoanalytic depth across archetypes
+- [Phase 25]: Extended pauses at emotional peaks rather than adding more text (breathing room deepens impact)
 
 ### Active TODOs
 
@@ -109,6 +111,6 @@ None. v4.0 ready to start — v3.1 script provides baseline for restructuring.
 
 ## Session Continuity
 
-Last session: 2026-03-28T22:45:49.992Z
-Stopped at: Completed 25-01-PLAN.md (script surgical trim)
+Last session: 2026-03-28T22:53:55.901Z
+Stopped at: Completed 25-02-PLAN.md (timing validation and balance)
 Resume: `/gsd:plan-phase 25` to begin script pacing rewrite

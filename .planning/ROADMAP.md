@@ -90,7 +90,7 @@ See: `.planning/milestones/v3.1-ROADMAP.md`
 
 ### v4.0 Game Flow (Active)
 
-- [ ] **Phase 25: Script Restructure — Pacing** - Trim all segments to 5-7 min target
+- [x] **Phase 25: Script Restructure — Pacing** - Trim all segments to 5-7 min target (completed 2026-03-28)
 - [ ] **Phase 26: Script Restructure — Branching** - Design and write 8-10 decision points with branching paths
 - [ ] **Phase 27: State Machine Redesign** - XState v5 with conditional transitions for branching
 - [ ] **Phase 28: Audio Regeneration** - Generate all MP3s for trimmed/branching script
@@ -140,11 +140,11 @@ Plans:
 **Goal**: Experience runs 5-7 minutes with trimmed segments preserving psychoanalytic depth
 **Depends on**: Phase 24 (v3.1 script as baseline)
 **Requirements**: PACE-01, PACE-02, PACE-03, PACE-04, PACE-05
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [x] 25-01-PLAN.md — Surgical trim of all script sections (bookends, intros, setups, respostas, devoluções)
-- [ ] 25-02-PLAN.md — Timing validation script + duration adjustment to hit 5-7 min target
+- [x] 25-02-PLAN.md — Timing validation script + duration adjustment to hit 5-7 min target
 
 **Success Criteria** (what must be TRUE):
   1. Max-path experience duration is 5-7 minutes when audio is generated
@@ -210,7 +210,7 @@ Plans:
 | 18. Components & Services | v3.2 | 2/2 | Complete    | 2026-03-28 |
 | 19. Audio Generation | v3.2 | 1/1 | Complete | 2026-03-28 |
 | 20. Testing | v3.2 | - | Skipped | - |
-| 25. Script Pacing | v4.0 | 1/2 | In Progress|  |
+| 25. Script Pacing | v4.0 | 2/2 | Complete   | 2026-03-28 |
 | 26. Script Branching | v4.0 | 0/? | Not started | - |
 | 27. State Machine | v4.0 | 0/? | Not started | - |
 | 28. Audio Regen | v4.0 | 0/? | Not started | - |
