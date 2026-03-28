@@ -52,8 +52,8 @@ See: `scripts/narrative-proposals/RESEARCH-SYNTHESIS.md`, `.planning/milestones/
 
 - [x] Script audited against 3 theoretical frameworks + 9 gold phrases — *Validated in Phase 21*
 - [x] 6 choices rewritten with absorbed psychoanalytic depth — *Validated in Phase 22*
-- [ ] 8 devoluções rewritten as genuine pattern mirrors — *Phase 23*
-- [ ] Apresentação/Encerramento/fallbacks/timeouts polished — *Phase 23*
+- [x] 8 devoluções rewritten as genuine pattern mirrors — *Validated in Phase 23*
+- [x] Apresentação/Encerramento/fallbacks/timeouts polished — *Validated in Phase 23*
 - [ ] Rhythm, inflection & timing validated (≤10 min) — *Phase 24*
 
 ### Queued (v3.2 — Integration & Audio)
@@ -123,4 +123,4 @@ See: `scripts/narrative-proposals/RESEARCH-SYNTHESIS.md`, `.planning/milestones/
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-28 — Phase 22 complete, 6 choices rewritten with multi-framework psychoanalytic depth (Lacanian/Winnicottian/Bionian), 9 gold phrases absorbed*
+*Last updated: 2026-03-28 — Phase 23 complete, 8 devoluções rewritten with 3-layer structure (Winnicott+Lacan+Bion), bookends polished with Lacanian irreversibility and structural symmetry, fallbacks/timeouts deepened*
