@@ -5,35 +5,14 @@ import { SCRIPT } from '@/data/script';
 
 /**
  * Pre-recorded audio URLs for offline fallback.
- * Maps script keys to their corresponding audio files.
+ * Generated from script.ts keys — always in sync with current script.
  */
-const PRERECORDED_URLS: Record<string, string> = {
-  APRESENTACAO: '/audio/prerecorded/apresentacao.mp3',
-  INFERNO_NARRATIVA: '/audio/prerecorded/inferno_narrativa.mp3',
-  INFERNO_PERGUNTA: '/audio/prerecorded/inferno_pergunta.mp3',
-  INFERNO_RESPOSTA_A: '/audio/prerecorded/inferno_resposta_a.mp3',
-  INFERNO_RESPOSTA_B: '/audio/prerecorded/inferno_resposta_b.mp3',
-  PURGATORIO_NARRATIVA_A: '/audio/prerecorded/purgatorio_narrativa_a.mp3',
-  PURGATORIO_PERGUNTA_A: '/audio/prerecorded/purgatorio_pergunta_a.mp3',
-  PURGATORIO_RESPOSTA_A_FICAR: '/audio/prerecorded/purgatorio_resposta_a_ficar.mp3',
-  PURGATORIO_RESPOSTA_A_EMBORA: '/audio/prerecorded/purgatorio_resposta_a_embora.mp3',
-  PURGATORIO_NARRATIVA_B: '/audio/prerecorded/purgatorio_narrativa_b.mp3',
-  PURGATORIO_PERGUNTA_B: '/audio/prerecorded/purgatorio_pergunta_b.mp3',
-  PURGATORIO_RESPOSTA_B_PISAR: '/audio/prerecorded/purgatorio_resposta_b_pisar.mp3',
-  PURGATORIO_RESPOSTA_B_CONTORNAR: '/audio/prerecorded/purgatorio_resposta_b_contornar.mp3',
-  PARAISO: '/audio/prerecorded/paraiso.mp3',
-  DEVOLUCAO_A_FICAR: '/audio/prerecorded/devolucao_a_ficar.mp3',
-  DEVOLUCAO_A_EMBORA: '/audio/prerecorded/devolucao_a_embora.mp3',
-  DEVOLUCAO_B_PISAR: '/audio/prerecorded/devolucao_b_pisar.mp3',
-  DEVOLUCAO_B_CONTORNAR: '/audio/prerecorded/devolucao_b_contornar.mp3',
-  ENCERRAMENTO: '/audio/prerecorded/encerramento.mp3',
-  FALLBACK_INFERNO: '/audio/prerecorded/fallback_inferno.mp3',
-  FALLBACK_PURGATORIO_A: '/audio/prerecorded/fallback_purgatorio_a.mp3',
-  FALLBACK_PURGATORIO_B: '/audio/prerecorded/fallback_purgatorio_b.mp3',
-  TIMEOUT_INFERNO: '/audio/prerecorded/timeout_inferno.mp3',
-  TIMEOUT_PURGATORIO_A: '/audio/prerecorded/timeout_purgatorio_a.mp3',
-  TIMEOUT_PURGATORIO_B: '/audio/prerecorded/timeout_purgatorio_b.mp3',
-};
+const PRERECORDED_URLS: Record<string, string> = Object.fromEntries(
+  Object.keys(SCRIPT).map(key => [
+    key,
+    `/audio/prerecorded/${key.toLowerCase()}.mp3`
+  ])
+);
 
 /**
  * Returns the browser's online status.
