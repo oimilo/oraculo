@@ -133,7 +133,7 @@
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 16. Script Writing | v3.0 | 2/2 | Complete    | 2026-03-27 |
-| 17. State Machine & Data | v3.0 | 2/2 | Complete   | 2026-03-28 |
+| 17. State Machine & Data | v3.0 | 2/2 | Complete    | 2026-03-28 |
 | 18. Components & Services | v3.0 | - | Not started | - |
 | 19. Audio Generation | v3.0 | - | Not started | - |
 | 20. Testing | v3.0 | - | Not started | - |
