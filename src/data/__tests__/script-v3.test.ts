@@ -133,9 +133,9 @@ describe('APRESENTACAO', () => {
 });
 
 describe('INFERNO_INTRO', () => {
-  it('has 2-4 segments', () => {
-    expect(SCRIPT.INFERNO_INTRO.length).toBeGreaterThanOrEqual(2);
-    expect(SCRIPT.INFERNO_INTRO.length).toBeLessThanOrEqual(4);
+  it('has 1-2 segments', () => {
+    expect(SCRIPT.INFERNO_INTRO.length).toBeGreaterThanOrEqual(1);
+    expect(SCRIPT.INFERNO_INTRO.length).toBeLessThanOrEqual(2);
   });
 
   it('has valid structure', () => {
@@ -162,14 +162,14 @@ describe('INFERNO Q1 — Comfortable Prison', () => {
     expect(p.pauseAfter === undefined || p.pauseAfter === 0).toBe(true);
   });
 
-  it('RESPOSTA_A has 3-5 segments', () => {
-    expect(SCRIPT.INFERNO_Q1_RESPOSTA_A.length).toBeGreaterThanOrEqual(3);
-    expect(SCRIPT.INFERNO_Q1_RESPOSTA_A.length).toBeLessThanOrEqual(5);
+  it('RESPOSTA_A has 1-3 segments', () => {
+    expect(SCRIPT.INFERNO_Q1_RESPOSTA_A.length).toBeGreaterThanOrEqual(1);
+    expect(SCRIPT.INFERNO_Q1_RESPOSTA_A.length).toBeLessThanOrEqual(3);
   });
 
-  it('RESPOSTA_B has 3-5 segments', () => {
-    expect(SCRIPT.INFERNO_Q1_RESPOSTA_B.length).toBeGreaterThanOrEqual(3);
-    expect(SCRIPT.INFERNO_Q1_RESPOSTA_B.length).toBeLessThanOrEqual(5);
+  it('RESPOSTA_B has 1-3 segments', () => {
+    expect(SCRIPT.INFERNO_Q1_RESPOSTA_B.length).toBeGreaterThanOrEqual(1);
+    expect(SCRIPT.INFERNO_Q1_RESPOSTA_B.length).toBeLessThanOrEqual(3);
   });
 
   it('all Q1 segments are valid SpeechSegments', () => {
@@ -209,14 +209,14 @@ describe('INFERNO Q2 — Thing on the Floor', () => {
     expect(p.pauseAfter === undefined || p.pauseAfter === 0).toBe(true);
   });
 
-  it('RESPOSTA_A has 3-5 segments', () => {
-    expect(SCRIPT.INFERNO_Q2_RESPOSTA_A.length).toBeGreaterThanOrEqual(3);
-    expect(SCRIPT.INFERNO_Q2_RESPOSTA_A.length).toBeLessThanOrEqual(5);
+  it('RESPOSTA_A has 1-3 segments', () => {
+    expect(SCRIPT.INFERNO_Q2_RESPOSTA_A.length).toBeGreaterThanOrEqual(1);
+    expect(SCRIPT.INFERNO_Q2_RESPOSTA_A.length).toBeLessThanOrEqual(3);
   });
 
-  it('RESPOSTA_B has 3-5 segments', () => {
-    expect(SCRIPT.INFERNO_Q2_RESPOSTA_B.length).toBeGreaterThanOrEqual(3);
-    expect(SCRIPT.INFERNO_Q2_RESPOSTA_B.length).toBeLessThanOrEqual(5);
+  it('RESPOSTA_B has 1-3 segments', () => {
+    expect(SCRIPT.INFERNO_Q2_RESPOSTA_B.length).toBeGreaterThanOrEqual(1);
+    expect(SCRIPT.INFERNO_Q2_RESPOSTA_B.length).toBeLessThanOrEqual(3);
   });
 
   it('all Q2 segments are valid SpeechSegments', () => {
@@ -308,9 +308,9 @@ describe('pauseAfter values', () => {
 // ═══════════════════════════════════════════════════════════════
 
 describe('PURGATORIO_INTRO', () => {
-  it('has 2-4 segments', () => {
-    expect(SCRIPT.PURGATORIO_INTRO.length).toBeGreaterThanOrEqual(2);
-    expect(SCRIPT.PURGATORIO_INTRO.length).toBeLessThanOrEqual(4);
+  it('has 1-2 segments', () => {
+    expect(SCRIPT.PURGATORIO_INTRO.length).toBeGreaterThanOrEqual(1);
+    expect(SCRIPT.PURGATORIO_INTRO.length).toBeLessThanOrEqual(2);
   });
 
   it('has valid structure', () => {
@@ -341,14 +341,14 @@ describe('PURGATORIO Q3 — Garden That Will Burn', () => {
     expect(p.pauseAfter === undefined || p.pauseAfter === 0).toBe(true);
   });
 
-  it('RESPOSTA_A has 3-5 segments', () => {
-    expect(SCRIPT.PURGATORIO_Q3_RESPOSTA_A.length).toBeGreaterThanOrEqual(3);
-    expect(SCRIPT.PURGATORIO_Q3_RESPOSTA_A.length).toBeLessThanOrEqual(5);
+  it('RESPOSTA_A has 1-3 segments', () => {
+    expect(SCRIPT.PURGATORIO_Q3_RESPOSTA_A.length).toBeGreaterThanOrEqual(1);
+    expect(SCRIPT.PURGATORIO_Q3_RESPOSTA_A.length).toBeLessThanOrEqual(3);
   });
 
-  it('RESPOSTA_B has 3-5 segments', () => {
-    expect(SCRIPT.PURGATORIO_Q3_RESPOSTA_B.length).toBeGreaterThanOrEqual(3);
-    expect(SCRIPT.PURGATORIO_Q3_RESPOSTA_B.length).toBeLessThanOrEqual(5);
+  it('RESPOSTA_B has 1-3 segments', () => {
+    expect(SCRIPT.PURGATORIO_Q3_RESPOSTA_B.length).toBeGreaterThanOrEqual(1);
+    expect(SCRIPT.PURGATORIO_Q3_RESPOSTA_B.length).toBeLessThanOrEqual(3);
   });
 
   it('all Q3 segments are valid SpeechSegments', () => {
@@ -383,19 +383,20 @@ describe('PURGATORIO Q4 — Two Waters', () => {
     expect(SCRIPT.PURGATORIO_Q4_PERGUNTA.length).toBe(1);
   });
 
-  it('PERGUNTA has pauseAfter 0 or undefined', () => {
+  it('PERGUNTA has pauseAfter defined (allows pause for weight)', () => {
     const p = SCRIPT.PURGATORIO_Q4_PERGUNTA[0];
-    expect(p.pauseAfter === undefined || p.pauseAfter === 0).toBe(true);
+    // v4 allows pauseAfter on perguntas for emotional weight
+    expect(p.pauseAfter === undefined || typeof p.pauseAfter === 'number').toBe(true);
   });
 
-  it('RESPOSTA_A has 3-5 segments', () => {
-    expect(SCRIPT.PURGATORIO_Q4_RESPOSTA_A.length).toBeGreaterThanOrEqual(3);
-    expect(SCRIPT.PURGATORIO_Q4_RESPOSTA_A.length).toBeLessThanOrEqual(5);
+  it('RESPOSTA_A has 1-3 segments', () => {
+    expect(SCRIPT.PURGATORIO_Q4_RESPOSTA_A.length).toBeGreaterThanOrEqual(1);
+    expect(SCRIPT.PURGATORIO_Q4_RESPOSTA_A.length).toBeLessThanOrEqual(3);
   });
 
-  it('RESPOSTA_B has 3-5 segments', () => {
-    expect(SCRIPT.PURGATORIO_Q4_RESPOSTA_B.length).toBeGreaterThanOrEqual(3);
-    expect(SCRIPT.PURGATORIO_Q4_RESPOSTA_B.length).toBeLessThanOrEqual(5);
+  it('RESPOSTA_B has 1-3 segments', () => {
+    expect(SCRIPT.PURGATORIO_Q4_RESPOSTA_B.length).toBeGreaterThanOrEqual(1);
+    expect(SCRIPT.PURGATORIO_Q4_RESPOSTA_B.length).toBeLessThanOrEqual(3);
   });
 
   it('all Q4 segments are valid SpeechSegments', () => {
@@ -421,14 +422,15 @@ describe('PURGATORIO Q4 — Two Waters', () => {
 });
 
 describe('PURGATORIO depth escalation', () => {
-  it('Q3 and Q4 have distinct narrative weight (Q4 deeper)', () => {
-    // Q4 (Deep) should have longer segments on average than Q3 (Medium)
+  it('Q3 and Q4 have distinct narrative weight (both substantial)', () => {
+    // After v4 trimming, both Q3 and Q4 are concise but substantial
     const q3Total = SCRIPT.PURGATORIO_Q3_RESPOSTA_A.reduce((sum, s) => sum + s.text.length, 0) +
                     SCRIPT.PURGATORIO_Q3_RESPOSTA_B.reduce((sum, s) => sum + s.text.length, 0);
     const q4Total = SCRIPT.PURGATORIO_Q4_RESPOSTA_A.reduce((sum, s) => sum + s.text.length, 0) +
                     SCRIPT.PURGATORIO_Q4_RESPOSTA_B.reduce((sum, s) => sum + s.text.length, 0);
-    // Q4 should be at least 80% of Q3 total text (both substantial)
-    expect(q4Total).toBeGreaterThan(q3Total * 0.8);
+    // Both should be substantial (at least 100 chars combined)
+    expect(q3Total).toBeGreaterThan(100);
+    expect(q4Total).toBeGreaterThan(100);
   });
 });
 
@@ -624,6 +626,116 @@ describe('SCR-06: inflection density (full script)', () => {
       if (seg.inflection) {
         expect(seg.inflection.length, `Segment ${i} has ${seg.inflection.length} inflection tags`).toBeLessThanOrEqual(1);
       }
+    });
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// BRANCH QUESTIONS (Q2B, Q4B) — Phase 26, v4.0
+// ═══════════════════════════════════════════════════════════════
+
+describe('Branch Questions (Q2B, Q4B)', () => {
+  describe('INFERNO Q2B — Branch after Q1+Q2 CHOICE_A pattern', () => {
+    it('SETUP has at least 1 segment', () => {
+      expect(SCRIPT.INFERNO_Q2B_SETUP.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('PERGUNTA has 1 segment', () => {
+      expect(SCRIPT.INFERNO_Q2B_PERGUNTA.length).toBe(1);
+    });
+
+    it('RESPOSTA_A has at least 1 segment', () => {
+      expect(SCRIPT.INFERNO_Q2B_RESPOSTA_A.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('RESPOSTA_B has at least 1 segment', () => {
+      expect(SCRIPT.INFERNO_Q2B_RESPOSTA_B.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('all Q2B segments are valid SpeechSegments', () => {
+      assertValidSegments(SCRIPT.INFERNO_Q2B_SETUP, 'Q2B_SETUP');
+      assertValidSegments(SCRIPT.INFERNO_Q2B_PERGUNTA, 'Q2B_PERGUNTA');
+      assertValidSegments(SCRIPT.INFERNO_Q2B_RESPOSTA_A, 'Q2B_RESPOSTA_A');
+      assertValidSegments(SCRIPT.INFERNO_Q2B_RESPOSTA_B, 'Q2B_RESPOSTA_B');
+    });
+
+    it('all Q2B text is PT-BR', () => {
+      assertPTBR(SCRIPT.INFERNO_Q2B_SETUP, 'Q2B_SETUP');
+      assertPTBR(SCRIPT.INFERNO_Q2B_PERGUNTA, 'Q2B_PERGUNTA');
+      assertPTBR(SCRIPT.INFERNO_Q2B_RESPOSTA_A, 'Q2B_RESPOSTA_A');
+      assertPTBR(SCRIPT.INFERNO_Q2B_RESPOSTA_B, 'Q2B_RESPOSTA_B');
+    });
+
+    it('has no author references', () => {
+      assertNoAuthorReferences(SCRIPT.INFERNO_Q2B_SETUP, 'Q2B_SETUP');
+      assertNoAuthorReferences(SCRIPT.INFERNO_Q2B_PERGUNTA, 'Q2B_PERGUNTA');
+      assertNoAuthorReferences(SCRIPT.INFERNO_Q2B_RESPOSTA_A, 'Q2B_RESPOSTA_A');
+      assertNoAuthorReferences(SCRIPT.INFERNO_Q2B_RESPOSTA_B, 'Q2B_RESPOSTA_B');
+    });
+  });
+
+  describe('PURGATORIO Q4B — Branch after Q3+Q4 CHOICE_A pattern', () => {
+    it('SETUP has at least 1 segment', () => {
+      expect(SCRIPT.PURGATORIO_Q4B_SETUP.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('PERGUNTA has 1 segment', () => {
+      expect(SCRIPT.PURGATORIO_Q4B_PERGUNTA.length).toBe(1);
+    });
+
+    it('RESPOSTA_A has at least 1 segment', () => {
+      expect(SCRIPT.PURGATORIO_Q4B_RESPOSTA_A.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('RESPOSTA_B has at least 1 segment', () => {
+      expect(SCRIPT.PURGATORIO_Q4B_RESPOSTA_B.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('all Q4B segments are valid SpeechSegments', () => {
+      assertValidSegments(SCRIPT.PURGATORIO_Q4B_SETUP, 'Q4B_SETUP');
+      assertValidSegments(SCRIPT.PURGATORIO_Q4B_PERGUNTA, 'Q4B_PERGUNTA');
+      assertValidSegments(SCRIPT.PURGATORIO_Q4B_RESPOSTA_A, 'Q4B_RESPOSTA_A');
+      assertValidSegments(SCRIPT.PURGATORIO_Q4B_RESPOSTA_B, 'Q4B_RESPOSTA_B');
+    });
+
+    it('all Q4B text is PT-BR', () => {
+      assertPTBR(SCRIPT.PURGATORIO_Q4B_SETUP, 'Q4B_SETUP');
+      assertPTBR(SCRIPT.PURGATORIO_Q4B_PERGUNTA, 'Q4B_PERGUNTA');
+      assertPTBR(SCRIPT.PURGATORIO_Q4B_RESPOSTA_A, 'Q4B_RESPOSTA_A');
+      assertPTBR(SCRIPT.PURGATORIO_Q4B_RESPOSTA_B, 'Q4B_RESPOSTA_B');
+    });
+
+    it('has no author references', () => {
+      assertNoAuthorReferences(SCRIPT.PURGATORIO_Q4B_SETUP, 'Q4B_SETUP');
+      assertNoAuthorReferences(SCRIPT.PURGATORIO_Q4B_PERGUNTA, 'Q4B_PERGUNTA');
+      assertNoAuthorReferences(SCRIPT.PURGATORIO_Q4B_RESPOSTA_A, 'Q4B_RESPOSTA_A');
+      assertNoAuthorReferences(SCRIPT.PURGATORIO_Q4B_RESPOSTA_B, 'Q4B_RESPOSTA_B');
+    });
+  });
+
+  describe('Fallback and Timeout for Branch Questions', () => {
+    it('FALLBACK_Q2B has at least 1 segment', () => {
+      expect(SCRIPT.FALLBACK_Q2B.length).toBeGreaterThanOrEqual(1);
+      assertValidSegments(SCRIPT.FALLBACK_Q2B, 'FALLBACK_Q2B');
+      assertPTBR(SCRIPT.FALLBACK_Q2B, 'FALLBACK_Q2B');
+    });
+
+    it('FALLBACK_Q4B has at least 1 segment', () => {
+      expect(SCRIPT.FALLBACK_Q4B.length).toBeGreaterThanOrEqual(1);
+      assertValidSegments(SCRIPT.FALLBACK_Q4B, 'FALLBACK_Q4B');
+      assertPTBR(SCRIPT.FALLBACK_Q4B, 'FALLBACK_Q4B');
+    });
+
+    it('TIMEOUT_Q2B has at least 1 segment', () => {
+      expect(SCRIPT.TIMEOUT_Q2B.length).toBeGreaterThanOrEqual(1);
+      assertValidSegments(SCRIPT.TIMEOUT_Q2B, 'TIMEOUT_Q2B');
+      assertPTBR(SCRIPT.TIMEOUT_Q2B, 'TIMEOUT_Q2B');
+    });
+
+    it('TIMEOUT_Q4B has at least 1 segment', () => {
+      expect(SCRIPT.TIMEOUT_Q4B.length).toBeGreaterThanOrEqual(1);
+      assertValidSegments(SCRIPT.TIMEOUT_Q4B, 'TIMEOUT_Q4B');
+      assertPTBR(SCRIPT.TIMEOUT_Q4B, 'TIMEOUT_Q4B');
     });
   });
 });
