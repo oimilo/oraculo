@@ -125,7 +125,7 @@ void main() {
   float dispBrightness = 0.3 + abs(vDisplacement) * 3.0;
 
   // Core glow — center of the mesh is subtly brighter
-  float coreDist = length(vPosition) / 1.5;
+  float coreDist = length(vPosition) / 1.0;
   float coreGlow = smoothstep(1.0, 0.0, coreDist) * 0.2;
 
   // Combine: fresnel edge glow + displacement brightness + core
@@ -235,7 +235,7 @@ function ReactiveOrb({ analyserRef, dataArrayRef, phase }: SceneProps) {
 
   // Higher detail icosahedron for smoother noise displacement
   const geometry = useMemo(() => {
-    const geo = new THREE.IcosahedronGeometry(1.5, 4);
+    const geo = new THREE.IcosahedronGeometry(1.0, 4);
     geo.computeVertexNormals();
     return geo;
   }, []);

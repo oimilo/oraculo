@@ -26,28 +26,48 @@ export function useAudioAnalyser(
   const frequencyBinCountRef = useRef<number>(fftSize / 2);
 
   useEffect(() => {
-    const audioContext = getAudioContext();
-    const gainNode = getGainNode();
-    if (!audioContext || !gainNode) return;
+    let analyser: AnalyserNode | null = null;
+    let retryInterval: ReturnType<typeof setInterval> | null = null;
 
-    const analyser = audioContext.createAnalyser();
-    analyser.fftSize = fftSize;
-    analyser.smoothingTimeConstant = smoothingTimeConstant;
+    function tryConnect(): boolean {
+      const audioContext = getAudioContext();
+      const gainNode = getGainNode();
+      if (!audioContext || !gainNode) return false;
 
-    // Read-only tap — AnalyserNode doesn't modify the audio signal
-    gainNode.connect(analyser);
+      analyser = audioContext.createAnalyser();
+      analyser.fftSize = fftSize;
+      analyser.smoothingTimeConstant = smoothingTimeConstant;
 
-    const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
+      // Read-only tap — AnalyserNode doesn't modify the audio signal
+      gainNode.connect(analyser);
 
-    analyserRef.current = analyser;
-    dataArrayRef.current = dataArray;
-    frequencyBinCountRef.current = bufferLength;
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+
+      analyserRef.current = analyser;
+      dataArrayRef.current = dataArray;
+      frequencyBinCountRef.current = bufferLength;
+      return true;
+    }
+
+    // AudioContext may not exist yet (created on user gesture).
+    // Retry until it becomes available.
+    if (!tryConnect()) {
+      retryInterval = setInterval(() => {
+        if (tryConnect() && retryInterval) {
+          clearInterval(retryInterval);
+          retryInterval = null;
+        }
+      }, 500);
+    }
 
     return () => {
-      analyser.disconnect();
-      analyserRef.current = null;
-      dataArrayRef.current = null;
+      if (retryInterval) clearInterval(retryInterval);
+      if (analyser) {
+        analyser.disconnect();
+        analyserRef.current = null;
+        dataArrayRef.current = null;
+      }
     };
   }, [fftSize, smoothingTimeConstant]);
 
