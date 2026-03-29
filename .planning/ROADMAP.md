@@ -235,13 +235,18 @@ Plans:
 **Goal**: Full-screen audio-reactive background that responds to TTS playback intensity with phase-specific visual themes
 **Depends on**: Phase 29 (v4.0 complete)
 **Requirements**: VIS-01, VIS-02, VIS-03, VIS-04
+**Plans:** 2 plans
+
+Plans:
+- [ ] 30-01-PLAN.md — Test infra (vitest-canvas-mock), VISUAL_THEMES config, useAudioAnalyser + useAnimationFrame hooks
+- [ ] 30-02-PLAN.md — EqualizerVisualizer, IdleAnimation, AudioReactiveBackground components + OracleExperience integration
+
 **Success Criteria** (what must be TRUE):
   1. Visitor sees real-time visual response to Oracle voice intensity (equalizer bars or particle system)
   2. Background visual style changes automatically when narrative phase transitions (Inferno red/fire, Purgatorio blue/mist, Paraiso gold/light)
   3. Visual transitions between phases crossfade smoothly matching the 3-second audio crossfade
   4. Idle state displays subtle ambient animation instead of static black screen
   5. Canvas animation performs smoothly at 60fps on target event hardware
-**Plans**: TBD
 **UI hint**: yes
 
 ### Phase 31: Microphone State Indicators
@@ -297,7 +302,7 @@ Plans:
 | 27. State Machine | v4.0 | 2/2 | Complete    | 2026-03-29 |
 | 28. Audio Regen | v4.0 | 1/1 | Complete    | 2026-03-29 |
 | 29. Integration | v4.0 | 2/2 | Complete    | 2026-03-29 |
-| 30. Visual System | v5.0 | 0/TBD | Not started | - |
+| 30. Visual System | v5.0 | 0/2 | Planning | - |
 | 31. Mic Indicators | v5.0 | 0/TBD | Not started | - |
 | 32. Debug Overlay | v5.0 | 0/TBD | Not started | - |
 | 33. UX Polish | v5.0 | 0/TBD | Not started | - |
@@ -314,4 +319,4 @@ v5.0 Tester UI Polish (active):
 
 ---
 
-*Last updated: 2026-03-29 -- v5.0 Tester UI Polish roadmap created*
+*Last updated: 2026-03-29 -- Phase 30 plans created (2 plans, 2 waves)*
