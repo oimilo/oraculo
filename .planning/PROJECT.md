@@ -8,7 +8,7 @@ Agente de voz interativo que guia visitantes por uma jornada inspirada na Divina
 
 A experiência deve ser seamless e imersiva como um jogo — o visitante fala, ouve, e é transformado. Se a voz, o roteiro e as transições funcionarem perfeitamente, tudo funciona.
 
-## Current Milestone: v4.0 Game Flow
+## Current Milestone: v4.0 Game Flow (Complete)
 
 **Goal:** Transform the Oracle into a 5-7 min game-like experience with ~8-10 branching decision points, trimmed narration, and regenerated audio.
 
@@ -43,14 +43,14 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 - [x] FallbackTTS updated for ~50 audio keys — *Validated in Phase 18*
 - [x] 49 MP3s generated with ElevenLabs v3 (27 MB, mp3_44100_192) — *Phase 19*
 
-### Active (v4.0 — Game Flow)
+### Shipped (v4.0 — Game Flow)
 
 - [x] All segments trimmed to 5-7 min max-path (pacing validated at 5:00.1 min) — *Validated in Phase 25*
 - [x] Branch content Q2B + Q4B with psychoanalytic depth, variable-length ChoicePattern, percentage-based archetype matching — *Validated in Phase 26*
 - [x] XState v4 machine with conditional Q2B/Q4B branching, choiceMap named tracking, 12 new states — *Validated in Phase 27*
 - [x] 61 MP3s regenerated via ElevenLabs v3 (17 MB, mp3_44100_192), FallbackTTS dynamic coverage — *Validated in Phase 28*
-
-(Remaining v4.0 requirements defined in REQUIREMENTS.md)
+- [x] OracleExperience Q2B/Q4B branching UI integration (8 AGUARDANDO states, script keys, fallbacks, breathing delays) — *Validated in Phase 29*
+- [x] Test suite aligned for v4 structure (496/521 tests, 32/34 suites, 18 new Q2B/Q4B tests) — *Validated in Phase 29*
 
 ### Shipped (v3.1 — Script Mastery)
 
@@ -125,4 +125,4 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-29 — Phase 28 complete (61 MP3s regenerated for v4.0 trimmed/branching script)*
+*Last updated: 2026-03-29 — Phase 29 complete (v4.0 Game Flow milestone done — all 5 phases shipped)*
