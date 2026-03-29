@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Game Flow
-status: verifying
+status: executing
 stopped_at: Completed 27-02-PLAN.md (branching machine tests)
-last_updated: "2026-03-29T01:09:53.870Z"
+last_updated: "2026-03-29T13:05:56.099Z"
 last_activity: 2026-03-29
 progress:
-  total_phases: 21
-  completed_phases: 20
-  total_plans: 47
-  completed_plans: 47
+  total_phases: 22
+  completed_phases: 21
+  total_plans: 48
+  completed_plans: 48
   percent: 79
 ---
 
@@ -22,13 +22,13 @@ progress:
 
 **Current Milestone:** v4.0 Game Flow
 
-**Current Focus:** Phase 27 — state-machine-redesign
+**Current Focus:** Phase 28 — audio-regeneration
 
 ## Current Position
 
-Phase: 27
+Phase: 28
 Plan: Not started
-Status: Phase complete — ready for verification
+Status: Executing Phase 28
 Last activity: 2026-03-29
 
 Progress: [████████████████░░░░] 79% (phases 1-19 shipped, 5 phases remaining in v4.0)

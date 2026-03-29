@@ -30,8 +30,8 @@ Requirements for Game Flow milestone. Transform the Oracle into a 5-7 min game-l
 
 ### Audio
 
-- [ ] **AUDI-01**: All MP3s regenerated for trimmed/new script via ElevenLabs v3
-- [ ] **AUDI-02**: FallbackTTS updated with new audio keys matching new script
+- [x] **AUDI-01**: All MP3s regenerated for trimmed/new script via ElevenLabs v3 — *Validated in Phase 28*
+- [x] **AUDI-02**: FallbackTTS updated with new audio keys matching new script — *Validated in Phase 28*
 
 ### Integration
 

@@ -93,7 +93,7 @@ See: `.planning/milestones/v3.1-ROADMAP.md`
 - [x] **Phase 25: Script Restructure — Pacing** - Trim all segments to 5-7 min target (completed 2026-03-28)
 - [x] **Phase 26: Script Restructure — Branching** - Design and write 8-10 decision points with branching paths (completed 2026-03-29)
 - [x] **Phase 27: State Machine Redesign** - XState v5 with conditional transitions for branching (completed 2026-03-29)
-- [ ] **Phase 28: Audio Regeneration** - Generate all MP3s for trimmed/branching script
+- [x] **Phase 28: Audio Regeneration** - Generate all MP3s for trimmed/branching script (completed 2026-03-29)
 - [ ] **Phase 29: Integration & Validation** - Update components/services, verify all tests pass
 
 ---
@@ -191,12 +191,16 @@ Plans:
 **Goal**: All MP3s regenerated for trimmed/branching script with consistent voice quality
 **Depends on**: Phase 27 (final script keys known)
 **Requirements**: AUDI-01, AUDI-02
+**Plans:** 1/1 plans complete
+
+Plans:
+- [x] 28-01-PLAN.md — Verify generation script, generate 61 MP3s via ElevenLabs v3, validate FallbackTTS coverage
+
 **Success Criteria** (what must be TRUE):
   1. All MP3s regenerated using ElevenLabs v3 (voice ID PznTnBc8X6pvixs9UkQm)
   2. FallbackTTS PRERECORDED_URLS updated to match new script keys
   3. Audio format consistent (mp3_44100_192, 192kbps)
   4. Total audio size reasonable for browser loading
-**Plans**: TBD
 
 ### Phase 29: Integration & Validation (v4.0)
 **Goal**: All components updated for branching flow with passing tests
@@ -223,7 +227,7 @@ Plans:
 | 25. Script Pacing | v4.0 | 2/2 | Complete    | 2026-03-28 |
 | 26. Script Branching | v4.0 | 2/2 | Complete    | 2026-03-29 |
 | 27. State Machine | v4.0 | 2/2 | Complete    | 2026-03-29 |
-| 28. Audio Regen | v4.0 | 0/? | Not started | - |
+| 28. Audio Regen | v4.0 | 1/1 | Complete    | 2026-03-29 |
 | 29. Integration | v4.0 | 0/? | Not started | - |
 
 ## Dependencies
@@ -233,12 +237,12 @@ v3.1 Script Mastery (shipped):
   Phase 24: Polish (DONE)
                 |
 v3.2 Integration & Audio (shipped):
-  Phase 18: Components → Phase 19: Audio → Phase 20: Testing (skipped)
+  Phase 18: Components -> Phase 19: Audio -> Phase 20: Testing (skipped)
                 |
 v4.0 Game Flow (active):
-  Phase 25: Pacing → Phase 26: Branching → Phase 27: Machine → Phase 28: Audio → Phase 29: Integration
+  Phase 25: Pacing -> Phase 26: Branching -> Phase 27: Machine -> Phase 28: Audio -> Phase 29: Integration
 ```
 
 ---
 
-*Last updated: 2026-03-29 — Phase 27 planned (2 plans)*
+*Last updated: 2026-03-29 -- Phase 28 planned (1 plan)*
