@@ -9,8 +9,9 @@
 - v2.0 Narração Realista com ElevenLabs v3 (shipped 2026-03-27)
 - v3.0 Narrative Redesign — 6 Choices (shipped 2026-03-28)
 - v3.1 Script Mastery (shipped 2026-03-28)
-- v3.2 Integration & Audio (pending)
-- v4.0 Game Flow (active)
+- v3.2 Integration & Audio (shipped 2026-03-28)
+- v4.0 Game Flow (shipped 2026-03-29)
+- v5.0 Tester UI Polish (active)
 
 ## Phases
 
@@ -88,13 +89,23 @@ See: `.planning/milestones/v3.1-ROADMAP.md`
 
 </details>
 
-### v4.0 Game Flow (Active)
+<details>
+<summary>v4.0 Game Flow (Phases 25-29) - SHIPPED 2026-03-29</summary>
 
 - [x] **Phase 25: Script Restructure — Pacing** - Trim all segments to 5-7 min target (completed 2026-03-28)
 - [x] **Phase 26: Script Restructure — Branching** - Design and write 8-10 decision points with branching paths (completed 2026-03-29)
 - [x] **Phase 27: State Machine Redesign** - XState v5 with conditional transitions for branching (completed 2026-03-29)
 - [x] **Phase 28: Audio Regeneration** - Generate all MP3s for trimmed/branching script (completed 2026-03-29)
 - [x] **Phase 29: Integration & Validation** - Update components/services, verify all tests pass (completed 2026-03-29)
+
+</details>
+
+### v5.0 Tester UI Polish (Active)
+
+- [ ] **Phase 30: Audio-Reactive Visual System** - Canvas equalizer responds to TTS playback, phase-specific visuals
+- [ ] **Phase 31: Microphone State Indicators** - Listening state redesign with real audio feedback
+- [ ] **Phase 32: Debug Overlay Redesign** - Elegant tester status display with phase tracking
+- [ ] **Phase 33: UX Polish & Consistency** - Buttons, typography, animations, theme consistency
 
 ---
 
@@ -202,16 +213,73 @@ Plans:
   3. Audio format consistent (mp3_44100_192, 192kbps)
   4. Total audio size reasonable for browser loading
 
-### Phase 29: Integration & Validation (v4.0)
+### Phase 29: Integration & Validation (v4.0) - COMPLETE
 **Goal**: All components updated for branching flow with passing tests
 **Depends on**: Phase 28 (audio files ready)
 **Requirements**: INTG-01, INTG-02
+**Plans:** 2/2 plans complete
+
+Plans:
+- [x] 29-01-PLAN.md — OracleExperience Q2B/Q4B branching integration (8 AGUARDANDO states, script keys, fallbacks)
+- [x] 29-02-PLAN.md — Test suite alignment for v4 structure (18 new Q2B/Q4B tests, update existing)
+
 **Success Criteria** (what must be TRUE):
   1. OracleExperience component handles conditional branching UI states
   2. useVoiceChoice hook updated for variable-length choice sequences
   3. All machine tests pass (branching transitions, pattern tracking, devolução routing)
   4. All component tests pass (script key mapping, UI state rendering)
   5. Manual browser verification confirms 5-7 min experience with branching
+**UI hint**: yes
+
+### Phase 30: Audio-Reactive Visual System
+**Goal**: Full-screen audio-reactive background that responds to TTS playback intensity with phase-specific visual themes
+**Depends on**: Phase 29 (v4.0 complete)
+**Requirements**: VIS-01, VIS-02, VIS-03, VIS-04
+**Success Criteria** (what must be TRUE):
+  1. Visitor sees real-time visual response to Oracle voice intensity (equalizer bars or particle system)
+  2. Background visual style changes automatically when narrative phase transitions (Inferno red/fire, Purgatorio blue/mist, Paraiso gold/light)
+  3. Visual transitions between phases crossfade smoothly matching the 3-second audio crossfade
+  4. Idle state displays subtle ambient animation instead of static black screen
+  5. Canvas animation performs smoothly at 60fps on target event hardware
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 31: Microphone State Indicators
+**Goal**: Clear, intuitive visual feedback when Oracle is listening to visitor input
+**Depends on**: Phase 30 (visual system foundation)
+**Requirements**: MIC-01, MIC-02, MIC-03
+**Success Criteria** (what must be TRUE):
+  1. Visitor sees intuitive visual cue when microphone is active (not technical-looking pulsing bars)
+  2. Mic indicator intensity responds to visitor's actual audio input level in real-time
+  3. Visual transition between "Oracle speaking" and "your turn to speak" states is clear and unmistakable
+  4. Tester can distinguish listening state from playback state at a glance
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 32: Debug Overlay Redesign
+**Goal**: Transform debug panel from dev tool to elegant tester status display
+**Depends on**: Phase 30 (visual foundation), Phase 31 (state indicators)
+**Requirements**: DBG-01, DBG-02, DBG-03
+**Success Criteria** (what must be TRUE):
+  1. Tester sees phase name, question number, and choice trail in visually polished format (not raw JSON)
+  2. Tester can toggle debug overlay via keyboard shortcut AND visible toggle button
+  3. Debug overlay displays current narrative phase with visual clarity (Inferno/Purgatorio/Paraiso)
+  4. Overlay design matches dark-theme aesthetic (not jarring dev tool appearance)
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 33: UX Polish & Consistency
+**Goal**: All interactive elements polished with consistent design language and smooth animations
+**Depends on**: Phase 32 (all major UI components established)
+**Requirements**: UX-01, UX-02, UX-03, UX-04, POL-01, POL-02, POL-03
+**Success Criteria** (what must be TRUE):
+  1. Start button has visual presence and appeal (not default browser button)
+  2. Skip/Next button is clearly visible and accessible during tester sessions
+  3. Choice buttons (A/B) have polished hover and press states matching dark theme
+  4. Permission screen uses consistent design language with rest of experience
+  5. Typography hierarchy is consistent (Cormorant for titles, Georgia/system for body text)
+  6. All UI elements enter and exit with smooth animations (no abrupt appear/disappear)
+  7. All components use consistent opacity, blur, and shadow values across entire experience
 **Plans**: TBD
 **UI hint**: yes
 
@@ -229,20 +297,21 @@ Plans:
 | 27. State Machine | v4.0 | 2/2 | Complete    | 2026-03-29 |
 | 28. Audio Regen | v4.0 | 1/1 | Complete    | 2026-03-29 |
 | 29. Integration | v4.0 | 2/2 | Complete    | 2026-03-29 |
+| 30. Visual System | v5.0 | 0/TBD | Not started | - |
+| 31. Mic Indicators | v5.0 | 0/TBD | Not started | - |
+| 32. Debug Overlay | v5.0 | 0/TBD | Not started | - |
+| 33. UX Polish | v5.0 | 0/TBD | Not started | - |
 
 ## Dependencies
 
 ```
-v3.1 Script Mastery (shipped):
-  Phase 24: Polish (DONE)
+v4.0 Game Flow (shipped):
+  Phase 29: Integration (DONE)
                 |
-v3.2 Integration & Audio (shipped):
-  Phase 18: Components -> Phase 19: Audio -> Phase 20: Testing (skipped)
-                |
-v4.0 Game Flow (active):
-  Phase 25: Pacing -> Phase 26: Branching -> Phase 27: Machine -> Phase 28: Audio -> Phase 29: Integration
+v5.0 Tester UI Polish (active):
+  Phase 30: Visual System -> Phase 31: Mic Indicators -> Phase 32: Debug Overlay -> Phase 33: UX Polish
 ```
 
 ---
 
-*Last updated: 2026-03-29 -- Phase 28 planned (1 plan)*
+*Last updated: 2026-03-29 -- v5.0 Tester UI Polish roadmap created*

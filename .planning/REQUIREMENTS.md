@@ -69,29 +69,35 @@ All 16 requirements satisfied. See `.planning/milestones/` for details.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| VIS-01 | TBD | Pending |
-| VIS-02 | TBD | Pending |
-| VIS-03 | TBD | Pending |
-| VIS-04 | TBD | Pending |
-| MIC-01 | TBD | Pending |
-| MIC-02 | TBD | Pending |
-| MIC-03 | TBD | Pending |
-| DBG-01 | TBD | Pending |
-| DBG-02 | TBD | Pending |
-| DBG-03 | TBD | Pending |
-| UX-01 | TBD | Pending |
-| UX-02 | TBD | Pending |
-| UX-03 | TBD | Pending |
-| UX-04 | TBD | Pending |
-| POL-01 | TBD | Pending |
-| POL-02 | TBD | Pending |
-| POL-03 | TBD | Pending |
+| VIS-01 | Phase 30 | Pending |
+| VIS-02 | Phase 30 | Pending |
+| VIS-03 | Phase 30 | Pending |
+| VIS-04 | Phase 30 | Pending |
+| MIC-01 | Phase 31 | Pending |
+| MIC-02 | Phase 31 | Pending |
+| MIC-03 | Phase 31 | Pending |
+| DBG-01 | Phase 32 | Pending |
+| DBG-02 | Phase 32 | Pending |
+| DBG-03 | Phase 32 | Pending |
+| UX-01 | Phase 33 | Pending |
+| UX-02 | Phase 33 | Pending |
+| UX-03 | Phase 33 | Pending |
+| UX-04 | Phase 33 | Pending |
+| POL-01 | Phase 33 | Pending |
+| POL-02 | Phase 33 | Pending |
+| POL-03 | Phase 33 | Pending |
 
 **Coverage:**
 - v5.0 requirements: 17 total
-- Mapped to phases: 0 (awaiting roadmap)
-- Unmapped: 17
+- Mapped to phases: 17/17 (100%)
+- Unmapped: 0
+
+**Phase breakdown:**
+- Phase 30 (Visual System): 4 requirements
+- Phase 31 (Mic Indicators): 3 requirements
+- Phase 32 (Debug Overlay): 3 requirements
+- Phase 33 (UX Polish): 7 requirements
 
 ---
 *Requirements defined: 2026-03-29*
-*Last updated: 2026-03-29 after milestone v5.0 definition*
+*Last updated: 2026-03-29 after v5.0 roadmap creation*
