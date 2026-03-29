@@ -35,7 +35,7 @@ Requirements for Game Flow milestone. Transform the Oracle into a 5-7 min game-l
 
 ### Integration
 
-- [ ] **INTG-01**: OracleExperience component updated for branching flow
+- [x] **INTG-01**: OracleExperience component updated for branching flow
 - [ ] **INTG-02**: All tests passing with v4.0 structure
 
 ## Future Requirements
@@ -78,7 +78,7 @@ Requirements for Game Flow milestone. Transform the Oracle into a 5-7 min game-l
 | MACH-03 | Phase 27 | Complete |
 | AUDI-01 | Phase 28 | Pending |
 | AUDI-02 | Phase 28 | Pending |
-| INTG-01 | Phase 29 | Pending |
+| INTG-01 | Phase 29 | Complete |
 | INTG-02 | Phase 29 | Pending |
 
 **Coverage:**

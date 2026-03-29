@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Game Flow
 status: executing
-stopped_at: Completed 27-02-PLAN.md (branching machine tests)
-last_updated: "2026-03-29T13:05:56.099Z"
+stopped_at: Completed 29-01-PLAN.md (Q2B/Q4B UI integration)
+last_updated: "2026-03-29T13:18:07.372Z"
 last_activity: 2026-03-29
 progress:
-  total_phases: 22
+  total_phases: 23
   completed_phases: 21
-  total_plans: 48
-  completed_plans: 48
+  total_plans: 50
+  completed_plans: 49
   percent: 79
 ---
 
@@ -22,13 +22,13 @@ progress:
 
 **Current Milestone:** v4.0 Game Flow
 
-**Current Focus:** Phase 28 — audio-regeneration
+**Current Focus:** Phase 29 — integration-validation
 
 ## Current Position
 
-Phase: 28
-Plan: Not started
-Status: Executing Phase 28
+Phase: 29 (integration-validation) — EXECUTING
+Plan: 2 of 2
+Status: Ready to execute
 Last activity: 2026-03-29
 
 Progress: [████████████████░░░░] 79% (phases 1-19 shipped, 5 phases remaining in v4.0)
@@ -107,6 +107,7 @@ Recent decisions affecting current work:
 - [Phase 27]: choiceMap provides O(1) named lookup for branch guards; choices[] preserves ordered array for pattern matching
 - [Phase 27]: Branch guards check RESPOSTA_A only — B answers always skip branch per game design
 - [Phase 27]: advanceTo* helpers use CHOICE_B to avoid triggering branch guards in non-branching tests
+- [Phase 29-01]: Q2_RESPOSTA_A/Q4_RESPOSTA_A breathing delay changed to MEDIUM (may branch within-realm or cross-phase)
 
 ### Active TODOs
 
@@ -119,6 +120,6 @@ None. v4.0 ready to start — v3.1 script provides baseline for restructuring.
 
 ## Session Continuity
 
-Last session: 2026-03-29T01:06:29.530Z
-Stopped at: Completed 27-02-PLAN.md (branching machine tests)
+Last session: 2026-03-29T13:18:07.368Z
+Stopped at: Completed 29-01-PLAN.md (Q2B/Q4B UI integration)
 Resume: `/gsd:plan-phase 25` to begin script pacing rewrite
