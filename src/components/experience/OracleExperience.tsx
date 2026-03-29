@@ -14,7 +14,7 @@ import { useSessionAnalytics } from '@/hooks/useSessionAnalytics';
 import { StationRegistry } from '@/services/station';
 import PermissionScreen from './PermissionScreen';
 import StartButton from './StartButton';
-import PhaseBackground from './PhaseBackground';
+import AudioReactiveBackground from '../visuals/AudioReactiveBackground';
 import ChoiceButtons from './ChoiceButtons';
 import EndFade from './EndFade';
 import WaveformVisualizer from '../audio/WaveformVisualizer';
@@ -53,7 +53,7 @@ const Q4B_CHOICE = buildChoiceConfig(8);
  * Tiers:
  *   Long  (2500ms) — Major phase transitions (e.g. APRESENTACAO→INFERNO)
  *   Medium(1500ms) — NARRATIVA→PERGUNTA, within-phase narrative beats
- *   Short  (800ms) — PERGUNTA→AGUARDANDO (question ends, waiting for input)
+ *   Short  (800ms) — Reserved (unused, kept for future use)
  *   None     (0ms) — TIMEOUT / FALLBACK functional prompts
  */
 function getBreathingDelay(machineState: any): number {
@@ -109,15 +109,17 @@ function getBreathingDelay(machineState: any): number {
   if (machineState.matches({ PARAISO: 'Q5_RESPOSTA_B' })) return MEDIUM;
   if (machineState.matches({ PARAISO: 'Q6_SETUP' })) return MEDIUM;
 
-  // --- SHORT: Perguntas (question → AGUARDANDO) ---
-  if (machineState.matches({ INFERNO: 'Q1_PERGUNTA' })) return SHORT;
-  if (machineState.matches({ INFERNO: 'Q2_PERGUNTA' })) return SHORT;
-  if (machineState.matches({ INFERNO: 'Q2B_PERGUNTA' })) return SHORT;
-  if (machineState.matches({ PURGATORIO: 'Q3_PERGUNTA' })) return SHORT;
-  if (machineState.matches({ PURGATORIO: 'Q4_PERGUNTA' })) return SHORT;
-  if (machineState.matches({ PURGATORIO: 'Q4B_PERGUNTA' })) return SHORT;
-  if (machineState.matches({ PARAISO: 'Q5_PERGUNTA' })) return SHORT;
-  if (machineState.matches({ PARAISO: 'Q6_PERGUNTA' })) return SHORT;
+  // --- NONE: Perguntas (question → AGUARDANDO) ---
+  // Zero delay so mic opens immediately after question finishes.
+  // Users respond within ~300ms — any delay here loses their first words.
+  if (machineState.matches({ INFERNO: 'Q1_PERGUNTA' })) return NONE;
+  if (machineState.matches({ INFERNO: 'Q2_PERGUNTA' })) return NONE;
+  if (machineState.matches({ INFERNO: 'Q2B_PERGUNTA' })) return NONE;
+  if (machineState.matches({ PURGATORIO: 'Q3_PERGUNTA' })) return NONE;
+  if (machineState.matches({ PURGATORIO: 'Q4_PERGUNTA' })) return NONE;
+  if (machineState.matches({ PURGATORIO: 'Q4B_PERGUNTA' })) return NONE;
+  if (machineState.matches({ PARAISO: 'Q5_PERGUNTA' })) return NONE;
+  if (machineState.matches({ PARAISO: 'Q6_PERGUNTA' })) return NONE;
 
   // --- NONE: TIMEOUT, FALLBACK, AGUARDANDO, or unmapped ---
   return NONE;
@@ -307,8 +309,26 @@ export default function OracleExperience() {
     micShouldActivate
   );
 
+  // Pre-warm getUserMedia during PERGUNTA states so mic opens instantly at AGUARDANDO
+  const isPergunta =
+    state.matches({ INFERNO: 'Q1_PERGUNTA' }) ||
+    state.matches({ INFERNO: 'Q2_PERGUNTA' }) ||
+    state.matches({ INFERNO: 'Q2B_PERGUNTA' }) ||
+    state.matches({ PURGATORIO: 'Q3_PERGUNTA' }) ||
+    state.matches({ PURGATORIO: 'Q4_PERGUNTA' }) ||
+    state.matches({ PURGATORIO: 'Q4B_PERGUNTA' }) ||
+    state.matches({ PARAISO: 'Q5_PERGUNTA' }) ||
+    state.matches({ PARAISO: 'Q6_PERGUNTA' });
+
+  useEffect(() => {
+    if (isPergunta) {
+      voiceChoice.warmUp();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPergunta]);
+
   // Ambient audio hook
-  useAmbientAudio(state.context.currentPhase, experienceStarted);
+  useAmbientAudio(state.context.currentPhase, experienceStarted, micShouldActivate);
 
   /**
    * Track session start - fires when sessionId changes (new session)
@@ -378,11 +398,14 @@ export default function OracleExperience() {
 
     let cancelled = false;
 
+    // APRESENTACAO: let ambient audio breathe for 3s before the Oracle speaks
+    const introDelay = state.matches('APRESENTACAO') ? 3000 : 0;
+
     // Defer speak to next tick so Strict Mode cleanup can cancel before audio starts
     speakTimeoutRef.current = setTimeout(() => {
       if (cancelled) return;
 
-      logger.log('speak START', { phase: state.context.currentPhase });
+      logger.log('speak START', { phase: state.context.currentPhase, introDelay });
       tts.speak(SCRIPT[scriptKey], state.context.currentPhase, scriptKey)
         .then(() => {
           if (!cancelled) {
@@ -400,7 +423,7 @@ export default function OracleExperience() {
             setTtsComplete(true);
           }
         });
-    }, 0);
+    }, introDelay);
 
     return () => {
       logger.log('Effect A CLEANUP');
@@ -458,23 +481,47 @@ export default function OracleExperience() {
   }, [ttsComplete, isAguardando, state, send]);
 
   /**
-   * Handle fallback: play fallback script when needsFallback is true
+   * Handle fallback: play fallback script when needsFallback is true.
+   * Uses a ref guard to ensure only ONE fallback cycle runs per transition to needsFallback.
    */
+  const fallbackHandledRef = useRef(false);
   useEffect(() => {
-    if (!voiceChoice.needsFallback) return;
+    if (!voiceChoice.needsFallback) {
+      // Reset guard when fallback is no longer needed (lifecycle moved on)
+      fallbackHandledRef.current = false;
+      return;
+    }
+
+    // Prevent re-triggering on every render while needsFallback is true
+    if (fallbackHandledRef.current) return;
+    fallbackHandledRef.current = true;
 
     const fallback = getFallbackScript(state);
     if (!fallback) return;
 
+    let cancelled = false;
+
     tts.speak(fallback.segments, state.context.currentPhase, fallback.key)
       .then(() => {
-        // After fallback TTS completes, restart listening
+        if (cancelled) return;
+        // Brief delay before restarting mic to avoid capturing TTS audio tail
+        return new Promise(resolve => setTimeout(resolve, 400));
+      })
+      .then(() => {
+        if (cancelled) return;
         voiceChoice.startListening();
       })
       .catch((err) => {
-        console.error('Fallback TTS error:', err);
+        if (err.message !== 'Speech cancelled') {
+          console.error('Fallback TTS error:', err);
+        }
       });
-  }, [voiceChoice.needsFallback, state, tts, voiceChoice]);
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [voiceChoice.needsFallback]);
 
   /**
    * Handle choice result from voice pipeline
@@ -511,7 +558,7 @@ export default function OracleExperience() {
   const experienceActive = experienceStarted && !state.matches('IDLE') && !state.matches('FIM');
 
   return (
-    <PhaseBackground phase={state.context.currentPhase}>
+    <AudioReactiveBackground phase={state.context.currentPhase} isPlaying={tts.isSpeaking}>
       {!micPermissionGranted && (
         <PermissionScreen onGranted={() => setMicPermissionGranted(true)} />
       )}
@@ -565,6 +612,6 @@ export default function OracleExperience() {
           attemptCount={voiceChoice.attemptCount}
         />
       )}
-    </PhaseBackground>
+    </AudioReactiveBackground>
   );
 }
