@@ -8,11 +8,19 @@ Agente de voz interativo que guia visitantes por uma jornada inspirada na Divina
 
 A experiência deve ser seamless e imersiva como um jogo — o visitante fala, ouve, e é transformado. Se a voz, o roteiro e as transições funcionarem perfeitamente, tudo funciona.
 
-## Current Milestone: v4.0 Game Flow (Complete)
+## Current Milestone: v5.0 Tester UI Polish
 
-**Goal:** Transform the Oracle into a 5-7 min game-like experience with ~8-10 branching decision points, trimmed narration, and regenerated audio.
+**Goal:** Upgrade the visual layer for psychoanalyst testers — audio-reactive visuals, mic indicators, polished debug overlay, and refined dark-theme UX. Make it look designed, not dev-made.
+
+**Target features:**
+- Audio-reactive equalizer/waveform background animation (responds to playback intensity, subtle and elegant)
+- Clear visual microphone indicator when mic is open (intuitive, not technical)
+- Debug overlay redesigned from dev tool to visual, elegant status display
+- Better UX flow with clearer action cues (start, next, listening states)
+- Overall dark-theme visual polish across all experience states
 
 **Previous milestones:**
+- v4.0 Game Flow (shipped 2026-03-29) — 8 branching decisions, 61 MP3s, 54-state machine, 5-7 min experience
 - v3.2 Integration & Audio (shipped 2026-03-28) — components updated for 6-choice, 49 MP3s generated
 - v3.1 Script Mastery (shipped 2026-03-28) — script elevated to production quality with 3 frameworks absorbed
 - v3.0 Narrative Redesign (shipped 2026-03-28) — first draft script + XState v5 rewrite
@@ -124,5 +132,22 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 
 This document evolves at phase transitions and milestone boundaries.
 
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `/gsd:transition`):
+1. Requirements invalidated? → Move to Out of Scope with reason
+2. Requirements validated? → Move to Validated with phase reference
+3. New requirements emerged? → Add to Active
+4. Decisions to log? → Add to Key Decisions
+5. "What This Is" still accurate? → Update if drifted
+
+**After each milestone** (via `/gsd:complete-milestone`):
+1. Full review of all sections
+2. Core Value check — still the right priority?
+3. Audit Out of Scope — reasons still valid?
+4. Update Context with current state
+
 ---
-*Last updated: 2026-03-29 — Phase 29 complete (v4.0 Game Flow milestone done — all 5 phases shipped)*
+*Last updated: 2026-03-29 — Milestone v5.0 Tester UI Polish started*

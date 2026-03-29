@@ -1,10 +1,10 @@
 ---
 gsd_state_version: 1.0
-milestone: v4.0
-milestone_name: Game Flow
-status: verifying
-stopped_at: Completed 29-02-PLAN.md
-last_updated: "2026-03-29T13:26:58.406Z"
+milestone: v5.0
+milestone_name: Tester UI Polish
+status: defining_requirements
+stopped_at: Milestone v5.0 started
+last_updated: "2026-03-29T18:00:00.000Z"
 last_activity: 2026-03-29
 progress:
   total_phases: 23
@@ -20,18 +20,16 @@ progress:
 
 **Core Value:** Experiencia seamless e imersiva como um jogo -- o visitante fala, ouve, e e transformado. Se a voz, o roteiro e as transicoes funcionarem perfeitamente, tudo funciona.
 
-**Current Milestone:** v4.0 Game Flow
+**Current Milestone:** v5.0 Tester UI Polish
 
-**Current Focus:** Phase 29 — integration-validation
+**Current Focus:** Defining requirements
 
 ## Current Position
 
-Phase: 29
-Plan: Not started
-Status: Phase complete — ready for verification
-Last activity: 2026-03-29
-
-Progress: [████████████████░░░░] 79% (phases 1-19 shipped, 5 phases remaining in v4.0)
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-29 — Milestone v5.0 started
 
 ## Performance Metrics
 
@@ -78,11 +76,12 @@ Progress: [████████████████░░░░] 79% (ph
 - Duration: Same day as v3.1 (2026-03-28)
 - 49 MP3s generated, components updated
 
-**Milestone v4.0 (Active):**
+**Milestone v4.0 (Complete):**
 
-- Phases: 0/5 (Phases 25-29), Plans: 0/?
-- Requirements: 16 (PACE-01 to INTG-02) — all mapped
-- Goal: Transform to 5-7 min game-like experience with 8-10 branching decisions
+- Phases: 5/5 (Phases 25-29), Plans: 9/9
+- Duration: 2 days (2026-03-28 to 2026-03-29)
+- Requirements: 16 (PACE-01 to INTG-02) — all satisfied
+- 61 MP3s, 54-state machine, 8 branching decisions, 5-7 min experience
 
 ## Accumulated Context
 
@@ -90,26 +89,10 @@ Progress: [████████████████░░░░] 79% (ph
 
 Recent decisions affecting current work:
 
+- [v5.0]: Debug overlay redesign — from dev tool to elegant visual status display
+- [v5.0]: Audio-reactive background — equalizer responds to playback intensity
 - [v4.0]: Branching paths over linear flow — game-like engagement, choices feel consequential
 - [v4.0]: 5-7 min target (down from 10.5) — Bienal foot traffic demands shorter sessions
-- [v3.1]: 3-layer devolucao structure: Winnicott pattern + Lacan structure + Bion transformation
-- [v3.1]: Gold phrases metabolized into Oracle voice (not quoted)
-- [v3.1]: Pause range compressed from 1200-2800ms to 800-2000ms for 10.5-min target
-- [Phase 18]: Single universal ChoiceButtons block with labels from activeChoiceConfig
-- [Phase 25]: Merged phase intro openings with gold phrases for compression without losing evocative power
-- [Phase 25]: Added 4th segment to all 8 devoluções for uniform psychoanalytic depth across archetypes
-- [Phase 25]: Extended pauses at emotional peaks rather than adding more text (breathing room deepens impact)
-- [Phase 26]: Q2B and Q4B branch triggers based on consecutive choice patterns (Q1+Q2, Q3+Q4)
-- [Phase 26]: ChoicePattern type evolved to variable-length array for 6-10 choice support
-- [Phase 26]: Percentage-based thresholds (66% for SEEKER/GUARDIAN, 40% for PIVOT) ensure backward compatibility while supporting 6-10 choice arrays
-- [Phase 26]: 4-path timing calculation validates all branch permutations (6Q-8Q), max-path 5:57 min within 5-7 min target
-- [Phase 27]: choices[] starts empty (not pre-allocated) — built dynamically as questions answered
-- [Phase 27]: choiceMap provides O(1) named lookup for branch guards; choices[] preserves ordered array for pattern matching
-- [Phase 27]: Branch guards check RESPOSTA_A only — B answers always skip branch per game design
-- [Phase 27]: advanceTo* helpers use CHOICE_B to avoid triggering branch guards in non-branching tests
-- [Phase 29-01]: Q2_RESPOSTA_A/Q4_RESPOSTA_A breathing delay changed to MEDIUM (may branch within-realm or cross-phase)
-- [Phase 29]: Updated test expectations for v4 trimming: intros 1-2, respostas 1-3
-- [Phase 29]: Added comprehensive test coverage for 12 new Q2B/Q4B branching keys
 
 ### Active TODOs
 
@@ -118,10 +101,10 @@ Recent decisions affecting current work:
 
 ### Blockers
 
-None. v4.0 ready to start — v3.1 script provides baseline for restructuring.
+None.
 
 ## Session Continuity
 
-Last session: 2026-03-29T13:20:53.748Z
-Stopped at: Completed 29-02-PLAN.md
-Resume: `/gsd:plan-phase 25` to begin script pacing rewrite
+Last session: 2026-03-29
+Stopped at: Milestone v5.0 started — defining requirements
+Resume: Continue requirements definition and roadmap creation
