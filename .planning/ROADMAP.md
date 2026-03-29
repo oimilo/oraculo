@@ -157,10 +157,10 @@ Plans:
 **Goal**: Experience offers 8-10 decision points with branching paths that converge before devoluções
 **Depends on**: Phase 25 (trimmed script as foundation)
 **Requirements**: BRNC-01, BRNC-02, BRNC-03, BRNC-04
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
-- [ ] 26-01-PLAN.md — Type contracts (ChoicePattern variable-length, QUESTION_META 7-8) + branch script content (Q2B, Q4B)
+- [x] 26-01-PLAN.md — Type contracts (ChoicePattern variable-length, QUESTION_META 7-8) + branch script content (Q2B, Q4B)
 - [ ] 26-02-PLAN.md — Percentage-based pattern matching + branch-aware timing validation
 
 **Success Criteria** (what must be TRUE):
@@ -216,7 +216,7 @@ Plans:
 | 19. Audio Generation | v3.2 | 1/1 | Complete | 2026-03-28 |
 | 20. Testing | v3.2 | - | Skipped | - |
 | 25. Script Pacing | v4.0 | 2/2 | Complete    | 2026-03-28 |
-| 26. Script Branching | v4.0 | 0/2 | Planned | - |
+| 26. Script Branching | v4.0 | 1/2 | In Progress|  |
 | 27. State Machine | v4.0 | 0/? | Not started | - |
 | 28. Audio Regen | v4.0 | 0/? | Not started | - |
 | 29. Integration | v4.0 | 0/? | Not started | - |

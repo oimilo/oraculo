@@ -17,10 +17,10 @@ Requirements for Game Flow milestone. Transform the Oracle into a 5-7 min game-l
 
 ### Branching
 
-- [ ] **BRNC-01**: Experience has 8-10 total decision points (up from 6)
-- [ ] **BRNC-02**: At least 2 branching points where choice determines next scenario
-- [ ] **BRNC-03**: All branch paths converge before devoluções (no dead ends)
-- [ ] **BRNC-04**: Branch-specific content maintains psychoanalytic depth
+- [x] **BRNC-01**: Experience has 8-10 total decision points (up from 6)
+- [x] **BRNC-02**: At least 2 branching points where choice determines next scenario
+- [x] **BRNC-03**: All branch paths converge before devoluções (no dead ends)
+- [x] **BRNC-04**: Branch-specific content maintains psychoanalytic depth
 
 ### Machine
 
@@ -69,10 +69,10 @@ Requirements for Game Flow milestone. Transform the Oracle into a 5-7 min game-l
 | PACE-03 | Phase 25 | Complete |
 | PACE-04 | Phase 25 | Complete |
 | PACE-05 | Phase 25 | Complete |
-| BRNC-01 | Phase 26 | Pending |
-| BRNC-02 | Phase 26 | Pending |
-| BRNC-03 | Phase 26 | Pending |
-| BRNC-04 | Phase 26 | Pending |
+| BRNC-01 | Phase 26 | Complete |
+| BRNC-02 | Phase 26 | Complete |
+| BRNC-03 | Phase 26 | Complete |
+| BRNC-04 | Phase 26 | Complete |
 | MACH-01 | Phase 27 | Pending |
 | MACH-02 | Phase 27 | Pending |
 | MACH-03 | Phase 27 | Pending |
