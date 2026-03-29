@@ -92,7 +92,7 @@ See: `.planning/milestones/v3.1-ROADMAP.md`
 
 - [x] **Phase 25: Script Restructure — Pacing** - Trim all segments to 5-7 min target (completed 2026-03-28)
 - [x] **Phase 26: Script Restructure — Branching** - Design and write 8-10 decision points with branching paths (completed 2026-03-29)
-- [ ] **Phase 27: State Machine Redesign** - XState v5 with conditional transitions for branching
+- [x] **Phase 27: State Machine Redesign** - XState v5 with conditional transitions for branching (completed 2026-03-29)
 - [ ] **Phase 28: Audio Regeneration** - Generate all MP3s for trimmed/branching script
 - [ ] **Phase 29: Integration & Validation** - Update components/services, verify all tests pass
 
@@ -175,11 +175,11 @@ Plans:
 **Goal**: XState machine handles conditional branching transitions and variable-length choice paths
 **Depends on**: Phase 26 (branching structure finalized)
 **Requirements**: MACH-01, MACH-02, MACH-03
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [x] 27-01-PLAN.md — OracleContextV4 types + machine rewrite with Q2B/Q4B branch states and guards
-- [ ] 27-02-PLAN.md — Comprehensive branching tests (all 4 path permutations, devolucao routing)
+- [x] 27-02-PLAN.md — Comprehensive branching tests (all 4 path permutations, devolucao routing)
 
 **Success Criteria** (what must be TRUE):
   1. XState machine uses conditional transitions (guards) to route based on previous choices
@@ -222,7 +222,7 @@ Plans:
 | 20. Testing | v3.2 | - | Skipped | - |
 | 25. Script Pacing | v4.0 | 2/2 | Complete    | 2026-03-28 |
 | 26. Script Branching | v4.0 | 2/2 | Complete    | 2026-03-29 |
-| 27. State Machine | v4.0 | 1/2 | In Progress|  |
+| 27. State Machine | v4.0 | 2/2 | Complete   | 2026-03-29 |
 | 28. Audio Regen | v4.0 | 0/? | Not started | - |
 | 29. Integration | v4.0 | 0/? | Not started | - |
 
