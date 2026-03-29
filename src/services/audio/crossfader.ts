@@ -7,23 +7,25 @@ export function crossfade(
   ctx: AudioContext,
   currentGain: GainNode,
   nextGain: GainNode,
-  duration: number = 2.5
+  duration: number = 2.5,
+  targetVolume: number = 1
 ): void {
   const now = ctx.currentTime;
   currentGain.gain.setValueAtTime(currentGain.gain.value, now);
   currentGain.gain.linearRampToValueAtTime(0, now + duration);
   nextGain.gain.setValueAtTime(0, now);
-  nextGain.gain.linearRampToValueAtTime(1, now + duration);
+  nextGain.gain.linearRampToValueAtTime(targetVolume, now + duration);
 }
 
 export function fadeIn(
   ctx: AudioContext,
   gainNode: GainNode,
-  duration: number = 2.5
+  duration: number = 2.5,
+  targetVolume: number = 1
 ): void {
   const now = ctx.currentTime;
   gainNode.gain.setValueAtTime(0, now);
-  gainNode.gain.linearRampToValueAtTime(1, now + duration);
+  gainNode.gain.linearRampToValueAtTime(targetVolume, now + duration);
 }
 
 export function fadeOut(

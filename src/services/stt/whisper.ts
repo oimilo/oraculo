@@ -1,9 +1,12 @@
 import type { STTService } from './index';
 
 export class WhisperSTTService implements STTService {
-  async transcribe(audioBlob: Blob): Promise<string> {
+  async transcribe(audioBlob: Blob, promptHint?: string): Promise<string> {
     const formData = new FormData();
     formData.append('audio', audioBlob, 'recording.webm');
+    if (promptHint) {
+      formData.append('prompt', promptHint);
+    }
 
     const response = await fetch('/api/stt', {
       method: 'POST',

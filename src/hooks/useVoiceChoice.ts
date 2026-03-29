@@ -57,6 +57,8 @@ export interface UseVoiceChoiceReturn {
   startListening: () => Promise<void>;
   stopListening: () => void;
   reset: () => void;
+  /** Pre-warm getUserMedia so recording starts instantly when activated */
+  warmUp: () => void;
   // New: explicit lifecycle
   lifecycle: VoiceLifecycle;
   dispatch: React.Dispatch<VoiceEvent>;
@@ -123,7 +125,7 @@ export function voiceLifecycleReducer(state: VoiceLifecycle, event: VoiceEvent):
  * When active=false, stops everything and resets.
  */
 export function useVoiceChoice(config: ChoiceConfig, active: boolean): UseVoiceChoiceReturn {
-  const { isRecording, audioBlob, error: micError, startRecording, stopRecording } = useMicrophone();
+  const { isRecording, audioBlob, error: micError, startRecording, stopRecording, warmUp } = useMicrophone();
 
   const [lifecycle, dispatch] = useReducer(voiceLifecycleReducer, { phase: 'idle' });
   const [error, setError] = useReducer((_: string | null, newError: string | null) => newError, null);
@@ -252,9 +254,16 @@ export function useVoiceChoice(config: ChoiceConfig, active: boolean): UseVoiceC
       logger.log('Processing audio blob START', { size: blob.size, attempt: currentAttempt });
 
       try {
-        // Step 1: Transcribe
+        // Step 1: Transcribe (with keyword hint to reduce Whisper hallucinations)
         const stt = getSTT();
-        const transcript = await stt.transcribe(blob);
+        const allKeywords = [
+          snap.options.A,
+          snap.options.B,
+          ...(snap.keywords?.A || []),
+          ...(snap.keywords?.B || []),
+        ];
+        const promptHint = allKeywords.join(', ');
+        const transcript = await stt.transcribe(blob, promptHint);
 
         if (cancelled) return;
 
@@ -378,6 +387,7 @@ export function useVoiceChoice(config: ChoiceConfig, active: boolean): UseVoiceC
     startListening,
     stopListening,
     reset,
+    warmUp,
     lifecycle,
     dispatch,
   };

@@ -11,6 +11,7 @@ import { useVoiceChoice, type ChoiceConfig } from '@/hooks/useVoiceChoice';
 import { useTTSOrchestrator } from '@/hooks/useTTSOrchestrator';
 import { useAmbientAudio } from '@/hooks/useAmbientAudio';
 import { useSessionAnalytics } from '@/hooks/useSessionAnalytics';
+import { initEffectsChain, setEffectsPhase, startEchoBursts, stopEchoBursts, startRobotBursts, stopRobotBursts } from '@/services/audio/effectsChain';
 import { StationRegistry } from '@/services/station';
 import PermissionScreen from './PermissionScreen';
 import StartButton from './StartButton';
@@ -327,6 +328,24 @@ export default function OracleExperience() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPergunta]);
 
+  // Switch voice effects preset when phase changes (EQ + reverb)
+  useEffect(() => {
+    if (experienceStarted) {
+      setEffectsPhase(state.context.currentPhase);
+    }
+  }, [state.context.currentPhase, experienceStarted]);
+
+  // Echo + robot bursts: on while TTS is speaking, off during silence/AGUARDANDO
+  useEffect(() => {
+    if (tts.isSpeaking) {
+      startEchoBursts();
+      startRobotBursts();
+    } else {
+      stopEchoBursts();
+      stopRobotBursts();
+    }
+  }, [tts.isSpeaking]);
+
   // Ambient audio hook
   useAmbientAudio(state.context.currentPhase, experienceStarted, micShouldActivate);
 
@@ -549,6 +568,7 @@ export default function OracleExperience() {
    */
   const handleStart = useCallback(async () => {
     await initAudioContext();
+    initEffectsChain(); // Wire EQ + reverb + delay into audio chain
     tts.initTTS();
     setExperienceStarted(true);
     send({ type: 'START' });
@@ -596,9 +616,13 @@ export default function OracleExperience() {
             setTtsComplete(true);
             send({ type: 'NARRATIVA_DONE' });
           }}
-          className="fixed bottom-4 right-4 z-50 px-4 py-2 bg-white/10 hover:bg-white/20 text-white/60 text-sm rounded backdrop-blur transition-colors"
+          className="fixed bottom-4 right-4 z-50 px-3 py-1.5 text-white/20 text-xs rounded transition-colors hover:text-white/40"
+          style={{
+            background: 'rgba(255, 255, 255, 0.03)',
+            border: '1px solid rgba(255, 255, 255, 0.06)',
+          }}
         >
-          Skip &raquo;
+          Skip
         </button>
       )}
 

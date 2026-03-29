@@ -26,6 +26,8 @@ export interface UseMicrophoneReturn {
   error: string | null;
   startRecording: (maxDuration?: number) => Promise<void>;
   stopRecording: () => void;
+  /** Pre-request getUserMedia so the stream is ready when startRecording is called */
+  warmUp: () => void;
 }
 
 export function useMicrophone(): UseMicrophoneReturn {
@@ -35,6 +37,7 @@ export function useMicrophone(): UseMicrophoneReturn {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
+  const warmStreamRef = useRef<MediaStream | null>(null);
   const autoStopRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const releaseStream = useCallback(() => {
@@ -43,6 +46,41 @@ export function useMicrophone(): UseMicrophoneReturn {
       streamRef.current.getTracks().forEach(track => track.stop());
       streamRef.current = null;
     }
+  }, []);
+
+  const releaseWarmStream = useCallback(() => {
+    if (warmStreamRef.current) {
+      warmStreamRef.current.getTracks().forEach(track => track.stop());
+      warmStreamRef.current = null;
+    }
+  }, []);
+
+  /** Pre-request getUserMedia so the stream is ready when startRecording is called. */
+  const warmUp = useCallback(() => {
+    // Already have a warm stream or actively recording — skip
+    if (warmStreamRef.current || streamRef.current) return;
+
+    logger.log('warmUp — requesting getUserMedia');
+    navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        sampleRate: 44100,
+      },
+    })
+      .then((stream) => {
+        // If startRecording already ran before warmUp resolved, release this stream
+        if (streamRef.current) {
+          logger.log('warmUp — stream already active, releasing warm stream');
+          stream.getTracks().forEach(track => track.stop());
+          return;
+        }
+        warmStreamRef.current = stream;
+        logger.log('warmUp — stream ready');
+      })
+      .catch((err) => {
+        logger.error('warmUp — failed:', err instanceof Error ? err.message : err);
+      });
   }, []);
 
   const stopRecording = useCallback(() => {
@@ -71,14 +109,22 @@ export function useMicrophone(): UseMicrophoneReturn {
       setAudioBlob(null);
       chunksRef.current = [];
 
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          sampleRate: 44100,
-        },
-      });
-      logger.log('getUserMedia SUCCESS');
+      // Reuse pre-warmed stream if available (saves ~100-300ms getUserMedia latency)
+      let stream: MediaStream;
+      if (warmStreamRef.current) {
+        stream = warmStreamRef.current;
+        warmStreamRef.current = null;
+        logger.log('getUserMedia REUSED warm stream');
+      } else {
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            sampleRate: 44100,
+          },
+        });
+        logger.log('getUserMedia SUCCESS (cold)');
+      }
       streamRef.current = stream;
 
       const mimeType = getSupportedMimeType();
@@ -137,8 +183,9 @@ export function useMicrophone(): UseMicrophoneReturn {
         mediaRecorderRef.current.stop();
       }
       releaseStream();
+      releaseWarmStream();
     };
-  }, [releaseStream]);
+  }, [releaseStream, releaseWarmStream]);
 
-  return { isRecording, audioBlob, error, startRecording, stopRecording };
+  return { isRecording, audioBlob, error, startRecording, stopRecording, warmUp };
 }

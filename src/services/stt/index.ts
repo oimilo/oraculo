@@ -2,7 +2,7 @@ import { MockSTTService } from './mock';
 import { WhisperSTTService } from './whisper';
 
 export interface STTService {
-  transcribe(audioBlob: Blob): Promise<string>;
+  transcribe(audioBlob: Blob, promptHint?: string): Promise<string>;
 }
 
 export function createSTTService(): STTService {

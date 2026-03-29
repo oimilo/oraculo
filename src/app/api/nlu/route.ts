@@ -135,9 +135,9 @@ export async function POST(request: NextRequest) {
     const systemPrompt =
       'You are a binary classifier for an interactive art installation ("O Oráculo"). ' +
       'The oracle presents poetic/metaphorical scenarios and asks the visitor to choose between two symbolic actions. ' +
-      'The visitor responds by voice — their words may be indirect, metaphorical, or colloquial. ' +
-      'Interpret their INTENT in the context of the scenario, not their literal words. ' +
-      'Key: farewell/goodbye/leaving phrases usually mean rejection/turning away, NOT engagement/entering. ' +
+      'The visitor responds by voice in Brazilian Portuguese — their words may be indirect, metaphorical, or colloquial. ' +
+      'Interpret their INTENT strictly in the context of the scenario and the two options provided. ' +
+      'Do NOT apply general assumptions about word meanings — words like "sair", "ir embora" may mean different things depending on the scenario context. ' +
       'Return ONLY raw JSON (no markdown, no code blocks). ' +
       'Format: {"choice":"A","confidence":0.9,"reasoning":"..."}';
 

@@ -34,11 +34,15 @@ export async function POST(request: NextRequest) {
     }
 
     // Build FormData for Whisper API
+    const promptHint = formData.get('prompt') as string | null;
     const whisperForm = new FormData();
     whisperForm.append('file', audioFile, audioFile.name || 'audio.webm');
     whisperForm.append('model', 'whisper-1');
     whisperForm.append('language', 'pt');
     whisperForm.append('response_format', 'json');
+    if (promptHint) {
+      whisperForm.append('prompt', promptHint);
+    }
 
     // Set up 10-second timeout to prevent stuck states
     const controller = new AbortController();
@@ -75,12 +79,23 @@ export async function POST(request: NextRequest) {
       console.log('[STT] Whisper raw:', JSON.stringify(result));
 
       // Filter known Whisper hallucinations (produced when audio is silence/noise)
+      // Whisper trained on PT-BR YouTube → hallucinates common video phrases
       const HALLUCINATION_PATTERNS = [
         'amara.org', 'legendas', 'subtítulos', 'transcrição por',
         'obrigado por assistir', 'inscreva-se', 'subscribe',
+        'é isso aí, galera', 'é isso aí galera', 'isso aí galera',
+        'até o próximo', 'até a próxima', 'valeu galera',
+        'fala galera', 'e aí galera', 'fala pessoal',
+        'tchau galera', 'um abraço', 'deixe seu like',
+        'clique aqui', 'se inscreva', 'ative o sininho',
+        'não se esqueça', 'compartilhe', 'curta o vídeo',
+        'gostou do vídeo', 'link na descrição',
       ];
-      const lower = (result.text || '').toLowerCase();
-      const isHallucination = HALLUCINATION_PATTERNS.some(p => lower.includes(p));
+      const lower = (result.text || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const isHallucination = HALLUCINATION_PATTERNS.some(p => {
+        const normalizedP = p.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        return lower.includes(normalizedP);
+      });
       const text = isHallucination ? '' : result.text;
       if (isHallucination) console.log('[STT] Filtered hallucination:', result.text);
 

@@ -1,6 +1,6 @@
 import type { TTSService, VoiceSettings } from './index';
 import type { SpeechSegment } from '@/types';
-import { getAudioContext, getGainNode, initAudioContext } from '@/lib/audio/audioContext';
+import { getAudioContext, getEffectsInput, initAudioContext } from '@/lib/audio/audioContext';
 import { FallbackTTSService } from './fallback';
 
 export class ElevenLabsTTSService implements TTSService {
@@ -100,10 +100,10 @@ export class ElevenLabsTTSService implements TTSService {
 
       const source = this.audioContext!.createBufferSource();
       source.buffer = buffer;
-      // Route through GainNode so AnalyserNode can read frequency data
-      const gainNode = getGainNode();
-      if (gainNode) {
-        source.connect(gainNode);
+      // Route through effects chain → GainNode so voice gets phase effects + AnalyserNode reads data
+      const effectsInput = getEffectsInput();
+      if (effectsInput) {
+        source.connect(effectsInput);
       } else {
         source.connect(this.audioContext!.destination);
       }

@@ -10,9 +10,18 @@ interface AmbientTrack {
 
 /** Default ambient audio URLs per phase. Place files in public/audio/ */
 export const AMBIENT_URLS: Partial<Record<NarrativePhase, string>> = {
+  APRESENTACAO: '/audio/ambient-apresentacao.mp3',
   INFERNO: '/audio/ambient-inferno.mp3',
   PURGATORIO: '/audio/ambient-purgatorio.mp3',
   PARAISO: '/audio/ambient-paraiso.mp3',
+};
+
+/** Per-phase volume (0-1). Tweak here to balance ambient against TTS voice. */
+export const AMBIENT_VOLUMES: Partial<Record<NarrativePhase, number>> = {
+  APRESENTACAO: 0.5,
+  INFERNO: 1.0,
+  PURGATORIO: 0.5,
+  PARAISO: 0.25,
 };
 
 export class AmbientPlayer {
@@ -44,7 +53,7 @@ export class AmbientPlayer {
     const targetTrack = this.tracks.get(targetPhase);
 
     if (!targetTrack) {
-      // No ambient for this phase (APRESENTACAO, DEVOLUCAO, ENCERRAMENTO)
+      // No ambient for this phase (DEVOLUCAO, ENCERRAMENTO)
       // Just fade out current if playing
       if (this.currentPhase) {
         const current = this.tracks.get(this.currentPhase);
@@ -69,10 +78,12 @@ export class AmbientPlayer {
     source.start(0);
     targetTrack.source = source;
 
+    const targetVolume = AMBIENT_VOLUMES[targetPhase] ?? 0.5;
+
     if (this.currentPhase && this.currentPhase !== targetPhase) {
       const currentTrack = this.tracks.get(this.currentPhase);
       if (currentTrack) {
-        crossfade(this.ctx, currentTrack.gainNode, targetTrack.gainNode, fadeDuration);
+        crossfade(this.ctx, currentTrack.gainNode, targetTrack.gainNode, fadeDuration, targetVolume);
         const oldSource = currentTrack.source;
         setTimeout(() => {
           oldSource?.stop();
@@ -81,7 +92,7 @@ export class AmbientPlayer {
       }
     } else {
       // First track or same phase, just fade in
-      fadeIn(this.ctx, targetTrack.gainNode, fadeDuration);
+      fadeIn(this.ctx, targetTrack.gainNode, fadeDuration, targetVolume);
     }
 
     this.currentPhase = targetPhase;
@@ -99,6 +110,29 @@ export class AmbientPlayer {
         }, duration * 1000);
       }
       this.currentPhase = null;
+    }
+  }
+
+  /** Duck ambient volume while mic is active (prevents bleed into recording) */
+  duck(duration: number = 0.5): void {
+    if (!this.currentPhase) return;
+    const track = this.tracks.get(this.currentPhase);
+    if (track) {
+      const now = this.ctx.currentTime;
+      track.gainNode.gain.setValueAtTime(track.gainNode.gain.value, now);
+      track.gainNode.gain.linearRampToValueAtTime(0.05, now + duration);
+    }
+  }
+
+  /** Restore ambient volume after mic recording ends */
+  unduck(duration: number = 0.5): void {
+    if (!this.currentPhase) return;
+    const track = this.tracks.get(this.currentPhase);
+    if (track) {
+      const targetVolume = AMBIENT_VOLUMES[this.currentPhase] ?? 0.5;
+      const now = this.ctx.currentTime;
+      track.gainNode.gain.setValueAtTime(track.gainNode.gain.value, now);
+      track.gainNode.gain.linearRampToValueAtTime(targetVolume, now + duration);
     }
   }
 

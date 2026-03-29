@@ -167,7 +167,7 @@ export const SCRIPT: ScriptDataV4 = {
   // viva e desconhecida.
   // ═══════════════════════════════════════════════════════════════
   INFERNO_Q2_SETUP: [
-    { text: "Corredor estreito. Você anda e as paredes se aproximam a cada passo.", pauseAfter: 900 },
+    { text: "Um corredor estreito. Você anda e as paredes se aproximam a cada passo.", pauseAfter: 900 },
     { text: "Sua mão encosta na parede e toca algo vivo. Pequeno, úmido, pulsando.", pauseAfter: 900, inflection: ['whispering'] },
   ],
 
@@ -233,7 +233,8 @@ export const SCRIPT: ScriptDataV4 = {
   // ═══════════════════════════════════════════════════════════════
   PURGATORIO_Q3_SETUP: [
     { text: "Você está na entrada de um jardim. Cada flor aberta, cada cor no auge.", pauseAfter: 900 },
-    { text: "Mas tem fumaça no vento. De manhã, nada disso vai existir.", pauseAfter: 900, inflection: ['sad'] },
+    { text: "Mas tem fumaça no vento.", pauseAfter: 900 },
+    { text: "De manhã, nada disso vai existir.", pauseAfter: 900, inflection: ['sad'] },
   ],
 
   PURGATORIO_Q3_PERGUNTA: [
@@ -359,7 +360,7 @@ export const SCRIPT: ScriptDataV4 = {
   ],
 
   PARAISO_Q6_PERGUNTA: [
-    { text: "Quer ouvir o que eu vi em você — ou já sabe o que precisa saber?", pauseAfter: 800 },
+    { text: "Quer ouvir o que eu vi em você — ou já sabe o que precisa saber?", pauseAfter: 800, inflection: ['questioning'] },
   ],
 
   // Q6 RESPOSTA A — Pedir o espelho (abertura a ser visto)

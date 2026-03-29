@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O Oráculo — Roteiro Completo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap');
+
+  :root {
+    --bg: #faf8f5;
+    --text: #2a2520;
+    --muted: #7a7068;
+    --inferno: #8b2020;
+    --purgatorio: #3d5a80;
+    --paraiso: #8b7530;
+    --devolucao: #5c4a2a;
+    --border: #e0dcd6;
+    --card-bg: #fff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  h1, h2, h3 { font-family: 'Cormorant Garamond', serif; }
+
+  header {
+    text-align: center;
+    padding: 3rem 0 2rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3rem;
+  }
+
+  header h1 {
+    font-size: 2.8rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+
+  header p {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  /* Table of contents */
+  .toc {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .toc h2 { font-size: 1.3rem; margin-bottom: 0.8rem; }
+
+  .toc ol {
+    padding-left: 1.5rem;
+    columns: 2;
+    column-gap: 2rem;
+  }
+
+  .toc li {
+    font-size: 0.9rem;
+    padding: 0.15rem 0;
+  }
+
+  .toc a {
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--muted);
+  }
+
+  .toc a:hover { border-bottom-style: solid; }
+
+  /* Overview section */
+  .overview {
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+
+  .overview h2 { font-size: 1.4rem; margin-bottom: 1rem; }
+
+  .overview ul {
+    padding-left: 1.2rem;
+    font-size: 0.95rem;
+  }
+
+  .overview li { margin-bottom: 0.3rem; }
+
+  /* Flowchart */
+  .flowchart {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 3rem;
+    overflow-x: auto;
+  }
+
+  .flowchart h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  /* Phase sections */
+  .phase {
+    margin-bottom: 3rem;
+    border-left: 4px solid var(--border);
+    padding-left: 0;
+  }
+
+  .phase-header {
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 0 0;
+    margin-bottom: 0;
+  }
+
+  .phase-header h2 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+  }
+
+  .phase-header p {
+    font-size: 0.85rem;
+    opacity: 0.8;
+  }
+
+  .phase.apresentacao { border-color: var(--text); }
+  .phase.apresentacao .phase-header { background: #2a2520; color: #faf8f5; }
+
+  .phase.inferno { border-color: var(--inferno); }
+  .phase.inferno .phase-header { background: var(--inferno); color: #faf8f5; }
+
+  .phase.purgatorio { border-color: var(--purgatorio); }
+  .phase.purgatorio .phase-header { background: var(--purgatorio); color: #faf8f5; }
+
+  .phase.paraiso { border-color: var(--paraiso); }
+  .phase.paraiso .phase-header { background: var(--paraiso); color: #faf8f5; }
+
+  .phase.devolucao { border-color: var(--devolucao); }
+  .phase.devolucao .phase-header { background: var(--devolucao); color: #faf8f5; }
+
+  .phase.encerramento { border-color: var(--text); }
+  .phase.encerramento .phase-header { background: #2a2520; color: #faf8f5; }
+
+  /* Narration blocks */
+  .narration {
+    padding: 1rem 1.5rem;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .narration-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+  }
+
+  .narration-text {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.1rem;
+    line-height: 1.9;
+    color: var(--text);
+  }
+
+  /* Question blocks */
+  .question {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .question-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .question-badge {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.2rem 0.6rem;
+    border-radius: 3px;
+    background: var(--text);
+    color: var(--bg);
+  }
+
+  .question-depth {
+    font-size: 0.7rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .question-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .question-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .choice {
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .choice-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .choice-a .choice-label { color: var(--inferno); }
+  .choice-b .choice-label { color: var(--purgatorio); }
+
+  .choice-meaning {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 0.5rem;
+  }
+
+  .choice-response {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  /* Branch indicator */
+  .branch-indicator {
+    background: #fff8e7;
+    border: 1px dashed #c9a84c;
+    border-radius: 6px;
+    padding: 0.8rem 1.2rem;
+    margin: 1rem 1.5rem;
+    font-size: 0.85rem;
+  }
+
+  .branch-indicator strong {
+    color: var(--devolucao);
+  }
+
+  /* Devolucao cards */
+  .devolucao-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+  }
+
+  .devolucao-card {
+    padding: 1.2rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .devolucao-card h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .devolucao-card .criteria {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+    font-style: italic;
+  }
+
+  .devolucao-card .text {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  /* Footer */
+  .footer-note {
+    text-align: center;
+    padding: 2rem 0;
+    color: var(--muted);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border);
+    margin-top: 2rem;
+  }
+
+  /* Print styles */
+  @media print {
+    body { padding: 0; max-width: 100%; font-size: 10pt; }
+    .phase { break-inside: avoid; }
+    .question { break-inside: avoid; }
+    .devolucao-card { break-inside: avoid; }
+    .flowchart { break-before: page; }
+    header { padding: 1rem 0; }
+  }
+
+  @media (max-width: 700px) {
+    body { padding: 1rem; }
+    .choices { grid-template-columns: 1fr; }
+    .devolucao-grid { grid-template-columns: 1fr; }
+    .toc ol { columns: 1; }
+    header h1 { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>O Or&aacute;culo</h1>
+  <p>Roteiro completo da experi&ecirc;ncia interativa de voz<br>
+  VII Bienal de Psican&aacute;lise e Cultura &mdash; SBPRP 2026</p>
+</header>
+
+<nav class="toc">
+  <h2>&Iacute;ndice</h2>
+  <ol>
+    <li><a href="#visao">Vis&atilde;o geral</a></li>
+    <li><a href="#fluxo">Fluxograma</a></li>
+    <li><a href="#apresentacao">Apresenta&ccedil;&atilde;o</a></li>
+    <li><a href="#inferno">Inferno (Q1, Q2, Q2B)</a></li>
+    <li><a href="#purgatorio">Purgat&oacute;rio (Q3, Q4, Q4B)</a></li>
+    <li><a href="#paraiso">Para&iacute;so (Q5, Q6)</a></li>
+    <li><a href="#devolucao">Devolu&ccedil;&otilde;es (8 arqu&eacute;tipos)</a></li>
+    <li><a href="#encerramento">Encerramento</a></li>
+  </ol>
+</nav>
+
+<section class="overview" id="visao">
+  <h2>Vis&atilde;o geral</h2>
+  <ul>
+    <li><strong>Formato:</strong> Experi&ecirc;ncia solo com fones de ouvido, 5&ndash;7 minutos</li>
+    <li><strong>Intera&ccedil;&atilde;o:</strong> O visitante responde em voz alta. O Or&aacute;culo ouve e reage.</li>
+    <li><strong>Estrutura:</strong> Apresenta&ccedil;&atilde;o &rarr; Inferno &rarr; Purgat&oacute;rio &rarr; Para&iacute;so &rarr; Devolu&ccedil;&atilde;o &rarr; Encerramento</li>
+    <li><strong>Escolhas:</strong> 6 perguntas bin&aacute;rias (A ou B) + 2 perguntas condicionais (Q2B, Q4B)</li>
+    <li><strong>Ramifica&ccedil;&otilde;es:</strong> Q2B aparece se Q1=A e Q2=A. Q4B aparece se Q3=A e Q4=A.</li>
+    <li><strong>Devolu&ccedil;&atilde;o:</strong> 8 arqu&eacute;tipos poss&iacute;veis, derivados do <em>padr&atilde;o</em> de escolhas (n&atilde;o de cada escolha individual)</li>
+    <li><strong>Escala de profundidade:</strong> Light &rarr; Medium &rarr; Deep &rarr; Profound</li>
+    <li><strong>Privacidade:</strong> Zero dados armazenados. &Aacute;udio descartado ap&oacute;s classifica&ccedil;&atilde;o (LGPD).</li>
+  </ul>
+</section>
+
+<section class="flowchart" id="fluxo">
+  <h2>&Aacute;rvore de Decis&otilde;es</h2>
+  <div class="mermaid">
+graph TD
+    START["<strong>APRESENTA&Ccedil;&Atilde;O</strong><br/><em>Contrato com o visitante</em>"]
+    START --> INF_INTRO["<strong>INFERNO</strong><br/><em>Descida. Ar denso.</em>"]
+
+    INF_INTRO --> Q1{"<strong>Q1</strong> &mdash; A Pris&atilde;o Confort&aacute;vel<br/><em>Sala perfeita sem porta</em><br/><br/>A: Ficar &nbsp;|&nbsp; B: Procurar sa&iacute;da"}
+    Q1 -->|"A: Ficar"| Q2{"<strong>Q2</strong> &mdash; A Coisa no Ch&atilde;o<br/><em>Algo vivo pulsando na parede</em><br/><br/>A: Recuar &nbsp;|&nbsp; B: Ficar olhando"}
+    Q1 -->|"B: Procurar sa&iacute;da"| Q2
+
+    Q2 -->|"A: Recuar<br/>(se Q1=A)"| Q2B{"<strong>Q2B</strong> &mdash; A Segunda Coisa<br/><em>Outra coisa pulsa, mais quente</em><br/><br/>A: Tocar &nbsp;|&nbsp; B: Passar reto"}
+    Q2 -->|"A: Recuar<br/>(se Q1=B)"| PURG
+    Q2 -->|"B: Ficar olhando"| PURG
+
+    Q2B --> PURG
+
+    PURG["<strong>PURGAT&Oacute;RIO</strong><br/><em>Espera. O ar muda.</em>"]
+
+    PURG --> Q3{"<strong>Q3</strong> &mdash; O Jardim que Vai Queimar<br/><em>Beleza no auge, fuma&ccedil;a no vento</em><br/><br/>A: Entrar &nbsp;|&nbsp; B: Dar as costas"}
+
+    Q3 -->|"A: Entrar"| Q4{"<strong>Q4</strong> &mdash; As Duas &Aacute;guas<br/><em>Rio escuro (mem&oacute;ria) vs rio claro (esquecimento)</em><br/><br/>A: Lembrar &nbsp;|&nbsp; B: Esquecer"}
+    Q3 -->|"B: Dar as costas"| Q4
+
+    Q4 -->|"A: Lembrar<br/>(se Q3=A)"| Q4B{"<strong>Q4B</strong> &mdash; A Mem&oacute;ria que Insiste<br/><em>Tem cheiro, textura, um rosto</em><br/><br/>A: Reviver &nbsp;|&nbsp; B: Arquivar"}
+    Q4 -->|"A: Lembrar<br/>(se Q3=B)"| PAR
+    Q4 -->|"B: Esquecer"| PAR
+
+    Q4B --> PAR
+
+    PAR["<strong>PARA&Iacute;SO</strong><br/><em>O ar se abre. Sem paredes.</em>"]
+
+    PAR --> Q5{"<strong>Q5</strong> &mdash; A Pergunta Sem Resposta<br/><em>Press&atilde;o no peito, sem palavras</em><br/><br/>A: Carregar &nbsp;|&nbsp; B: Deixar dissolver"}
+
+    Q5 --> Q6{"<strong>Q6</strong> &mdash; O Fim do Jogo<br/><em>Voz do Or&aacute;culo afinando</em><br/><br/>A: Ouvir o espelho &nbsp;|&nbsp; B: J&aacute; sei"}
+
+    Q6 --> DEV["<strong>DEVOLU&Ccedil;&Atilde;O</strong><br/><em>1 de 8 arqu&eacute;tipos<br/>baseado no padr&atilde;o de escolhas</em>"]
+
+    DEV --> FIM["<strong>ENCERRAMENTO</strong><br/><em>O Or&aacute;culo se dissolve</em>"]
+
+    classDef default fill:#faf8f5,stroke:#2a2520,stroke-width:1px,color:#2a2520
+    classDef phase fill:#2a2520,stroke:#2a2520,color:#faf8f5,font-weight:bold
+    classDef inferno fill:#fdf2f2,stroke:#8b2020,color:#8b2020
+    classDef purgatorio fill:#f0f4f8,stroke:#3d5a80,color:#3d5a80
+    classDef paraiso fill:#fdf8ed,stroke:#8b7530,color:#8b7530
+    classDef question fill:#fff,stroke:#2a2520,stroke-width:2px,color:#2a2520
+    classDef branch fill:#fff8e7,stroke:#c9a84c,stroke-width:2px,stroke-dasharray:5,color:#2a2520
+
+    class START,FIM phase
+    class INF_INTRO inferno
+    class PURG purgatorio
+    class PAR paraiso
+    class DEV phase
+    class Q1,Q2,Q3,Q4,Q5,Q6 question
+    class Q2B,Q4B branch
+  </div>
+  <p style="text-align:center; font-size:0.8rem; color:var(--muted); margin-top:1rem;">
+    Caixas tracejadas = perguntas condicionais (s&oacute; aparecem para certos padr&otilde;es de escolha)
+  </p>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- APRESENTACAO -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="phase apresentacao" id="apresentacao">
+  <div class="phase-header">
+    <h2>Apresenta&ccedil;&atilde;o</h2>
+    <p>O Or&aacute;culo se apresenta. Estabelece o contrato.</p>
+  </div>
+  <div class="narration">
+    <div class="narration-label">Narra&ccedil;&atilde;o</div>
+    <div class="narration-text">
+      Eu n&atilde;o sei quem voc&ecirc; &eacute;.
+      <br>Isso me torna um bom lugar pra voc&ecirc; ser honesto.
+      <br>Vou te fazer perguntas. Voc&ecirc; responde em voz alta.
+      <br>Cada resposta abre um caminho que n&atilde;o pode ser desfeito. N&atilde;o tem replay. N&atilde;o tem voltar. O que voc&ecirc; escolher, voc&ecirc; carrega.
+      <br>Vamos.
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- INFERNO -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="phase inferno" id="inferno">
+  <div class="phase-header">
+    <h2>Inferno</h2>
+    <p>Descida. O ar &eacute; denso. Tudo que &eacute; excessivo e apressado desce pra c&aacute;.</p>
+  </div>
+
+  <div class="narration">
+    <div class="narration-label">Introdu&ccedil;&atilde;o do reino</div>
+    <div class="narration-text">
+      Descemos. Aqui embaixo o ar &eacute; denso &mdash; tudo o que &eacute; excessivo e apressado desce pra c&aacute;.
+    </div>
+  </div>
+
+  <!-- Q1 -->
+  <div class="question">
+    <div class="question-header">
+      <span class="question-badge">Pergunta 1</span>
+      <span class="question-depth">Profundidade: Light</span>
+    </div>
+    <div class="question-title">A Pris&atilde;o Confort&aacute;vel &mdash; Conforto vs Liberdade</div>
+
+    <div class="narration" style="padding:0; border:0; margin-bottom:0.8rem;">
+      <div class="narration-label">Setup</div>
+      <div class="narration-text" style="font-size:1.05rem;">
+        Voc&ecirc; est&aacute; numa sala. Tudo se ajusta a voc&ecirc; &mdash; a temperatura, a luz, o som. Tudo perfeito.
+        <br>Voc&ecirc; nunca sofreu aqui. Mas voc&ecirc; percebe uma coisa: n&atilde;o tem porta.
+      </div>
+    </div>
+
+    <div class="question-text">&ldquo;Voc&ecirc; fica &mdash; ou procura uma sa&iacute;da?&rdquo;</div>
+
+    <div class="choices">
+      <div class="choice choice-a">
+        <div class="choice-label">&bull; Op&ccedil;&atilde;o A &mdash; Ficar</div>
+        <div class="choice-meaning">Conforto sobre ag&ecirc;ncia</div>
+        <div class="choice-response">
+          Voc&ecirc; fica. A seguran&ccedil;a comprada com soberania &eacute; a mais cara que existe. Mas o pre&ccedil;o vem depois.
+        </div>
+      </div>
+      <div class="choice choice-b">
+        <div class="choice-label">&bull; Op&ccedil;&atilde;o B &mdash; Procurar sa&iacute;da</div>
+        <div class="choice-meaning">Desconforto como prova de vida</div>
+        <div class="choice-response">
+          Voc&ecirc; levanta. Voc&ecirc; n&atilde;o achou a porta. Mas achou a prova de que ainda quer algo que n&atilde;o est&aacute; aqui. Isso j&aacute; &eacute; sa&iacute;da.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="question">
+    <div class="question-header">
+      <span class="question-badge">Pergunta 2</span>
+      <span class="question-depth">Profundidade: Medium</span>
+    </div>
+    <div class="question-title">A Coisa no Ch&atilde;o &mdash; Repulsa vs Presen&ccedil;a</div>
+
+    <div class="narration" style="padding:0; border:0; margin-bottom:0.8rem;">
+      <div class="narration-label">Setup</div>
+      <div class="narration-text" style="font-size:1.05rem;">
+        Um corredor estreito. Voc&ecirc; anda e as paredes se aproximam a cada passo.
+        <br>Sua m&atilde;o encosta na parede e toca algo vivo. Pequeno, &uacute;mido, pulsando.
+      </div>
+    </div>
+
+    <div class="question-text">&ldquo;Voc&ecirc; recua &mdash; ou fica parado, olhando?&rdquo;</div>
+
+    <div class="choices">
+      <div class="choice choice-a">
+        <div class="choice-label">&bull; Op&ccedil;&atilde;o A &mdash; Recuar</div>
+        <div class="choice-meaning">Obedi&ecirc;ncia ao primeiro veredito do corpo</div>
+        <div class="choice-response">
+          Voc&ecirc; recua. O que &eacute; recusado n&atilde;o desaparece. Volta como sonho, como dor sem lugar. Tudo que voc&ecirc; evita cria ra&iacute;zes no escuro.
+        </div>
+      </div>
+      <div class="choice choice-b">
+        <div class="choice-label">&bull; Op&ccedil;&atilde;o B &mdash; Ficar olhando</div>
+        <div class="choice-meaning">Ultrapassar a repulsa</div>
+        <div class="choice-response">
+          Voc&ecirc; fica. Transforma&ccedil;&atilde;o come&ccedil;a nos momentos em que o corpo diz n&atilde;o e algo dentro de voc&ecirc; responde: ainda n&atilde;o. Repulsa &eacute; o primeiro veredito. Curiosidade &eacute; o segundo. E o segundo sempre carrega mais verdade.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2B Branch -->
+  <div class="branch-indicator">
+    <strong>&#9670; Ramifica&ccedil;&atilde;o condicional Q2B</strong> &mdash; S&oacute; aparece se o visitante escolheu <strong>Ficar</strong> (Q1=A) <strong>E</strong> <strong>Recuar</strong> (Q2=A). Segunda chance de confrontar o que evitou.
+  </div>
+
+  <div class="question">
+    <div class="question-header">
+      <span class="question-badge" style="background:#c9a84c;">Pergunta 2B</span>
+      <span class="question-depth">Profundidade: Medium-Deep &bull; Condicional</span>
+    </div>
+    <div class="question-title">A Segunda Coisa &mdash; Segunda chance</div>
+
+    <div class="narration" style="padding:0; border:0; margin-bottom:0.8rem;">
+      <div class="narration-label">Setup</div>
+      <div class="narration-text" style="font-size:1.05rem;">
+        Mais adiante, no mesmo corredor, outra coisa pulsa. Menor que a primeira. Mais quente. Quase chamando.
+      </div>
+    </div>
+
+    <div class="question-text">&ldquo;Voc&ecirc; toca &mdash; ou passa reto?&rdquo;</div>
+
+    <div class="choices">
+      <div class="choice choice-a">
+        <div class="choice-label">&bull; Op&ccedil;&atilde;o A &mdash; Tocar</div>
+        <div class="choice-meaning">Segunda chance aceita</div>
+        <div class="choice-response">
+          Voc&ecirc; toca. O que a m&atilde;o encontra n&atilde;o assusta. Reconhece. O corpo sabe antes da mente: isso j&aacute; era seu.
+        </div>
+      </div>
+      <div class="choice choice-b">
+        <div class="choice-label">&bull; Op&ccedil;&atilde;o B &mdash; Passar reto</div>
+        <div class="choice-meaning">Padr&atilde;o de evita&ccedil;&atilde;o confirmado</div>
+        <div class="choice-response">
+          Voc&ecirc; segue. Recuar uma vez &eacute; instinto. Recuar duas &eacute; decis&atilde;o. E decis&atilde;o repetida vira identidade.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PURGATORIO -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="phase purgatorio" id="purgatorio">
+  <div class="phase-header">
+    <h2>Purgat&oacute;rio</h2>
+    <p>Espera. Sem agir, sem fugir &mdash; at&eacute; que o sentido apare&ccedil;a sozinho.</p>
+  </div>
+
+  <div class="narration">
+    <div class="narration-label">Introdu&ccedil;&atilde;o do reino</div>
+    <div class="narration-text">
+      O ar muda. Aqui se espera &mdash; sem agir, sem fugir &mdash; at&eacute; que o sentido apare&ccedil;a sozinho.
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="question">
+    <div class="question-header">
+      <span class="question-badge">Pergunta 3</span>
+      <span class="question-depth">Profundidade: Medium</span>
+    </div>
+    <div class="question-title">O Jardim que Vai Queimar &mdash; Apego vs Prote&ccedil;&atilde;o</div>
+
+    <div class="narration" style="padding:0; border:0; margin-bottom:0.8rem;">
+      <div class="narration-label">Setup</div>
+      <div class="narration-text" style="font-size:1.05rem;">
+        Voc&ecirc; est&aacute; na entrada de um jardim. Cada flor aberta, cada cor no auge.
+        <br>Mas tem fuma&ccedil;a no vento. De manh&atilde;, nada disso vai existir.
+      </div>
+    </div>
+
+    <div class="question-text">&ldquo;Voc&ecirc; entra no jardim &mdash; ou d&aacute; as costas antes de ver o que vai perder?&rdquo;</div>
+
+    <div class="choices">
+      <div class="choice choice-a">
+        <div class="choice-label">&bull; Op&ccedil;&atilde;o A &mdash; Entrar</div>
+        <div class="choice-meaning">Aceitar a ferida que vem com a beleza</div>
+        <div class="choice-response">
+          Voc&ecirc; entra. Quem se permite amar o que vai acabar carrega uma ferida diferente &mdash; n&atilde;o de perda, mas de presen&ccedil;a.
+        </div>
+      </div>
+      <div class="choice choice-b">
+        <div class="choice-label">&bull; Op&ccedil;&atilde;o B &mdash; Dar as costas</div>
+        <div class="choice-meaning">Luto antecipado disfar&ccedil;ado de sabedoria</div>
+        <div class="choice-response">
+          Voc&ecirc; vira. O que nunca foi recebido n&atilde;o vira mem&oacute;ria. Vira aus&ecirc;ncia. E aus&ecirc;ncia pesa mais que qualquer perda. Beleza que voc&ecirc; n&atilde;o tocou continua pedindo passagem no escuro.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="question">
+    <div class="question-header">
+      <span class="question-badge">Pergunta 4</span>
+      <span class="question-depth">Profundidade: Deep</span>
+    </div>
+    <div class="question-title">As Duas &Aacute;guas &mdash; Mem&oacute;ria vs Apagamento</div>
+
+    <div class="narration" style="padding:0; border:0; margin-bottom:0.8rem;">
+      <div class="narration-label">Setup</div>
+      <div class="narration-text" style="font-size:1.05rem;">
+        Dois rios se encontram aqui. Um &eacute; quente e escuro &mdash; carrega tudo que voc&ecirc; viveu. O outro &eacute; claro e gelado &mdash; entra nele e sai limpo, sem nada.
+        <br>A &aacute;gua escura guarda cada cicatriz. A &aacute;gua clara n&atilde;o pergunta o que leva.
+        <br>Quem nunca se banharia no esquecimento? Mas o pre&ccedil;o &eacute; tudo &mdash; n&atilde;o s&oacute; o que d&oacute;i.
+      </div>
+    </div>
+
+    <div class="question-text">&ldquo;Qual &aacute;gua? A que lembra &mdash; ou a que esquece?&rdquo;</div>
+
+    <div class="choices">
+      <div class="choice choice-a">
+        <div class="choice-label">&bull; Op&ccedil;&atilde;o A &mdash; Lembrar</div>
+        <div class="choice-meaning">Carregar a hist&oacute;ria, identidade tecida de cicatrizes</div>
+        <div class="choice-response">
+          A &aacute;gua escura. Cicatriz n&atilde;o &eacute; ferida. &Eacute; prova de que algo foi atravessado e integrado.
+        </div>
+      </div>
+      <div class="choice choice-b">
+        <div class="choice-label">&bull; Op&ccedil;&atilde;o B &mdash; Esquecer</div>
+        <div class="choice-meaning">Desejo de al&iacute;vio, sem medir o que perde junto</div>
+        <div class="choice-response">
+          A &aacute;gua clara. Voc&ecirc; queria al&iacute;vio. Mas al&iacute;vio total tem outro nome: aus&ecirc;ncia.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4B Branch -->
+  <div class="branch-indicator">
+    <strong>&#9670; Ramifica&ccedil;&atilde;o condicional Q4B</strong> &mdash; S&oacute; aparece se o visitante escolheu <strong>Entrar</strong> (Q3=A) <strong>E</strong> <strong>Lembrar</strong> (Q4=A). Aprofundamento na mem&oacute;ria.
+  </div>
+
+  <div class="question">
+    <div class="question-header">
+      <span class="question-badge" style="background:#c9a84c;">Pergunta 4B</span>
+      <span class="question-depth">Profundidade: Deep &bull; Condicional</span>
+    </div>
+    <div class="question-title">A Mem&oacute;ria que Insiste &mdash; Reviver vs Arquivar</div>
+
+    <div class="narration" style="padding:0; border:0; margin-bottom:0.8rem;">
+      <div class="narration-label">Setup</div>
+      <div class="narration-text" style="font-size:1.05rem;">
+        Uma mem&oacute;ria espec&iacute;fica aparece. N&atilde;o &eacute; a que voc&ecirc; esperava &mdash; &eacute; a que insiste.
+        <br>Tem cheiro. Tem textura. Tem o rosto de algu&eacute;m que voc&ecirc; n&atilde;o v&ecirc; faz tempo.
+      </div>
+    </div>
+
+    <div class="question-text">&ldquo;Voc&ecirc; revive essa mem&oacute;ria &mdash; ou arquiva de vez?&rdquo;</div>
+
+    <div class="choices">
+      <div class="choice choice-a">
+        <div class="choice-label">&bull; Op&ccedil;&atilde;o A &mdash; Reviver</div>
+        <div class="choice-meaning">Mergulho na dor-prazer da mem&oacute;ria</div>
+        <div class="choice-response">
+          Voc&ecirc; volta. Mem&oacute;ria revivida n&atilde;o &eacute; a mesma. Cada vez que volta, carrega um pouco de quem voc&ecirc; &eacute; agora.
+        </div>
+      </div>
+      <div class="choice choice-b">
+        <div class="choice-label">&bull; Op&ccedil;&atilde;o B &mdash; Arquivar</div>
+        <div class="choice-meaning">Proteger-se da intensidade</div>
+        <div class="choice-response">
+          Voc&ecirc; fecha. Arquivo n&atilde;o &eacute; esquecimento. &Eacute; a promessa de que um dia voc&ecirc; vai ter coragem de abrir de novo.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PARAISO -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="phase paraiso" id="paraiso">
+  <div class="phase-header">
+    <h2>Para&iacute;so</h2>
+    <p>O ar se abre. Sem paredes, sem peso.</p>
+  </div>
+
+  <div class="narration">
+    <div class="narration-label">Introdu&ccedil;&atilde;o do reino</div>
+    <div class="narration-text">
+      O ar se abriu. N&atilde;o tem mais parede. N&atilde;o tem mais peso.
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="question">
+    <div class="question-header">
+      <span class="question-badge">Pergunta 5</span>
+      <span class="question-depth">Profundidade: Deep</span>
+    </div>
+    <div class="question-title">A Pergunta Sem Resposta &mdash; Carregar vs Dissolver</div>
+
+    <div class="narration" style="padding:0; border:0; margin-bottom:0.8rem;">
+      <div class="narration-label">Setup</div>
+      <div class="narration-text" style="font-size:1.05rem;">
+        Algo se forma &mdash; n&atilde;o &eacute; palavra, &eacute; press&atilde;o. Cresce. N&atilde;o d&oacute;i, mas pesa.
+        <br>&Eacute; uma pergunta. Sem resposta. Talvez nunca tenha uma.
+      </div>
+    </div>
+
+    <div class="question-text">&ldquo;Voc&ecirc; carrega a pergunta &mdash; ou deixa ela dissolver?&rdquo;</div>
+
+    <div class="choices">
+      <div class="choice choice-a">
+        <div class="choice-label">&bull; Op&ccedil;&atilde;o A &mdash; Carregar</div>
+        <div class="choice-meaning">O peso do n&atilde;o-saber como companhia</div>
+        <div class="choice-response">
+          Voc&ecirc; segura. Nem tudo que importa precisa de resposta. Algumas coisas importam justamente porque n&atilde;o t&ecirc;m. Carregar uma pergunta sem resposta &eacute; uma forma de f&eacute;.
+        </div>
+      </div>
+      <div class="choice choice-b">
+        <div class="choice-label">&bull; Op&ccedil;&atilde;o B &mdash; Deixar dissolver</div>
+        <div class="choice-meaning">Confiar que nem tudo precisa ser carregado</div>
+        <div class="choice-response">
+          Voc&ecirc; abre as m&atilde;os. Pode ser sabedoria &mdash; soltar o que n&atilde;o pode ser possu&iacute;do. Ou pode ser expuls&atilde;o &mdash; mandar embora o que n&atilde;o cabe.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="question">
+    <div class="question-header">
+      <span class="question-badge">Pergunta 6</span>
+      <span class="question-depth">Profundidade: Profound</span>
+    </div>
+    <div class="question-title">O Fim do Jogo &mdash; Meta-escolha</div>
+
+    <div class="narration" style="padding:0; border:0; margin-bottom:0.8rem;">
+      <div class="narration-label">Setup</div>
+      <div class="narration-text" style="font-size:1.05rem;">
+        Minha voz est&aacute; afinando. Voc&ecirc; sente?
+        <br>Essa &eacute; a &uacute;ltima coisa que vou te perguntar.
+      </div>
+    </div>
+
+    <div class="question-text">&ldquo;Quer ouvir o que eu vi em voc&ecirc; &mdash; ou j&aacute; sabe o que precisa saber?&rdquo;</div>
+
+    <div class="choices">
+      <div class="choice choice-a">
+        <div class="choice-label">&bull; Op&ccedil;&atilde;o A &mdash; Ouvir</div>
+        <div class="choice-meaning">Abertura a ser visto</div>
+        <div class="choice-response">
+          Ent&atilde;o escuta. N&atilde;o vou confirmar o que voc&ecirc; j&aacute; pensa. Vou te mostrar o padr&atilde;o &mdash; o que voc&ecirc; fez sem perceber.
+        </div>
+      </div>
+      <div class="choice choice-b">
+        <div class="choice-label">&bull; Op&ccedil;&atilde;o B &mdash; J&aacute; sei</div>
+        <div class="choice-meaning">Confiar no pr&oacute;prio interior</div>
+        <div class="choice-response">
+          Ent&atilde;o voc&ecirc; j&aacute; tem o que veio buscar. Isso &eacute; raro. Pode ser a chegada mais profunda que esse jogo produz &mdash; ou a &uacute;ltima defesa contra ser visto de verdade.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- DEVOLUCOES -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="phase devolucao" id="devolucao">
+  <div class="phase-header">
+    <h2>Devolu&ccedil;&atilde;o</h2>
+    <p>Espelho, n&atilde;o julgamento. O Or&aacute;culo l&ecirc; o padr&atilde;o das 6&ndash;8 escolhas e entrega um de 8 arqu&eacute;tipos.</p>
+  </div>
+
+  <div class="narration" style="font-size:0.9rem; color:var(--muted);">
+    <div class="narration-label">Como funciona a classifica&ccedil;&atilde;o</div>
+    <p style="margin-bottom:0.5rem;">O sistema analisa o <em>padr&atilde;o total</em> de escolhas (6 a 8, dependendo das ramifica&ccedil;&otilde;es) usando porcentagens:</p>
+    <ul style="padding-left:1.2rem; font-size:0.85rem; line-height:1.8;">
+      <li><strong>MIRROR</strong> &mdash; Altern&acirc;ncia perfeita (A-B-A-B-A-B...)</li>
+      <li><strong>DEPTH SEEKER</strong> &mdash; 100% Op&ccedil;&atilde;o A</li>
+      <li><strong>SURFACE KEEPER</strong> &mdash; 100% Op&ccedil;&atilde;o B</li>
+      <li><strong>PIVOT LATE</strong> &mdash; Primeiros 1/3 &ge;66% A, &uacute;ltimos 1/3 &le;33% A, com &ge;40% B no total</li>
+      <li><strong>PIVOT EARLY</strong> &mdash; Primeiros 1/3 &le;33% A, &uacute;ltimos 1/3 &ge;66% A, com &ge;40% A no total</li>
+      <li><strong>SEEKER</strong> &mdash; &ge;66% Op&ccedil;&atilde;o A (sem pivot)</li>
+      <li><strong>GUARDIAN</strong> &mdash; &ge;66% Op&ccedil;&atilde;o B (sem pivot)</li>
+      <li><strong>CONTRADICTED</strong> &mdash; Nenhum padr&atilde;o claro (default)</li>
+    </ul>
+  </div>
+
+  <div class="devolucao-grid">
+
+    <div class="devolucao-card">
+      <h4>O Buscador <span style="font-size:0.7rem;color:var(--muted);">(SEEKER)</span></h4>
+      <div class="criteria">&ge;66% A &mdash; movimento, abertura, confronto</div>
+      <div class="text">
+        Voc&ecirc; entrou em tudo. Tem gente que chama isso de coragem. Eu chamo de fome. Fome &eacute; movimento &mdash; mas movimento sem dire&ccedil;&atilde;o vira exaust&atilde;o. A pergunta que fica: voc&ecirc; transformou o que tocou &mdash; ou s&oacute; acumulou peso?
+      </div>
+    </div>
+
+    <div class="devolucao-card">
+      <h4>O Guardi&atilde;o <span style="font-size:0.7rem;color:var(--muted);">(GUARDIAN)</span></h4>
+      <div class="criteria">&ge;66% B &mdash; prote&ccedil;&atilde;o, dist&acirc;ncia, cautela</div>
+      <div class="text">
+        Voc&ecirc; se protegeu em cada encruzilhada. Algo em voc&ecirc; sabe: o que voc&ecirc; protege pode ser o que voc&ecirc; nunca deixou nascer. Prote&ccedil;&atilde;o vira pris&atilde;o quando esquece por que come&ccedil;ou. Toda muralha tem dois lados. O que ela impede de entrar &mdash; e o que ela impede de sair.
+      </div>
+    </div>
+
+    <div class="devolucao-card">
+      <h4>O Contradit&oacute;rio <span style="font-size:0.7rem;color:var(--muted);">(CONTRADICTED)</span></h4>
+      <div class="criteria">Misto, sem dire&ccedil;&atilde;o fixa</div>
+      <div class="text">
+        Voc&ecirc; foi e voltou. Segurou e soltou. Nenhuma dire&ccedil;&atilde;o fixa. Isso n&atilde;o &eacute; indecis&atilde;o. &Eacute; respira&ccedil;&atilde;o. Desejo nunca &eacute; simples. Quem carrega contradi&ccedil;&atilde;o carrega tamb&eacute;m a prova de que ainda est&aacute; vivo. Guarda essa oscila&ccedil;&atilde;o. Ela &eacute; mais sua do que qualquer certeza.
+      </div>
+    </div>
+
+    <div class="devolucao-card">
+      <h4>Virada Precoce <span style="font-size:0.7rem;color:var(--muted);">(PIVOT EARLY)</span></h4>
+      <div class="criteria">Come&ccedil;a B, termina A &mdash; mudan&ccedil;a de dire&ccedil;&atilde;o no in&iacute;cio</div>
+      <div class="text">
+        Alguma coisa mudou em voc&ecirc; no come&ccedil;o. A virada aconteceu antes de voc&ecirc; perceber. O corpo se moveu antes da mente entender. Instinto n&atilde;o mente. Mas tamb&eacute;m n&atilde;o explica. Ele age e espera que voc&ecirc; acompanhe. Presta aten&ccedil;&atilde;o nesse instinto. Ele sabe coisas que voc&ecirc; ainda n&atilde;o sabe.
+      </div>
+    </div>
+
+    <div class="devolucao-card">
+      <h4>Virada Tardia <span style="font-size:0.7rem;color:var(--muted);">(PIVOT LATE)</span></h4>
+      <div class="criteria">Come&ccedil;a A, termina B &mdash; mudan&ccedil;a de dire&ccedil;&atilde;o no fim</div>
+      <div class="text">
+        Voc&ecirc; come&ccedil;ou de um jeito e terminou de outro. A virada veio na metade mais funda. Quem muda tarde muda de verdade. Porque j&aacute; n&atilde;o &eacute; rea&ccedil;&atilde;o &mdash; &eacute; decis&atilde;o. Decis&otilde;es profundas n&atilde;o anunciam &mdash; chegam quietas, quando ningu&eacute;m mais est&aacute; olhando. N&atilde;o esquece desse ponto. Ele &eacute; mais importante do que qualquer resposta que voc&ecirc; deu.
+      </div>
+    </div>
+
+    <div class="devolucao-card">
+      <h4>Mergulhador <span style="font-size:0.7rem;color:var(--muted);">(DEPTH SEEKER)</span></h4>
+      <div class="criteria">100% A &mdash; sempre a op&ccedil;&atilde;o mais intensa</div>
+      <div class="text">
+        Voc&ecirc; foi em dire&ccedil;&atilde;o a cada fogo. A quest&atilde;o &eacute; se voc&ecirc; sabe a diferen&ccedil;a entre coragem e compuls&atilde;o. Porque os dois se parecem &mdash; at&eacute; o pre&ccedil;o chegar. Profundidade sem pausa &eacute; afogamento disfar&ccedil;ado de busca. Fundo &eacute; bom. Mas fundo sem ar mata igual.
+      </div>
+    </div>
+
+    <div class="devolucao-card">
+      <h4>O Intacto <span style="font-size:0.7rem;color:var(--muted);">(SURFACE KEEPER)</span></h4>
+      <div class="criteria">100% B &mdash; sempre a op&ccedil;&atilde;o mais segura</div>
+      <div class="text">
+        Voc&ecirc; se manteve inteiro. A prote&ccedil;&atilde;o tem um custo que n&atilde;o aparece na hora. Aparece depois, no que voc&ecirc; nunca se permitiu ver. Inteiro n&atilde;o significa ileso. &Agrave;s vezes significa intocado &mdash; e intocado &eacute; outra forma de vazio. O jardim que voc&ecirc; n&atilde;o entrou continua pegando fogo na sua cabe&ccedil;a.
+      </div>
+    </div>
+
+    <div class="devolucao-card">
+      <h4>O Espelho <span style="font-size:0.7rem;color:var(--muted);">(MIRROR)</span></h4>
+      <div class="criteria">Altern&acirc;ncia perfeita A-B-A-B...</div>
+      <div class="text">
+        Equil&iacute;brio perfeito. O equil&iacute;brio perfeito pode ser sabedoria &mdash; ou a &uacute;ltima forma de nunca se comprometer de verdade. Balan&ccedil;a que n&atilde;o pende nunca pesa nada. E o que n&atilde;o pesa tamb&eacute;m n&atilde;o transforma. S&oacute; voc&ecirc; sabe se o centro &eacute; uma conquista ou um ref&uacute;gio.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- ENCERRAMENTO -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="phase encerramento" id="encerramento">
+  <div class="phase-header">
+    <h2>Encerramento</h2>
+    <p>O Or&aacute;culo se dissolve. A mem&oacute;ria &eacute; s&oacute; do visitante.</p>
+  </div>
+  <div class="narration">
+    <div class="narration-label">Narra&ccedil;&atilde;o final</div>
+    <div class="narration-text">
+      Eu vou esquecer que voc&ecirc; esteve aqui. &Eacute; da minha natureza &mdash; eu n&atilde;o guardo nada.
+      <br>A &uacute;nica prova de que isso aconteceu &eacute; voc&ecirc;.
+      <br>Faz alguma coisa com isso.
+    </div>
+  </div>
+</section>
+
+<div class="footer-note">
+  O Or&aacute;culo &mdash; VII Bienal de Psican&aacute;lise e Cultura, SBPRP 2026<br>
+  Dura&ccedil;&atilde;o: 5&ndash;7 minutos &bull; 6&ndash;8 decis&otilde;es por voz &bull; 8 devolu&ccedil;&otilde;es poss&iacute;veis &bull; Zero dados armazenados
+</div>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      primaryColor: '#faf8f5',
+      primaryTextColor: '#2a2520',
+      primaryBorderColor: '#2a2520',
+      lineColor: '#7a7068',
+      fontFamily: 'Inter, sans-serif',
+      fontSize: '13px',
+    },
+    flowchart: {
+      htmlLabels: true,
+      curve: 'basis',
+      padding: 15,
+      nodeSpacing: 30,
+      rankSpacing: 50,
+    },
+  });
+</script>
+
+</body>
+</html>
