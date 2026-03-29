@@ -235,10 +235,10 @@ Plans:
 **Goal**: Full-screen audio-reactive background that responds to TTS playback intensity with phase-specific visual themes
 **Depends on**: Phase 29 (v4.0 complete)
 **Requirements**: VIS-01, VIS-02, VIS-03, VIS-04
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
-- [ ] 30-01-PLAN.md — Test infra (vitest-canvas-mock), VISUAL_THEMES config, useAudioAnalyser + useAnimationFrame hooks
+- [x] 30-01-PLAN.md — Test infra (vitest-canvas-mock), VISUAL_THEMES config, useAudioAnalyser + useAnimationFrame hooks
 - [ ] 30-02-PLAN.md — EqualizerVisualizer, IdleAnimation, AudioReactiveBackground components + OracleExperience integration
 
 **Success Criteria** (what must be TRUE):
@@ -302,7 +302,7 @@ Plans:
 | 27. State Machine | v4.0 | 2/2 | Complete    | 2026-03-29 |
 | 28. Audio Regen | v4.0 | 1/1 | Complete    | 2026-03-29 |
 | 29. Integration | v4.0 | 2/2 | Complete    | 2026-03-29 |
-| 30. Visual System | v5.0 | 0/2 | Planning | - |
+| 30. Visual System | v5.0 | 1/2 | In Progress|  |
 | 31. Mic Indicators | v5.0 | 0/TBD | Not started | - |
 | 32. Debug Overlay | v5.0 | 0/TBD | Not started | - |
 | 33. UX Polish | v5.0 | 0/TBD | Not started | - |

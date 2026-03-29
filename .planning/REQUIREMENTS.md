@@ -9,8 +9,8 @@ Requirements for Tester UI Polish milestone. Upgrade the visual layer for psycho
 
 ### Visual (Background & Atmosphere)
 
-- [ ] **VIS-01**: Full-screen audio-reactive equalizer/particle background that responds to TTS playback intensity
-- [ ] **VIS-02**: Background visual style changes per narrative phase (Inferno=red/fire, Purgatorio=blue/mist, Paraiso=gold/light)
+- [x] **VIS-01**: Full-screen audio-reactive equalizer/particle background that responds to TTS playback intensity
+- [x] **VIS-02**: Background visual style changes per narrative phase (Inferno=red/fire, Purgatorio=blue/mist, Paraiso=gold/light)
 - [ ] **VIS-03**: Smooth visual transitions between phases (crossfade matching the 3s audio crossfade)
 - [ ] **VIS-04**: Idle state has subtle ambient animation (not static black screen)
 
@@ -69,8 +69,8 @@ All 16 requirements satisfied. See `.planning/milestones/` for details.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| VIS-01 | Phase 30 | Pending |
-| VIS-02 | Phase 30 | Pending |
+| VIS-01 | Phase 30 | Complete |
+| VIS-02 | Phase 30 | Complete |
 | VIS-03 | Phase 30 | Pending |
 | VIS-04 | Phase 30 | Pending |
 | MIC-01 | Phase 31 | Pending |
