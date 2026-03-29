@@ -1,42 +1,47 @@
 # Requirements: O Oraculo
 
-**Defined:** 2026-03-28
+**Defined:** 2026-03-29
 **Core Value:** Experiencia seamless e imersiva como um jogo — o visitante fala, ouve, e e transformado.
 
-## v4.0 Requirements
+## v5.0 Requirements
 
-Requirements for Game Flow milestone. Transform the Oracle into a 5-7 min game-like experience with branching paths and more decision points.
+Requirements for Tester UI Polish milestone. Upgrade the visual layer for psychoanalyst testers — audio-reactive visuals, mic indicators, polished debug overlay, and refined dark-theme UX.
 
-### Pacing
+### Visual (Background & Atmosphere)
 
-- [x] **PACE-01**: Max-path experience duration is 5-7 minutes (down from 10.5 min)
-- [x] **PACE-02**: Respostas contain 1-2 segments max (down from 4-5)
-- [x] **PACE-03**: Setups contain 1-2 segments max (down from 3-5)
-- [x] **PACE-04**: Phase intros reduced to 1 sentence (down from 4-5 sentences)
-- [x] **PACE-05**: Bookends (Apresentacao + Encerramento) trimmed for pace while preserving emotional impact
+- [ ] **VIS-01**: Full-screen audio-reactive equalizer/particle background that responds to TTS playback intensity
+- [ ] **VIS-02**: Background visual style changes per narrative phase (Inferno=red/fire, Purgatorio=blue/mist, Paraiso=gold/light)
+- [ ] **VIS-03**: Smooth visual transitions between phases (crossfade matching the 3s audio crossfade)
+- [ ] **VIS-04**: Idle state has subtle ambient animation (not static black screen)
 
-### Branching
+### Microphone (Listening State)
 
-- [x] **BRNC-01**: Experience has 8-10 total decision points (up from 6)
-- [x] **BRNC-02**: At least 2 branching points where choice determines next scenario
-- [x] **BRNC-03**: All branch paths converge before devoluções (no dead ends)
-- [x] **BRNC-04**: Branch-specific content maintains psychoanalytic depth
+- [ ] **MIC-01**: Redesigned mic-active indicator — intuitive visual cue that the Oracle is listening (not just pulsing bars)
+- [ ] **MIC-02**: Mic indicator responds to actual audio input level (real-time visual feedback)
+- [ ] **MIC-03**: Clear visual transition between "Oracle speaking" and "your turn" states
 
-### Machine
+### Debug (Tester Overlay)
 
-- [x] **MACH-01**: XState machine redesigned with conditional transitions for branching
-- [x] **MACH-02**: Pattern tracking updated for variable-length choice paths
-- [x] **MACH-03**: Devoluçao routing works for all possible branch combinations
+- [ ] **DBG-01**: Debug overlay redesigned as elegant status display with phase name, question number, and choice trail
+- [ ] **DBG-02**: Toggle via keyboard shortcut AND visible toggle button (testers won't know Ctrl+Shift+D)
+- [ ] **DBG-03**: Shows current narrative phase visually (not raw JSON state)
 
-### Audio
+### UX (Flow & Interaction)
 
-- [x] **AUDI-01**: All MP3s regenerated for trimmed/new script via ElevenLabs v3 — *Validated in Phase 28*
-- [x] **AUDI-02**: FallbackTTS updated with new audio keys matching new script — *Validated in Phase 28*
+- [ ] **UX-01**: Start button redesigned with more presence and visual appeal
+- [ ] **UX-02**: Skip/Next button clearly visible during testing (not hidden in corner)
+- [ ] **UX-03**: Choice buttons (A/B) visually polished with hover/press states
+- [ ] **UX-04**: Permission screen refined with consistent design language
 
-### Integration
+### Polish (Theme & Consistency)
 
-- [x] **INTG-01**: OracleExperience component updated for branching flow
-- [x] **INTG-02**: All tests passing with v4.0 structure
+- [ ] **POL-01**: Consistent typography hierarchy (Cormorant for titles, Georgia/system for body)
+- [ ] **POL-02**: Smooth entry/exit animations for all UI elements (no abrupt appear/disappear)
+- [ ] **POL-03**: All components use consistent opacity, blur, and shadow language
+
+## v4.0 Requirements (Complete)
+
+All 16 requirements satisfied. See `.planning/milestones/` for details.
 
 ## Future Requirements
 
@@ -54,38 +59,39 @@ Requirements for Game Flow milestone. Transform the Oracle into a 5-7 min game-l
 
 | Feature | Reason |
 |---------|--------|
-| New psychoanalytic framework research | 3 frameworks already absorbed in v3.1 — depth preserved via trimming, not adding |
-| Voice cloning / new voice creation | Use existing ELEVENLABS_VOICE_ID |
-| Mobile optimization | Desktop laptop + headphone setup for Bienal |
-| More than 8 archetype devoluções | 8 patterns sufficient for branching; complexity grows exponentially |
-| Real-time TTS during experience | Pre-recorded MP3s via FallbackTTS for offline reliability |
+| 3D WebGL effects | Overkill for testing phase, performance risk on event laptops |
+| Sound design / new ambient tracks | Already have 4 ambient MP3s, audio layer complete |
+| Script or narrative changes | v4.0 script is final — this is purely visual |
+| Mobile responsive layout | Desktop laptop + headphone setup for Bienal |
+| Custom font loading (beyond Cormorant) | Keep load times fast, 2 fonts max |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PACE-01 | Phase 25 | Complete |
-| PACE-02 | Phase 25 | Complete |
-| PACE-03 | Phase 25 | Complete |
-| PACE-04 | Phase 25 | Complete |
-| PACE-05 | Phase 25 | Complete |
-| BRNC-01 | Phase 26 | Complete |
-| BRNC-02 | Phase 26 | Complete |
-| BRNC-03 | Phase 26 | Complete |
-| BRNC-04 | Phase 26 | Complete |
-| MACH-01 | Phase 27 | Complete |
-| MACH-02 | Phase 27 | Complete |
-| MACH-03 | Phase 27 | Complete |
-| AUDI-01 | Phase 28 | Pending |
-| AUDI-02 | Phase 28 | Pending |
-| INTG-01 | Phase 29 | Complete |
-| INTG-02 | Phase 29 | Complete |
+| VIS-01 | TBD | Pending |
+| VIS-02 | TBD | Pending |
+| VIS-03 | TBD | Pending |
+| VIS-04 | TBD | Pending |
+| MIC-01 | TBD | Pending |
+| MIC-02 | TBD | Pending |
+| MIC-03 | TBD | Pending |
+| DBG-01 | TBD | Pending |
+| DBG-02 | TBD | Pending |
+| DBG-03 | TBD | Pending |
+| UX-01 | TBD | Pending |
+| UX-02 | TBD | Pending |
+| UX-03 | TBD | Pending |
+| UX-04 | TBD | Pending |
+| POL-01 | TBD | Pending |
+| POL-02 | TBD | Pending |
+| POL-03 | TBD | Pending |
 
 **Coverage:**
-- v4.0 requirements: 16 total
-- Mapped to phases: 16
-- Unmapped: 0 ✓
+- v5.0 requirements: 17 total
+- Mapped to phases: 0 (awaiting roadmap)
+- Unmapped: 17
 
 ---
-*Requirements defined: 2026-03-28*
-*Last updated: 2026-03-28 — v4.0 traceability complete*
+*Requirements defined: 2026-03-29*
+*Last updated: 2026-03-29 after milestone v5.0 definition*
