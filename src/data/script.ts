@@ -1,5 +1,5 @@
 /**
- * O ORACULO — Roteiro v3 (Narrative Redesign)
+ * O ORACULO — Roteiro v4 (Game Flow)
  *
  * 6 escolhas binarias com escalacao de profundidade:
  *   Light -> Medium -> Medium -> Deep -> Deep -> Profound
@@ -10,11 +10,13 @@
  *   3. Profundidade psicanalitica sentida, nao declarada
  *   4. Inflection tags ElevenLabs v3: max 1 por segmento, sparse
  *   5. pauseAfter em ms para ritmo entre segmentos
+ *   6. Branches Q2B e Q4B sao condicionais (so aparecem para certos padroes de escolha)
  *
- * Estrutura: APRESENTACAO -> INFERNO (Q1, Q2) -> PURGATORIO (Q3, Q4) -> PARAISO (Q5, Q6) -> DEVOLUCAO -> ENCERRAMENTO
+ * Estrutura: APRESENTACAO -> INFERNO (Q1, Q2, [Q2B]) -> PURGATORIO (Q3, Q4, [Q4B]) -> PARAISO (Q5, Q6) -> DEVOLUCAO -> ENCERRAMENTO
  *
  * Plan 16-01: APRESENTACAO + INFERNO (Q1, Q2) + PURGATORIO (Q3, Q4)
  * Plan 16-02: PARAISO (Q5, Q6) + DEVOLUCOES + ENCERRAMENTO + FALLBACKS + TIMEOUTS
+ * Plan 26-01: Branch content Q2B + Q4B (conditional paths)
  */
 
 import type { SpeechSegment } from '@/types';
@@ -85,7 +87,31 @@ export interface ScriptDataV3 {
   TIMEOUT_Q6: SpeechSegment[];
 }
 
-export const SCRIPT: ScriptDataV3 = {
+export interface ScriptDataV4 extends ScriptDataV3 {
+  // Branch Q2B — conditional after INFERNO_Q2_RESPOSTA_A
+  // Triggers when: Q1 chose A (ficar) AND Q2 chose A (recuar)
+  // Theme: Second confrontation — another pulsing thing, this time visitor must choose to touch or pass
+  INFERNO_Q2B_SETUP: SpeechSegment[];
+  INFERNO_Q2B_PERGUNTA: SpeechSegment[];
+  INFERNO_Q2B_RESPOSTA_A: SpeechSegment[];
+  INFERNO_Q2B_RESPOSTA_B: SpeechSegment[];
+
+  // Branch Q4B — conditional after PURGATORIO_Q4_RESPOSTA_A
+  // Triggers when: Q3 chose A (entrar) AND Q4 chose A (lembrar)
+  // Theme: Specific memory that insists on returning — revive it or archive it
+  PURGATORIO_Q4B_SETUP: SpeechSegment[];
+  PURGATORIO_Q4B_PERGUNTA: SpeechSegment[];
+  PURGATORIO_Q4B_RESPOSTA_A: SpeechSegment[];
+  PURGATORIO_Q4B_RESPOSTA_B: SpeechSegment[];
+
+  // Fallbacks and timeouts for branch questions
+  FALLBACK_Q2B: SpeechSegment[];
+  FALLBACK_Q4B: SpeechSegment[];
+  TIMEOUT_Q2B: SpeechSegment[];
+  TIMEOUT_Q4B: SpeechSegment[];
+}
+
+export const SCRIPT: ScriptDataV4 = {
 
   // ═══════════════════════════════════════════════════════════════
   // APRESENTACAO (~1:20)
@@ -163,6 +189,34 @@ export const SCRIPT: ScriptDataV3 = {
   ],
 
   // ═══════════════════════════════════════════════════════════════
+  // Q2B — A SEGUNDA COISA (Branch — Medium-Deep)
+  // Conditional: only if Q1=A (ficou na sala) AND Q2=A (recuou)
+  // O visitante que ficou E recuou agora encontra outra coisa
+  // pulsando. Desta vez a pergunta e: tocar ou passar reto?
+  // Recompensa quem explora — segunda chance de confrontar.
+  // ═══════════════════════════════════════════════════════════════
+  INFERNO_Q2B_SETUP: [
+    { text: "Mais adiante, no mesmo corredor, outra coisa pulsa.", pauseAfter: 900, inflection: ['whispering'] },
+    { text: "Menor que a primeira. Mais quente. Quase chamando.", pauseAfter: 1000 },
+  ],
+
+  INFERNO_Q2B_PERGUNTA: [
+    { text: "Você toca — ou passa reto?" },
+  ],
+
+  // Q2B RESPOSTA A — Tocar (segunda chance aceita, enfrentar o que recuou antes)
+  INFERNO_Q2B_RESPOSTA_A: [
+    { text: "Você toca.", pauseAfter: 800 },
+    { text: "O que a mão encontra não assusta. Reconhece. O corpo sabe antes da mente: isso já era seu.", pauseAfter: 1000, inflection: ['gentle'] },
+  ],
+
+  // Q2B RESPOSTA B — Passar reto (padrão de evitação confirmado)
+  INFERNO_Q2B_RESPOSTA_B: [
+    { text: "Você segue.", pauseAfter: 800 },
+    { text: "Recuar uma vez é instinto. Recuar duas é decisão. E decisão repetida vira identidade.", pauseAfter: 1000, inflection: ['serious'] },
+  ],
+
+  // ═══════════════════════════════════════════════════════════════
   // PURGATORIO — INTRO
   // Transicao. O ar muda. Subida. Aqui se espera — sem agir,
   // sem fugir — ate que o sentido se decante.
@@ -225,6 +279,34 @@ export const SCRIPT: ScriptDataV3 = {
   PURGATORIO_Q4_RESPOSTA_B: [
     { text: "A água clara.", pauseAfter: 900 },
     { text: "Você queria alívio. Mas alívio total tem outro nome: ausência.", pauseAfter: 900 },
+  ],
+
+  // ═══════════════════════════════════════════════════════════════
+  // Q4B — A MEMORIA QUE INSISTE (Branch — Deep)
+  // Conditional: only if Q3=A (entrou no jardim) AND Q4=A (lembrar)
+  // O visitante que entrou na beleza E escolheu lembrar agora
+  // encontra uma memoria especifica que volta sem ser chamada.
+  // Reviver ou arquivar?
+  // ═══════════════════════════════════════════════════════════════
+  PURGATORIO_Q4B_SETUP: [
+    { text: "Uma memória específica aparece. Não é a que você esperava — é a que insiste.", pauseAfter: 1000, inflection: ['thoughtful'] },
+    { text: "Tem cheiro. Tem textura. Tem o rosto de alguém que você não vê faz tempo.", pauseAfter: 1200 },
+  ],
+
+  PURGATORIO_Q4B_PERGUNTA: [
+    { text: "Você revive essa memória — ou arquiva de vez?", pauseAfter: 900 },
+  ],
+
+  // Q4B RESPOSTA A — Reviver (mergulho na dor-prazer da memoria vivida)
+  PURGATORIO_Q4B_RESPOSTA_A: [
+    { text: "Você volta.", pauseAfter: 900 },
+    { text: "Memória revivida não é a mesma. Cada vez que volta, carrega um pouco de quem você é agora.", pauseAfter: 1000, inflection: ['warm'] },
+  ],
+
+  // Q4B RESPOSTA B — Arquivar (proteger-se da intensidade, mas a custo)
+  PURGATORIO_Q4B_RESPOSTA_B: [
+    { text: "Você fecha.", pauseAfter: 800 },
+    { text: "Arquivo não é esquecimento. É a promessa de que um dia você vai ter coragem de abrir de novo.", pauseAfter: 1000, inflection: ['gentle'] },
   ],
 
   // ═══════════════════════════════════════════════════════════════
@@ -421,5 +503,21 @@ export const SCRIPT: ScriptDataV3 = {
   ],
   TIMEOUT_Q6: [
     { text: "O silêncio no final é a resposta mais antiga que existe. Você já sabe.", pauseAfter: 1100 },
+  ],
+
+  // Branch fallbacks
+  FALLBACK_Q2B: [
+    { text: "Outra coisa pulsa no corredor. Mais quente, quase chamando. Você toca — ou passa reto?" },
+  ],
+  FALLBACK_Q4B: [
+    { text: "Uma memória insiste em voltar. Tem rosto, tem cheiro. Você revive — ou arquiva de vez?" },
+  ],
+
+  // Branch timeouts
+  TIMEOUT_Q2B: [
+    { text: "Suas mãos ficaram no bolso. Quem não toca, não sabe. E quem não sabe, inventa — e o que se inventa costuma ser pior.", pauseAfter: 900 },
+  ],
+  TIMEOUT_Q4B: [
+    { text: "A memória ficou ali, esperando. Nem revivida nem arquivada. Algumas coisas ficam assim — suspensas, exigindo espaço sem pedir licença.", pauseAfter: 1000 },
   ],
 };
