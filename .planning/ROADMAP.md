@@ -228,7 +228,7 @@ Plans:
 | 26. Script Branching | v4.0 | 2/2 | Complete    | 2026-03-29 |
 | 27. State Machine | v4.0 | 2/2 | Complete    | 2026-03-29 |
 | 28. Audio Regen | v4.0 | 1/1 | Complete    | 2026-03-29 |
-| 29. Integration | v4.0 | 2/2 | Complete   | 2026-03-29 |
+| 29. Integration | v4.0 | 2/2 | Complete    | 2026-03-29 |
 
 ## Dependencies
 
