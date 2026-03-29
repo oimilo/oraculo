@@ -46,6 +46,7 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 ### Active (v4.0 — Game Flow)
 
 - [x] All segments trimmed to 5-7 min max-path (pacing validated at 5:00.1 min) — *Validated in Phase 25*
+- [x] Branch content Q2B + Q4B with psychoanalytic depth, variable-length ChoicePattern, percentage-based archetype matching — *Validated in Phase 26*
 
 (Remaining v4.0 requirements defined in REQUIREMENTS.md)
 
@@ -80,14 +81,14 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 
 **Setup físico:** 2-3 laptops com headphone (mic embutido). Webapp rodando no browser. Um operador por estação para instruir visitantes e ajustar volume.
 
-**Roteiro v4.0 (pacing-trimmed):** 6 escolhas binárias com escalação Light→Profound. 3 frameworks absorvidos em metáfora. 8 devoluções com 3-layer mirror. Max-path: 5:00.1 min (validated). Timing script: `scripts/validate-timing.ts`.
+**Roteiro v4.0 (branching):** 6 base + 2 conditional branch questions (Q2B, Q4B) = 8 max decision points. 3 frameworks absorbed. 8 devoluções with 3-layer mirror. Max-path: 5:57.1 min (validated across 4 branch permutations). Timing script: `scripts/validate-timing.ts`.
 
 **Decisões de UX já tomadas:**
 - Input por voz apenas (NLU inteligente, não keywords)
 - Redirecionamento poético quando não entende (não repetir pergunta seca)
 - Silêncio prolongado = escolha default (contextual por pergunta)
 - Tela mostra apenas feedback visual abstrato, nunca texto do roteiro
-- Fluxo LINEAR: todos passam por todas as 6 escolhas (não cascading)
+- Fluxo com BRANCHING: 6 base + 2 conditional branches (Q2B, Q4B) = 8 decision points max
 
 ## Constraints
 
@@ -122,4 +123,4 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-28 — Phase 25 complete (script pacing trimmed to 5:00 min)*
+*Last updated: 2026-03-29 — Phase 26 complete (branching content + variable-length pattern matching)*
