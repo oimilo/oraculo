@@ -13,15 +13,14 @@ interface EqualizerVisualizerProps {
 
 export default function EqualizerVisualizer({ phase, isPlaying }: EqualizerVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { analyserRef, dataArrayRef } = useAudioAnalyser({ fftSize: 512 });
+  const { analyserRef, dataArrayRef } = useAudioAnalyser({ fftSize: 256, smoothingTimeConstant: 0.85 });
   const themeRef = useRef<VisualTheme>(VISUAL_THEMES[phase]);
+  const timeRef = useRef(0);
 
-  // Update theme ref when phase changes (avoids re-creating animation loop)
   useEffect(() => {
     themeRef.current = VISUAL_THEMES[phase];
   }, [phase]);
 
-  // Handle canvas resize to match window (including devicePixelRatio)
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -41,7 +40,7 @@ export default function EqualizerVisualizer({ phase, isPlaying }: EqualizerVisua
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const draw = useCallback((_deltaTime: number) => {
+  const draw = useCallback((deltaTime: number) => {
     const canvas = canvasRef.current;
     const analyser = analyserRef.current;
     const dataArray = dataArrayRef.current;
@@ -54,52 +53,90 @@ export default function EqualizerVisualizer({ phase, isPlaying }: EqualizerVisua
 
     const theme = themeRef.current;
     const dpr = window.devicePixelRatio || 1;
-    const cssWidth = canvas.width / dpr;
-    const cssHeight = canvas.height / dpr;
+    const w = canvas.width / dpr;
+    const h = canvas.height / dpr;
+    const cx = w / 2;
+    const cy = h / 2;
+    const maxRadius = Math.min(w, h) * 0.45;
 
-    ctx.clearRect(0, 0, cssWidth, cssHeight);
+    timeRef.current += deltaTime * 0.001;
+    const t = timeRef.current;
 
-    const bufferLength = dataArray.length;
-    // Show fewer bars for aesthetic (every other bin, centered)
-    const barCount = Math.min(bufferLength, 64);
-    const totalBarWidth = cssWidth * 0.8; // Use 80% of width
-    const barWidth = totalBarWidth / barCount;
-    const gap = barWidth * 0.2;
-    const startX = (cssWidth - totalBarWidth) / 2;
+    ctx.clearRect(0, 0, w, h);
 
-    for (let i = 0; i < barCount; i++) {
-      // Sample from lower frequency range (more musical content)
-      const dataIndex = Math.floor(i * (bufferLength * 0.6) / barCount);
-      const value = dataArray[dataIndex] / 255;
-      const barHeight = value * cssHeight * 0.6; // Max 60% of canvas height
+    // Compute energy from frequency bands
+    const len = dataArray.length;
+    let bass = 0, mid = 0, high = 0;
+    const bassEnd = Math.floor(len * 0.15);
+    const midEnd = Math.floor(len * 0.5);
+    for (let i = 0; i < len; i++) {
+      const v = dataArray[i] / 255;
+      if (i < bassEnd) bass += v;
+      else if (i < midEnd) mid += v;
+      else high += v;
+    }
+    bass = bass / bassEnd;
+    mid = mid / (midEnd - bassEnd);
+    high = high / (len - midEnd);
 
-      if (barHeight < 1) continue; // Skip invisible bars
+    // Overall energy drives size, bass drives intensity
+    const energy = bass * 0.5 + mid * 0.3 + high * 0.2;
 
-      const x = startX + i * barWidth;
+    // Parse primary and secondary colors for gradient use
+    const primary = theme.primaryColor;
+    const secondary = theme.secondaryColor;
 
-      // Gradient from primary (top) to secondary (bottom)
-      const gradient = ctx.createLinearGradient(
-        0, cssHeight - barHeight,
-        0, cssHeight
+    // Draw layered glowing orbs — celestial aura effect
+    const ringCount = 5;
+    for (let r = ringCount - 1; r >= 0; r--) {
+      const ringRatio = (r + 1) / ringCount;
+      // Each ring pulses slightly offset in time
+      const pulse = Math.sin(t * (1.5 + r * 0.3)) * 0.15 + 0.85;
+      const ringEnergy = energy * pulse;
+      const radius = maxRadius * ringRatio * (0.4 + ringEnergy * 0.6);
+
+      // Slight organic wobble per ring
+      const wobbleX = Math.sin(t * 0.7 + r * 1.2) * 8 * ringEnergy;
+      const wobbleY = Math.cos(t * 0.5 + r * 0.9) * 6 * ringEnergy;
+
+      const grad = ctx.createRadialGradient(
+        cx + wobbleX, cy + wobbleY, 0,
+        cx + wobbleX, cy + wobbleY, radius
       );
-      gradient.addColorStop(0, theme.primaryColor);
-      gradient.addColorStop(1, theme.secondaryColor);
-      ctx.fillStyle = gradient;
 
-      // Draw bar from bottom up with rounded top
-      const barActualWidth = barWidth - gap;
-      const radius = Math.min(barActualWidth / 2, 3);
+      // Inner ring: brighter with primary color, fades to transparent
+      const alpha = (0.15 + ringEnergy * 0.35) * (1 - r * 0.12);
+      grad.addColorStop(0, primary.replace(/[\d.]+\)$/, `${alpha})`));
+      grad.addColorStop(0.4, secondary.replace(/[\d.]+\)$/, `${alpha * 0.6})`));
+      grad.addColorStop(1, secondary.replace(/[\d.]+\)$/, '0)'));
+
+      ctx.fillStyle = grad;
       ctx.beginPath();
-      ctx.moveTo(x + radius, cssHeight - barHeight);
-      ctx.lineTo(x + barActualWidth - radius, cssHeight - barHeight);
-      ctx.quadraticCurveTo(x + barActualWidth, cssHeight - barHeight, x + barActualWidth, cssHeight - barHeight + radius);
-      ctx.lineTo(x + barActualWidth, cssHeight);
-      ctx.lineTo(x, cssHeight);
-      ctx.lineTo(x, cssHeight - barHeight + radius);
-      ctx.quadraticCurveTo(x, cssHeight - barHeight, x + radius, cssHeight - barHeight);
-      ctx.closePath();
+      ctx.arc(cx + wobbleX, cy + wobbleY, radius, 0, Math.PI * 2);
       ctx.fill();
     }
+
+    // Central bright core — reacts strongly to bass
+    const coreRadius = maxRadius * 0.12 * (0.5 + bass * 1.5);
+    const coreGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, coreRadius);
+    const coreAlpha = 0.3 + bass * 0.5;
+    coreGrad.addColorStop(0, `rgba(255, 255, 255, ${coreAlpha})`);
+    coreGrad.addColorStop(0.5, primary.replace(/[\d.]+\)$/, `${coreAlpha * 0.4})`));
+    coreGrad.addColorStop(1, primary.replace(/[\d.]+\)$/, '0)'));
+    ctx.fillStyle = coreGrad;
+    ctx.beginPath();
+    ctx.arc(cx, cy, coreRadius, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Outer halo — subtle bloom that expands with energy
+    const haloRadius = maxRadius * (0.7 + energy * 0.5);
+    const haloGrad = ctx.createRadialGradient(cx, cy, maxRadius * 0.3, cx, cy, haloRadius);
+    haloGrad.addColorStop(0, secondary.replace(/[\d.]+\)$/, `${energy * 0.12})`));
+    haloGrad.addColorStop(1, secondary.replace(/[\d.]+\)$/, '0)'));
+    ctx.fillStyle = haloGrad;
+    ctx.beginPath();
+    ctx.arc(cx, cy, haloRadius, 0, Math.PI * 2);
+    ctx.fill();
   }, [analyserRef, dataArrayRef]);
 
   useAnimationFrame(draw, isPlaying);
@@ -109,6 +146,7 @@ export default function EqualizerVisualizer({ phase, isPlaying }: EqualizerVisua
       ref={canvasRef}
       data-testid="equalizer-canvas"
       className="absolute inset-0 w-full h-full"
+      style={{ filter: `blur(${VISUAL_THEMES[phase].blurAmount}px)` }}
       aria-hidden="true"
     />
   );

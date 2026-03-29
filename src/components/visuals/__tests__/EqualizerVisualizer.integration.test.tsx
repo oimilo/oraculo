@@ -66,8 +66,8 @@ describe('EqualizerVisualizer integration (VIS-01)', () => {
     expect(mockAudioContext.createAnalyser).toHaveBeenCalled();
     // AnalyserNode should be connected to the main GainNode
     expect(mockGainNode.connect).toHaveBeenCalledWith(mockAnalyser);
-    // fftSize should be set (512 as configured in EqualizerVisualizer)
-    expect(mockAnalyser.fftSize).toBe(512);
+    // fftSize should be set (256 as configured in EqualizerVisualizer)
+    expect(mockAnalyser.fftSize).toBe(256);
   });
 
   it('reads frequency data and draws to canvas when animation frame fires', () => {
