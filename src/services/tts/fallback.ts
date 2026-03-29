@@ -1,6 +1,6 @@
 import type { TTSService, VoiceSettings } from './index';
 import type { SpeechSegment } from '@/types';
-import { getAudioContext, initAudioContext } from '@/lib/audio/audioContext';
+import { getAudioContext, getGainNode, initAudioContext } from '@/lib/audio/audioContext';
 import { SCRIPT } from '@/data/script';
 
 /**
@@ -180,7 +180,13 @@ export class FallbackTTSService implements TTSService {
 
       const source = this.audioContext!.createBufferSource();
       source.buffer = buffer;
-      source.connect(this.audioContext!.destination);
+      // Route through GainNode so AnalyserNode can read frequency data
+      const gainNode = getGainNode();
+      if (gainNode) {
+        source.connect(gainNode);
+      } else {
+        source.connect(this.audioContext!.destination);
+      }
 
       this.currentSource = source;
 

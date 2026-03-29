@@ -24,11 +24,12 @@ export default function AudioReactiveBackground({
       className="fixed inset-0 transition-colors duration-[3000ms] ease-in-out"
       style={{ backgroundColor: theme.background }}
     >
-      {/* Visual layer — behind all content */}
-      {isPlaying ? (
+      {/* Idle particles — always visible as ambient background */}
+      <IdleAnimation phase={phase} />
+
+      {/* Equalizer overlay — appears on top of particles when TTS is playing */}
+      {isPlaying && (
         <EqualizerVisualizer phase={phase} isPlaying={isPlaying} />
-      ) : (
-        <IdleAnimation phase={phase} />
       )}
 
       {/* Content layer — on top of visuals */}

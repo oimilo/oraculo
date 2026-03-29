@@ -18,15 +18,19 @@ interface IdleAnimationProps {
   phase: NarrativePhase;
 }
 
-function createParticles(width: number, height: number, count: number): Particle[] {
-  return Array.from({ length: count }, () => ({
+function createParticle(width: number, height: number): Particle {
+  return {
     x: Math.random() * width,
     y: Math.random() * height,
     vx: (Math.random() - 0.5) * 0.5,
     vy: (Math.random() - 0.5) * 0.5,
     size: Math.random() * 2 + 1,
     opacity: Math.random() * 0.3 + 0.1,
-  }));
+  };
+}
+
+function createParticles(width: number, height: number, count: number): Particle[] {
+  return Array.from({ length: count }, () => createParticle(width, height));
 }
 
 export default function IdleAnimation({ phase }: IdleAnimationProps) {
@@ -61,15 +65,28 @@ export default function IdleAnimation({ phase }: IdleAnimationProps) {
     return () => window.removeEventListener('resize', init);
   }, []);
 
-  // Recreate particles when phase changes (different count per phase)
+  // Smoothly adjust particle count on phase change (don't recreate all)
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const theme = VISUAL_THEMES[phase];
+    const targetCount = theme.particleCount;
+    const current = particlesRef.current;
     const dpr = window.devicePixelRatio || 1;
     const cssWidth = canvas.width / dpr;
     const cssHeight = canvas.height / dpr;
-    particlesRef.current = createParticles(cssWidth, cssHeight, theme.particleCount);
+
+    if (current.length < targetCount) {
+      // Add new particles
+      const newParticles = Array.from(
+        { length: targetCount - current.length },
+        () => createParticle(cssWidth, cssHeight)
+      );
+      particlesRef.current = [...current, ...newParticles];
+    } else if (current.length > targetCount) {
+      // Remove excess particles (from the end)
+      particlesRef.current = current.slice(0, targetCount);
+    }
   }, [phase]);
 
   const draw = useCallback((deltaTime: number) => {

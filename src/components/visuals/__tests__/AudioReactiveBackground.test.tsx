@@ -50,13 +50,18 @@ describe('AudioReactiveBackground', () => {
     expect(bg.style.backgroundColor).toBe('rgb(92, 74, 42)'); // #5c4a2a
   });
 
-  it('shows EqualizerVisualizer when isPlaying=true', () => {
+  it('always shows IdleAnimation as ambient background (VIS-04)', () => {
     render(<AudioReactiveBackground phase="INFERNO" isPlaying={true} />);
-    expect(screen.getByTestId('mock-equalizer')).toBeInTheDocument();
-    expect(screen.queryByTestId('mock-idle')).not.toBeInTheDocument();
+    expect(screen.getByTestId('mock-idle')).toBeInTheDocument();
   });
 
-  it('shows IdleAnimation when isPlaying=false (VIS-04)', () => {
+  it('shows EqualizerVisualizer overlay when isPlaying=true', () => {
+    render(<AudioReactiveBackground phase="INFERNO" isPlaying={true} />);
+    expect(screen.getByTestId('mock-equalizer')).toBeInTheDocument();
+    expect(screen.getByTestId('mock-idle')).toBeInTheDocument();
+  });
+
+  it('hides EqualizerVisualizer when isPlaying=false', () => {
     render(<AudioReactiveBackground phase="INFERNO" isPlaying={false} />);
     expect(screen.getByTestId('mock-idle')).toBeInTheDocument();
     expect(screen.queryByTestId('mock-equalizer')).not.toBeInTheDocument();
