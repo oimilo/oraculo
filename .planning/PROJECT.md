@@ -47,6 +47,7 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 
 - [x] All segments trimmed to 5-7 min max-path (pacing validated at 5:00.1 min) — *Validated in Phase 25*
 - [x] Branch content Q2B + Q4B with psychoanalytic depth, variable-length ChoicePattern, percentage-based archetype matching — *Validated in Phase 26*
+- [x] XState v4 machine with conditional Q2B/Q4B branching, choiceMap named tracking, 12 new states — *Validated in Phase 27*
 
 (Remaining v4.0 requirements defined in REQUIREMENTS.md)
 
@@ -123,4 +124,4 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-29 — Phase 26 complete (branching content + variable-length pattern matching)*
+*Last updated: 2026-03-29 — Phase 27 complete (XState v4 machine with conditional branching transitions)*
