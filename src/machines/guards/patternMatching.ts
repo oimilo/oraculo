@@ -9,27 +9,28 @@ interface PatternContext {
 }
 
 /**
- * Determines the devolução archetype based on a 6-choice pattern.
- * Analyzes the shape of choices to classify the visitor's decision pattern.
+ * Determines the devolução archetype based on a variable-length choice pattern (6-10 choices).
+ * Uses percentage-based thresholds to classify the visitor's decision pattern.
+ * Supports v4.0 branching (6 base questions + 0-4 conditional branch questions).
  *
  * Algorithm:
- * 1. Filter nulls — must have 6 complete choices
+ * 1. Filter nulls — must have 6+ complete choices
  * 2. Check MIRROR (perfect alternation)
- * 3. Check DEPTH_SEEKER (all A)
- * 4. Check SURFACE_KEEPER (all B)
- * 5. Check PIVOT (direction change between halves)
- * 6. Check SEEKER (mostly A, 4+)
- * 7. Check GUARDIAN (mostly B, 4+)
+ * 3. Check DEPTH_SEEKER (100% A)
+ * 4. Check SURFACE_KEEPER (100% B)
+ * 5. Check PIVOT (direction change between thirds)
+ * 6. Check SEEKER (66%+ A)
+ * 7. Check GUARDIAN (66%+ B)
  * 8. Default: CONTRADICTED
  *
- * @param choices - 6-element tuple of choices
+ * @param choices - Variable-length array of choices (6-10 elements)
  * @returns Archetype classification
  */
 export function determineArchetype(choices: ChoicePattern): DevolucaoArchetype {
   // Filter out nulls
   const validChoices = choices.filter((c): c is 'A' | 'B' => c !== null);
 
-  // Must have all 6 choices for any archetype except CONTRADICTED
+  // Must have at least 6 choices for any archetype except CONTRADICTED
   if (validChoices.length < 6) {
     return 'CONTRADICTED';
   }
@@ -49,47 +50,52 @@ export function determineArchetype(choices: ChoicePattern): DevolucaoArchetype {
   // Count A and B choices
   const aCount = validChoices.filter(c => c === 'A').length;
   const bCount = validChoices.filter(c => c === 'B').length;
+  const total = validChoices.length;
 
-  // Check DEPTH_SEEKER: all A
-  if (aCount === 6) {
+  // Calculate percentages
+  const aPercent = aCount / total;
+  const bPercent = bCount / total;
+
+  // Check DEPTH_SEEKER: all A (100%)
+  if (aPercent === 1) {
     return 'DEPTH_SEEKER';
   }
 
-  // Check SURFACE_KEEPER: all B
-  if (bCount === 6) {
+  // Check SURFACE_KEEPER: all B (100%)
+  if (bPercent === 1) {
     return 'SURFACE_KEEPER';
   }
 
-  // Check PIVOT patterns: split into halves and detect clear direction change
-  // PIVOT shows intentional direction shift between halves
-  const firstHalf = validChoices.slice(0, 3);
-  const secondHalf = validChoices.slice(3, 6);
-  const firstHalfA = firstHalf.filter(c => c === 'A').length;
-  const secondHalfA = secondHalf.filter(c => c === 'A').length;
+  // Check PIVOT patterns: split into thirds for variable-length arrays
+  // PIVOT requires both a clear directional change AND enough representation of both choices
+  // to distinguish from lopsided SEEKER/GUARDIAN patterns with trailing opposites
+  const oneThird = Math.floor(total / 3);
+  const firstThird = validChoices.slice(0, oneThird);
+  const lastThird = validChoices.slice(-oneThird);
+  const firstThirdA = firstThird.filter(c => c === 'A').length;
+  const lastThirdA = lastThird.filter(c => c === 'A').length;
+  const firstThirdPercent = firstThirdA / firstThird.length;
+  const lastThirdPercent = lastThirdA / lastThird.length;
 
-  // PIVOT_LATE: starts with A, pivots to B
-  // Requires: first half majority A (>=2), AND second half strong B (all B = 0A)
-  // Examples: AAABBB (3A → 0A), AABBBB (2A → 0A)
-  // Not AAABBA (3A → 1A with final A) - that's SEEKER with variation
-  if (firstHalfA >= 2 && secondHalfA === 0) {
+  // PIVOT_LATE: starts A-heavy (>=66%), ends B-heavy (<=33%)
+  // Requires enough B choices overall (>=40%) to be a true pivot, not just trailing Bs
+  if (firstThirdPercent >= 0.66 && lastThirdPercent <= 0.33 && bPercent >= 0.4) {
     return 'PIVOT_LATE';
   }
 
-  // PIVOT_EARLY: starts with B, pivots to A
-  // Requires: first half majority B (<=1 A), AND second half strong A (all A = 3A)
-  // Examples: BBBAAA (0A → 3A), BBAAAA (0A → 3A at position 2)
-  // Not BBBAAB (0A → 2A with final B) - that's GUARDIAN with variation
-  if (firstHalfA <= 1 && secondHalfA === 3) {
+  // PIVOT_EARLY: starts B-heavy (<=33%), ends A-heavy (>=66%)
+  // Requires enough A choices overall (>=40%) to be a true pivot, not just trailing As
+  if (firstThirdPercent <= 0.33 && lastThirdPercent >= 0.66 && aPercent >= 0.4) {
     return 'PIVOT_EARLY';
   }
 
-  // Check SEEKER: mostly A (4+ A choices), no pivot
-  if (aCount >= 4) {
+  // Check SEEKER: 66%+ A choices (no pivot detected)
+  if (aPercent >= 0.66) {
     return 'SEEKER';
   }
 
-  // Check GUARDIAN: mostly B (4+ B choices), no pivot
-  if (bCount >= 4) {
+  // Check GUARDIAN: 66%+ B choices (no pivot detected)
+  if (bPercent >= 0.66) {
     return 'GUARDIAN';
   }
 

@@ -301,3 +301,108 @@ describe('ARCHETYPE_GUARDS', () => {
     });
   });
 });
+
+describe('variable-length choice arrays (v4.0 branching)', () => {
+  describe('8-choice arrays', () => {
+    it('should return DEPTH_SEEKER for all A (8 choices)', () => {
+      const pattern: ChoicePattern = ['A', 'A', 'A', 'A', 'A', 'A', 'A', 'A'];
+      expect(determineArchetype(pattern)).toBe('DEPTH_SEEKER');
+    });
+
+    it('should return SURFACE_KEEPER for all B (8 choices)', () => {
+      const pattern: ChoicePattern = ['B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'];
+      expect(determineArchetype(pattern)).toBe('SURFACE_KEEPER');
+    });
+
+    it('should return MIRROR for perfect alternation (8 choices)', () => {
+      const pattern: ChoicePattern = ['A', 'B', 'A', 'B', 'A', 'B', 'A', 'B'];
+      expect(determineArchetype(pattern)).toBe('MIRROR');
+    });
+
+    it('should return SEEKER for 75% A (6A/2B in 8 choices)', () => {
+      const pattern: ChoicePattern = ['A', 'A', 'A', 'A', 'A', 'B', 'A', 'B'];
+      expect(determineArchetype(pattern)).toBe('SEEKER');
+    });
+
+    it('should return GUARDIAN for 75% B (6B/2A in 8 choices)', () => {
+      const pattern: ChoicePattern = ['B', 'B', 'B', 'B', 'B', 'A', 'B', 'A'];
+      expect(determineArchetype(pattern)).toBe('GUARDIAN');
+    });
+
+    it('should return PIVOT_LATE for A-heavy start, B-heavy end (8 choices)', () => {
+      const pattern: ChoicePattern = ['A', 'A', 'A', 'B', 'B', 'B', 'B', 'B'];
+      expect(determineArchetype(pattern)).toBe('PIVOT_LATE');
+    });
+
+    it('should return PIVOT_EARLY for B-heavy start, A-heavy end (8 choices)', () => {
+      const pattern: ChoicePattern = ['B', 'B', 'B', 'A', 'A', 'A', 'A', 'A'];
+      expect(determineArchetype(pattern)).toBe('PIVOT_EARLY');
+    });
+
+    it('should return CONTRADICTED for balanced mix (8 choices)', () => {
+      const pattern: ChoicePattern = ['A', 'B', 'A', 'A', 'B', 'B', 'A', 'B'];
+      expect(determineArchetype(pattern)).toBe('CONTRADICTED');
+    });
+  });
+
+  describe('7-choice arrays (single branch taken)', () => {
+    it('should return DEPTH_SEEKER for all A (7 choices)', () => {
+      const pattern: ChoicePattern = ['A', 'A', 'A', 'A', 'A', 'A', 'A'];
+      expect(determineArchetype(pattern)).toBe('DEPTH_SEEKER');
+    });
+
+    it('should return SURFACE_KEEPER for all B (7 choices)', () => {
+      const pattern: ChoicePattern = ['B', 'B', 'B', 'B', 'B', 'B', 'B'];
+      expect(determineArchetype(pattern)).toBe('SURFACE_KEEPER');
+    });
+
+    it('should return MIRROR for alternation (7 choices)', () => {
+      const pattern: ChoicePattern = ['A', 'B', 'A', 'B', 'A', 'B', 'A'];
+      expect(determineArchetype(pattern)).toBe('MIRROR');
+    });
+
+    it('should return SEEKER for 71% A (5A/2B in 7 choices)', () => {
+      const pattern: ChoicePattern = ['A', 'A', 'A', 'A', 'A', 'B', 'B'];
+      expect(determineArchetype(pattern)).toBe('SEEKER');
+    });
+  });
+
+  describe('backward compatibility (6-choice arrays)', () => {
+    it('should still return SEEKER for 5A/1B (83%)', () => {
+      const pattern: ChoicePattern = ['A', 'A', 'A', 'A', 'A', 'B'];
+      expect(determineArchetype(pattern)).toBe('SEEKER');
+    });
+
+    it('should still return MIRROR for ABABAB', () => {
+      const pattern: ChoicePattern = ['A', 'B', 'A', 'B', 'A', 'B'];
+      expect(determineArchetype(pattern)).toBe('MIRROR');
+    });
+
+    it('should still return PIVOT_LATE for AAABBB', () => {
+      const pattern: ChoicePattern = ['A', 'A', 'A', 'B', 'B', 'B'];
+      expect(determineArchetype(pattern)).toBe('PIVOT_LATE');
+    });
+
+    it('should still return PIVOT_EARLY for BBBAAA', () => {
+      const pattern: ChoicePattern = ['B', 'B', 'B', 'A', 'A', 'A'];
+      expect(determineArchetype(pattern)).toBe('PIVOT_EARLY');
+    });
+  });
+
+  describe('edge cases with variable length', () => {
+    it('should return CONTRADICTED for fewer than 6 valid choices', () => {
+      const pattern: ChoicePattern = ['A', 'A', null, null, null];
+      expect(determineArchetype(pattern)).toBe('CONTRADICTED');
+    });
+
+    it('should return CONTRADICTED for 5 valid choices (one null)', () => {
+      const pattern: ChoicePattern = ['A', 'A', 'A', 'A', 'A', null];
+      expect(determineArchetype(pattern)).toBe('CONTRADICTED');
+    });
+
+    it('should handle 10 choices (theoretical max)', () => {
+      const pattern: ChoicePattern = ['A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A'];
+      expect(determineArchetype(pattern)).toBe('DEPTH_SEEKER');
+    });
+  });
+});
