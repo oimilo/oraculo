@@ -91,7 +91,7 @@ See: `.planning/milestones/v3.1-ROADMAP.md`
 ### v4.0 Game Flow (Active)
 
 - [x] **Phase 25: Script Restructure — Pacing** - Trim all segments to 5-7 min target (completed 2026-03-28)
-- [ ] **Phase 26: Script Restructure — Branching** - Design and write 8-10 decision points with branching paths
+- [x] **Phase 26: Script Restructure — Branching** - Design and write 8-10 decision points with branching paths (completed 2026-03-29)
 - [ ] **Phase 27: State Machine Redesign** - XState v5 with conditional transitions for branching
 - [ ] **Phase 28: Audio Regeneration** - Generate all MP3s for trimmed/branching script
 - [ ] **Phase 29: Integration & Validation** - Update components/services, verify all tests pass
@@ -157,11 +157,11 @@ Plans:
 **Goal**: Experience offers 8-10 decision points with branching paths that converge before devoluções
 **Depends on**: Phase 25 (trimmed script as foundation)
 **Requirements**: BRNC-01, BRNC-02, BRNC-03, BRNC-04
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [x] 26-01-PLAN.md — Type contracts (ChoicePattern variable-length, QUESTION_META 7-8) + branch script content (Q2B, Q4B)
-- [ ] 26-02-PLAN.md — Percentage-based pattern matching + branch-aware timing validation
+- [x] 26-02-PLAN.md — Percentage-based pattern matching + branch-aware timing validation
 
 **Success Criteria** (what must be TRUE):
   1. Experience has 8-10 total decision points (up from 6)
@@ -216,7 +216,7 @@ Plans:
 | 19. Audio Generation | v3.2 | 1/1 | Complete | 2026-03-28 |
 | 20. Testing | v3.2 | - | Skipped | - |
 | 25. Script Pacing | v4.0 | 2/2 | Complete    | 2026-03-28 |
-| 26. Script Branching | v4.0 | 1/2 | In Progress|  |
+| 26. Script Branching | v4.0 | 2/2 | Complete   | 2026-03-29 |
 | 27. State Machine | v4.0 | 0/? | Not started | - |
 | 28. Audio Regen | v4.0 | 0/? | Not started | - |
 | 29. Integration | v4.0 | 0/? | Not started | - |
