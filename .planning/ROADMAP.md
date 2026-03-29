@@ -94,7 +94,7 @@ See: `.planning/milestones/v3.1-ROADMAP.md`
 - [x] **Phase 26: Script Restructure — Branching** - Design and write 8-10 decision points with branching paths (completed 2026-03-29)
 - [x] **Phase 27: State Machine Redesign** - XState v5 with conditional transitions for branching (completed 2026-03-29)
 - [x] **Phase 28: Audio Regeneration** - Generate all MP3s for trimmed/branching script (completed 2026-03-29)
-- [ ] **Phase 29: Integration & Validation** - Update components/services, verify all tests pass
+- [x] **Phase 29: Integration & Validation** - Update components/services, verify all tests pass (completed 2026-03-29)
 
 ---
 
@@ -228,7 +228,7 @@ Plans:
 | 26. Script Branching | v4.0 | 2/2 | Complete    | 2026-03-29 |
 | 27. State Machine | v4.0 | 2/2 | Complete    | 2026-03-29 |
 | 28. Audio Regen | v4.0 | 1/1 | Complete    | 2026-03-29 |
-| 29. Integration | v4.0 | 1/2 | In Progress|  |
+| 29. Integration | v4.0 | 2/2 | Complete   | 2026-03-29 |
 
 ## Dependencies
 
