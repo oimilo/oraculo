@@ -2,18 +2,23 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import EqualizerVisualizer from '../EqualizerVisualizer';
 
-// Mock hooks
-vi.mock('@/hooks/useAudioAnalyser', () => ({
-  useAudioAnalyser: () => ({
-    analyserRef: { current: { getByteFrequencyData: vi.fn(), frequencyBinCount: 256 } },
-    dataArrayRef: { current: new Uint8Array(256) },
-    frequencyBinCount: 256,
-  }),
+// Mock R3F (no WebGL in jsdom)
+vi.mock('@react-three/fiber', () => ({
+  Canvas: ({ children }: any) => <div data-testid="r3f-canvas">{children}</div>,
+  useFrame: vi.fn(),
 }));
 
-const mockUseAnimationFrame = vi.hoisted(() => vi.fn());
-vi.mock('@/hooks/useAnimationFrame', () => ({
-  useAnimationFrame: mockUseAnimationFrame,
+vi.mock('@react-three/postprocessing', () => ({
+  EffectComposer: ({ children }: any) => <div>{children}</div>,
+  Bloom: () => null,
+}));
+
+vi.mock('@/hooks/useAudioAnalyser', () => ({
+  useAudioAnalyser: () => ({
+    analyserRef: { current: null },
+    dataArrayRef: { current: null },
+    frequencyBinCount: 128,
+  }),
 }));
 
 describe('EqualizerVisualizer', () => {
@@ -21,32 +26,27 @@ describe('EqualizerVisualizer', () => {
     vi.clearAllMocks();
   });
 
-  it('renders a canvas element with data-testid equalizer-canvas', () => {
+  it('renders a container with data-testid equalizer-canvas', () => {
     render(<EqualizerVisualizer phase="INFERNO" isPlaying={true} />);
     expect(screen.getByTestId('equalizer-canvas')).toBeInTheDocument();
   });
 
-  it('canvas has aria-hidden=true (decorative element)', () => {
+  it('container has aria-hidden=true (decorative element)', () => {
     render(<EqualizerVisualizer phase="INFERNO" isPlaying={true} />);
     expect(screen.getByTestId('equalizer-canvas')).toHaveAttribute('aria-hidden', 'true');
   });
 
-  it('canvas has full-screen CSS classes', () => {
+  it('container has full-screen CSS classes', () => {
     render(<EqualizerVisualizer phase="INFERNO" isPlaying={true} />);
-    const canvas = screen.getByTestId('equalizer-canvas');
-    expect(canvas.className).toContain('absolute');
-    expect(canvas.className).toContain('inset-0');
-    expect(canvas.className).toContain('w-full');
-    expect(canvas.className).toContain('h-full');
+    const el = screen.getByTestId('equalizer-canvas');
+    expect(el.className).toContain('absolute');
+    expect(el.className).toContain('inset-0');
+    expect(el.className).toContain('w-full');
+    expect(el.className).toContain('h-full');
   });
 
-  it('calls useAnimationFrame with isPlaying prop', () => {
-    render(<EqualizerVisualizer phase="PARAISO" isPlaying={false} />);
-    expect(mockUseAnimationFrame).toHaveBeenCalledWith(expect.any(Function), false);
-  });
-
-  it('calls useAnimationFrame with true when isPlaying', () => {
-    render(<EqualizerVisualizer phase="INFERNO" isPlaying={true} />);
-    expect(mockUseAnimationFrame).toHaveBeenCalledWith(expect.any(Function), true);
+  it('renders R3F Canvas inside container', () => {
+    render(<EqualizerVisualizer phase="PARAISO" isPlaying={true} />);
+    expect(screen.getByTestId('r3f-canvas')).toBeInTheDocument();
   });
 });
