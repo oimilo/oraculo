@@ -24,9 +24,9 @@ Requirements for Game Flow milestone. Transform the Oracle into a 5-7 min game-l
 
 ### Machine
 
-- [ ] **MACH-01**: XState machine redesigned with conditional transitions for branching
-- [ ] **MACH-02**: Pattern tracking updated for variable-length choice paths
-- [ ] **MACH-03**: Devoluçao routing works for all possible branch combinations
+- [x] **MACH-01**: XState machine redesigned with conditional transitions for branching
+- [x] **MACH-02**: Pattern tracking updated for variable-length choice paths
+- [x] **MACH-03**: Devoluçao routing works for all possible branch combinations
 
 ### Audio
 
@@ -73,9 +73,9 @@ Requirements for Game Flow milestone. Transform the Oracle into a 5-7 min game-l
 | BRNC-02 | Phase 26 | Complete |
 | BRNC-03 | Phase 26 | Complete |
 | BRNC-04 | Phase 26 | Complete |
-| MACH-01 | Phase 27 | Pending |
-| MACH-02 | Phase 27 | Pending |
-| MACH-03 | Phase 27 | Pending |
+| MACH-01 | Phase 27 | Complete |
+| MACH-02 | Phase 27 | Complete |
+| MACH-03 | Phase 27 | Complete |
 | AUDI-01 | Phase 28 | Pending |
 | AUDI-02 | Phase 28 | Pending |
 | INTG-01 | Phase 29 | Pending |

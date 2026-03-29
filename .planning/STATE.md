@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Game Flow
-status: verifying
-stopped_at: Completed 26-02-PLAN.md (pattern matching + timing)
-last_updated: "2026-03-29T00:17:25.222Z"
+status: executing
+stopped_at: Completed 27-01-PLAN.md (machine redesign with branching)
+last_updated: "2026-03-29T01:00:01.757Z"
 last_activity: 2026-03-29
 progress:
-  total_phases: 20
+  total_phases: 21
   completed_phases: 19
-  total_plans: 45
-  completed_plans: 45
+  total_plans: 47
+  completed_plans: 46
   percent: 79
 ---
 
@@ -22,13 +22,13 @@ progress:
 
 **Current Milestone:** v4.0 Game Flow
 
-**Current Focus:** Phase 26 — script-branching
+**Current Focus:** Phase 27 — state-machine-redesign
 
 ## Current Position
 
-Phase: 26
-Plan: Not started
-Status: Phase complete — ready for verification
+Phase: 27 (state-machine-redesign) — EXECUTING
+Plan: 2 of 2
+Status: Ready to execute
 Last activity: 2026-03-29
 
 Progress: [████████████████░░░░] 79% (phases 1-19 shipped, 5 phases remaining in v4.0)
@@ -103,6 +103,9 @@ Recent decisions affecting current work:
 - [Phase 26]: ChoicePattern type evolved to variable-length array for 6-10 choice support
 - [Phase 26]: Percentage-based thresholds (66% for SEEKER/GUARDIAN, 40% for PIVOT) ensure backward compatibility while supporting 6-10 choice arrays
 - [Phase 26]: 4-path timing calculation validates all branch permutations (6Q-8Q), max-path 5:57 min within 5-7 min target
+- [Phase 27]: choices[] starts empty (not pre-allocated) — built dynamically as questions answered
+- [Phase 27]: choiceMap provides O(1) named lookup for branch guards; choices[] preserves ordered array for pattern matching
+- [Phase 27]: Branch guards check RESPOSTA_A only — B answers always skip branch per game design
 
 ### Active TODOs
 
@@ -115,6 +118,6 @@ None. v4.0 ready to start — v3.1 script provides baseline for restructuring.
 
 ## Session Continuity
 
-Last session: 2026-03-29T00:12:08.083Z
-Stopped at: Completed 26-02-PLAN.md (pattern matching + timing)
+Last session: 2026-03-29T01:00:01.753Z
+Stopped at: Completed 27-01-PLAN.md (machine redesign with branching)
 Resume: `/gsd:plan-phase 25` to begin script pacing rewrite

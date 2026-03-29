@@ -175,10 +175,10 @@ Plans:
 **Goal**: XState machine handles conditional branching transitions and variable-length choice paths
 **Depends on**: Phase 26 (branching structure finalized)
 **Requirements**: MACH-01, MACH-02, MACH-03
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
-- [ ] 27-01-PLAN.md — OracleContextV4 types + machine rewrite with Q2B/Q4B branch states and guards
+- [x] 27-01-PLAN.md — OracleContextV4 types + machine rewrite with Q2B/Q4B branch states and guards
 - [ ] 27-02-PLAN.md — Comprehensive branching tests (all 4 path permutations, devolucao routing)
 
 **Success Criteria** (what must be TRUE):
@@ -222,7 +222,7 @@ Plans:
 | 20. Testing | v3.2 | - | Skipped | - |
 | 25. Script Pacing | v4.0 | 2/2 | Complete    | 2026-03-28 |
 | 26. Script Branching | v4.0 | 2/2 | Complete    | 2026-03-29 |
-| 27. State Machine | v4.0 | 0/2 | Planned | - |
+| 27. State Machine | v4.0 | 1/2 | In Progress|  |
 | 28. Audio Regen | v4.0 | 0/? | Not started | - |
 | 29. Integration | v4.0 | 0/? | Not started | - |
 
