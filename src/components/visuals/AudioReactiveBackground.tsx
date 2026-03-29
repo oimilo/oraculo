@@ -27,10 +27,8 @@ export default function AudioReactiveBackground({
       {/* Idle particles — always visible as ambient background */}
       <IdleAnimation phase={phase} />
 
-      {/* Equalizer overlay — appears on top of particles when TTS is playing */}
-      {isPlaying && (
-        <EqualizerVisualizer phase={phase} isPlaying={isPlaying} />
-      )}
+      {/* 3D orb — always mounted, reacts to audio when playing, idle animation otherwise */}
+      <EqualizerVisualizer phase={phase} isPlaying={isPlaying} />
 
       {/* Content layer — on top of visuals */}
       <div className="relative z-10">

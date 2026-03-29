@@ -55,16 +55,16 @@ describe('AudioReactiveBackground', () => {
     expect(screen.getByTestId('mock-idle')).toBeInTheDocument();
   });
 
-  it('shows EqualizerVisualizer overlay when isPlaying=true', () => {
+  it('always shows EqualizerVisualizer (never unmounts between states)', () => {
     render(<AudioReactiveBackground phase="INFERNO" isPlaying={true} />);
     expect(screen.getByTestId('mock-equalizer')).toBeInTheDocument();
     expect(screen.getByTestId('mock-idle')).toBeInTheDocument();
   });
 
-  it('hides EqualizerVisualizer when isPlaying=false', () => {
+  it('keeps EqualizerVisualizer visible even when isPlaying=false', () => {
     render(<AudioReactiveBackground phase="INFERNO" isPlaying={false} />);
     expect(screen.getByTestId('mock-idle')).toBeInTheDocument();
-    expect(screen.queryByTestId('mock-equalizer')).not.toBeInTheDocument();
+    expect(screen.getByTestId('mock-equalizer')).toBeInTheDocument();
   });
 
   it('passes phase to EqualizerVisualizer', () => {

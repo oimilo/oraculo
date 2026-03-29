@@ -144,34 +144,6 @@ void main() {
 }
 `;
 
-// ── Inner Glow Shader (backside additive halo) ────────────────
-const glowVertexShader = /* glsl */`
-varying vec3 vNormal;
-varying vec3 vPosition;
-
-void main() {
-  vNormal = normalize(normalMatrix * normal);
-  vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-}
-`;
-
-const glowFragmentShader = /* glsl */`
-uniform vec3 uColor;
-uniform float uAudioLevel;
-uniform float uOpacity;
-
-varying vec3 vNormal;
-varying vec3 vPosition;
-
-void main() {
-  vec3 viewDir = normalize(-vPosition);
-  float fresnel = pow(1.0 - abs(dot(viewDir, vNormal)), 2.0);
-  float glow = fresnel * (0.5 + uAudioLevel * 0.8);
-  gl_FragColor = vec4(uColor * glow * 2.0, glow * uOpacity);
-}
-`;
-
 // ── Floating particle (ambient dust) ──────────────────────────
 function FloatingParticles({ phase, audioLevel }: { phase: NarrativePhase; audioLevel: React.RefObject<number> }) {
   const pointsRef = useRef<THREE.Points>(null);
@@ -254,7 +226,6 @@ interface SceneProps {
 function ReactiveOrb({ analyserRef, dataArrayRef, phase }: SceneProps) {
   const mainMatRef = useRef<THREE.ShaderMaterial>(null);
   const wireMatRef = useRef<THREE.ShaderMaterial>(null);
-  const glowMatRef = useRef<THREE.ShaderMaterial>(null);
   const groupRef = useRef<THREE.Group>(null);
   const energyRef = useRef(0);
   const bassRef = useRef(0);
@@ -287,13 +258,6 @@ function ReactiveOrb({ analyserRef, dataArrayRef, phase }: SceneProps) {
     uIntensity: { value: VISUAL_THEMES[phase].motionIntensity },
     uColor: { value: new THREE.Vector3(...PHASE_COLORS[phase]) },
     uFresnelPower: { value: 2.5 },
-  }), []);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- uniforms are stable refs, updated in useFrame
-  const glowUniforms = useMemo(() => ({
-    uColor: { value: new THREE.Vector3(...PHASE_COLORS[phase]) },
-    uAudioLevel: { value: 0 },
-    uOpacity: { value: 0.4 },
   }), []);
 
   useFrame(({ clock }, delta) => {
@@ -340,11 +304,6 @@ function ReactiveOrb({ analyserRef, dataArrayRef, phase }: SceneProps) {
       wireMatRef.current.uniforms.uIntensity.value = VISUAL_THEMES[phase].motionIntensity;
       wireMatRef.current.uniforms.uColor.value.copy(cc);
     }
-    if (glowMatRef.current) {
-      glowMatRef.current.uniforms.uAudioLevel.value = e;
-      glowMatRef.current.uniforms.uColor.value.copy(cc);
-    }
-
     // Rotation — slow idle, bass accelerates
     groupRef.current.rotation.x += delta * (0.05 + e * 0.2);
     groupRef.current.rotation.y += delta * (0.08 + e * 0.3);
@@ -385,21 +344,6 @@ function ReactiveOrb({ analyserRef, dataArrayRef, phase }: SceneProps) {
           transparent
           wireframe
           depthWrite={false}
-        />
-      </mesh>
-
-      {/* Inner glow — backside additive halo */}
-      <mesh>
-        <sphereGeometry args={[1.8, 32, 32]} />
-        <shaderMaterial
-          ref={glowMatRef}
-          vertexShader={glowVertexShader}
-          fragmentShader={glowFragmentShader}
-          uniforms={glowUniforms}
-          transparent
-          side={THREE.BackSide}
-          depthWrite={false}
-          blending={THREE.AdditiveBlending}
         />
       </mesh>
 
