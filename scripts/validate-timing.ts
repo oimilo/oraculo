@@ -3,16 +3,34 @@
  *
  * Validates that the max-path experience duration falls within the 5-7:30 minute
  * target (300-450 seconds — v6.0 budget with branch overflow tolerance).
- * Calculates all 6 possible paths through the branching structure:
- *   1. No branches (6 questions — shortest)
- *   2. Q2B only (7 questions)            — q1=A AND q2=A
- *   3. Q1B only (7 questions)            — q1=B AND q2=B (Phase 31, BR-01)
- *   4. Q4B only (7 questions)
- *   5. Q2B + Q4B (8 questions)
- *   6. Q1B + Q4B (8 questions)           — Phase 31, BR-01
+ * Calculates all 12 possible paths through the branching structure:
  *
- * Note: Q1B and Q2B are MUTUALLY EXCLUSIVE — q1 cannot be both 'A' and 'B'.
- * Therefore no path has both Q1B+Q2B firing.
+ *   No branches:
+ *     1. No branches (6Q)
+ *     2. Q5B only (7Q)                       — q4=A AND q5=A (Phase 32, BR-02)
+ *
+ *   Single INFERNO branch:
+ *     3. Q2B only (7Q)                       — q1=A AND q2=A
+ *     4. Q2B + Q5B (8Q)                      — Phase 32
+ *     5. Q1B only (7Q)                       — q1=B AND q2=B (Phase 31, BR-01)
+ *     6. Q1B + Q5B (8Q)                      — Phase 32
+ *
+ *   Q4B (PURGATORIO branch):
+ *     7. Q4B only (7Q)
+ *     8. Q4B + Q5B (8Q)                      — coexistence (q3=A, q4=A, q5=A)
+ *
+ *   Q2B + Q4B combos:
+ *     9. Q2B + Q4B (8Q)
+ *    10. Q2B + Q4B + Q5B (9Q — WORST CASE)   — q1=A, q2=A, q3=A, q4=A, q5=A
+ *
+ *   Q1B + Q4B combos:
+ *    11. Q1B + Q4B (8Q)
+ *    12. Q1B + Q4B + Q5B (9Q — WORST CASE)   — q1=B, q2=B, q3=A, q4=A, q5=A
+ *
+ * Mutual exclusion rules:
+ *   - Q1B and Q2B are mutually exclusive (q1 cannot be both 'A' and 'B')
+ *   - Q5B is INDEPENDENT of Q1B/Q2B (different phase, no shared variables)
+ *   - Q5B is COEXISTENT with Q4B (both want q4='A')
  *
  * Methodology:
  * - Speech rate: ~13 chars/sec for PT-BR conversational speech
@@ -107,33 +125,45 @@ function pickLongestDevolucao(): { segments: SpeechSegment[], key: string } {
  * - Q1B triggers when: Q1=B AND Q2=B (contra-fobico profile in INFERNO)
  * - Q2B triggers when: Q1=A AND Q2=A (both "toward" choices in INFERNO)
  * - Q4B triggers when: Q3=A AND Q4=A (both "toward" choices in PURGATORIO)
+ * - Q5B triggers when: Q4=A AND Q5=A (PORTADOR profile precursor in PARAISO, Phase 32 BR-02)
  *
- * Six possible paths (Q1B and Q2B are MUTUALLY EXCLUSIVE — q1 can't be A AND B):
- * 1. No branches: 6 questions (shortest)
- * 2. Q2B only: 7 questions
- * 3. Q1B only: 7 questions    (Phase 31, BR-01)
- * 4. Q4B only: 7 questions
- * 5. Q2B + Q4B: 8 questions
- * 6. Q1B + Q4B: 8 questions   (Phase 31, BR-01)
+ * Twelve possible paths:
+ *   - Q1B and Q2B are MUTUALLY EXCLUSIVE — q1 can't be A AND B
+ *   - Q5B is INDEPENDENT of Q1B/Q2B (different phase, no shared variables)
+ *   - Q5B is COEXISTENT with Q4B (both want q4=A)
+ *   - Worst case (9Q): Q1B+Q4B+Q5B or Q2B+Q4B+Q5B
  */
 interface PathConfig {
   name: string;
   hasQ1B: boolean;  // Phase 31, BR-01 — fires when q1=B AND q2=B
   hasQ2B: boolean;
   hasQ4B: boolean;
-  questionCount: number; // 6, 7, or 8
+  hasQ5B: boolean;  // Phase 32, BR-02 — fires when q4=A AND q5=A
+  questionCount: number; // 6, 7, 8, or 9
 }
 
-// NOTE: Q1B and Q2B are mutually exclusive (q1 can't be both A and B), so the
-// permutation matrix is 6 entries, not 8. There is no "Q1B+Q2B" or
-// "Q1B+Q2B+Q4B" path.
+// NOTE: Q1B and Q2B are mutually exclusive (q1 can't be both A and B), so paths
+// that combine Q1B+Q2B do not exist. Q5B is independent of Q1B/Q2B (different phase)
+// and COEXISTENT with Q4B (both want q4=A). The matrix has 12 entries (6 existing × 2 for hasQ5B).
 const ALL_PATHS: PathConfig[] = [
-  { name: 'No branches (6Q)',     hasQ1B: false, hasQ2B: false, hasQ4B: false, questionCount: 6 },
-  { name: 'Q2B only (7Q)',        hasQ1B: false, hasQ2B: true,  hasQ4B: false, questionCount: 7 },
-  { name: 'Q1B only (7Q)',        hasQ1B: true,  hasQ2B: false, hasQ4B: false, questionCount: 7 },
-  { name: 'Q4B only (7Q)',        hasQ1B: false, hasQ2B: false, hasQ4B: true,  questionCount: 7 },
-  { name: 'Q2B + Q4B (8Q)',       hasQ1B: false, hasQ2B: true,  hasQ4B: true,  questionCount: 8 },
-  { name: 'Q1B + Q4B (8Q)',       hasQ1B: true,  hasQ2B: false, hasQ4B: true,  questionCount: 8 },
+  // No INFERNO branch, no Q4B
+  { name: 'No branches (6Q)',          hasQ1B: false, hasQ2B: false, hasQ4B: false, hasQ5B: false, questionCount: 6 },
+  { name: 'Q5B only (7Q)',             hasQ1B: false, hasQ2B: false, hasQ4B: false, hasQ5B: true,  questionCount: 7 },
+  // Q2B INFERNO branch
+  { name: 'Q2B only (7Q)',             hasQ1B: false, hasQ2B: true,  hasQ4B: false, hasQ5B: false, questionCount: 7 },
+  { name: 'Q2B + Q5B (8Q)',            hasQ1B: false, hasQ2B: true,  hasQ4B: false, hasQ5B: true,  questionCount: 8 },
+  // Q1B INFERNO branch
+  { name: 'Q1B only (7Q)',             hasQ1B: true,  hasQ2B: false, hasQ4B: false, hasQ5B: false, questionCount: 7 },
+  { name: 'Q1B + Q5B (8Q)',            hasQ1B: true,  hasQ2B: false, hasQ4B: false, hasQ5B: true,  questionCount: 8 },
+  // Q4B PURGATORIO branch (no INFERNO branch)
+  { name: 'Q4B only (7Q)',             hasQ1B: false, hasQ2B: false, hasQ4B: true,  hasQ5B: false, questionCount: 7 },
+  { name: 'Q4B + Q5B (8Q)',            hasQ1B: false, hasQ2B: false, hasQ4B: true,  hasQ5B: true,  questionCount: 8 },
+  // Q2B + Q4B combos
+  { name: 'Q2B + Q4B (8Q)',            hasQ1B: false, hasQ2B: true,  hasQ4B: true,  hasQ5B: false, questionCount: 8 },
+  { name: 'Q2B + Q4B + Q5B (9Q)',      hasQ1B: false, hasQ2B: true,  hasQ4B: true,  hasQ5B: true,  questionCount: 9 },
+  // Q1B + Q4B combos
+  { name: 'Q1B + Q4B (8Q)',            hasQ1B: true,  hasQ2B: false, hasQ4B: true,  hasQ5B: false, questionCount: 8 },
+  { name: 'Q1B + Q4B + Q5B (9Q)',      hasQ1B: true,  hasQ2B: false, hasQ4B: true,  hasQ5B: true,  questionCount: 9 },
 ];
 
 function calculatePath(config: PathConfig): Array<{ name: string; segments: SpeechSegment[] }> {
@@ -191,12 +221,22 @@ function calculatePath(config: PathConfig): Array<{ name: string; segments: Spee
     sections.push({ name: `PURGATORIO_Q4B_RESPOSTA_${q4b.choice}`, segments: q4b.segments });
   }
 
-  // PARAISO (always the same)
+  // PARAISO (Q5B is conditional)
   sections.push({ name: 'PARAISO_INTRO', segments: SCRIPT.PARAISO_INTRO });
   sections.push({ name: 'PARAISO_Q5_SETUP', segments: SCRIPT.PARAISO_Q5_SETUP });
   sections.push({ name: 'PARAISO_Q5_PERGUNTA', segments: SCRIPT.PARAISO_Q5_PERGUNTA });
   const q5 = pickLongerResposta(SCRIPT.PARAISO_Q5_RESPOSTA_A, SCRIPT.PARAISO_Q5_RESPOSTA_B);
   sections.push({ name: `PARAISO_Q5_RESPOSTA_${q5.choice}`, segments: q5.segments });
+
+  // Conditional Q5B branch (Phase 32, BR-02)
+  // Independent of Q1B/Q2B; coexistent with Q4B — fires when q4=A AND q5=A
+  // Sibling rejoin within PARAISO (no cross-phase target)
+  if (config.hasQ5B) {
+    sections.push({ name: 'PARAISO_Q5B_SETUP', segments: SCRIPT.PARAISO_Q5B_SETUP });
+    sections.push({ name: 'PARAISO_Q5B_PERGUNTA', segments: SCRIPT.PARAISO_Q5B_PERGUNTA });
+    const q5b = pickLongerResposta(SCRIPT.PARAISO_Q5B_RESPOSTA_A, SCRIPT.PARAISO_Q5B_RESPOSTA_B);
+    sections.push({ name: `PARAISO_Q5B_RESPOSTA_${q5b.choice}`, segments: q5b.segments });
+  }
 
   sections.push({ name: 'PARAISO_Q6_SETUP', segments: SCRIPT.PARAISO_Q6_SETUP });
   sections.push({ name: 'PARAISO_Q6_PERGUNTA', segments: SCRIPT.PARAISO_Q6_PERGUNTA });
