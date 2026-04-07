@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v6.0
 milestone_name: Deep Branching
-status: defining_requirements
-stopped_at: Milestone v6.0 started — defining requirements
+status: roadmap_ready
+stopped_at: Roadmap created — ready to plan Phase 31
 last_updated: "2026-04-06T00:00:00.000Z"
 last_activity: 2026-04-06
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -22,16 +22,16 @@ progress:
 
 **Current Milestone:** v6.0 Deep Branching
 
-**Current Focus:** Defining requirements (Phase 31 starts after roadmap)
+**Current Focus:** Roadmap created — 5 phases defined (Phases 31-35), ready to plan Phase 31
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: Not started (roadmap complete)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-04-06 — Milestone v6.0 Deep Branching started
+Status: Roadmap ready
+Last activity: 2026-04-06 — Roadmap created for v6.0 Deep Branching
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [░░░░░░░░░░] 0% (0/5 phases)
 
 ## Performance Metrics
 
@@ -93,10 +93,11 @@ Progress: [░░░░░░░░░░] 0%
 
 **Milestone v6.0 Deep Branching (Active):**
 
-- Phases: 5 (Phases 31-35) — Q1B, Q5B, Q6B+ESPELHO_SILENCIOSO, arquetipos, mitigation+UAT
-- Plans: TBD (defined by roadmapper)
-- Requirements: ~11 (BR-01..03, AR-01..04, POL-01..03, UAT-01)
+- Phases: 5 (Phases 31-35) — Q1B, Q5B, Q6B+ESPELHO_SILENCIOSO, archetypes, mitigation+UAT
+- Plans: TBD (roadmap complete, phase planning starts next)
+- Requirements: 10 (BR-01, BR-02, BR-03, AR-01, AR-02, AR-03, POL-01, POL-02, POL-03, UAT-01)
 - Goal: 3 novas branches condicionais + arquétipo ESPELHO_SILENCIOSO + 2 arquétipos detectáveis
+- Coverage: 10/10 requirements mapped (100%)
 
 ## Accumulated Context
 
@@ -108,6 +109,7 @@ Recent decisions affecting current work:
 - [v6.0]: ESPELHO_SILENCIOSO devolve forma, não conteúdo — quando visitante dissolve a própria pergunta + pede leitura
 - [v6.0]: Aceitar overflow temporal (~7:20 max-path) para 1-3% dos visitantes — preferível a cortar SETUPs base
 - [v6.0]: Phase numbering continues from 31 (não reset)
+- [v6.0]: Implementation order: Q1B → Q5B → Q6B → archetypes → mitigation/UAT (~9-12h total)
 - [v5.0]: Audio-reactive background — equalizer responds to TTS playback intensity, phase-specific themes
 - [v4.0]: Branching paths over linear flow — game-like engagement, choices feel consequential
 - [v4.0]: 5-7 min target (down from 10.5) — Bienal foot traffic demands shorter sessions
@@ -124,5 +126,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-04-06T00:00:00.000Z
-Stopped at: Milestone v6.0 Deep Branching started — defining requirements
-Resume: `/gsd:plan-phase 31`
+Stopped at: Roadmap created for v6.0 Deep Branching — 5 phases defined (Phases 31-35)
+Resume: `/gsd:plan-phase 31` (start with Q1B branch implementation)

@@ -11,7 +11,8 @@
 - v3.1 Script Mastery (shipped 2026-03-28)
 - v3.2 Integration & Audio (shipped 2026-03-28)
 - v4.0 Game Flow (shipped 2026-03-29)
-- v5.0 Tester UI Polish (active)
+- v5.0 Tester UI Polish (informally shipped 2026-04-06 — Phase 30 R3F visuals + ad-hoc work; Phases 31-33 dropped/superseded by v6.0)
+- v6.0 Deep Branching (active)
 
 ## Phases
 
@@ -100,12 +101,27 @@ See: `.planning/milestones/v3.1-ROADMAP.md`
 
 </details>
 
-### v5.0 Tester UI Polish (Active)
+<details>
+<summary>v5.0 Tester UI Polish (Phase 30) - INFORMALLY SHIPPED 2026-04-06</summary>
 
-- [ ] **Phase 30: Audio-Reactive Visual System** - Canvas equalizer responds to TTS playback, phase-specific visuals
-- [ ] **Phase 31: Microphone State Indicators** - Listening state redesign with real audio feedback
-- [ ] **Phase 32: Debug Overlay Redesign** - Elegant tester status display with phase tracking
-- [ ] **Phase 33: UX Polish & Consistency** - Buttons, typography, animations, theme consistency
+- [x] **Phase 30: Audio-Reactive Visual System** - R3F custom GLSL shaders, simplex noise displacement, fresnel glow (shipped via direct commits)
+- ~~Phase 31: Microphone State Indicators~~ - Dropped/superseded by v6.0 (numbering reused)
+- ~~Phase 32: Debug Overlay Redesign~~ - Dropped/superseded by v6.0 (numbering reused)
+- ~~Phase 33: UX Polish & Consistency~~ - Dropped/superseded by v6.0 (numbering reused)
+
+**Note:** Subsequent ad-hoc work (ambient audio, voice pipeline 9 fixes, intro delay, roteiro page) shipped without GSD planning. Milestone never formally closed via `/gsd:complete-milestone`.
+
+</details>
+
+### v6.0 Deep Branching (Active)
+
+- [ ] **Phase 31: Q1B Branch (Inferno contra-fobico)** - Add "A Porta no Fundo" branch triggered by q1=B && q2=B
+- [ ] **Phase 32: Q5B Branch (Paraiso gap closure)** - Add "O Que Já Não Cabe" branch triggered by q4=A && q5=A
+- [ ] **Phase 33: Q6B + ESPELHO_SILENCIOSO** - Add "O Espelho Extra" branch + new DEVOLUCAO_ESPELHO_SILENCIOSO archetype
+- [ ] **Phase 34: Detectable Archetypes** - Add CONTRA_FOBICO and PORTADOR archetypes leveraging new branch data
+- [ ] **Phase 35: Timing Mitigation + Browser UAT** - Validate 96 path permutations + browser UAT in ≥3 paths
+
+See: `.planning/milestones/v6.0-ROADMAP.md` for full phase details, success criteria, and requirements traceability.
 
 ---
 
@@ -249,44 +265,44 @@ Plans:
   5. Canvas animation performs smoothly at 60fps on target event hardware
 **UI hint**: yes
 
-### Phase 31: Microphone State Indicators
-**Goal**: Clear, intuitive visual feedback when Oracle is listening to visitor input
-**Depends on**: Phase 30 (visual system foundation)
-**Requirements**: MIC-01, MIC-02, MIC-03
-**Success Criteria** (what must be TRUE):
-  1. Visitor sees intuitive visual cue when microphone is active (not technical-looking pulsing bars)
-  2. Mic indicator intensity responds to visitor's actual audio input level in real-time
-  3. Visual transition between "Oracle speaking" and "your turn to speak" states is clear and unmistakable
-  4. Tester can distinguish listening state from playback state at a glance
-**Plans**: TBD
-**UI hint**: yes
+### v6.0 Deep Branching — Phase Summaries
 
-### Phase 32: Debug Overlay Redesign
-**Goal**: Transform debug panel from dev tool to elegant tester status display
-**Depends on**: Phase 30 (visual foundation), Phase 31 (state indicators)
-**Requirements**: DBG-01, DBG-02, DBG-03
-**Success Criteria** (what must be TRUE):
-  1. Tester sees phase name, question number, and choice trail in visually polished format (not raw JSON)
-  2. Tester can toggle debug overlay via keyboard shortcut AND visible toggle button
-  3. Debug overlay displays current narrative phase with visual clarity (Inferno/Purgatorio/Paraiso)
-  4. Overlay design matches dark-theme aesthetic (not jarring dev tool appearance)
-**Plans**: TBD
-**UI hint**: yes
+**Full details:** See `.planning/milestones/v6.0-ROADMAP.md` for success criteria and requirements traceability per phase. Source of truth for branch design: `memory/next-milestone-v5-deep-branching.md`.
 
-### Phase 33: UX Polish & Consistency
-**Goal**: All interactive elements polished with consistent design language and smooth animations
-**Depends on**: Phase 32 (all major UI components established)
-**Requirements**: UX-01, UX-02, UX-03, UX-04, POL-01, POL-02, POL-03
-**Success Criteria** (what must be TRUE):
-  1. Start button has visual presence and appeal (not default browser button)
-  2. Skip/Next button is clearly visible and accessible during tester sessions
-  3. Choice buttons (A/B) have polished hover and press states matching dark theme
-  4. Permission screen uses consistent design language with rest of experience
-  5. Typography hierarchy is consistent (Cormorant for titles, Georgia/system for body text)
-  6. All UI elements enter and exit with smooth animations (no abrupt appear/disappear)
-  7. All components use consistent opacity, blur, and shadow values across entire experience
+### Phase 31: Q1B Branch (Inferno contra-fobico)
+**Goal**: Add "A Porta no Fundo" branch — triggered when q1=B && q2=B (destemido profile), tests courage against emptiness.
+**Depends on**: v4.0 Phase 29 baseline
+**Requirements**: BR-01, POL-02
 **Plans**: TBD
-**UI hint**: yes
+**UI hint**: no
+
+### Phase 32: Q5B Branch (Paraiso gap closure)
+**Goal**: Add "O Que Já Não Cabe" branch — triggered when q4=A && q5=A, closes Paraíso branching gap.
+**Depends on**: Phase 31
+**Requirements**: BR-02
+**Plans**: TBD
+**UI hint**: no
+
+### Phase 33: Q6B + ESPELHO_SILENCIOSO
+**Goal**: Add "O Espelho Extra" branch (q5=B && q6=A) plus new DEVOLUCAO_ESPELHO_SILENCIOSO archetype that returns open structure instead of closed diagnosis. Highest-priority guard in DEVOLUCAO state.
+**Depends on**: Phase 32
+**Requirements**: BR-03, AR-01
+**Plans**: TBD
+**UI hint**: no
+
+### Phase 34: Detectable Archetypes (CONTRA_FOBICO + PORTADOR)
+**Goal**: Add 2 new detectable archetypes leveraging new branch choice data. Guard priority: ESPELHO_SILENCIOSO → CONTRA_FOBICO → PORTADOR → 8 existing.
+**Depends on**: Phase 33
+**Requirements**: AR-02, AR-03
+**Plans**: TBD
+**UI hint**: no
+
+### Phase 35: Timing Mitigation + Browser UAT
+**Goal**: Validate timing across 96 path permutations, mitigate overflow if needed, browser UAT in ≥3 representative paths, update roteiro.html and CLAUDE.md.
+**Depends on**: Phase 34
+**Requirements**: POL-01, POL-03, UAT-01
+**Plans**: TBD
+**UI hint**: no
 
 ---
 
@@ -302,10 +318,12 @@ Plans:
 | 27. State Machine | v4.0 | 2/2 | Complete    | 2026-03-29 |
 | 28. Audio Regen | v4.0 | 1/1 | Complete    | 2026-03-29 |
 | 29. Integration | v4.0 | 2/2 | Complete    | 2026-03-29 |
-| 30. Visual System | v5.0 | 1/2 | In Progress|  |
-| 31. Mic Indicators | v5.0 | 0/TBD | Not started | - |
-| 32. Debug Overlay | v5.0 | 0/TBD | Not started | - |
-| 33. UX Polish | v5.0 | 0/TBD | Not started | - |
+| 30. Visual System | v5.0 | 1/2 | Informally Shipped | 2026-04-06 |
+| 31. Q1B Branch | v6.0 | 0/TBD | Not started | - |
+| 32. Q5B Branch | v6.0 | 0/TBD | Not started | - |
+| 33. Q6B + ESPELHO_SILENCIOSO | v6.0 | 0/TBD | Not started | - |
+| 34. Detectable Archetypes | v6.0 | 0/TBD | Not started | - |
+| 35. Timing + UAT | v6.0 | 0/TBD | Not started | - |
 
 ## Dependencies
 
@@ -313,10 +331,13 @@ Plans:
 v4.0 Game Flow (shipped):
   Phase 29: Integration (DONE)
                 |
-v5.0 Tester UI Polish (active):
-  Phase 30: Visual System -> Phase 31: Mic Indicators -> Phase 32: Debug Overlay -> Phase 33: UX Polish
+v5.0 Tester UI Polish (informally shipped):
+  Phase 30: Visual System (R3F shaders, ambient audio shipped via direct commits)
+                |
+v6.0 Deep Branching (active):
+  Phase 31: Q1B Branch -> Phase 32: Q5B Branch -> Phase 33: Q6B + ESPELHO_SILENCIOSO -> Phase 34: Detectable Archetypes -> Phase 35: Timing Mitigation + UAT
 ```
 
 ---
 
-*Last updated: 2026-03-29 -- Phase 30 plans created (2 plans, 2 waves)*
+*Last updated: 2026-04-06 -- v6.0 Deep Branching milestone started, 5 phases (31-35)*
