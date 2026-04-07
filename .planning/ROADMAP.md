@@ -123,9 +123,44 @@ See: `.planning/milestones/v3.1-ROADMAP.md`
 
 See: `.planning/milestones/v6.0-ROADMAP.md` for full phase details, success criteria, and requirements traceability.
 
+#### Phase 31: Q1B Branch (Inferno contra-fobico)
+**Goal**: Add "A Porta no Fundo" branch — triggered when q1=B && q2=B (destemido profile), tests courage against emptiness.
+**Depends on**: v4.0 Phase 29 baseline
+**Requirements**: BR-01, POL-02
+**Plans**: TBD
+**UI hint**: no
+
+#### Phase 32: Q5B Branch (Paraiso gap closure)
+**Goal**: Add "O Que Já Não Cabe" branch — triggered when q4=A && q5=A, closes Paraíso branching gap.
+**Depends on**: Phase 31
+**Requirements**: BR-02
+**Plans**: TBD
+**UI hint**: no
+
+#### Phase 33: Q6B + ESPELHO_SILENCIOSO
+**Goal**: Add "O Espelho Extra" branch (q5=B && q6=A) plus new DEVOLUCAO_ESPELHO_SILENCIOSO archetype that returns open structure instead of closed diagnosis. Highest-priority guard in DEVOLUCAO state.
+**Depends on**: Phase 32
+**Requirements**: BR-03, AR-01
+**Plans**: TBD
+**UI hint**: no
+
+#### Phase 34: Detectable Archetypes (CONTRA_FOBICO + PORTADOR)
+**Goal**: Add 2 new detectable archetypes leveraging new branch choice data. Guard priority: ESPELHO_SILENCIOSO → CONTRA_FOBICO → PORTADOR → 8 existing.
+**Depends on**: Phase 33
+**Requirements**: AR-02, AR-03
+**Plans**: TBD
+**UI hint**: no
+
+#### Phase 35: Timing Mitigation + Browser UAT
+**Goal**: Validate timing across 96 path permutations, mitigate overflow if needed, browser UAT in ≥3 representative paths, update roteiro.html and CLAUDE.md.
+**Depends on**: Phase 34
+**Requirements**: POL-01, POL-03, UAT-01
+**Plans**: TBD
+**UI hint**: no
+
 ---
 
-## Phase Details
+## Historical Phase Details
 
 ### Phase 18: Components & Services (v3.2) - COMPLETE
 **Goal**: All UI components and services updated for 6-choice flow
@@ -264,47 +299,6 @@ Plans:
   4. Idle state displays subtle ambient animation instead of static black screen
   5. Canvas animation performs smoothly at 60fps on target event hardware
 **UI hint**: yes
-
-### v6.0 Deep Branching — Phase Summaries
-
-**Full details:** See `.planning/milestones/v6.0-ROADMAP.md` for success criteria and requirements traceability per phase. Source of truth for branch design: `memory/next-milestone-v5-deep-branching.md`.
-
-### Phase 31: Q1B Branch (Inferno contra-fobico)
-**Goal**: Add "A Porta no Fundo" branch — triggered when q1=B && q2=B (destemido profile), tests courage against emptiness.
-**Depends on**: v4.0 Phase 29 baseline
-**Requirements**: BR-01, POL-02
-**Plans**: TBD
-**UI hint**: no
-
-### Phase 32: Q5B Branch (Paraiso gap closure)
-**Goal**: Add "O Que Já Não Cabe" branch — triggered when q4=A && q5=A, closes Paraíso branching gap.
-**Depends on**: Phase 31
-**Requirements**: BR-02
-**Plans**: TBD
-**UI hint**: no
-
-### Phase 33: Q6B + ESPELHO_SILENCIOSO
-**Goal**: Add "O Espelho Extra" branch (q5=B && q6=A) plus new DEVOLUCAO_ESPELHO_SILENCIOSO archetype that returns open structure instead of closed diagnosis. Highest-priority guard in DEVOLUCAO state.
-**Depends on**: Phase 32
-**Requirements**: BR-03, AR-01
-**Plans**: TBD
-**UI hint**: no
-
-### Phase 34: Detectable Archetypes (CONTRA_FOBICO + PORTADOR)
-**Goal**: Add 2 new detectable archetypes leveraging new branch choice data. Guard priority: ESPELHO_SILENCIOSO → CONTRA_FOBICO → PORTADOR → 8 existing.
-**Depends on**: Phase 33
-**Requirements**: AR-02, AR-03
-**Plans**: TBD
-**UI hint**: no
-
-### Phase 35: Timing Mitigation + Browser UAT
-**Goal**: Validate timing across 96 path permutations, mitigate overflow if needed, browser UAT in ≥3 representative paths, update roteiro.html and CLAUDE.md.
-**Depends on**: Phase 34
-**Requirements**: POL-01, POL-03, UAT-01
-**Plans**: TBD
-**UI hint**: no
-
----
 
 ## Progress
 
