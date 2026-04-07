@@ -120,15 +120,29 @@ export interface ScriptDataV4 extends ScriptDataV3 {
   PARAISO_Q5B_RESPOSTA_A: SpeechSegment[];
   PARAISO_Q5B_RESPOSTA_B: SpeechSegment[];
 
+  // Branch Q6B (Phase 33, BR-03) — conditional after PARAISO_Q6_RESPOSTA_A
+  // Triggers when: Q5 chose B (Dissolver) AND Q6 chose A (Ouvir o que eu vi) — rarissima ESPELHO_SILENCIOSO precursor
+  // Theme: Visitor dissolved the question but opened to be seen — offered Resposta (closed) vs Outra Pergunta (open)
+  PARAISO_Q6B_SETUP: SpeechSegment[];
+  PARAISO_Q6B_PERGUNTA: SpeechSegment[];
+  PARAISO_Q6B_RESPOSTA_A: SpeechSegment[];
+  PARAISO_Q6B_RESPOSTA_B: SpeechSegment[];
+
+  // Archetype DEVOLUCAO_ESPELHO_SILENCIOSO (Phase 33, AR-01) — triggers when q6b='B' (open form)
+  // The ONLY archetype that returns form instead of content — 6 segments, ~24s
+  DEVOLUCAO_ESPELHO_SILENCIOSO: SpeechSegment[];
+
   // Fallbacks and timeouts for branch questions
   FALLBACK_Q2B: SpeechSegment[];
   FALLBACK_Q4B: SpeechSegment[];
   FALLBACK_Q1B: SpeechSegment[];
   FALLBACK_Q5B: SpeechSegment[];
+  FALLBACK_Q6B: SpeechSegment[];
   TIMEOUT_Q2B: SpeechSegment[];
   TIMEOUT_Q4B: SpeechSegment[];
   TIMEOUT_Q1B: SpeechSegment[];
   TIMEOUT_Q5B: SpeechSegment[];
+  TIMEOUT_Q6B: SpeechSegment[];
 }
 
 export const SCRIPT: ScriptDataV4 = {
@@ -454,6 +468,36 @@ export const SCRIPT: ScriptDataV4 = {
   ],
 
   // ═══════════════════════════════════════════════════════════════
+  // Q6B — O ESPELHO EXTRA (Branch — Pre-DEVOLUCAO, Rarissima)
+  // Conditional: only if Q5=B (dissolveu pergunta) AND Q6=A (pediu leitura)
+  // O visitante dissolveu uma pergunta e depois abriu pra ser visto.
+  // O Oráculo oferece: resposta fechada (normal DEVOLUCAO) ou outra
+  // pergunta aberta (DEVOLUCAO_ESPELHO_SILENCIOSO). B = open form.
+  // SEMANTIC ANCHOR: A=Resposta (closed), B=Outra Pergunta (open) → ESPELHO
+  // ═══════════════════════════════════════════════════════════════
+  PARAISO_Q6B_SETUP: [
+    { text: "Antes de eu começar.", pauseAfter: 1200, inflection: ['serious'] },
+    { text: "Você lembra do que você fez lá atrás? Você deixou uma pergunta dissolver. Disse: nem tudo precisa ser carregado.", pauseAfter: 1300, inflection: ['warm'] },
+    { text: "Eu vou te respeitar. Eu posso te dar uma resposta — fechada, definitiva — ou eu posso te dar outra pergunta. Aberta. Como a que você acabou de soltar.", pauseAfter: 1400 },
+  ],
+
+  PARAISO_Q6B_PERGUNTA: [
+    { text: "Resposta — ou outra pergunta?", pauseAfter: 1000 },
+  ],
+
+  // Q6B RESPOSTA A — Resposta (closed reading → routes to NORMAL DEVOLUCAO, one of 8 archetypes)
+  PARAISO_Q6B_RESPOSTA_A: [
+    { text: "Resposta.", pauseAfter: 1000 },
+    { text: "Eu vou te dar o que eu vi. Vai ser uma forma — você decide o que faz com ela.", pauseAfter: 1100, inflection: ['warm'] },
+  ],
+
+  // Q6B RESPOSTA B — Outra pergunta (open form → routes to DEVOLUCAO_ESPELHO_SILENCIOSO)
+  PARAISO_Q6B_RESPOSTA_B: [
+    { text: "Outra pergunta.", pauseAfter: 1000 },
+    { text: "Você continua na coragem. Você vai sair daqui com mais espaço, não com mais palavra.", pauseAfter: 1300, inflection: ['gentle'] },
+  ],
+
+  // ═══════════════════════════════════════════════════════════════
   // DEVOLUCOES — 8 arquetipos baseados em padrao
   // Cada devolucao le a FORMA das 6 escolhas, nao cada uma
   // individualmente. Espelho, nao julgamento.
@@ -523,6 +567,23 @@ export const SCRIPT: ScriptDataV4 = {
     { text: "O equilíbrio perfeito pode ser sabedoria — ou a última forma de nunca se comprometer de verdade.", pauseAfter: 1000 },
     { text: "Balança que não pende nunca pesa nada. E o que não pesa também não transforma.", pauseAfter: 900 },
     { text: "Só você sabe se o centro é uma conquista ou um refúgio.", pauseAfter: 1000, inflection: ['warm'] },
+  ],
+
+  // ═══════════════════════════════════════════════════════════════
+  // DEVOLUCAO_ESPELHO_SILENCIOSO (Phase 33, AR-01)
+  // The ONLY archetype that returns form instead of content.
+  // Triggers when q6b='B' — visitor explicitly chose open form in Q6B.
+  // 6 segments, ~24s target. No declarative diagnosis. No framework names.
+  // Structure: acceptance → reframing → withholding → silence anchor →
+  //            open question → meta-frame. "Silêncio que tem forma."
+  // ═══════════════════════════════════════════════════════════════
+  DEVOLUCAO_ESPELHO_SILENCIOSO: [
+    { text: "Tudo bem.", pauseAfter: 1500, inflection: ['warm'] },
+    { text: "Você não vai sair daqui com um nome. Você vai sair com um silêncio que tem forma.", pauseAfter: 1500 },
+    { text: "Eu não vou te dizer o que eu vi. Vou te dar o lugar onde isso poderia ser dito.", pauseAfter: 1500, inflection: ['thoughtful'] },
+    { text: "Aqui:", pauseAfter: 2200 },
+    { text: "O que você nunca pediu — mas que mesmo assim te falta?", pauseAfter: 1800, inflection: ['gentle'] },
+    { text: "Esse é o seu espelho. Não tem moldura. Não tem reflexo. Só pergunta.", pauseAfter: 1400, inflection: ['warm'] },
   ],
 
   // ═══════════════════════════════════════════════════════════════
@@ -598,6 +659,10 @@ export const SCRIPT: ScriptDataV4 = {
     { text: "Não precisa de palavra exata. Fundir, ou separar?", pauseAfter: 800 },
   ],
 
+  FALLBACK_Q6B: [
+    { text: "Não ouvi. Resposta — ou pergunta?", pauseAfter: 800 },
+  ],
+
   // Branch timeouts
   TIMEOUT_Q2B: [
     { text: "Suas mãos ficaram no bolso. Quem não toca, não sabe. E quem não sabe, inventa — e o que se inventa costuma ser pior.", pauseAfter: 900 },
@@ -610,5 +675,9 @@ export const SCRIPT: ScriptDataV4 = {
   ],
   TIMEOUT_Q5B: [
     { text: "O peso decide por você. Continua.", pauseAfter: 900, inflection: ['warm'] },
+  ],
+
+  TIMEOUT_Q6B: [
+    { text: "Você ficou quieto. Eu vou te dar a resposta — é o que a quietude geralmente pede.", pauseAfter: 1000 },
   ],
 };
