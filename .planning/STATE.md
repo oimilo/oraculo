@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v6.0
 milestone_name: Deep Branching
-status: executing
-stopped_at: Completed 32-02-PLAN.md (Q5B machine + UI wiring) - Phase 32 Wave 2 complete
-last_updated: "2026-04-07T12:28:37.601Z"
+status: verifying
+stopped_at: Completed 32-03-PLAN.md (Q5B audio + timing + roteiro) - Phase 32 Wave 3 complete, ready for verification
+last_updated: "2026-04-07T17:00:57.425Z"
 last_activity: 2026-04-07
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ progress:
 
 Phase: 32 (q5b-branch-paraiso-gap-closure) — EXECUTING
 Plan: 3 of 3
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-04-07
 
 Progress: [░░░░░░░░░░] 0% (0/5 phases)
@@ -118,6 +118,7 @@ Recent decisions affecting current work:
 - [Phase 31]: Phase 31 BR-01 (Q1B contra-fobico) shipped end-to-end: 6 MP3s, 6-path timing matrix (max 6:14 min), roteiro.html in sync. Phase 35 browser UAT deferred.
 - [Phase 32]: Q5B data primitives added (script + NLU) — patternMatching.ts untouched per POL-02
 - [Phase 32]: Q5B wired with sibling rejoin pattern (plain Q6_SETUP target, no #oracle. prefix)
+- [Phase 32]: Q5B BR-02 shipped end-to-end: 6 MP3s generated, 12-path timing matrix validated (max 6:53.7 min), roteiro.html client-facing docs updated
 
 ### Active TODOs
 
@@ -130,6 +131,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-07T12:28:37.598Z
-Stopped at: Completed 32-02-PLAN.md (Q5B machine + UI wiring) - Phase 32 Wave 2 complete
+Last session: 2026-04-07T17:00:57.422Z
+Stopped at: Completed 32-03-PLAN.md (Q5B audio + timing + roteiro) - Phase 32 Wave 3 complete, ready for verification
 Resume: `/gsd:execute-plan 31-03` (Q1B audio generation + timing validation + roteiro docs)
