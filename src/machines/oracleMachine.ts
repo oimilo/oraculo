@@ -672,6 +672,11 @@ export const oracleMachine = setup({
       id: 'DEVOLUCAO',
       entry: assign({ currentPhase: 'DEVOLUCAO' }),
       always: [
+        // Phase 33 — AR-01 — HIGHEST PRIORITY (NEW, index [0])
+        // ESPELHO_SILENCIOSO must be checked FIRST. Triggered by isEspelhoSilencioso (q6b='B').
+        // First-match-wins: this entry MUST stay at index [0] or routing breaks.
+        { target: 'DEVOLUCAO_ESPELHO_SILENCIOSO', guard: 'isEspelhoSilencioso' },
+        // Existing 8 entries — PRESERVED IN REAL ORDER (copied verbatim from lines 675-682):
         { target: 'DEVOLUCAO_MIRROR', guard: 'isMirror' },
         { target: 'DEVOLUCAO_DEPTH_SEEKER', guard: 'isDepthSeeker' },
         { target: 'DEVOLUCAO_SURFACE_KEEPER', guard: 'isSurfaceKeeper' },
@@ -679,8 +684,28 @@ export const oracleMachine = setup({
         { target: 'DEVOLUCAO_PIVOT_LATE', guard: 'isPivotLate' },
         { target: 'DEVOLUCAO_SEEKER', guard: 'isSeeker' },
         { target: 'DEVOLUCAO_GUARDIAN', guard: 'isGuardian' },
-        { target: 'DEVOLUCAO_CONTRADICTED' },
+        { target: 'DEVOLUCAO_CONTRADICTED' },        // ← UNGUARDED FALLTHROUGH (preserved — NO guard field)
       ],
+    },
+
+    // Phase 33 — AR-01 — DEVOLUCAO_ESPELHO_SILENCIOSO archetype state
+    // Sibling of all other DEVOLUCAO_* states (top-level, NOT inside DEVOLUCAO).
+    // Triggered by isEspelhoSilencioso at DEVOLUCAO.always[0].
+    DEVOLUCAO_ESPELHO_SILENCIOSO: {
+      on: { NARRATIVA_DONE: 'ENCERRAMENTO' },
+      after: {
+        // Standard 5-min idle reset (matches all other DEVOLUCAO_* states for Bienal).
+        300000: {
+          target: '#oracle.IDLE',
+          actions: assign({
+            sessionId: '',
+            choices: [],
+            choiceMap: {},
+            fallbackCount: 0,
+            currentPhase: 'APRESENTACAO',
+          }),
+        },
+      },
     },
 
     DEVOLUCAO_SEEKER: {
