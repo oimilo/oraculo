@@ -358,7 +358,7 @@
     <li><a href="#visao">Vis&atilde;o geral</a></li>
     <li><a href="#fluxo">Fluxograma</a></li>
     <li><a href="#apresentacao">Apresenta&ccedil;&atilde;o</a></li>
-    <li><a href="#inferno">Inferno (Q1, Q2, Q2B)</a></li>
+    <li><a href="#inferno">Inferno (Q1, Q2, Q1B, Q2B)</a></li>
     <li><a href="#purgatorio">Purgat&oacute;rio (Q3, Q4, Q4B)</a></li>
     <li><a href="#paraiso">Para&iacute;so (Q5, Q6)</a></li>
     <li><a href="#devolucao">Devolu&ccedil;&otilde;es (8 arqu&eacute;tipos)</a></li>
@@ -372,8 +372,8 @@
     <li><strong>Formato:</strong> Experi&ecirc;ncia solo com fones de ouvido, 5&ndash;7 minutos</li>
     <li><strong>Intera&ccedil;&atilde;o:</strong> O visitante responde em voz alta. O Or&aacute;culo ouve e reage.</li>
     <li><strong>Estrutura:</strong> Apresenta&ccedil;&atilde;o &rarr; Inferno &rarr; Purgat&oacute;rio &rarr; Para&iacute;so &rarr; Devolu&ccedil;&atilde;o &rarr; Encerramento</li>
-    <li><strong>Escolhas:</strong> 6 perguntas bin&aacute;rias (A ou B) + 2 perguntas condicionais (Q2B, Q4B)</li>
-    <li><strong>Ramifica&ccedil;&otilde;es:</strong> Q2B aparece se Q1=A e Q2=A. Q4B aparece se Q3=A e Q4=A.</li>
+    <li><strong>Escolhas:</strong> 6 perguntas bin&aacute;rias (A ou B) + 3 perguntas condicionais (Q1B, Q2B, Q4B)</li>
+    <li><strong>Ramifica&ccedil;&otilde;es:</strong> Q1B aparece se Q1=B e Q2=B (perfil contra-f&oacute;bico). Q2B aparece se Q1=A e Q2=A. Q4B aparece se Q3=A e Q4=A.</li>
     <li><strong>Devolu&ccedil;&atilde;o:</strong> 8 arqu&eacute;tipos poss&iacute;veis, derivados do <em>padr&atilde;o</em> de escolhas (n&atilde;o de cada escolha individual)</li>
     <li><strong>Escala de profundidade:</strong> Light &rarr; Medium &rarr; Deep &rarr; Profound</li>
     <li><strong>Privacidade:</strong> Zero dados armazenados. &Aacute;udio descartado ap&oacute;s classifica&ccedil;&atilde;o (LGPD).</li>
@@ -393,9 +393,11 @@ graph TD
 
     Q2 -->|"A: Recuar<br/>(se Q1=A)"| Q2B{"<strong>Q2B</strong> &mdash; A Segunda Coisa<br/><em>Outra coisa pulsa, mais quente</em><br/><br/>A: Tocar &nbsp;|&nbsp; B: Passar reto"}
     Q2 -->|"A: Recuar<br/>(se Q1=B)"| PURG
-    Q2 -->|"B: Ficar olhando"| PURG
+    Q2 -->|"B: Ficar olhando<br/>(se Q1=A)"| PURG
+    Q2 -->|"B: Ficar olhando<br/>(se Q1=B)"| Q1B{"<strong>Q1B</strong> &mdash; A Porta no Fundo<br/><em>Porta sem ma&ccedil;aneta, fresta de luz</em><br/><br/>A: Atravessar &nbsp;|&nbsp; B: Voltar"}
 
     Q2B --> PURG
+    Q1B --> PURG
 
     PURG["<strong>PURGAT&Oacute;RIO</strong><br/><em>Espera. O ar muda.</em>"]
 
@@ -434,7 +436,7 @@ graph TD
     class PAR paraiso
     class DEV phase
     class Q1,Q2,Q3,Q4,Q5,Q6 question
-    class Q2B,Q4B branch
+    class Q1B,Q2B,Q4B branch
   </div>
   <p style="text-align:center; font-size:0.8rem; color:var(--muted); margin-top:1rem;">
     Caixas tracejadas = perguntas condicionais (s&oacute; aparecem para certos padr&otilde;es de escolha)
@@ -583,6 +585,47 @@ graph TD
         <div class="choice-meaning">Padr&atilde;o de evita&ccedil;&atilde;o confirmado</div>
         <div class="choice-response">
           Voc&ecirc; segue. Recuar uma vez &eacute; instinto. Recuar duas &eacute; decis&atilde;o. E decis&atilde;o repetida vira identidade.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q1B Branch (Phase 31, BR-01) -->
+  <div class="branch-indicator">
+    <strong>&#9670; Ramifica&ccedil;&atilde;o condicional Q1B</strong> &mdash; S&oacute; aparece se o visitante escolheu <strong>Procurar a porta</strong> (Q1=B) <strong>E</strong> <strong>Ficar olhando</strong> (Q2=B). Perfil contra-f&oacute;bico testado num lugar onde a coragem n&atilde;o serve.
+  </div>
+
+  <div class="question">
+    <div class="question-header">
+      <span class="question-badge" style="background:#c9a84c;">Pergunta 1B</span>
+      <span class="question-depth">Profundidade: Medium-Deep &bull; Condicional</span>
+    </div>
+    <div class="question-title">A Porta no Fundo &mdash; Coragem diante do vazio</div>
+
+    <div class="narration" style="padding:0; border:0; margin-bottom:0.8rem;">
+      <div class="narration-label">Setup</div>
+      <div class="narration-text" style="font-size:1.05rem;">
+        Voc&ecirc; n&atilde;o recua. Continua olhando.
+        <br>E a&iacute; &mdash; sem aviso &mdash; uma porta aparece no fundo do corredor. N&atilde;o &eacute; a que voc&ecirc; procurava antes. Essa n&atilde;o tem ma&ccedil;aneta, n&atilde;o tem moldura.
+        <br>Tem s&oacute; uma fresta de luz por baixo.
+      </div>
+    </div>
+
+    <div class="question-text">&ldquo;Voc&ecirc; atravessa essa fresta &mdash; ou volta pra coisa no ch&atilde;o, que ainda pulsa atr&aacute;s de voc&ecirc;?&rdquo;</div>
+
+    <div class="choices">
+      <div class="choice choice-a">
+        <div class="choice-label">&bull; Op&ccedil;&atilde;o A &mdash; Atravessar</div>
+        <div class="choice-meaning">Coragem servindo pra atravessar o vazio</div>
+        <div class="choice-response">
+          Voc&ecirc; vai. Do outro lado, n&atilde;o tem amea&ccedil;a. N&atilde;o tem nada. E descobrir que a coragem tamb&eacute;m serve pra atravessar o vazio &eacute; uma das aprendizagens mais dif&iacute;ceis.
+        </div>
+      </div>
+      <div class="choice choice-b">
+        <div class="choice-label">&bull; Op&ccedil;&atilde;o B &mdash; Voltar</div>
+        <div class="choice-meaning">Medo escolhido como interlocutor</div>
+        <div class="choice-response">
+          Voc&ecirc; volta. Quem &eacute; destemido escolhe seus medos como se escolhe um interlocutor. Voltar pro que pulsa n&atilde;o &eacute; recuo &mdash; &eacute; reconhecimento.
         </div>
       </div>
     </div>
