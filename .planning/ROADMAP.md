@@ -333,7 +333,7 @@ Plans:
 | 30. Visual System | v5.0 | 1/2 | Informally Shipped | 2026-04-06 |
 | 31. Q1B Branch | v6.0 | 3/3 | Complete    | 2026-04-07 |
 | 32. Q5B Branch | v6.0 | 3/3 | Complete    | 2026-04-07 |
-| 33. Q6B + ESPELHO_SILENCIOSO | v6.0 | 3/3 | Complete   | 2026-04-07 |
+| 33. Q6B + ESPELHO_SILENCIOSO | v6.0 | 3/3 | Complete    | 2026-04-07 |
 | 34. Detectable Archetypes | v6.0 | 0/TBD | Not started | - |
 | 35. Timing + UAT | v6.0 | 0/TBD | Not started | - |
 
