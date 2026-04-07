@@ -117,7 +117,7 @@ See: `.planning/milestones/v3.1-ROADMAP.md`
 
 - [x] **Phase 31: Q1B Branch (Inferno contra-fobico)** - Add "A Porta no Fundo" branch triggered by q1=B && q2=B (completed 2026-04-07)
 - [x] **Phase 32: Q5B Branch (Paraiso gap closure)** - Add "O Que Já Não Cabe" branch triggered by q4=A && q5=A (completed 2026-04-07)
-- [ ] **Phase 33: Q6B + ESPELHO_SILENCIOSO** - Add "O Espelho Extra" branch + new DEVOLUCAO_ESPELHO_SILENCIOSO archetype
+- [x] **Phase 33: Q6B + ESPELHO_SILENCIOSO** - Add "O Espelho Extra" branch + new DEVOLUCAO_ESPELHO_SILENCIOSO archetype (completed 2026-04-07)
 - [ ] **Phase 34: Detectable Archetypes** - Add CONTRA_FOBICO and PORTADOR archetypes leveraging new branch data
 - [ ] **Phase 35: Timing Mitigation + Browser UAT** - Validate 96 path permutations + browser UAT in ≥3 paths
 
@@ -153,12 +153,12 @@ Plans:
 **Goal**: Add "O Espelho Extra" branch — triggered when q5=B && q6=A (visitor dissolveu a pergunta MAS pediu leitura) — plus the new DEVOLUCAO_ESPELHO_SILENCIOSO archetype that returns open structure instead of closed diagnosis. Adds 6 Q6B SCRIPT keys + 1 DEVOLUCAO_ESPELHO_SILENCIOSO SCRIPT key (6 segments in 1 MP3), QUESTION_META[11], shouldBranchQ6B guard + isEspelhoSilencioso guard (both in oracleMachine.ts setup.guards, NOT in patternMatching.ts — POL-02 invariant), 6 new Q6B machine states with QUALIFIED `#oracle.DEVOLUCAO` rejoin (different from Phase 32's sibling pattern because DEVOLUCAO lives at machine root), DEVOLUCAO.always[0] insertion (HIGHEST priority — ahead of all 8 existing archetypes), new top-level DEVOLUCAO_ESPELHO_SILENCIOSO state, OracleExperience Q6B_CHOICE + 6 helper extensions (including isPergunta mic warmup fix), 7 MP3s generated via generate-audio-v3.ts auto-discovery, validate-timing.ts expansion from 12 → 20 paths with hasQ6B/hasEspelhoSilencioso flags and pickLongestDevolucao update, and public/roteiro.html updates (Mermaid Q6B branch + ESPELHO archetype + ramificações count 3).
 **Depends on**: Phase 32
 **Requirements**: BR-03, AR-01
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 - [x] 33-01-PLAN.md — Data + Types: 6 Q6B SCRIPT keys + DEVOLUCAO_ESPELHO_SILENCIOSO (6 segments), QUESTION_META[11], POL-02 verification (Wave 1)
 - [x] 33-02-PLAN.md — Machine + UI: shouldBranchQ6B + isEspelhoSilencioso guards, Q6_RESPOSTA_A guarded transition, 6 Q6B states with QUALIFIED #oracle.DEVOLUCAO rejoin, DEVOLUCAO.always[0] = ESPELHO_SILENCIOSO (highest priority), new top-level DEVOLUCAO_ESPELHO_SILENCIOSO state, Q6B_CHOICE + 6 OracleExperience helper extensions with mic warmup fix (Wave 2, depends on 33-01)
-- [ ] 33-03-PLAN.md — Audio + Timing + Roteiro: 7 new MP3s via generate-audio-v3.ts auto-discovery, validate-timing.ts 20-path matrix with Q6B + ESPELHO coverage, pickLongestDevolucao update, public/roteiro.html Mermaid + indicator + devoluções list update (Wave 3, depends on 33-01 and 33-02)
+- [x] 33-03-PLAN.md — Audio + Timing + Roteiro: 7 new MP3s via generate-audio-v3.ts auto-discovery, validate-timing.ts 20-path matrix with Q6B + ESPELHO coverage, pickLongestDevolucao update, public/roteiro.html Mermaid + indicator + devoluções list update (Wave 3, depends on 33-01 and 33-02)
 
 **UI hint**: no
 
@@ -333,7 +333,7 @@ Plans:
 | 30. Visual System | v5.0 | 1/2 | Informally Shipped | 2026-04-06 |
 | 31. Q1B Branch | v6.0 | 3/3 | Complete    | 2026-04-07 |
 | 32. Q5B Branch | v6.0 | 3/3 | Complete    | 2026-04-07 |
-| 33. Q6B + ESPELHO_SILENCIOSO | v6.0 | 2/3 | In Progress|  |
+| 33. Q6B + ESPELHO_SILENCIOSO | v6.0 | 3/3 | Complete   | 2026-04-07 |
 | 34. Detectable Archetypes | v6.0 | 0/TBD | Not started | - |
 | 35. Timing + UAT | v6.0 | 0/TBD | Not started | - |
 

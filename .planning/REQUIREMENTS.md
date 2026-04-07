@@ -13,17 +13,17 @@ Source of truth: `memory/next-milestone-v5-deep-branching.md` (blueprint complet
 
 - [x] **BR-01**: Visitor com `q1='B' && q2='B'` (saiu da sala E ficou olhando a coisa) ouve a branch Q1B "A Porta no Fundo" — **6 SCRIPT keys** (SETUP, PERGUNTA, RESPOSTA_A, RESPOSTA_B, FALLBACK, TIMEOUT — onde SETUP/RESPOSTA são arrays multi-segmento gerando 1 MP3 cada, seguindo o padrão v4.0), QUESTION_META[9], guard `shouldBranchQ1B`, estados Q1B_* na máquina, OracleExperience extended, **6 MP3s** gerados
 - [x] **BR-02**: Visitor com `q4='A' && q5='A'` (lembrou tudo E carrega a pergunta) ouve a branch Q5B "O Que Já Não Cabe" — 6 SCRIPT keys (mesmo padrão de BR-01), QUESTION_META[10], guard `shouldBranchQ5B`, estados Q5B_*, OracleExperience extended, 6 MP3s gerados
-- [ ] **BR-03**: Visitor com `q5='B' && q6='A'` (dissolveu pergunta MAS pediu leitura) ouve a branch Q6B "O Espelho Extra" — 6 SCRIPT keys (mesmo padrão), QUESTION_META[11], guard `shouldBranchQ6B`, estados Q6B_*, OracleExperience extended, 6 MP3s gerados, transição condicional para DEVOLUCAO normal vs DEVOLUCAO_ESPELHO_SILENCIOSO
+- [x] **BR-03**: Visitor com `q5='B' && q6='A'` (dissolveu pergunta MAS pediu leitura) ouve a branch Q6B "O Espelho Extra" — 6 SCRIPT keys (mesmo padrão), QUESTION_META[11], guard `shouldBranchQ6B`, estados Q6B_*, OracleExperience extended, 6 MP3s gerados, transição condicional para DEVOLUCAO normal vs DEVOLUCAO_ESPELHO_SILENCIOSO
 
 ### Arquétipos (Devoluções)
 
-- [ ] **AR-01**: DEVOLUCAO_ESPELHO_SILENCIOSO arquetipo criado — 6 segmentos no script (devolve forma em vez de conteúdo, ~22-28s), 6 MP3s, guard `isEspelhoSilencioso` com **highest priority** no `always` do estado DEVOLUCAO (deve verificar antes dos 8 arquétipos atuais), trigger: `q6b === 'B'`
+- [x] **AR-01**: DEVOLUCAO_ESPELHO_SILENCIOSO arquetipo criado — 6 segmentos no script (devolve forma em vez de conteúdo, ~22-28s), 6 MP3s, guard `isEspelhoSilencioso` com **highest priority** no `always` do estado DEVOLUCAO (deve verificar antes dos 8 arquétipos atuais), trigger: `q6b === 'B'`
 - [ ] **AR-02**: CONTRA_FOBICO arquétipo detectável — guard `isContraFobico` em `patternMatching.ts` (trigger: `q1==='B' && q2==='B' && q1b==='A'`), DEVOLUCAO_CONTRA_FOBICO script + MP3s, ordem nos `always` do DEVOLUCAO: ESPELHO_SILENCIOSO → CONTRA_FOBICO → PORTADOR → 8 atuais
 - [ ] **AR-03**: PORTADOR arquétipo detectável — guard `isPortador` (trigger: `q4==='A' && q5==='A' && q5b==='A'`), DEVOLUCAO_PORTADOR script + MP3s
 
 ### Polish & Validation
 
-- [ ] **POL-01**: Max-path do fluxo permanece ≤ 7:30 — `scripts/validate-timing.ts` atualizado para cobrir todas as novas permutações (96 caminhos), pior caso (Q1B + Q4B + Q5B + Q6B) medido e documentado, mitigação aplicada se > 7:30 (cortar SETUPs base de Q1/Q3/Q5) ou overflow aceito com documentação
+- [x] **POL-01**: Max-path do fluxo permanece ≤ 7:30 — `scripts/validate-timing.ts` atualizado para cobrir todas as novas permutações (96 caminhos), pior caso (Q1B + Q4B + Q5B + Q6B) medido e documentado, mitigação aplicada se > 7:30 (cortar SETUPs base de Q1/Q3/Q5) ou overflow aceito com documentação
 - [x] **POL-02**: ChoiceMap context type extended em `oracleMachine.types.ts` com campos opcionais `q1b?`, `q5b?`, `q6b?` sem quebrar arquétipos existentes (testes v4.0 continuam passando)
 - [ ] **POL-03**: `public/roteiro.html` atualizado com as 3 novas branches no Mermaid flowchart + texto narrativo, mantendo paridade com `src/data/script.ts`
 
@@ -79,11 +79,11 @@ All 16 requirements satisfied (PACE-01 through INTG-02). See `.planning/MILESTON
 |-------------|-------|--------|
 | BR-01 | Phase 31 | Complete |
 | BR-02 | Phase 32 | Complete |
-| BR-03 | Phase 33 | Pending |
-| AR-01 | Phase 33 | Pending |
+| BR-03 | Phase 33 | Complete |
+| AR-01 | Phase 33 | Complete |
 | AR-02 | Phase 34 | Pending |
 | AR-03 | Phase 34 | Pending |
-| POL-01 | Phase 35 | Pending |
+| POL-01 | Phase 35 | Complete |
 | POL-02 | Phase 31 | Complete |
 | POL-03 | Phase 35 | Pending |
 | UAT-01 | Phase 35 | Pending |
