@@ -4,8 +4,8 @@ import type { ChoiceAB, ChoicePattern, NarrativePhase } from '@/types';
 // v4 Types — Branching 6-8 Choice Flow
 // ═══════════════════════════════════════════════════════════════════════════
 
-/** Question identifiers for named choice tracking */
-export type QuestionId = 'q1' | 'q2' | 'q2b' | 'q3' | 'q4' | 'q4b' | 'q5' | 'q6';
+/** Question identifiers for named choice tracking (8 base/Q2B/Q4B + 3 v6.0 branches: q1b, q5b, q6b) */
+export type QuestionId = 'q1' | 'q2' | 'q2b' | 'q3' | 'q4' | 'q4b' | 'q5' | 'q6' | 'q1b' | 'q5b' | 'q6b';
 
 /** XState context for v4 Oracle state machine — branching 6-8 choices */
 export interface OracleContextV4 {
