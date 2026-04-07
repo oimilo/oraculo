@@ -739,3 +739,77 @@ describe('Branch Questions (Q2B, Q4B)', () => {
     });
   });
 });
+
+// ═══════════════════════════════════════════════════════════════
+// Q1B branch (Phase 31) — Contra-fobico branch
+// Conditional: Q1=B (procurou a porta) AND Q2=B (ficou olhando)
+// ═══════════════════════════════════════════════════════════════
+
+describe('Q1B branch (Phase 31)', () => {
+  it('SCRIPT.INFERNO_Q1B_SETUP exists with 3 segments', () => {
+    expect(SCRIPT.INFERNO_Q1B_SETUP).toBeDefined();
+    expect(SCRIPT.INFERNO_Q1B_SETUP.length).toBe(3);
+  });
+
+  it('SCRIPT.INFERNO_Q1B_SETUP[0].text matches blueprint exactly', () => {
+    expect(SCRIPT.INFERNO_Q1B_SETUP[0].text).toBe('Você não recua. Continua olhando.');
+  });
+
+  it("SCRIPT.INFERNO_Q1B_SETUP[1].inflection deep-equals ['thoughtful']", () => {
+    expect(SCRIPT.INFERNO_Q1B_SETUP[1].inflection).toEqual(['thoughtful']);
+  });
+
+  it('SCRIPT.INFERNO_Q1B_PERGUNTA contains "atravessa essa fresta"', () => {
+    expect(SCRIPT.INFERNO_Q1B_PERGUNTA.length).toBe(1);
+    expect(SCRIPT.INFERNO_Q1B_PERGUNTA[0].text).toContain('atravessa essa fresta');
+  });
+
+  it('SCRIPT.INFERNO_Q1B_RESPOSTA_A has 2 segments and inflection serious on segment 1', () => {
+    expect(SCRIPT.INFERNO_Q1B_RESPOSTA_A.length).toBe(2);
+    expect(SCRIPT.INFERNO_Q1B_RESPOSTA_A[1].inflection).toEqual(['serious']);
+  });
+
+  it('SCRIPT.INFERNO_Q1B_RESPOSTA_B has 2 segments and inflection warm on segment 1', () => {
+    expect(SCRIPT.INFERNO_Q1B_RESPOSTA_B.length).toBe(2);
+    expect(SCRIPT.INFERNO_Q1B_RESPOSTA_B[1].inflection).toEqual(['warm']);
+  });
+
+  it('SCRIPT.FALLBACK_Q1B exists with "Atravessar a fresta"', () => {
+    expect(SCRIPT.FALLBACK_Q1B).toBeDefined();
+    expect(SCRIPT.FALLBACK_Q1B.length).toBeGreaterThanOrEqual(1);
+    expect(SCRIPT.FALLBACK_Q1B[0].text).toContain('Atravessar a fresta');
+  });
+
+  it('SCRIPT.TIMEOUT_Q1B exists with "Vou escolher por você"', () => {
+    expect(SCRIPT.TIMEOUT_Q1B).toBeDefined();
+    expect(SCRIPT.TIMEOUT_Q1B.length).toBeGreaterThanOrEqual(1);
+    expect(SCRIPT.TIMEOUT_Q1B[0].text).toContain('Vou escolher por você');
+  });
+
+  it('all Q1B segments are valid SpeechSegments', () => {
+    assertValidSegments(SCRIPT.INFERNO_Q1B_SETUP, 'INFERNO_Q1B_SETUP');
+    assertValidSegments(SCRIPT.INFERNO_Q1B_PERGUNTA, 'INFERNO_Q1B_PERGUNTA');
+    assertValidSegments(SCRIPT.INFERNO_Q1B_RESPOSTA_A, 'INFERNO_Q1B_RESPOSTA_A');
+    assertValidSegments(SCRIPT.INFERNO_Q1B_RESPOSTA_B, 'INFERNO_Q1B_RESPOSTA_B');
+    assertValidSegments(SCRIPT.FALLBACK_Q1B, 'FALLBACK_Q1B');
+    assertValidSegments(SCRIPT.TIMEOUT_Q1B, 'TIMEOUT_Q1B');
+  });
+
+  it('all Q1B text is PT-BR', () => {
+    assertPTBR(SCRIPT.INFERNO_Q1B_SETUP, 'INFERNO_Q1B_SETUP');
+    assertPTBR(SCRIPT.INFERNO_Q1B_PERGUNTA, 'INFERNO_Q1B_PERGUNTA');
+    assertPTBR(SCRIPT.INFERNO_Q1B_RESPOSTA_A, 'INFERNO_Q1B_RESPOSTA_A');
+    assertPTBR(SCRIPT.INFERNO_Q1B_RESPOSTA_B, 'INFERNO_Q1B_RESPOSTA_B');
+    assertPTBR(SCRIPT.FALLBACK_Q1B, 'FALLBACK_Q1B');
+    assertPTBR(SCRIPT.TIMEOUT_Q1B, 'TIMEOUT_Q1B');
+  });
+
+  it('has no author references', () => {
+    assertNoAuthorReferences(SCRIPT.INFERNO_Q1B_SETUP, 'INFERNO_Q1B_SETUP');
+    assertNoAuthorReferences(SCRIPT.INFERNO_Q1B_PERGUNTA, 'INFERNO_Q1B_PERGUNTA');
+    assertNoAuthorReferences(SCRIPT.INFERNO_Q1B_RESPOSTA_A, 'INFERNO_Q1B_RESPOSTA_A');
+    assertNoAuthorReferences(SCRIPT.INFERNO_Q1B_RESPOSTA_B, 'INFERNO_Q1B_RESPOSTA_B');
+    assertNoAuthorReferences(SCRIPT.FALLBACK_Q1B, 'FALLBACK_Q1B');
+    assertNoAuthorReferences(SCRIPT.TIMEOUT_Q1B, 'TIMEOUT_Q1B');
+  });
+});
