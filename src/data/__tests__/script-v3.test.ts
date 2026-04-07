@@ -813,3 +813,82 @@ describe('Q1B branch (Phase 31)', () => {
     assertNoAuthorReferences(SCRIPT.TIMEOUT_Q1B, 'TIMEOUT_Q1B');
   });
 });
+
+// ═══════════════════════════════════════════════════════════════
+// Q5B Branch (Phase 32, BR-02) — "O Que Já Não Cabe"
+// Conditional: Q4=A (lembrou tudo) AND Q5=A (carrega a pergunta)
+// ═══════════════════════════════════════════════════════════════
+
+describe('Q5B branch (Phase 32, BR-02)', () => {
+  it('SCRIPT.PARAISO_Q5B_SETUP exists with 3 segments', () => {
+    expect(SCRIPT.PARAISO_Q5B_SETUP).toBeDefined();
+    expect(Array.isArray(SCRIPT.PARAISO_Q5B_SETUP)).toBe(true);
+    expect(SCRIPT.PARAISO_Q5B_SETUP.length).toBe(3);
+  });
+
+  it('SCRIPT.PARAISO_Q5B_SETUP[0].text matches Option A blueprint exactly', () => {
+    expect(SCRIPT.PARAISO_Q5B_SETUP[0].text).toBe('Você lembrou. Você carregou.');
+  });
+
+  it("SCRIPT.PARAISO_Q5B_SETUP[0].inflection deep-equals ['thoughtful']", () => {
+    expect(SCRIPT.PARAISO_Q5B_SETUP[0].inflection).toEqual(['thoughtful']);
+  });
+
+  it("SCRIPT.PARAISO_Q5B_SETUP[1].inflection deep-equals ['gentle']", () => {
+    expect(SCRIPT.PARAISO_Q5B_SETUP[1].inflection).toEqual(['gentle']);
+  });
+
+  it('SCRIPT.PARAISO_Q5B_PERGUNTA contains "deixa eles se fundirem"', () => {
+    expect(SCRIPT.PARAISO_Q5B_PERGUNTA[0].text).toContain('deixa eles se fundirem');
+  });
+
+  it("SCRIPT.PARAISO_Q5B_RESPOSTA_A has 2 segments and inflection ['warm'] on segment 1", () => {
+    expect(SCRIPT.PARAISO_Q5B_RESPOSTA_A.length).toBe(2);
+    expect(SCRIPT.PARAISO_Q5B_RESPOSTA_A[1].inflection).toEqual(['warm']);
+  });
+
+  it("SCRIPT.PARAISO_Q5B_RESPOSTA_B has 2 segments and inflection ['gentle'] on segment 1", () => {
+    expect(SCRIPT.PARAISO_Q5B_RESPOSTA_B.length).toBe(2);
+    expect(SCRIPT.PARAISO_Q5B_RESPOSTA_B[1].inflection).toEqual(['gentle']);
+  });
+
+  it('SCRIPT.FALLBACK_Q5B exists with "Fundir, ou separar" prompt', () => {
+    expect(SCRIPT.FALLBACK_Q5B).toBeDefined();
+    expect(SCRIPT.FALLBACK_Q5B[0].text).toContain('Fundir, ou separar');
+  });
+
+  it('SCRIPT.TIMEOUT_Q5B exists with "O peso decide" prompt', () => {
+    expect(SCRIPT.TIMEOUT_Q5B).toBeDefined();
+    expect(SCRIPT.TIMEOUT_Q5B[0].text).toContain('O peso decide');
+  });
+
+  it('Q5B segments are valid PT-BR with no author references', () => {
+    // Use existing helpers from this test file
+    const allQ5BKeys = ['PARAISO_Q5B_SETUP', 'PARAISO_Q5B_PERGUNTA', 'PARAISO_Q5B_RESPOSTA_A', 'PARAISO_Q5B_RESPOSTA_B', 'FALLBACK_Q5B', 'TIMEOUT_Q5B'] as const;
+    for (const key of allQ5BKeys) {
+      assertValidSegments(SCRIPT[key], key);
+      assertPTBR(SCRIPT[key], key);
+      assertNoAuthorReferences(SCRIPT[key], key);
+    }
+  });
+
+  it('Q5B segments use only working inflection tags (no whispering)', () => {
+    const allQ5B = [
+      ...SCRIPT.PARAISO_Q5B_SETUP,
+      ...SCRIPT.PARAISO_Q5B_PERGUNTA,
+      ...SCRIPT.PARAISO_Q5B_RESPOSTA_A,
+      ...SCRIPT.PARAISO_Q5B_RESPOSTA_B,
+      ...SCRIPT.FALLBACK_Q5B,
+      ...SCRIPT.TIMEOUT_Q5B,
+    ];
+    const allowedTags = new Set(['warm', 'serious', 'gentle', 'determined', 'thoughtful', 'sad']);
+    for (const seg of allQ5B) {
+      if (seg.inflection) {
+        for (const tag of seg.inflection) {
+          expect(allowedTags.has(tag)).toBe(true);
+          expect(tag).not.toBe('whispering');
+        }
+      }
+    }
+  });
+});

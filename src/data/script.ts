@@ -112,13 +112,23 @@ export interface ScriptDataV4 extends ScriptDataV3 {
   INFERNO_Q1B_RESPOSTA_A: SpeechSegment[];
   INFERNO_Q1B_RESPOSTA_B: SpeechSegment[];
 
+  // Branch Q5B (Phase 32, BR-02) — conditional after PARAISO_Q5_RESPOSTA_A
+  // Triggers when: Q4 chose A (Lembrar) AND Q5 chose A (Carregar) — PORTADOR precursor
+  // Theme: Visitor that fused memory + carried question — fuse them into one form, or order them as separate
+  PARAISO_Q5B_SETUP: SpeechSegment[];
+  PARAISO_Q5B_PERGUNTA: SpeechSegment[];
+  PARAISO_Q5B_RESPOSTA_A: SpeechSegment[];
+  PARAISO_Q5B_RESPOSTA_B: SpeechSegment[];
+
   // Fallbacks and timeouts for branch questions
   FALLBACK_Q2B: SpeechSegment[];
   FALLBACK_Q4B: SpeechSegment[];
   FALLBACK_Q1B: SpeechSegment[];
+  FALLBACK_Q5B: SpeechSegment[];
   TIMEOUT_Q2B: SpeechSegment[];
   TIMEOUT_Q4B: SpeechSegment[];
   TIMEOUT_Q1B: SpeechSegment[];
+  TIMEOUT_Q5B: SpeechSegment[];
 }
 
 export const SCRIPT: ScriptDataV4 = {
@@ -388,6 +398,35 @@ export const SCRIPT: ScriptDataV4 = {
   ],
 
   // ═══════════════════════════════════════════════════════════════
+  // Q5B — O QUE JÁ NÃO CABE (Branch — Medium-Deep)
+  // Conditional: only if Q4=A (lembrou tudo) AND Q5=A (carrega a pergunta)
+  // O perfil PORTADOR é testado: a memória e a pergunta sem resposta
+  // já não cabem separadas. Fundir as duas em uma só forma, ou
+  // ordenar cada uma no seu lugar como inventário?
+  // ═══════════════════════════════════════════════════════════════
+  PARAISO_Q5B_SETUP: [
+    { text: "Você lembrou. Você carregou.", pauseAfter: 1000, inflection: ['thoughtful'] },
+    { text: "E agora descobre — o peso da memória e o peso da pergunta não são dois pesos. Encostam um no outro até virarem a mesma forma.", pauseAfter: 1200, inflection: ['gentle'] },
+    { text: "Já não cabem separados.", pauseAfter: 1100 },
+  ],
+
+  PARAISO_Q5B_PERGUNTA: [
+    { text: "Você deixa eles se fundirem — ou tenta segurar cada um no lugar dele?" },
+  ],
+
+  // Q5B RESPOSTA A — Fundir (memória e pergunta viram a mesma forma — PORTADOR seed)
+  PARAISO_Q5B_RESPOSTA_A: [
+    { text: "Você deixa.", pauseAfter: 900 },
+    { text: "Quando o que aconteceu e o que não tem resposta param de se distinguir, você não carrega mais — você é a forma que se faz disso.", pauseAfter: 1100, inflection: ['warm'] },
+  ],
+
+  // Q5B RESPOSTA B — Ordenar (separar memória e pergunta como inventário — dignified)
+  PARAISO_Q5B_RESPOSTA_B: [
+    { text: "Você separa.", pauseAfter: 900 },
+    { text: "Manter cada coisa no lugar dela é uma forma de respeito — a memória pede um arquivo, a pergunta pede um silêncio. Cada uma com seu cuidado.", pauseAfter: 1100, inflection: ['gentle'] },
+  ],
+
+  // ═══════════════════════════════════════════════════════════════
   // Q6 — O FIM DO JOGO (Profound)
   // A escolha final. Meta — sobre o proprio jogo.
   // A voz do Oraculo afina. O espaco fica quieto.
@@ -555,6 +594,9 @@ export const SCRIPT: ScriptDataV4 = {
   FALLBACK_Q1B: [
     { text: "Eu não ouvi. Atravessar a fresta — ou voltar pro que pulsa?" },
   ],
+  FALLBACK_Q5B: [
+    { text: "Não precisa de palavra exata. Fundir, ou separar?", pauseAfter: 800 },
+  ],
 
   // Branch timeouts
   TIMEOUT_Q2B: [
@@ -565,5 +607,8 @@ export const SCRIPT: ScriptDataV4 = {
   ],
   TIMEOUT_Q1B: [
     { text: "Você hesita. Vou escolher por você.", pauseAfter: 900 },
+  ],
+  TIMEOUT_Q5B: [
+    { text: "O peso decide por você. Continua.", pauseAfter: 900, inflection: ['warm'] },
   ],
 };
