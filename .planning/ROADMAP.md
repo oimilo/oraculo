@@ -115,7 +115,7 @@ See: `.planning/milestones/v3.1-ROADMAP.md`
 
 ### v6.0 Deep Branching (Active)
 
-- [ ] **Phase 31: Q1B Branch (Inferno contra-fobico)** - Add "A Porta no Fundo" branch triggered by q1=B && q2=B
+- [x] **Phase 31: Q1B Branch (Inferno contra-fobico)** - Add "A Porta no Fundo" branch triggered by q1=B && q2=B (completed 2026-04-07)
 - [ ] **Phase 32: Q5B Branch (Paraiso gap closure)** - Add "O Que Já Não Cabe" branch triggered by q4=A && q5=A
 - [ ] **Phase 33: Q6B + ESPELHO_SILENCIOSO** - Add "O Espelho Extra" branch + new DEVOLUCAO_ESPELHO_SILENCIOSO archetype
 - [ ] **Phase 34: Detectable Archetypes** - Add CONTRA_FOBICO and PORTADOR archetypes leveraging new branch data
@@ -127,12 +127,12 @@ See: `.planning/milestones/v6.0-ROADMAP.md` for full phase details, success crit
 **Goal**: Add "A Porta no Fundo" branch — triggered when q1=B && q2=B (contra-fobico/destemido profile), tests courage against emptiness. Adds 6 SCRIPT keys, QUESTION_META[9], shouldBranchQ1B guard, 6 machine states, OracleExperience helper extensions, 6 MP3s, timing validation update, and roteiro.html documentation.
 **Depends on**: v4.0 Phase 29 baseline
 **Requirements**: BR-01, POL-02
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 - [x] 31-01-PLAN.md — Data + Types: script.ts entries, QUESTION_META[9], QuestionId union extension (Wave 1)
 - [x] 31-02-PLAN.md — Machine + UI: shouldBranchQ1B guard, Q1B states, OracleExperience helpers (Wave 2, depends on 31-01)
-- [ ] 31-03-PLAN.md — Audio + Validation + Docs: 6 MP3s, validate-timing.ts permutations, roteiro.html updates (Wave 3, depends on 31-01 and 31-02)
+- [x] 31-03-PLAN.md — Audio + Validation + Docs: 6 MP3s, validate-timing.ts permutations, roteiro.html updates (Wave 3, depends on 31-01 and 31-02)
 
 **UI hint**: no
 
@@ -319,7 +319,7 @@ Plans:
 | 28. Audio Regen | v4.0 | 1/1 | Complete    | 2026-03-29 |
 | 29. Integration | v4.0 | 2/2 | Complete    | 2026-03-29 |
 | 30. Visual System | v5.0 | 1/2 | Informally Shipped | 2026-04-06 |
-| 31. Q1B Branch | v6.0 | 2/3 | In Progress|  |
+| 31. Q1B Branch | v6.0 | 3/3 | Complete   | 2026-04-07 |
 | 32. Q5B Branch | v6.0 | 0/TBD | Not started | - |
 | 33. Q6B + ESPELHO_SILENCIOSO | v6.0 | 0/TBD | Not started | - |
 | 34. Detectable Archetypes | v6.0 | 0/TBD | Not started | - |
