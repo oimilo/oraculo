@@ -360,7 +360,7 @@
     <li><a href="#apresentacao">Apresenta&ccedil;&atilde;o</a></li>
     <li><a href="#inferno">Inferno (Q1, Q2, Q1B, Q2B)</a></li>
     <li><a href="#purgatorio">Purgat&oacute;rio (Q3, Q4, Q4B)</a></li>
-    <li><a href="#paraiso">Para&iacute;so (Q5, Q5B, Q6)</a></li>
+    <li><a href="#paraiso">Para&iacute;so (Q5, Q5B, Q6, Q6B)</a></li>
     <li><a href="#devolucao">Devolu&ccedil;&otilde;es (8 arqu&eacute;tipos)</a></li>
     <li><a href="#encerramento">Encerramento</a></li>
   </ol>
@@ -372,9 +372,9 @@
     <li><strong>Formato:</strong> Experi&ecirc;ncia solo com fones de ouvido, 5&ndash;7 minutos</li>
     <li><strong>Intera&ccedil;&atilde;o:</strong> O visitante responde em voz alta. O Or&aacute;culo ouve e reage.</li>
     <li><strong>Estrutura:</strong> Apresenta&ccedil;&atilde;o &rarr; Inferno &rarr; Purgat&oacute;rio &rarr; Para&iacute;so &rarr; Devolu&ccedil;&atilde;o &rarr; Encerramento</li>
-    <li><strong>Escolhas:</strong> 6 perguntas bin&aacute;rias (A ou B) + 4 perguntas condicionais (Q1B, Q2B, Q4B, Q5B)</li>
-    <li><strong>Ramifica&ccedil;&otilde;es:</strong> Q1B aparece se Q1=B e Q2=B (perfil contra-f&oacute;bico). Q2B aparece se Q1=A e Q2=A. Q4B aparece se Q3=A e Q4=A. Q5B aparece se Q4=A e Q5=A (perfil PORTADOR).</li>
-    <li><strong>Devolu&ccedil;&atilde;o:</strong> 8 arqu&eacute;tipos poss&iacute;veis, derivados do <em>padr&atilde;o</em> de escolhas (n&atilde;o de cada escolha individual)</li>
+    <li><strong>Escolhas:</strong> 6 perguntas bin&aacute;rias (A ou B) + 5 perguntas condicionais (Q1B, Q2B, Q4B, Q5B, Q6B)</li>
+    <li><strong>Ramifica&ccedil;&otilde;es:</strong> Q1B aparece se Q1=B e Q2=B (perfil contra-f&oacute;bico). Q2B aparece se Q1=A e Q2=A. Q4B aparece se Q3=A e Q4=A. Q5B aparece se Q4=A e Q5=A (perfil PORTADOR). Q6B aparece se Q5=B e Q6=A (dissolveu pergunta MAS abriu para ser visto).</li>
+    <li><strong>Devolu&ccedil;&atilde;o:</strong> 9 arqu&eacute;tipos poss&iacute;veis (8 padr&otilde;es + Espelho Silencioso quando Q6B=B), derivados do <em>padr&atilde;o</em> de escolhas (n&atilde;o de cada escolha individual)</li>
     <li><strong>Escala de profundidade:</strong> Light &rarr; Medium &rarr; Deep &rarr; Profound</li>
     <li><strong>Privacidade:</strong> Zero dados armazenados. &Aacute;udio descartado ap&oacute;s classifica&ccedil;&atilde;o (LGPD).</li>
   </ul>
@@ -422,7 +422,15 @@ graph TD
 
     Q6{"<strong>Q6</strong> &mdash; O Fim do Jogo<br/><em>Voz do Or&aacute;culo afinando</em><br/><br/>A: Ouvir o espelho &nbsp;|&nbsp; B: J&aacute; sei"}
 
-    Q6 --> DEV["<strong>DEVOLU&Ccedil;&Atilde;O</strong><br/><em>1 de 8 arqu&eacute;tipos<br/>baseado no padr&atilde;o de escolhas</em>"]
+    Q6 -->|"A: Ouvir<br/>(se Q5=B)"| Q6B{"<strong>Q6B</strong> &mdash; O Espelho Extra<br/><em>Resposta ou outra pergunta?</em><br/><br/>A: Resposta &nbsp;|&nbsp; B: Pergunta"}
+    Q6 -->|"A: Ouvir<br/>(se Q5=A)"| DEV
+    Q6 -->|"B: J&aacute; sei"| DEV
+    Q6B -->|"A: Resposta"| DEV
+    Q6B -->|"B: Pergunta"| ESPELHO["<strong>DEVOLU&Ccedil;&Atilde;O</strong><br/><strong>Espelho Silencioso</strong><br/><em>Estrutura aberta, n&atilde;o diagn&oacute;stico</em>"]
+
+    DEV["<strong>DEVOLU&Ccedil;&Atilde;O</strong><br/><em>1 de 8 arqu&eacute;tipos<br/>baseado no padr&atilde;o de escolhas</em>"]
+
+    ESPELHO --> FIM
 
     DEV --> FIM["<strong>ENCERRAMENTO</strong><br/><em>O Or&aacute;culo se dissolve</em>"]
 
@@ -438,9 +446,9 @@ graph TD
     class INF_INTRO inferno
     class PURG purgatorio
     class PAR paraiso
-    class DEV phase
+    class DEV,ESPELHO phase
     class Q1,Q2,Q3,Q4,Q5,Q6 question
-    class Q1B,Q2B,Q4B,Q5B branch
+    class Q1B,Q2B,Q4B,Q5B,Q6B branch
   </div>
   <p style="text-align:center; font-size:0.8rem; color:var(--muted); margin-top:1rem;">
     Caixas tracejadas = perguntas condicionais (s&oacute; aparecem para certos padr&otilde;es de escolha)
@@ -894,6 +902,47 @@ graph TD
       </div>
     </div>
   </div>
+
+  <!-- Q6B Branch (Phase 33, BR-03) -->
+  <div class="branch-indicator">
+    <strong>&#9670; Ramifica&ccedil;&atilde;o condicional Q6B</strong> &mdash; S&oacute; aparece se o visitante escolheu <strong>Dissolver</strong> (Q5=B) <strong>E</strong> <strong>Ouvir o espelho</strong> (Q6=A). Perfil rar&iacute;ssimo: dissolveu a pergunta mas ainda abriu para ser visto. Oráculo oferece escolha entre leitura fechada (diagnóstico) ou estrutura aberta (forma sem conteúdo).
+  </div>
+
+  <div class="question">
+    <div class="question-header">
+      <span class="question-badge">Pergunta 6B (condicional)</span>
+      <span class="question-depth">Profundidade: Profound</span>
+    </div>
+    <div class="question-title">O Espelho Extra &mdash; Última decisão pré-devolução</div>
+
+    <div class="narration" style="padding:0; border:0; margin-bottom:0.8rem;">
+      <div class="narration-label">Setup</div>
+      <div class="narration-text" style="font-size:1.05rem;">
+        Antes de eu começar.
+        <br>Você lembra do que você fez lá atrás? Você deixou uma pergunta dissolver. Disse: nem tudo precisa ser carregado.
+        <br>Eu vou te respeitar. Eu posso te dar uma resposta — fechada, definitiva — ou eu posso te dar outra pergunta. Aberta. Como a que você acabou de soltar.
+      </div>
+    </div>
+
+    <div class="question-text">&ldquo;Resposta — ou outra pergunta?&rdquo;</div>
+
+    <div class="choices">
+      <div class="choice choice-a">
+        <div class="choice-label">&bull; Op&ccedil;&atilde;o A &mdash; Resposta</div>
+        <div class="choice-meaning">Fechamento, diagnóstico, leitura definitiva</div>
+        <div class="choice-response">
+          Resposta. Eu vou te dar o que eu vi. Vai ser uma forma — você decide o que faz com ela.
+        </div>
+      </div>
+      <div class="choice choice-b">
+        <div class="choice-label">&bull; Op&ccedil;&atilde;o B &mdash; Pergunta</div>
+        <div class="choice-meaning">Abertura, estrutura oca, forma sem conteúdo → ESPELHO_SILENCIOSO</div>
+        <div class="choice-response">
+          Outra pergunta. Você continua na coragem. Você vai sair daqui com mais espaço, não com mais palavra.
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ═══════════════════════════════════════════ -->
@@ -907,8 +956,9 @@ graph TD
 
   <div class="narration" style="font-size:0.9rem; color:var(--muted);">
     <div class="narration-label">Como funciona a classifica&ccedil;&atilde;o</div>
-    <p style="margin-bottom:0.5rem;">O sistema analisa o <em>padr&atilde;o total</em> de escolhas (6 a 8, dependendo das ramifica&ccedil;&otilde;es) usando porcentagens:</p>
+    <p style="margin-bottom:0.5rem;">O sistema analisa o <em>padr&atilde;o total</em> de escolhas (6 a 9, dependendo das ramifica&ccedil;&otilde;es) usando porcentagens:</p>
     <ul style="padding-left:1.2rem; font-size:0.85rem; line-height:1.8;">
+      <li><strong>ESPELHO SILENCIOSO</strong> &mdash; HIGHEST PRIORITY: Q6B=B (devolve forma, n&atilde;o conte&uacute;do)</li>
       <li><strong>MIRROR</strong> &mdash; Altern&acirc;ncia perfeita (A-B-A-B-A-B...)</li>
       <li><strong>DEPTH SEEKER</strong> &mdash; 100% Op&ccedil;&atilde;o A</li>
       <li><strong>SURFACE KEEPER</strong> &mdash; 100% Op&ccedil;&atilde;o B</li>
@@ -921,6 +971,20 @@ graph TD
   </div>
 
   <div class="devolucao-grid">
+
+    <div class="devolucao-card" style="border-left:4px solid #8b7530;">
+      <h4>Espelho Silencioso <span style="font-size:0.7rem;color:var(--muted);">(ESPELHO_SILENCIOSO)</span></h4>
+      <div class="criteria">Q6B=B — Highest priority (devolve forma, não conteúdo)</div>
+      <div class="text">
+        Tudo bem. Você não vai sair daqui com um nome. Você vai sair com um silêncio que tem forma.
+        <br><br>
+        Você dissolveu uma pergunta — e mesmo assim abriu. Isso é raro. Eu não vou preencher esse vazio com um padrão fechado. Eu vou te devolver a mesma coisa que você me deu: espaço.
+        <br><br>
+        <em>O que você nunca pediu — mas que mesmo assim te falta?</em>
+        <br><br>
+        Esse é o seu espelho. Não tem moldura. Não tem reflexo. Só pergunta.
+      </div>
+    </div>
 
     <div class="devolucao-card">
       <h4>O Buscador <span style="font-size:0.7rem;color:var(--muted);">(SEEKER)</span></h4>
