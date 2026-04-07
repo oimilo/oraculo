@@ -1,17 +1,17 @@
 ---
 gsd_state_version: 1.0
-milestone: v5.0
-milestone_name: Tester UI Polish
-status: executing
-stopped_at: Completed 30-01-PLAN.md
-last_updated: "2026-03-29T16:36:08.793Z"
-last_activity: 2026-03-29
+milestone: v6.0
+milestone_name: Deep Branching
+status: defining_requirements
+stopped_at: Milestone v6.0 started — defining requirements
+last_updated: "2026-04-06T00:00:00.000Z"
+last_activity: 2026-04-06
 progress:
-  total_phases: 24
-  completed_phases: 22
-  total_plans: 52
-  completed_plans: 51
-  percent: 88
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State: O Oraculo
@@ -20,18 +20,18 @@ progress:
 
 **Core Value:** Experiencia seamless e imersiva como um jogo -- o visitante fala, ouve, e e transformado. Se a voz, o roteiro e as transicoes funcionarem perfeitamente, tudo funciona.
 
-**Current Milestone:** v5.0 Tester UI Polish
+**Current Milestone:** v6.0 Deep Branching
 
-**Current Focus:** Phase 30 — audio-reactive-visual-system
+**Current Focus:** Defining requirements (Phase 31 starts after roadmap)
 
 ## Current Position
 
-Phase: 30 (audio-reactive-visual-system) — EXECUTING
-Plan: 2 of 2
-Status: Ready to execute
-Last activity: 2026-03-29
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-04-06 — Milestone v6.0 Deep Branching started
 
-Progress: [████████░░] 88%
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -85,12 +85,18 @@ Progress: [████████░░] 88%
 - Requirements: 16 (PACE-01 to INTG-02) — all satisfied
 - 61 MP3s, 54-state machine, 8 branching decisions, 5-7 min experience
 
-**Milestone v5.0 (Active):**
+**Milestone v5.0 Tester UI Polish (Informally Shipped 2026-04-06):**
 
-- Phases: 4 (Phases 30-33)
-- Plans: TBD
-- Requirements: 17 (VIS-01 to POL-03)
-- Goal: Audio-reactive visuals, mic indicators, polished debug overlay, refined UX
+- Phases: 1/4 formally tracked (Phase 30 R3F audio-reactive visuals)
+- Subsequent work shipped via direct commits without GSD planning: ambient audio (4 SFX MP3s), voice pipeline 9 fixes, intro delay (3s), roteiro page
+- Never formally closed via /gsd:complete-milestone — context drift between planning and code
+
+**Milestone v6.0 Deep Branching (Active):**
+
+- Phases: 5 (Phases 31-35) — Q1B, Q5B, Q6B+ESPELHO_SILENCIOSO, arquetipos, mitigation+UAT
+- Plans: TBD (defined by roadmapper)
+- Requirements: ~11 (BR-01..03, AR-01..04, POL-01..03, UAT-01)
+- Goal: 3 novas branches condicionais + arquétipo ESPELHO_SILENCIOSO + 2 arquétipos detectáveis
 
 ## Accumulated Context
 
@@ -98,12 +104,13 @@ Progress: [████████░░] 88%
 
 Recent decisions affecting current work:
 
+- [v6.0]: Deep branching com 5 conditional branches — recompensa perfis extremos sem gamificar
+- [v6.0]: ESPELHO_SILENCIOSO devolve forma, não conteúdo — quando visitante dissolve a própria pergunta + pede leitura
+- [v6.0]: Aceitar overflow temporal (~7:20 max-path) para 1-3% dos visitantes — preferível a cortar SETUPs base
+- [v6.0]: Phase numbering continues from 31 (não reset)
 - [v5.0]: Audio-reactive background — equalizer responds to TTS playback intensity, phase-specific themes
-- [v5.0]: Debug overlay redesign — from dev tool to elegant visual status display
 - [v4.0]: Branching paths over linear flow — game-like engagement, choices feel consequential
 - [v4.0]: 5-7 min target (down from 10.5) — Bienal foot traffic demands shorter sessions
-- [Phase 30-01]: vitest-canvas-mock@0.3.3 chosen for vitest 2.x compatibility (version 1.x requires vitest 3.x)
-- [Phase 30-01]: useLayoutEffect in useAnimationFrame for synchronous cleanup (prevents frame leaks between phase transitions)
 
 ### Active TODOs
 
@@ -116,6 +123,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-29T16:36:08.789Z
-Stopped at: Completed 30-01-PLAN.md
-Resume: `/gsd:plan-phase 30`
+Last session: 2026-04-06T00:00:00.000Z
+Stopped at: Milestone v6.0 Deep Branching started — defining requirements
+Resume: `/gsd:plan-phase 31`

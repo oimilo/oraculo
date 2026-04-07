@@ -8,18 +8,22 @@ Agente de voz interativo que guia visitantes por uma jornada inspirada na Divina
 
 A experiência deve ser seamless e imersiva como um jogo — o visitante fala, ouve, e é transformado. Se a voz, o roteiro e as transições funcionarem perfeitamente, tudo funciona.
 
-## Current Milestone: v5.0 Tester UI Polish
+## Current Milestone: v6.0 Deep Branching
 
-**Goal:** Upgrade the visual layer for psychoanalyst testers — audio-reactive visuals, mic indicators, polished debug overlay, and refined dark-theme UX. Make it look designed, not dev-made.
+**Goal:** Adicionar 3 novas branches condicionais (Q1B, Q5B, Q6B) ao fluxo do Oráculo, mais o arquétipo DEVOLUCAO_ESPELHO_SILENCIOSO e 2 arquétipos detectáveis novos (CONTRA_FOBICO, PORTADOR), aprofundando a sensação oracular sem gamificar.
 
 **Target features:**
-- Audio-reactive equalizer/waveform background animation (responds to playback intensity, subtle and elegant)
-- Clear visual microphone indicator when mic is open (intuitive, not technical)
-- Debug overlay redesigned from dev tool to visual, elegant status display
-- Better UX flow with clearer action cues (start, next, listening states)
-- Overall dark-theme visual polish across all experience states
+- Q1B "A Porta no Fundo" — branch contra-fóbica no Inferno (trigger: q1=B && q2=B), espelho do Q2B
+- Q5B "O Que Já Não Cabe" — branch no Paraíso (trigger: q4=A && q5=A), fecha gap de branching no Paraíso
+- Q6B "O Espelho Extra" — branch raríssima pré-devolução (trigger: q5=B && q6=A)
+- DEVOLUCAO_ESPELHO_SILENCIOSO — novo arquétipo: devolve estrutura aberta em vez de diagnóstico fechado
+- CONTRA_FOBICO — arquétipo detectável quando q1b=A (atravessou o vazio)
+- PORTADOR — arquétipo detectável quando q5b=A (fundiu memória + pergunta)
+- ~24 MP3s novos via ElevenLabs v3, ~78 estados na máquina total
+- Mitigation de overflow temporal (max-path ~7:20) + browser UAT em ≥3 caminhos
 
 **Previous milestones:**
+- v5.0 Tester UI Polish (shipped 2026-04-06, ad-hoc closeout) — Phase 30 R3F audio-reactive visuals + ambient audio + voice pipeline fixes + intro delay + roteiro page (work shipped via direct commits, never formally closed via /gsd:complete-milestone)
 - v4.0 Game Flow (shipped 2026-03-29) — 8 branching decisions, 61 MP3s, 54-state machine, 5-7 min experience
 - v3.2 Integration & Audio (shipped 2026-03-28) — components updated for 6-choice, 49 MP3s generated
 - v3.1 Script Mastery (shipped 2026-03-28) — script elevated to production quality with 3 frameworks absorbed
@@ -127,10 +131,8 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 | Pause compression 800-2000ms | Reduced from 1200-2800ms to fit 10.5-min target while preserving relative emotional weight | Good — v3.1 |
 | Branching paths over linear flow | More game-like engagement, choices feel consequential, replayability increases | — v4.0 |
 | 5-7 min target (down from 10.5) | Bienal foot traffic demands shorter sessions; game pacing keeps engagement high | — v4.0 |
-
-## Evolution
-
-This document evolves at phase transitions and milestone boundaries.
+| Deep branching com 5 conditional branches | Recompensa perfis extremos com camada extra ORACULAR; mantém max-path em ~7:20 (overflow ~1-3% visitantes) | — v6.0 |
+| ESPELHO_SILENCIOSO devolve forma, não conteúdo | Quando visitante dissolve a própria pergunta + pede leitura, Oráculo devolve estrutura aberta como respeito ao gesto original | — v6.0 |
 
 ## Evolution
 
@@ -150,4 +152,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-29 — Milestone v5.0 Tester UI Polish started*
+*Last updated: 2026-04-06 — Milestone v6.0 Deep Branching started*
