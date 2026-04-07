@@ -1031,4 +1031,175 @@ describe('oracleMachine v4', () => {
       actor.stop();
     });
   });
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // Q1B Branch (Phase 31, BR-01) — contra-fobico
+  // Triggers when q1=B (procurou a porta) AND q2=B (ficou olhando a coisa)
+  // Mirrors the Q2B pattern but branches FROM Q2_RESPOSTA_B with opposite guard
+  // ═════════════════════════════════════════════════════════════════════════
+
+  describe('Q1B Branch (Phase 31, BR-01)', () => {
+    /**
+     * Advance to Q2_AGUARDANDO with q1='B' (so Q1B can trigger when q2='B' is sent next).
+     * This is the contra-fobico path setup — visitor procurou a porta then encontra a coisa.
+     */
+    function advanceToQ2AguardandoQ1B(actor: ActorType) {
+      actor.send({ type: 'START' });
+      actor.send({ type: 'NARRATIVA_DONE' }); // APRESENTACAO -> INFERNO.INTRO
+      actor.send({ type: 'NARRATIVA_DONE' }); // INTRO -> Q1_SETUP
+      actor.send({ type: 'NARRATIVA_DONE' }); // Q1_SETUP -> Q1_PERGUNTA
+      actor.send({ type: 'NARRATIVA_DONE' }); // Q1_PERGUNTA -> Q1_AGUARDANDO
+      actor.send({ type: 'CHOICE_B' });        // Q1=B (procurar a porta)
+      actor.send({ type: 'NARRATIVA_DONE' }); // Q1_RESPOSTA_B -> Q2_SETUP
+      actor.send({ type: 'NARRATIVA_DONE' }); // Q2_SETUP -> Q2_PERGUNTA
+      actor.send({ type: 'NARRATIVA_DONE' }); // Q2_PERGUNTA -> Q2_AGUARDANDO
+    }
+
+    it('triggers Q1B branch when q1=B AND q2=B', () => {
+      const actor = createActor(oracleMachine).start();
+      advanceToQ2AguardandoQ1B(actor);
+      actor.send({ type: 'CHOICE_B' }); // Q2=B (ficar olhando)
+      actor.send({ type: 'NARRATIVA_DONE' }); // Q2_RESPOSTA_B → Q1B_SETUP (guard passes)
+      expect(actor.getSnapshot().matches({ INFERNO: 'Q1B_SETUP' })).toBe(true);
+      expect(actor.getSnapshot().context.choiceMap.q1).toBe('B');
+      expect(actor.getSnapshot().context.choiceMap.q2).toBe('B');
+      actor.stop();
+    });
+
+    it('SKIPS Q1B when q1=A and q2=B (only one B — guard fails)', () => {
+      const actor = createActor(oracleMachine).start();
+      // Walk through with q1=A first
+      actor.send({ type: 'START' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_A' });        // Q1=A
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_B' });        // Q2=B
+      actor.send({ type: 'NARRATIVA_DONE' });  // Q2_RESPOSTA_B → PURGATORIO (Q1B guard fails)
+      expect(actor.getSnapshot().matches('PURGATORIO')).toBe(true);
+      actor.stop();
+    });
+
+    it('SKIPS Q1B when q1=B and q2=A (only one B — guard fails, but Q2B also fails since q1!==A)', () => {
+      const actor = createActor(oracleMachine).start();
+      advanceToQ2AguardandoQ1B(actor);
+      actor.send({ type: 'CHOICE_A' });        // Q2=A
+      actor.send({ type: 'NARRATIVA_DONE' });  // Q2_RESPOSTA_A → PURGATORIO (Q2B needs q1=A, fails)
+      expect(actor.getSnapshot().matches('PURGATORIO')).toBe(true);
+      actor.stop();
+    });
+
+    it('Q1B_SETUP → Q1B_PERGUNTA → Q1B_AGUARDANDO transition chain', () => {
+      const actor = createActor(oracleMachine).start();
+      advanceToQ2AguardandoQ1B(actor);
+      actor.send({ type: 'CHOICE_B' });
+      actor.send({ type: 'NARRATIVA_DONE' }); // → Q1B_SETUP
+      actor.send({ type: 'NARRATIVA_DONE' }); // → Q1B_PERGUNTA
+      expect(actor.getSnapshot().matches({ INFERNO: 'Q1B_PERGUNTA' })).toBe(true);
+      actor.send({ type: 'NARRATIVA_DONE' }); // → Q1B_AGUARDANDO
+      expect(actor.getSnapshot().matches({ INFERNO: 'Q1B_AGUARDANDO' })).toBe(true);
+      actor.stop();
+    });
+
+    it('Q1B_AGUARDANDO + CHOICE_A → Q1B_RESPOSTA_A and choiceMap.q1b=A', () => {
+      const actor = createActor(oracleMachine).start();
+      advanceToQ2AguardandoQ1B(actor);
+      actor.send({ type: 'CHOICE_B' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_A' });
+      expect(actor.getSnapshot().matches({ INFERNO: 'Q1B_RESPOSTA_A' })).toBe(true);
+      expect(actor.getSnapshot().context.choiceMap.q1b).toBe('A');
+      expect(actor.getSnapshot().context.choices).toEqual(['B', 'B', 'A']);
+      actor.stop();
+    });
+
+    it('Q1B_AGUARDANDO + CHOICE_B → Q1B_RESPOSTA_B and choiceMap.q1b=B', () => {
+      const actor = createActor(oracleMachine).start();
+      advanceToQ2AguardandoQ1B(actor);
+      actor.send({ type: 'CHOICE_B' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_B' });
+      expect(actor.getSnapshot().matches({ INFERNO: 'Q1B_RESPOSTA_B' })).toBe(true);
+      expect(actor.getSnapshot().context.choiceMap.q1b).toBe('B');
+      expect(actor.getSnapshot().context.choices).toEqual(['B', 'B', 'B']);
+      actor.stop();
+    });
+
+    it('Q1B_AGUARDANDO timeout → Q1B_TIMEOUT with default q1b=A', () => {
+      const actor = createActor(oracleMachine).start();
+      advanceToQ2AguardandoQ1B(actor);
+      actor.send({ type: 'CHOICE_B' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      vi.advanceTimersByTime(25000);
+      expect(actor.getSnapshot().matches({ INFERNO: 'Q1B_TIMEOUT' })).toBe(true);
+      expect(actor.getSnapshot().context.choiceMap.q1b).toBe('A');
+      actor.stop();
+    });
+
+    it('Q1B_TIMEOUT → Q1B_RESPOSTA_A on NARRATIVA_DONE', () => {
+      const actor = createActor(oracleMachine).start();
+      advanceToQ2AguardandoQ1B(actor);
+      actor.send({ type: 'CHOICE_B' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      vi.advanceTimersByTime(25000);
+      actor.send({ type: 'NARRATIVA_DONE' });
+      expect(actor.getSnapshot().matches({ INFERNO: 'Q1B_RESPOSTA_A' })).toBe(true);
+      actor.stop();
+    });
+
+    it('Q1B_RESPOSTA_A → PURGATORIO on NARRATIVA_DONE (rejoin main path)', () => {
+      const actor = createActor(oracleMachine).start();
+      advanceToQ2AguardandoQ1B(actor);
+      actor.send({ type: 'CHOICE_B' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_A' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      expect(actor.getSnapshot().matches('PURGATORIO')).toBe(true);
+      actor.stop();
+    });
+
+    it('Q1B_RESPOSTA_B → PURGATORIO on NARRATIVA_DONE (rejoin main path)', () => {
+      const actor = createActor(oracleMachine).start();
+      advanceToQ2AguardandoQ1B(actor);
+      actor.send({ type: 'CHOICE_B' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_B' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      expect(actor.getSnapshot().matches('PURGATORIO')).toBe(true);
+      actor.stop();
+    });
+
+    it('Q2B regression: q1=A AND q2=A still triggers Q2B (Q1B addition did not break Q2B)', () => {
+      const actor = createActor(oracleMachine).start();
+      actor.send({ type: 'START' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_A' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_A' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      expect(actor.getSnapshot().matches({ INFERNO: 'Q2B_SETUP' })).toBe(true);
+      actor.stop();
+    });
+  });
 });
