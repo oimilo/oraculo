@@ -96,3 +96,60 @@ describe('QUESTION_META — Phase 31 entries unchanged (regression)', () => {
     expect(QUESTION_META[9].optionB).toBe('Voltar');
   });
 });
+
+describe('QUESTION_META — Q6B branch (Phase 33, BR-03)', () => {
+  it('Q6B (index 11) is defined', () => {
+    expect(QUESTION_META[11]).toBeDefined();
+  });
+
+  it('Q6B optionA is Resposta (closed reading)', () => {
+    expect(QUESTION_META[11].optionA).toBe('Resposta');
+  });
+
+  it('Q6B optionB is Pergunta (open form)', () => {
+    expect(QUESTION_META[11].optionB).toBe('Pergunta');
+  });
+
+  it('Q6B keywordsA includes closed-reading verbs (resposta, responder, fechada, diz, mostra)', () => {
+    expect(QUESTION_META[11].keywordsA).toContain('resposta');
+    expect(QUESTION_META[11].keywordsA).toContain('responder');
+    expect(QUESTION_META[11].keywordsA).toContain('fechada');
+    expect(QUESTION_META[11].keywordsA).toContain('diz');
+    expect(QUESTION_META[11].keywordsA).toContain('mostra');
+  });
+
+  it('Q6B keywordsB includes open-form verbs (pergunta, perguntar, outra, aberta, espaco)', () => {
+    expect(QUESTION_META[11].keywordsB).toContain('pergunta');
+    expect(QUESTION_META[11].keywordsB).toContain('perguntar');
+    expect(QUESTION_META[11].keywordsB).toContain('outra');
+    expect(QUESTION_META[11].keywordsB).toContain('aberta');
+    expect(QUESTION_META[11].keywordsB).toContain('espaco');
+  });
+
+  it('Q6B defaultOnTimeout is A (Resposta) — silence must NEVER trigger ESPELHO_SILENCIOSO accidentally', () => {
+    expect(QUESTION_META[11].defaultOnTimeout).toBe('A');
+  });
+
+  it('Q6B questionContext mentions dissolveu (Q5 antecedent) and aberta (open form frame)', () => {
+    expect(QUESTION_META[11].questionContext).toContain('dissolver');
+    expect(QUESTION_META[11].questionContext).toContain('aberta');
+  });
+});
+
+describe('QUESTION_META — Phase 31/32 entries unchanged (regression)', () => {
+  it('Q1B (index 9) optionA still Atravessar', () => {
+    expect(QUESTION_META[9].optionA).toBe('Atravessar');
+  });
+
+  it('Q1B (index 9) optionB still Voltar', () => {
+    expect(QUESTION_META[9].optionB).toBe('Voltar');
+  });
+
+  it('Q5B (index 10) optionA still Fundir', () => {
+    expect(QUESTION_META[10].optionA).toBe('Fundir');
+  });
+
+  it('Q5B (index 10) optionB still Ordenar', () => {
+    expect(QUESTION_META[10].optionB).toBe('Ordenar');
+  });
+});
