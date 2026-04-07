@@ -319,7 +319,7 @@ Plans:
 | 28. Audio Regen | v4.0 | 1/1 | Complete    | 2026-03-29 |
 | 29. Integration | v4.0 | 2/2 | Complete    | 2026-03-29 |
 | 30. Visual System | v5.0 | 1/2 | Informally Shipped | 2026-04-06 |
-| 31. Q1B Branch | v6.0 | 3/3 | Complete   | 2026-04-07 |
+| 31. Q1B Branch | v6.0 | 3/3 | Complete    | 2026-04-07 |
 | 32. Q5B Branch | v6.0 | 0/TBD | Not started | - |
 | 33. Q6B + ESPELHO_SILENCIOSO | v6.0 | 0/TBD | Not started | - |
 | 34. Detectable Archetypes | v6.0 | 0/TBD | Not started | - |
