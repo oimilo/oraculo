@@ -1,36 +1,48 @@
 /**
- * V6.0 TIMING VALIDATION SCRIPT (BRANCH-AWARE)
+ * V6.0 TIMING VALIDATION SCRIPT (BRANCH-AWARE) — Phase 33 Extended
  *
  * Validates that the max-path experience duration falls within the 5-7:30 minute
  * target (300-450 seconds — v6.0 budget with branch overflow tolerance).
- * Calculates all 12 possible paths through the branching structure:
+ * Calculates all 20 possible paths through the branching structure (Phase 33 adds Q6B + ESPELHO).
  *
  *   No branches:
  *     1. No branches (6Q)
+ *
+ *   Single branch (Q5B or Q6B):
  *     2. Q5B only (7Q)                       — q4=A AND q5=A (Phase 32, BR-02)
+ *     3. Q6B only (7Q)                       — q5=B AND q6=A (Phase 33, BR-03)
+ *     4. Q6B + ESPELHO (7Q)                  — q5=B AND q6=A AND q6b=B (Phase 33, AR-01)
  *
  *   Single INFERNO branch:
- *     3. Q2B only (7Q)                       — q1=A AND q2=A
- *     4. Q2B + Q5B (8Q)                      — Phase 32
- *     5. Q1B only (7Q)                       — q1=B AND q2=B (Phase 31, BR-01)
- *     6. Q1B + Q5B (8Q)                      — Phase 32
+ *     5. Q2B only (7Q)                       — q1=A AND q2=A
+ *     6. Q2B + Q6B (8Q)                      — Phase 33
+ *     7. Q2B + Q6B + ESPELHO (8Q)            — Phase 33
+ *     8. Q1B only (7Q)                       — q1=B AND q2=B (Phase 31, BR-01)
+ *     9. Q1B + Q6B (8Q)                      — Phase 33
+ *    10. Q1B + Q6B + ESPELHO (8Q)            — Phase 33
  *
  *   Q4B (PURGATORIO branch):
- *     7. Q4B only (7Q)
- *     8. Q4B + Q5B (8Q)                      — coexistence (q3=A, q4=A, q5=A)
+ *    11. Q4B only (7Q)
+ *    12. Q4B + Q6B (8Q)                      — Phase 33
+ *    13. Q4B + Q6B + ESPELHO (8Q)            — Phase 33
  *
  *   Q2B + Q4B combos:
- *     9. Q2B + Q4B (8Q)
- *    10. Q2B + Q4B + Q5B (9Q — WORST CASE)   — q1=A, q2=A, q3=A, q4=A, q5=A
+ *    14. Q2B + Q4B (8Q)
+ *    15. Q2B + Q4B + Q6B (9Q)                — Phase 33
+ *    16. Q2B + Q4B + Q6B + ESPELHO (9Q)      — Phase 33 WORST CASE (max branch stacking)
  *
  *   Q1B + Q4B combos:
- *    11. Q1B + Q4B (8Q)
- *    12. Q1B + Q4B + Q5B (9Q — WORST CASE)   — q1=B, q2=B, q3=A, q4=A, q5=A
+ *    17. Q1B + Q4B (8Q)
+ *    18. Q1B + Q4B + Q6B (9Q)                — Phase 33
+ *    19. Q1B + Q4B + Q6B + ESPELHO (9Q)      — Phase 33 WORST CASE (max branch stacking)
+ *
+ *   Q5B combos (Phase 32):
+ *    20. Q1B + Q4B + Q5B (9Q)                — q1=B, q2=B, q3=A, q4=A, q5=A (Phase 32 max-path baseline)
  *
  * Mutual exclusion rules:
  *   - Q1B and Q2B are mutually exclusive (q1 cannot be both 'A' and 'B')
- *   - Q5B is INDEPENDENT of Q1B/Q2B (different phase, no shared variables)
- *   - Q5B is COEXISTENT with Q4B (both want q4='A')
+ *   - Q5B and Q6B are mutually exclusive (Q5B needs q5='A', Q6B needs q5='B')
+ *   - hasEspelhoSilencioso implies hasQ6B (ESPELHO only reachable via Q6B)
  *
  * Methodology:
  * - Speech rate: ~13 chars/sec for PT-BR conversational speech
@@ -92,9 +104,16 @@ function pickLongerResposta(
 }
 
 /**
- * Pick the longer DEVOLUCAO for max-path calculation
+ * Pick the longest DEVOLUCAO for max-path calculation (Phase 33 extended)
+ * ESPELHO_SILENCIOSO has HIGHEST priority (mimics DEVOLUCAO.always[0] in oracleMachine)
  */
-function pickLongestDevolucao(): { segments: SpeechSegment[], key: string } {
+function pickLongestDevolucao(hasEspelhoSilencioso: boolean): { segments: SpeechSegment[], key: string } {
+  // Phase 33 — ESPELHO_SILENCIOSO pre-empts all other archetypes
+  if (hasEspelhoSilencioso) {
+    return { key: 'DEVOLUCAO_ESPELHO_SILENCIOSO', segments: SCRIPT.DEVOLUCAO_ESPELHO_SILENCIOSO };
+  }
+
+  // Existing 8 archetypes
   const devolucoes = [
     { key: 'DEVOLUCAO_SEEKER', segments: SCRIPT.DEVOLUCAO_SEEKER },
     { key: 'DEVOLUCAO_GUARDIAN', segments: SCRIPT.DEVOLUCAO_GUARDIAN },
@@ -121,17 +140,18 @@ function pickLongestDevolucao(): { segments: SpeechSegment[], key: string } {
 }
 
 /**
- * Branch conditions:
- * - Q1B triggers when: Q1=B AND Q2=B (contra-fobico profile in INFERNO)
+ * Branch conditions (Phase 33 extended):
+ * - Q1B triggers when: Q1=B AND Q2=B (contra-fobico profile in INFERNO, Phase 31)
  * - Q2B triggers when: Q1=A AND Q2=A (both "toward" choices in INFERNO)
  * - Q4B triggers when: Q3=A AND Q4=A (both "toward" choices in PURGATORIO)
- * - Q5B triggers when: Q4=A AND Q5=A (PORTADOR profile precursor in PARAISO, Phase 32 BR-02)
+ * - Q5B triggers when: Q4=A AND Q5=A (PORTADOR profile precursor in PARAISO, Phase 32)
+ * - Q6B triggers when: Q5=B AND Q6=A (dissolution + openness profile in PARAISO, Phase 33)
+ * - ESPELHO_SILENCIOSO triggers when: Q6B=true AND Q6B_choice=B (open form over closed reading, Phase 33)
  *
- * Twelve possible paths:
+ * Twenty paths:
  *   - Q1B and Q2B are MUTUALLY EXCLUSIVE — q1 can't be A AND B
- *   - Q5B is INDEPENDENT of Q1B/Q2B (different phase, no shared variables)
- *   - Q5B is COEXISTENT with Q4B (both want q4=A)
- *   - Worst case (9Q): Q1B+Q4B+Q5B or Q2B+Q4B+Q5B
+ *   - Q5B and Q6B are MUTUALLY EXCLUSIVE — q5 can't be A AND B
+ *   - ESPELHO implies Q6B (only reachable via Q6B branch)
  */
 interface PathConfig {
   name: string;
@@ -139,32 +159,68 @@ interface PathConfig {
   hasQ2B: boolean;
   hasQ4B: boolean;
   hasQ5B: boolean;  // Phase 32, BR-02 — fires when q4=A AND q5=A
+  hasQ6B: boolean;  // Phase 33, BR-03 — fires when q5=B AND q6=A
+  hasEspelhoSilencioso: boolean; // Phase 33, AR-01 — fires when q6b=B (implies hasQ6B)
   questionCount: number; // 6, 7, 8, or 9
 }
 
-// NOTE: Q1B and Q2B are mutually exclusive (q1 can't be both A and B), so paths
-// that combine Q1B+Q2B do not exist. Q5B is independent of Q1B/Q2B (different phase)
-// and COEXISTENT with Q4B (both want q4=A). The matrix has 12 entries (6 existing × 2 for hasQ5B).
+// Assertion helper to enforce mutual exclusion rules
+function assertValidPath(p: PathConfig): void {
+  if (p.hasQ5B && p.hasQ6B) {
+    throw new Error(`Path "${p.name}": Q5B and Q6B are mutually exclusive (q5 cannot be both 'A' and 'B')`);
+  }
+  if (p.hasEspelhoSilencioso && !p.hasQ6B) {
+    throw new Error(`Path "${p.name}": hasEspelhoSilencioso requires hasQ6B (ESPELHO only reachable via Q6B)`);
+  }
+  if (p.hasQ1B && p.hasQ2B) {
+    throw new Error(`Path "${p.name}": Q1B and Q2B are mutually exclusive (q1 cannot be both 'A' and 'B')`);
+  }
+}
+
+// NOTE: Q1B and Q2B are mutually exclusive (q1 can't be both A and B).
+// Q5B and Q6B are mutually exclusive (q5 can't be both A and B).
+// ESPELHO_SILENCIOSO implies Q6B (only reachable via Q6B branch).
+// The matrix has 20 entries (Phase 33 extends from 12 to 20).
 const ALL_PATHS: PathConfig[] = [
-  // No INFERNO branch, no Q4B
-  { name: 'No branches (6Q)',          hasQ1B: false, hasQ2B: false, hasQ4B: false, hasQ5B: false, questionCount: 6 },
-  { name: 'Q5B only (7Q)',             hasQ1B: false, hasQ2B: false, hasQ4B: false, hasQ5B: true,  questionCount: 7 },
-  // Q2B INFERNO branch
-  { name: 'Q2B only (7Q)',             hasQ1B: false, hasQ2B: true,  hasQ4B: false, hasQ5B: false, questionCount: 7 },
-  { name: 'Q2B + Q5B (8Q)',            hasQ1B: false, hasQ2B: true,  hasQ4B: false, hasQ5B: true,  questionCount: 8 },
-  // Q1B INFERNO branch
-  { name: 'Q1B only (7Q)',             hasQ1B: true,  hasQ2B: false, hasQ4B: false, hasQ5B: false, questionCount: 7 },
-  { name: 'Q1B + Q5B (8Q)',            hasQ1B: true,  hasQ2B: false, hasQ4B: false, hasQ5B: true,  questionCount: 8 },
-  // Q4B PURGATORIO branch (no INFERNO branch)
-  { name: 'Q4B only (7Q)',             hasQ1B: false, hasQ2B: false, hasQ4B: true,  hasQ5B: false, questionCount: 7 },
-  { name: 'Q4B + Q5B (8Q)',            hasQ1B: false, hasQ2B: false, hasQ4B: true,  hasQ5B: true,  questionCount: 8 },
-  // Q2B + Q4B combos
-  { name: 'Q2B + Q4B (8Q)',            hasQ1B: false, hasQ2B: true,  hasQ4B: true,  hasQ5B: false, questionCount: 8 },
-  { name: 'Q2B + Q4B + Q5B (9Q)',      hasQ1B: false, hasQ2B: true,  hasQ4B: true,  hasQ5B: true,  questionCount: 9 },
-  // Q1B + Q4B combos
-  { name: 'Q1B + Q4B (8Q)',            hasQ1B: true,  hasQ2B: false, hasQ4B: true,  hasQ5B: false, questionCount: 8 },
-  { name: 'Q1B + Q4B + Q5B (9Q)',      hasQ1B: true,  hasQ2B: false, hasQ4B: true,  hasQ5B: true,  questionCount: 9 },
+  // ========== No branches ==========
+  { name: 'No branches (6Q)', hasQ1B: false, hasQ2B: false, hasQ4B: false, hasQ5B: false, hasQ6B: false, hasEspelhoSilencioso: false, questionCount: 6 },
+
+  // ========== Single branch (Q5B or Q6B) ==========
+  { name: 'Q5B only (7Q)', hasQ1B: false, hasQ2B: false, hasQ4B: false, hasQ5B: true, hasQ6B: false, hasEspelhoSilencioso: false, questionCount: 7 },
+  { name: 'Q6B only (7Q)', hasQ1B: false, hasQ2B: false, hasQ4B: false, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: false, questionCount: 7 },
+  { name: 'Q6B + ESPELHO (7Q)', hasQ1B: false, hasQ2B: false, hasQ4B: false, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: true, questionCount: 7 },
+
+  // ========== Q2B INFERNO branch ==========
+  { name: 'Q2B only (7Q)', hasQ1B: false, hasQ2B: true, hasQ4B: false, hasQ5B: false, hasQ6B: false, hasEspelhoSilencioso: false, questionCount: 7 },
+  { name: 'Q2B + Q6B (8Q)', hasQ1B: false, hasQ2B: true, hasQ4B: false, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: false, questionCount: 8 },
+  { name: 'Q2B + Q6B + ESPELHO (8Q)', hasQ1B: false, hasQ2B: true, hasQ4B: false, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: true, questionCount: 8 },
+
+  // ========== Q1B INFERNO branch ==========
+  { name: 'Q1B only (7Q)', hasQ1B: true, hasQ2B: false, hasQ4B: false, hasQ5B: false, hasQ6B: false, hasEspelhoSilencioso: false, questionCount: 7 },
+  { name: 'Q1B + Q6B (8Q)', hasQ1B: true, hasQ2B: false, hasQ4B: false, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: false, questionCount: 8 },
+  { name: 'Q1B + Q6B + ESPELHO (8Q)', hasQ1B: true, hasQ2B: false, hasQ4B: false, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: true, questionCount: 8 },
+
+  // ========== Q4B PURGATORIO branch (no INFERNO branch) ==========
+  { name: 'Q4B only (7Q)', hasQ1B: false, hasQ2B: false, hasQ4B: true, hasQ5B: false, hasQ6B: false, hasEspelhoSilencioso: false, questionCount: 7 },
+  { name: 'Q4B + Q6B (8Q)', hasQ1B: false, hasQ2B: false, hasQ4B: true, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: false, questionCount: 8 },
+  { name: 'Q4B + Q6B + ESPELHO (8Q)', hasQ1B: false, hasQ2B: false, hasQ4B: true, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: true, questionCount: 8 },
+
+  // ========== Q2B + Q4B combos ==========
+  { name: 'Q2B + Q4B (8Q)', hasQ1B: false, hasQ2B: true, hasQ4B: true, hasQ5B: false, hasQ6B: false, hasEspelhoSilencioso: false, questionCount: 8 },
+  { name: 'Q2B + Q4B + Q6B (9Q)', hasQ1B: false, hasQ2B: true, hasQ4B: true, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: false, questionCount: 9 },
+  { name: 'Q2B + Q4B + Q6B + ESPELHO (9Q)', hasQ1B: false, hasQ2B: true, hasQ4B: true, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: true, questionCount: 9 },
+
+  // ========== Q1B + Q4B combos ==========
+  { name: 'Q1B + Q4B (8Q)', hasQ1B: true, hasQ2B: false, hasQ4B: true, hasQ5B: false, hasQ6B: false, hasEspelhoSilencioso: false, questionCount: 8 },
+  { name: 'Q1B + Q4B + Q6B (9Q)', hasQ1B: true, hasQ2B: false, hasQ4B: true, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: false, questionCount: 9 },
+  { name: 'Q1B + Q4B + Q6B + ESPELHO (9Q)', hasQ1B: true, hasQ2B: false, hasQ4B: true, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: true, questionCount: 9 },
+
+  // ========== Q5B combo (Phase 32 max-path baseline) ==========
+  { name: 'Q1B + Q4B + Q5B (9Q - Phase 32 baseline)', hasQ1B: true, hasQ2B: false, hasQ4B: true, hasQ5B: true, hasQ6B: false, hasEspelhoSilencioso: false, questionCount: 9 },
 ];
+
+// Validate all paths before running
+ALL_PATHS.forEach(assertValidPath);
 
 function calculatePath(config: PathConfig): Array<{ name: string; segments: SpeechSegment[] }> {
   const sections: Array<{ name: string; segments: SpeechSegment[] }> = [];
@@ -221,7 +277,7 @@ function calculatePath(config: PathConfig): Array<{ name: string; segments: Spee
     sections.push({ name: `PURGATORIO_Q4B_RESPOSTA_${q4b.choice}`, segments: q4b.segments });
   }
 
-  // PARAISO (Q5B is conditional)
+  // PARAISO (Q5B is conditional, Phase 32; Q6B is conditional, Phase 33)
   sections.push({ name: 'PARAISO_INTRO', segments: SCRIPT.PARAISO_INTRO });
   sections.push({ name: 'PARAISO_Q5_SETUP', segments: SCRIPT.PARAISO_Q5_SETUP });
   sections.push({ name: 'PARAISO_Q5_PERGUNTA', segments: SCRIPT.PARAISO_Q5_PERGUNTA });
@@ -230,7 +286,7 @@ function calculatePath(config: PathConfig): Array<{ name: string; segments: Spee
 
   // Conditional Q5B branch (Phase 32, BR-02)
   // Independent of Q1B/Q2B; coexistent with Q4B — fires when q4=A AND q5=A
-  // Sibling rejoin within PARAISO (no cross-phase target)
+  // Mutually exclusive with Q6B (Q5B needs q5=A, Q6B needs q5=B)
   if (config.hasQ5B) {
     sections.push({ name: 'PARAISO_Q5B_SETUP', segments: SCRIPT.PARAISO_Q5B_SETUP });
     sections.push({ name: 'PARAISO_Q5B_PERGUNTA', segments: SCRIPT.PARAISO_Q5B_PERGUNTA });
@@ -243,8 +299,17 @@ function calculatePath(config: PathConfig): Array<{ name: string; segments: Spee
   const q6 = pickLongerResposta(SCRIPT.PARAISO_Q6_RESPOSTA_A, SCRIPT.PARAISO_Q6_RESPOSTA_B);
   sections.push({ name: `PARAISO_Q6_RESPOSTA_${q6.choice}`, segments: q6.segments });
 
-  // Longest devolucao
-  const longestDevolucao = pickLongestDevolucao();
+  // Conditional Q6B branch (Phase 33, BR-03)
+  // Independent of Q1B/Q2B/Q4B; mutually exclusive with Q5B — fires when q5=B AND q6=A
+  if (config.hasQ6B) {
+    sections.push({ name: 'PARAISO_Q6B_SETUP', segments: SCRIPT.PARAISO_Q6B_SETUP });
+    sections.push({ name: 'PARAISO_Q6B_PERGUNTA', segments: SCRIPT.PARAISO_Q6B_PERGUNTA });
+    const q6b = pickLongerResposta(SCRIPT.PARAISO_Q6B_RESPOSTA_A, SCRIPT.PARAISO_Q6B_RESPOSTA_B);
+    sections.push({ name: `PARAISO_Q6B_RESPOSTA_${q6b.choice}`, segments: q6b.segments });
+  }
+
+  // Longest devolucao (Phase 33: ESPELHO_SILENCIOSO overrides archetype choice)
+  const longestDevolucao = pickLongestDevolucao(config.hasEspelhoSilencioso);
   sections.push({ name: longestDevolucao.key, segments: longestDevolucao.segments });
 
   // Encerramento
@@ -267,7 +332,7 @@ function formatDuration(seconds: number): string {
  * Main validation
  */
 function main() {
-  console.log('\n=== V6.0 TIMING VALIDATION (BRANCH-AWARE) ===\n');
+  console.log('\n=== V6.0 TIMING VALIDATION (BRANCH-AWARE) — PHASE 33 (20 PATHS) ===\n');
 
   let globalMaxTotal = 0;
   let globalMaxName = '';
@@ -331,7 +396,7 @@ function main() {
 
   if (pass) {
     console.log(`STATUS: PASS (max-path ${formatDuration(globalMaxTotal)} min)`);
-    console.log('\nAll paths fall within acceptable range.');
+    console.log('\nAll 20 paths fall within acceptable range.');
     process.exit(0);
   } else {
     console.log(`STATUS: FAIL (max-path ${formatDuration(globalMaxTotal)} min)`);
