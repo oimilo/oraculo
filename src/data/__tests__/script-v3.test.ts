@@ -892,3 +892,131 @@ describe('Q5B branch (Phase 32, BR-02)', () => {
     }
   });
 });
+
+describe('Q6B branch (Phase 33, BR-03)', () => {
+  it('SCRIPT.PARAISO_Q6B_SETUP exists with 3 segments', () => {
+    expect(SCRIPT.PARAISO_Q6B_SETUP).toBeDefined();
+    expect(Array.isArray(SCRIPT.PARAISO_Q6B_SETUP)).toBe(true);
+    expect(SCRIPT.PARAISO_Q6B_SETUP.length).toBe(3);
+  });
+
+  it('SCRIPT.PARAISO_Q6B_SETUP[0].text matches Option C blueprint exactly', () => {
+    expect(SCRIPT.PARAISO_Q6B_SETUP[0].text).toBe('Antes de eu começar.');
+  });
+
+  it('SCRIPT.PARAISO_Q6B_SETUP[0].inflection deep-equals [serious]', () => {
+    expect(SCRIPT.PARAISO_Q6B_SETUP[0].inflection).toEqual(['serious']);
+  });
+
+  it('SCRIPT.PARAISO_Q6B_SETUP[1].inflection deep-equals [warm]', () => {
+    expect(SCRIPT.PARAISO_Q6B_SETUP[1].inflection).toEqual(['warm']);
+  });
+
+  it('SCRIPT.PARAISO_Q6B_PERGUNTA is the exact cinematic line "Resposta — ou outra pergunta?"', () => {
+    expect(SCRIPT.PARAISO_Q6B_PERGUNTA.length).toBe(1);
+    expect(SCRIPT.PARAISO_Q6B_PERGUNTA[0].text).toBe('Resposta — ou outra pergunta?');
+  });
+
+  it('SCRIPT.PARAISO_Q6B_RESPOSTA_A (closed reading) has 2 segments, first is "Resposta."', () => {
+    expect(SCRIPT.PARAISO_Q6B_RESPOSTA_A.length).toBe(2);
+    expect(SCRIPT.PARAISO_Q6B_RESPOSTA_A[0].text).toBe('Resposta.');
+    expect(SCRIPT.PARAISO_Q6B_RESPOSTA_A[1].inflection).toEqual(['warm']);
+  });
+
+  it('SCRIPT.PARAISO_Q6B_RESPOSTA_B (open form) has 2 segments, first is "Outra pergunta."', () => {
+    expect(SCRIPT.PARAISO_Q6B_RESPOSTA_B.length).toBe(2);
+    expect(SCRIPT.PARAISO_Q6B_RESPOSTA_B[0].text).toBe('Outra pergunta.');
+    expect(SCRIPT.PARAISO_Q6B_RESPOSTA_B[1].inflection).toEqual(['gentle']);
+  });
+
+  it('SCRIPT.FALLBACK_Q6B exists with "Resposta — ou pergunta" prompt', () => {
+    expect(SCRIPT.FALLBACK_Q6B).toBeDefined();
+    expect(SCRIPT.FALLBACK_Q6B[0].text).toContain('Resposta — ou pergunta');
+  });
+
+  it('SCRIPT.TIMEOUT_Q6B exists and narrates default to resposta (closed reading)', () => {
+    expect(SCRIPT.TIMEOUT_Q6B).toBeDefined();
+    expect(SCRIPT.TIMEOUT_Q6B[0].text).toContain('Você ficou quieto');
+    expect(SCRIPT.TIMEOUT_Q6B[0].text).toContain('resposta');
+  });
+
+  it('Q6B segments are valid PT-BR with no author references', () => {
+    const allQ6BKeys = ['PARAISO_Q6B_SETUP', 'PARAISO_Q6B_PERGUNTA', 'PARAISO_Q6B_RESPOSTA_A', 'PARAISO_Q6B_RESPOSTA_B', 'FALLBACK_Q6B', 'TIMEOUT_Q6B'] as const;
+    for (const key of allQ6BKeys) {
+      assertValidSegments(SCRIPT[key], key);
+      assertPTBR(SCRIPT[key], key);
+      assertNoAuthorReferences(SCRIPT[key], key);
+    }
+  });
+
+  it('Q6B segments use only working inflection tags (no whispering)', () => {
+    const allQ6B = [
+      ...SCRIPT.PARAISO_Q6B_SETUP,
+      ...SCRIPT.PARAISO_Q6B_PERGUNTA,
+      ...SCRIPT.PARAISO_Q6B_RESPOSTA_A,
+      ...SCRIPT.PARAISO_Q6B_RESPOSTA_B,
+      ...SCRIPT.FALLBACK_Q6B,
+      ...SCRIPT.TIMEOUT_Q6B,
+    ];
+    const allowedTags = new Set(['warm', 'serious', 'gentle', 'determined', 'thoughtful', 'sad']);
+    for (const seg of allQ6B) {
+      if (seg.inflection) {
+        for (const tag of seg.inflection) {
+          expect(allowedTags.has(tag)).toBe(true);
+          expect(tag).not.toBe('whispering');
+        }
+      }
+    }
+  });
+});
+
+describe('DEVOLUCAO_ESPELHO_SILENCIOSO archetype (Phase 33, AR-01)', () => {
+  it('SCRIPT.DEVOLUCAO_ESPELHO_SILENCIOSO exists with exactly 6 segments', () => {
+    expect(SCRIPT.DEVOLUCAO_ESPELHO_SILENCIOSO).toBeDefined();
+    expect(Array.isArray(SCRIPT.DEVOLUCAO_ESPELHO_SILENCIOSO)).toBe(true);
+    expect(SCRIPT.DEVOLUCAO_ESPELHO_SILENCIOSO.length).toBe(6);
+  });
+
+  it('ESPELHO_SILENCIOSO[0] is the acceptance anchor "Tudo bem."', () => {
+    expect(SCRIPT.DEVOLUCAO_ESPELHO_SILENCIOSO[0].text).toBe('Tudo bem.');
+    expect(SCRIPT.DEVOLUCAO_ESPELHO_SILENCIOSO[0].inflection).toEqual(['warm']);
+  });
+
+  it('ESPELHO_SILENCIOSO[1] contains the signature phrase "silêncio que tem forma"', () => {
+    expect(SCRIPT.DEVOLUCAO_ESPELHO_SILENCIOSO[1].text).toContain('silêncio que tem forma');
+  });
+
+  it('ESPELHO_SILENCIOSO[4] contains the unanswerable open question "O que você nunca pediu"', () => {
+    expect(SCRIPT.DEVOLUCAO_ESPELHO_SILENCIOSO[4].text).toContain('O que você nunca pediu');
+  });
+
+  it('ESPELHO_SILENCIOSO has at least 2 segments with pauseAfter ≥ 1500ms (structured silence)', () => {
+    const longPauses = SCRIPT.DEVOLUCAO_ESPELHO_SILENCIOSO.filter(s => (s.pauseAfter ?? 0) >= 1500);
+    expect(longPauses.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('ESPELHO_SILENCIOSO contains NO framework name-drops (winnicott/lacan/bion/freud/objet petit/falso self/verdadeiro self)', () => {
+    const forbidden = /winnicott|lacan|bion|freud|objet\s+petit|falso\s+self|verdadeiro\s+self/i;
+    for (const seg of SCRIPT.DEVOLUCAO_ESPELHO_SILENCIOSO) {
+      expect(seg.text).not.toMatch(forbidden);
+    }
+  });
+
+  it('ESPELHO_SILENCIOSO is valid PT-BR with no author references', () => {
+    assertValidSegments(SCRIPT.DEVOLUCAO_ESPELHO_SILENCIOSO, 'DEVOLUCAO_ESPELHO_SILENCIOSO');
+    assertPTBR(SCRIPT.DEVOLUCAO_ESPELHO_SILENCIOSO, 'DEVOLUCAO_ESPELHO_SILENCIOSO');
+    assertNoAuthorReferences(SCRIPT.DEVOLUCAO_ESPELHO_SILENCIOSO, 'DEVOLUCAO_ESPELHO_SILENCIOSO');
+  });
+
+  it('ESPELHO_SILENCIOSO uses only working inflection tags (no whispering)', () => {
+    const allowedTags = new Set(['warm', 'serious', 'gentle', 'determined', 'thoughtful', 'sad']);
+    for (const seg of SCRIPT.DEVOLUCAO_ESPELHO_SILENCIOSO) {
+      if (seg.inflection) {
+        for (const tag of seg.inflection) {
+          expect(allowedTags.has(tag)).toBe(true);
+          expect(tag).not.toBe('whispering');
+        }
+      }
+    }
+  });
+});
