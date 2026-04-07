@@ -360,7 +360,7 @@
     <li><a href="#apresentacao">Apresenta&ccedil;&atilde;o</a></li>
     <li><a href="#inferno">Inferno (Q1, Q2, Q1B, Q2B)</a></li>
     <li><a href="#purgatorio">Purgat&oacute;rio (Q3, Q4, Q4B)</a></li>
-    <li><a href="#paraiso">Para&iacute;so (Q5, Q6)</a></li>
+    <li><a href="#paraiso">Para&iacute;so (Q5, Q5B, Q6)</a></li>
     <li><a href="#devolucao">Devolu&ccedil;&otilde;es (8 arqu&eacute;tipos)</a></li>
     <li><a href="#encerramento">Encerramento</a></li>
   </ol>
@@ -372,8 +372,8 @@
     <li><strong>Formato:</strong> Experi&ecirc;ncia solo com fones de ouvido, 5&ndash;7 minutos</li>
     <li><strong>Intera&ccedil;&atilde;o:</strong> O visitante responde em voz alta. O Or&aacute;culo ouve e reage.</li>
     <li><strong>Estrutura:</strong> Apresenta&ccedil;&atilde;o &rarr; Inferno &rarr; Purgat&oacute;rio &rarr; Para&iacute;so &rarr; Devolu&ccedil;&atilde;o &rarr; Encerramento</li>
-    <li><strong>Escolhas:</strong> 6 perguntas bin&aacute;rias (A ou B) + 3 perguntas condicionais (Q1B, Q2B, Q4B)</li>
-    <li><strong>Ramifica&ccedil;&otilde;es:</strong> Q1B aparece se Q1=B e Q2=B (perfil contra-f&oacute;bico). Q2B aparece se Q1=A e Q2=A. Q4B aparece se Q3=A e Q4=A.</li>
+    <li><strong>Escolhas:</strong> 6 perguntas bin&aacute;rias (A ou B) + 4 perguntas condicionais (Q1B, Q2B, Q4B, Q5B)</li>
+    <li><strong>Ramifica&ccedil;&otilde;es:</strong> Q1B aparece se Q1=B e Q2=B (perfil contra-f&oacute;bico). Q2B aparece se Q1=A e Q2=A. Q4B aparece se Q3=A e Q4=A. Q5B aparece se Q4=A e Q5=A (perfil PORTADOR).</li>
     <li><strong>Devolu&ccedil;&atilde;o:</strong> 8 arqu&eacute;tipos poss&iacute;veis, derivados do <em>padr&atilde;o</em> de escolhas (n&atilde;o de cada escolha individual)</li>
     <li><strong>Escala de profundidade:</strong> Light &rarr; Medium &rarr; Deep &rarr; Profound</li>
     <li><strong>Privacidade:</strong> Zero dados armazenados. &Aacute;udio descartado ap&oacute;s classifica&ccedil;&atilde;o (LGPD).</li>
@@ -416,7 +416,11 @@ graph TD
 
     PAR --> Q5{"<strong>Q5</strong> &mdash; A Pergunta Sem Resposta<br/><em>Press&atilde;o no peito, sem palavras</em><br/><br/>A: Carregar &nbsp;|&nbsp; B: Deixar dissolver"}
 
-    Q5 --> Q6{"<strong>Q6</strong> &mdash; O Fim do Jogo<br/><em>Voz do Or&aacute;culo afinando</em><br/><br/>A: Ouvir o espelho &nbsp;|&nbsp; B: J&aacute; sei"}
+    Q5 -->|"A: Carregar<br/>(se Q4=A)"| Q5B{"<strong>Q5B</strong> &mdash; O Que J&aacute; N&atilde;o Cabe<br/><em>Mem&oacute;ria e pergunta encostam</em><br/><br/>A: Fundir &nbsp;|&nbsp; B: Ordenar"}
+    Q5 -->|"B: Dissolver"| Q6
+    Q5B --> Q6
+
+    Q6{"<strong>Q6</strong> &mdash; O Fim do Jogo<br/><em>Voz do Or&aacute;culo afinando</em><br/><br/>A: Ouvir o espelho &nbsp;|&nbsp; B: J&aacute; sei"}
 
     Q6 --> DEV["<strong>DEVOLU&Ccedil;&Atilde;O</strong><br/><em>1 de 8 arqu&eacute;tipos<br/>baseado no padr&atilde;o de escolhas</em>"]
 
@@ -436,7 +440,7 @@ graph TD
     class PAR paraiso
     class DEV phase
     class Q1,Q2,Q3,Q4,Q5,Q6 question
-    class Q1B,Q2B,Q4B branch
+    class Q1B,Q2B,Q4B,Q5B branch
   </div>
   <p style="text-align:center; font-size:0.8rem; color:var(--muted); margin-top:1rem;">
     Caixas tracejadas = perguntas condicionais (s&oacute; aparecem para certos padr&otilde;es de escolha)
@@ -456,8 +460,8 @@ graph TD
     <div class="narration-text">
       Eu n&atilde;o sei quem voc&ecirc; &eacute;.
       <br>Isso me torna um bom lugar pra voc&ecirc; ser honesto.
-      <br>Vou te fazer perguntas. Voc&ecirc; responde em voz alta.
-      <br>Cada resposta abre um caminho que n&atilde;o pode ser desfeito. N&atilde;o tem replay. N&atilde;o tem voltar. O que voc&ecirc; escolher, voc&ecirc; carrega.
+      <br>Vou te perguntar. Voc&ecirc; responde em voz alta, eu preciso ouvir.
+      <br>N&atilde;o tem resposta certa, mas cada uma te leva pra um lado diferente.
       <br>Vamos.
     </div>
   </div>
@@ -809,6 +813,47 @@ graph TD
         <div class="choice-meaning">Confiar que nem tudo precisa ser carregado</div>
         <div class="choice-response">
           Voc&ecirc; abre as m&atilde;os. Pode ser sabedoria &mdash; soltar o que n&atilde;o pode ser possu&iacute;do. Ou pode ser expuls&atilde;o &mdash; mandar embora o que n&atilde;o cabe.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q5B Branch (Phase 32, BR-02) -->
+  <div class="branch-indicator">
+    <strong>&#9670; Ramifica&ccedil;&atilde;o condicional Q5B</strong> &mdash; S&oacute; aparece se o visitante escolheu <strong>Lembrar</strong> (Q4=A) <strong>E</strong> <strong>Carregar</strong> (Q5=A). Perfil PORTADOR &mdash; quem tem o peso da mem&oacute;ria e da pergunta encostando um no outro.
+  </div>
+
+  <div class="question">
+    <div class="question-header">
+      <span class="question-badge" style="background:#c9a84c;">Pergunta 5B</span>
+      <span class="question-depth">Profundidade: Deep &bull; Condicional</span>
+    </div>
+    <div class="question-title">O Que J&aacute; N&atilde;o Cabe &mdash; Fundir vs Ordenar</div>
+
+    <div class="narration" style="padding:0; border:0; margin-bottom:0.8rem;">
+      <div class="narration-label">Setup</div>
+      <div class="narration-text" style="font-size:1.05rem;">
+        Voc&ecirc; lembrou. Voc&ecirc; carregou.
+        <br>E agora descobre &mdash; o peso da mem&oacute;ria e o peso da pergunta n&atilde;o s&atilde;o dois pesos. Encostam um no outro at&eacute; virarem a mesma forma.
+        <br>J&aacute; n&atilde;o cabem separados.
+      </div>
+    </div>
+
+    <div class="question-text">&ldquo;Voc&ecirc; deixa eles se fundirem &mdash; ou tenta segurar cada um no lugar dele?&rdquo;</div>
+
+    <div class="choices">
+      <div class="choice choice-a">
+        <div class="choice-label">&bull; Op&ccedil;&atilde;o A &mdash; Fundir</div>
+        <div class="choice-meaning">Forma que se faz da mat&eacute;ria carregada</div>
+        <div class="choice-response">
+          Voc&ecirc; deixa. Quando o que aconteceu e o que n&atilde;o tem resposta param de se distinguir, voc&ecirc; n&atilde;o carrega mais &mdash; voc&ecirc; &eacute; a forma que se faz disso.
+        </div>
+      </div>
+      <div class="choice choice-b">
+        <div class="choice-label">&bull; Op&ccedil;&atilde;o B &mdash; Ordenar</div>
+        <div class="choice-meaning">Respeito por arquivar e silenciar separadamente</div>
+        <div class="choice-response">
+          Voc&ecirc; separa. Manter cada coisa no lugar dela &eacute; uma forma de respeito &mdash; a mem&oacute;ria pede um arquivo, a pergunta pede um sil&ecirc;ncio. Cada uma com seu cuidado.
         </div>
       </div>
     </div>
