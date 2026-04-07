@@ -53,7 +53,9 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 
 - [x] Q1B "A Porta no Fundo" branch contra-fobica (BR-01) — script + QUESTION_META[9] + shouldBranchQ1B guard + 6 machine states + OracleExperience helpers + 6 MP3s + timing-validation matrix + roteiro.html docs — *Validated in Phase 31*
 - [x] Q5B "O Que Já Não Cabe" branch no Paraíso (BR-02) — script + QUESTION_META[10] + shouldBranchQ5B guard (q4=A && q5=A) + 6 machine states + OracleExperience helpers + 6 MP3s + 12-path timing matrix + roteiro.html sync — *Validated in Phase 32*
-- [x] POL-02 ChoiceMap extension without modifying patternMatching.ts — *Validated in Phases 31 and 32*
+- [x] Q6B "O Espelho Extra" branch pré-devolução (BR-03) — script + QUESTION_META[11] + shouldBranchQ6B guard (q5=B && q6=A) + 6 machine states with qualified #oracle.DEVOLUCAO rejoin + OracleExperience helpers + 6 MP3s + 20-path timing matrix + roteiro.html sync — *Validated in Phase 33*
+- [x] DEVOLUCAO_ESPELHO_SILENCIOSO archetype (AR-01) — script (6 segments, ~24s) + isEspelhoSilencioso guard + DEVOLUCAO.always[0] HIGHEST priority insertion + top-level state + OracleExperience helpers + 1 MP3 — *Validated in Phase 33*
+- [x] POL-02 ChoiceMap extension without modifying patternMatching.ts — *Validated in Phases 31, 32, and 33*
 
 ### Shipped (v3.2 — Integration & Audio)
 
@@ -158,4 +160,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-07 — Phase 32 Q5B Paraíso Branch complete (BR-02 satisfied; Q5B fully wired end-to-end, max-path 6:53.7 min within 7:30 budget with 36s headroom; browser UAT deferred to Phase 35)*
+*Last updated: 2026-04-07 — Phase 33 Q6B + ESPELHO_SILENCIOSO complete (BR-03 + AR-01 satisfied; Q6B wired with qualified #oracle.DEVOLUCAO rejoin, DEVOLUCAO_ESPELHO_SILENCIOSO inserted at DEVOLUCAO.always[0] HIGHEST priority, 7 new MP3s, 20-path timing matrix max 7:01.2 min within 7:30 budget with 28.8s headroom; POL-02 intact; browser UAT deferred to Phase 35)*
