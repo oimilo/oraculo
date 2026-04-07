@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v6.0
 milestone_name: Deep Branching
 status: executing
-stopped_at: Completed 31-01-PLAN.md (Q1B data + types foundation)
-last_updated: "2026-04-07T01:51:24.737Z"
-last_activity: 2026-04-07
+stopped_at: Completed 31-02-PLAN.md (Q1B branch wired into machine + OracleExperience)
+last_updated: "2026-04-07T11:00:00.000Z"
+last_activity: 2026-04-07 -- Plan 31-02 completed (machine + UI wiring)
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 3
-  completed_plans: 1
+  completed_plans: 2
   percent: 0
 ---
 
@@ -27,9 +27,9 @@ progress:
 ## Current Position
 
 Phase: 31 (q1b-branch-inferno-contra-fobico) — EXECUTING
-Plan: 2 of 3
-Status: Ready to execute
-Last activity: 2026-04-07
+Plan: 2 of 3 (31-02 complete, 31-03 ready to execute)
+Status: Executing Phase 31
+Last activity: 2026-04-07 -- Plan 31-02 completed (machine + UI wiring)
 
 Progress: [░░░░░░░░░░] 0% (0/5 phases)
 
@@ -114,6 +114,7 @@ Recent decisions affecting current work:
 - [v4.0]: Branching paths over linear flow — game-like engagement, choices feel consequential
 - [v4.0]: 5-7 min target (down from 10.5) — Bienal foot traffic demands shorter sessions
 - [Phase 31]: Q1B branch data primitives added (script + NLU + types) — patternMatching.ts deliberately untouched for POL-02 compliance
+- [Phase 31]: Q1B branch wired into oracleMachine (shouldBranchQ1B guard + 6 states, Q2_RESPOSTA_B guarded) and OracleExperience (Q1B_CHOICE + 6 helper extensions) — 18 new tests, zero v4.0 regression
 
 ### Active TODOs
 
@@ -126,6 +127,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-07T01:51:24.734Z
-Stopped at: Completed 31-01-PLAN.md (Q1B data + types foundation)
-Resume: `/gsd:plan-phase 31` (start with Q1B branch implementation)
+Last session: 2026-04-07T11:00:00.000Z
+Stopped at: Completed 31-02-PLAN.md (Q1B branch wired into machine + OracleExperience)
+Resume: `/gsd:execute-plan 31-03` (Q1B audio generation + timing validation + roteiro docs)
