@@ -47,6 +47,7 @@ const Q6_CHOICE = buildChoiceConfig(6);
 const Q2B_CHOICE = buildChoiceConfig(7);
 const Q4B_CHOICE = buildChoiceConfig(8);
 const Q1B_CHOICE = buildChoiceConfig(9);
+const Q5B_CHOICE = buildChoiceConfig(10);
 
 /**
  * Breathing delay (ms) before sending NARRATIVA_DONE after TTS completes.
@@ -82,6 +83,9 @@ function getBreathingDelay(machineState: any): number {
   // Q4B last responses → PARAISO (always cross-phase after branch)
   if (machineState.matches({ PURGATORIO: 'Q4B_RESPOSTA_A' })) return LONG;
   if (machineState.matches({ PURGATORIO: 'Q4B_RESPOSTA_B' })) return LONG;
+  // Q5B last responses → Q6_SETUP (sibling rejoin within PARAISO)
+  if (machineState.matches({ PARAISO: 'Q5B_RESPOSTA_A' })) return LONG;
+  if (machineState.matches({ PARAISO: 'Q5B_RESPOSTA_B' })) return LONG;
   // PARAISO last responses → DEVOLUCAO
   if (machineState.matches({ PARAISO: 'Q6_RESPOSTA_A' })) return LONG;
   if (machineState.matches({ PARAISO: 'Q6_RESPOSTA_B' })) return LONG;
@@ -113,6 +117,7 @@ function getBreathingDelay(machineState: any): number {
   if (machineState.matches({ PARAISO: 'Q5_SETUP' })) return MEDIUM;
   if (machineState.matches({ PARAISO: 'Q5_RESPOSTA_A' })) return MEDIUM;
   if (machineState.matches({ PARAISO: 'Q5_RESPOSTA_B' })) return MEDIUM;
+  if (machineState.matches({ PARAISO: 'Q5B_SETUP' })) return MEDIUM;
   if (machineState.matches({ PARAISO: 'Q6_SETUP' })) return MEDIUM;
 
   // --- NONE: Perguntas (question → AGUARDANDO) ---
@@ -126,6 +131,7 @@ function getBreathingDelay(machineState: any): number {
   if (machineState.matches({ PURGATORIO: 'Q4_PERGUNTA' })) return NONE;
   if (machineState.matches({ PURGATORIO: 'Q4B_PERGUNTA' })) return NONE;
   if (machineState.matches({ PARAISO: 'Q5_PERGUNTA' })) return NONE;
+  if (machineState.matches({ PARAISO: 'Q5B_PERGUNTA' })) return NONE;
   if (machineState.matches({ PARAISO: 'Q6_PERGUNTA' })) return NONE;
 
   // --- NONE: TIMEOUT, FALLBACK, AGUARDANDO, or unmapped ---
@@ -191,6 +197,12 @@ function getScriptKey(machineState: any): keyof typeof SCRIPT | null {
   if (machineState.matches({ PARAISO: 'Q5_RESPOSTA_A' })) return 'PARAISO_Q5_RESPOSTA_A';
   if (machineState.matches({ PARAISO: 'Q5_RESPOSTA_B' })) return 'PARAISO_Q5_RESPOSTA_B';
   if (machineState.matches({ PARAISO: 'Q5_TIMEOUT' })) return 'TIMEOUT_Q5';
+  // Q5B branch substates (Phase 32, BR-02)
+  if (machineState.matches({ PARAISO: 'Q5B_SETUP' })) return 'PARAISO_Q5B_SETUP';
+  if (machineState.matches({ PARAISO: 'Q5B_PERGUNTA' })) return 'PARAISO_Q5B_PERGUNTA';
+  if (machineState.matches({ PARAISO: 'Q5B_RESPOSTA_A' })) return 'PARAISO_Q5B_RESPOSTA_A';
+  if (machineState.matches({ PARAISO: 'Q5B_RESPOSTA_B' })) return 'PARAISO_Q5B_RESPOSTA_B';
+  if (machineState.matches({ PARAISO: 'Q5B_TIMEOUT' })) return 'TIMEOUT_Q5B';
   if (machineState.matches({ PARAISO: 'Q6_SETUP' })) return 'PARAISO_Q6_SETUP';
   if (machineState.matches({ PARAISO: 'Q6_PERGUNTA' })) return 'PARAISO_Q6_PERGUNTA';
   if (machineState.matches({ PARAISO: 'Q6_RESPOSTA_A' })) return 'PARAISO_Q6_RESPOSTA_A';
@@ -222,6 +234,7 @@ function getFallbackScript(machineState: any): { segments: SpeechSegment[]; key:
   if (machineState.matches({ PURGATORIO: 'Q4_AGUARDANDO' })) return { segments: SCRIPT.FALLBACK_Q4, key: 'FALLBACK_Q4' };
   if (machineState.matches({ PURGATORIO: 'Q4B_AGUARDANDO' })) return { segments: SCRIPT.FALLBACK_Q4B, key: 'FALLBACK_Q4B' };
   if (machineState.matches({ PARAISO: 'Q5_AGUARDANDO' })) return { segments: SCRIPT.FALLBACK_Q5, key: 'FALLBACK_Q5' };
+  if (machineState.matches({ PARAISO: 'Q5B_AGUARDANDO' })) return { segments: SCRIPT.FALLBACK_Q5B, key: 'FALLBACK_Q5B' };
   if (machineState.matches({ PARAISO: 'Q6_AGUARDANDO' })) return { segments: SCRIPT.FALLBACK_Q6, key: 'FALLBACK_Q6' };
   return null;
 }
@@ -274,6 +287,7 @@ export default function OracleExperience() {
     if (state.matches({ PURGATORIO: 'Q4_AGUARDANDO' })) return Q4_CHOICE;
     if (state.matches({ PURGATORIO: 'Q4B_AGUARDANDO' })) return Q4B_CHOICE;
     if (state.matches({ PARAISO: 'Q5_AGUARDANDO' })) return Q5_CHOICE;
+    if (state.matches({ PARAISO: 'Q5B_AGUARDANDO' })) return Q5B_CHOICE;
     if (state.matches({ PARAISO: 'Q6_AGUARDANDO' })) return Q6_CHOICE;
     return null;
   }, [state.value]);
@@ -288,6 +302,7 @@ export default function OracleExperience() {
     state.matches({ PURGATORIO: 'Q4_AGUARDANDO' }) ||
     state.matches({ PURGATORIO: 'Q4B_AGUARDANDO' }) ||
     state.matches({ PARAISO: 'Q5_AGUARDANDO' }) ||
+    state.matches({ PARAISO: 'Q5B_AGUARDANDO' }) ||
     state.matches({ PARAISO: 'Q6_AGUARDANDO' });
 
   // Voice choice hook - active flag manages lifecycle automatically
@@ -335,6 +350,7 @@ export default function OracleExperience() {
     state.matches({ PURGATORIO: 'Q4_PERGUNTA' }) ||
     state.matches({ PURGATORIO: 'Q4B_PERGUNTA' }) ||
     state.matches({ PARAISO: 'Q5_PERGUNTA' }) ||
+    state.matches({ PARAISO: 'Q5B_PERGUNTA' }) ||
     state.matches({ PARAISO: 'Q6_PERGUNTA' });
 
   useEffect(() => {
