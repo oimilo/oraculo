@@ -1552,4 +1552,202 @@ describe('oracleMachine v4', () => {
       actor.stop();
     });
   });
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // Phase 33 — Q6B Branch Guards (BR-03) + ESPELHO_SILENCIOSO Guard (AR-01)
+  // ═════════════════════════════════════════════════════════════════════════
+
+  describe('shouldBranchQ6B guard (Phase 33 BR-03)', () => {
+    it('returns true when q5=B AND q6=A (positive case)', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+
+      // Manually set context with q5=B, q6=A
+      const snapshot = actor.getSnapshot();
+      const testContext: OracleContextV4 = {
+        ...snapshot.context,
+        choiceMap: { q5: 'B', q6: 'A' }
+      };
+
+      const guard = oracleMachine.implementations.guards?.shouldBranchQ6B;
+      expect(guard).toBeDefined();
+      const result = guard?.({ context: testContext } as any);
+      expect(result).toBe(true);
+
+      actor.stop();
+    });
+
+    it('returns false when q5=A AND q6=A (negative: q5 wrong)', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+
+      const snapshot = actor.getSnapshot();
+      const testContext: OracleContextV4 = {
+        ...snapshot.context,
+        choiceMap: { q5: 'A', q6: 'A' }
+      };
+
+      const guard = oracleMachine.implementations.guards?.shouldBranchQ6B;
+      const result = guard?.({ context: testContext } as any);
+      expect(result).toBe(false);
+
+      actor.stop();
+    });
+
+    it('returns false when q5=B AND q6=B (negative: q6 wrong)', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+
+      const snapshot = actor.getSnapshot();
+      const testContext: OracleContextV4 = {
+        ...snapshot.context,
+        choiceMap: { q5: 'B', q6: 'B' }
+      };
+
+      const guard = oracleMachine.implementations.guards?.shouldBranchQ6B;
+      const result = guard?.({ context: testContext } as any);
+      expect(result).toBe(false);
+
+      actor.stop();
+    });
+
+    it('returns false when q5 missing', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+
+      const snapshot = actor.getSnapshot();
+      const testContext: OracleContextV4 = {
+        ...snapshot.context,
+        choiceMap: { q6: 'A' }
+      };
+
+      const guard = oracleMachine.implementations.guards?.shouldBranchQ6B;
+      const result = guard?.({ context: testContext } as any);
+      expect(result).toBe(false);
+
+      actor.stop();
+    });
+
+    it('returns false when q6 missing', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+
+      const snapshot = actor.getSnapshot();
+      const testContext: OracleContextV4 = {
+        ...snapshot.context,
+        choiceMap: { q5: 'B' }
+      };
+
+      const guard = oracleMachine.implementations.guards?.shouldBranchQ6B;
+      const result = guard?.({ context: testContext } as any);
+      expect(result).toBe(false);
+
+      actor.stop();
+    });
+
+    it('returns false when choiceMap is empty', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+
+      const snapshot = actor.getSnapshot();
+      const testContext: OracleContextV4 = {
+        ...snapshot.context,
+        choiceMap: {}
+      };
+
+      const guard = oracleMachine.implementations.guards?.shouldBranchQ6B;
+      const result = guard?.({ context: testContext } as any);
+      expect(result).toBe(false);
+
+      actor.stop();
+    });
+  });
+
+  describe('isEspelhoSilencioso guard (Phase 33 AR-01)', () => {
+    it('returns true when q6b=B (positive case)', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+
+      const snapshot = actor.getSnapshot();
+      const testContext: OracleContextV4 = {
+        ...snapshot.context,
+        choiceMap: { q6b: 'B' }
+      };
+
+      const guard = oracleMachine.implementations.guards?.isEspelhoSilencioso;
+      expect(guard).toBeDefined();
+      const result = guard?.({ context: testContext } as any);
+      expect(result).toBe(true);
+
+      actor.stop();
+    });
+
+    it('returns false when q6b=A (negative: visitor chose closed reading)', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+
+      const snapshot = actor.getSnapshot();
+      const testContext: OracleContextV4 = {
+        ...snapshot.context,
+        choiceMap: { q6b: 'A' }
+      };
+
+      const guard = oracleMachine.implementations.guards?.isEspelhoSilencioso;
+      const result = guard?.({ context: testContext } as any);
+      expect(result).toBe(false);
+
+      actor.stop();
+    });
+
+    it('returns false when q6b missing (negative: visitor never reached Q6B branch)', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+
+      const snapshot = actor.getSnapshot();
+      const testContext: OracleContextV4 = {
+        ...snapshot.context,
+        choiceMap: { q5: 'B', q6: 'A' }  // Triggered Q6B but hasn't completed it
+      };
+
+      const guard = oracleMachine.implementations.guards?.isEspelhoSilencioso;
+      const result = guard?.({ context: testContext } as any);
+      expect(result).toBe(false);
+
+      actor.stop();
+    });
+
+    it('returns false when q6b=A from timeout default (silence MUST NOT fire ESPELHO)', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+
+      const snapshot = actor.getSnapshot();
+      const testContext: OracleContextV4 = {
+        ...snapshot.context,
+        choiceMap: { q6b: 'A' }  // Defaulted to A on timeout
+      };
+
+      const guard = oracleMachine.implementations.guards?.isEspelhoSilencioso;
+      const result = guard?.({ context: testContext } as any);
+      expect(result).toBe(false);
+
+      actor.stop();
+    });
+  });
+
+  describe('POL-02 invariant — Phase 33 guards NOT in patternMatching.ts', () => {
+    it('shouldBranchQ6B is NOT exported from patternMatching.ts', async () => {
+      const patternMatching = await import('@/machines/guards/patternMatching');
+      expect(Object.keys(patternMatching)).not.toContain('shouldBranchQ6B');
+    });
+
+    it('isEspelhoSilencioso is NOT exported from patternMatching.ts', async () => {
+      const patternMatching = await import('@/machines/guards/patternMatching');
+      expect(Object.keys(patternMatching)).not.toContain('isEspelhoSilencioso');
+    });
+
+    it('both guards live in oracleMachine.ts setup.guards only', () => {
+      expect(oracleMachine.implementations.guards?.shouldBranchQ6B).toBeDefined();
+      expect(oracleMachine.implementations.guards?.isEspelhoSilencioso).toBeDefined();
+    });
+  });
 });

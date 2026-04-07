@@ -44,6 +44,15 @@ export const oracleMachine = setup({
     shouldBranchQ1B: ({ context }) => context.choiceMap.q1 === 'B' && context.choiceMap.q2 === 'B',
     // Branch guards (new — Phase 32, BR-02)
     shouldBranchQ5B: ({ context }) => context.choiceMap.q4 === 'A' && context.choiceMap.q5 === 'A',
+    // Branch guards (new — Phase 33, BR-03)
+    shouldBranchQ6B: ({ context }) =>
+      context.choiceMap.q5 === 'B' && context.choiceMap.q6 === 'A',
+    // Phase 33 — AR-01 (DEVOLUCAO_ESPELHO_SILENCIOSO trigger)
+    // HIGHEST PRIORITY in DEVOLUCAO.always — must be checked first.
+    // Lives here (NOT in patternMatching.ts) because it reads choiceMap.q6b
+    // which is a NAMED lookup, not a positional index in context.choices.
+    // POL-02 invariant: patternMatching.ts MUST stay byte-identical.
+    isEspelhoSilencioso: ({ context }) => context.choiceMap.q6b === 'B',
   },
 }).createMachine({
   id: 'oracle',
