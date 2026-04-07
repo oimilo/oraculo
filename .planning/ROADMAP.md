@@ -140,10 +140,10 @@ Plans:
 **Goal**: Add "O Que Já Não Cabe" branch — triggered when q4=A && q5=A (PORTADOR profile precursor), addresses the gap that no Paraíso branch exists despite Inferno (Q2B) and Purgatorio (Q4B) having one each. Adds 6 SCRIPT keys, QUESTION_META[10], shouldBranchQ5B guard, 6 machine states with sibling-state rejoin to Q6_SETUP, OracleExperience helper extensions, 6 MP3s, timing validation expansion to 12 paths, and roteiro.html documentation. Mirrors Phase 31 (Q1B) structure with two key differences: (1) sibling-state rejoin pattern (no #oracle. prefix because Q5B and Q6_SETUP both live inside PARAISO compound state), (2) Q5B is COEXISTENT with Q4B (both fire when q3=A, q4=A, q5=A — not mutually exclusive). PORTADOR archetype detection deliberately deferred to Phase 34 to honor POL-02 invariant (patternMatching.ts byte-identical).
 **Depends on**: Phase 31
 **Requirements**: BR-02
-**Plans:** 3 plans
+**Plans:** 1/3 plans executed
 
 Plans:
-- [ ] 32-01-PLAN.md — Data + Types: script.ts entries, QUESTION_META[10], POL-02 verification (Wave 1)
+- [x] 32-01-PLAN.md — Data + Types: script.ts entries, QUESTION_META[10], POL-02 verification (Wave 1)
 - [ ] 32-02-PLAN.md — Machine + UI: shouldBranchQ5B guard, 6 Q5B states with sibling rejoin, OracleExperience helpers + Q4B/Q5B coexistence tests (Wave 2, depends on 32-01)
 - [ ] 32-03-PLAN.md — Audio + Validation + Docs: 6 MP3s, validate-timing.ts 12-path matrix, roteiro.html updates (Wave 3, depends on 32-01 and 32-02)
 
@@ -326,7 +326,7 @@ Plans:
 | 29. Integration | v4.0 | 2/2 | Complete    | 2026-03-29 |
 | 30. Visual System | v5.0 | 1/2 | Informally Shipped | 2026-04-06 |
 | 31. Q1B Branch | v6.0 | 3/3 | Complete    | 2026-04-07 |
-| 32. Q5B Branch | v6.0 | 0/3 | Planned | - |
+| 32. Q5B Branch | v6.0 | 1/3 | In Progress|  |
 | 33. Q6B + ESPELHO_SILENCIOSO | v6.0 | 0/TBD | Not started | - |
 | 34. Detectable Archetypes | v6.0 | 0/TBD | Not started | - |
 | 35. Timing + UAT | v6.0 | 0/TBD | Not started | - |

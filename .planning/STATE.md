@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v6.0
 milestone_name: Deep Branching
 status: executing
-stopped_at: "Completed 31-03-PLAN.md (Q1B audio + timing validation + roteiro complete) - Phase 31 ready for /gsd:transition"
-last_updated: "2026-04-07T11:22:21.456Z"
+stopped_at: Completed 32-01-PLAN.md (Q5B data + types) - Phase 32 Wave 1 ready for 32-02
+last_updated: "2026-04-07T12:17:12.018Z"
 last_activity: 2026-04-07
 progress:
   total_phases: 5
   completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
+  total_plans: 6
+  completed_plans: 4
   percent: 0
 ---
 
@@ -22,12 +22,12 @@ progress:
 
 **Current Milestone:** v6.0 Deep Branching
 
-**Current Focus:** Phase 31 — q1b-branch-inferno-contra-fobico
+**Current Focus:** Phase 32 — q5b-branch-paraiso-gap-closure
 
 ## Current Position
 
-Phase: 32
-Plan: Not started
+Phase: 32 (q5b-branch-paraiso-gap-closure) — EXECUTING
+Plan: 2 of 3
 Status: Ready to execute
 Last activity: 2026-04-07
 
@@ -116,6 +116,7 @@ Recent decisions affecting current work:
 - [Phase 31]: Q1B branch data primitives added (script + NLU + types) — patternMatching.ts deliberately untouched for POL-02 compliance
 - [Phase 31]: Q1B branch wired into oracleMachine (shouldBranchQ1B guard + 6 states, Q2_RESPOSTA_B guarded) and OracleExperience (Q1B_CHOICE + 6 helper extensions) — 18 new tests, zero v4.0 regression
 - [Phase 31]: Phase 31 BR-01 (Q1B contra-fobico) shipped end-to-end: 6 MP3s, 6-path timing matrix (max 6:14 min), roteiro.html in sync. Phase 35 browser UAT deferred.
+- [Phase 32]: Q5B data primitives added (script + NLU) — patternMatching.ts untouched per POL-02
 
 ### Active TODOs
 
@@ -128,6 +129,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-07T11:08:15.705Z
-Stopped at: Completed 31-03-PLAN.md (Q1B audio + timing validation + roteiro complete) - Phase 31 ready for /gsd:transition
+Last session: 2026-04-07T12:17:12.015Z
+Stopped at: Completed 32-01-PLAN.md (Q5B data + types) - Phase 32 Wave 1 ready for 32-02
 Resume: `/gsd:execute-plan 31-03` (Q1B audio generation + timing validation + roteiro docs)
