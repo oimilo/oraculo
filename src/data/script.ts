@@ -581,7 +581,7 @@ export const SCRIPT: ScriptDataV4 = {
     { text: "Tudo bem.", pauseAfter: 1500, inflection: ['warm'] },
     { text: "Você não vai sair daqui com um nome. Você vai sair com um silêncio que tem forma.", pauseAfter: 1500 },
     { text: "Eu não vou te dizer o que eu vi. Vou te dar o lugar onde isso poderia ser dito.", pauseAfter: 1500, inflection: ['thoughtful'] },
-    { text: "Aqui:", pauseAfter: 2200 },
+    { text: "Aqui:", pauseAfter: 2000 },
     { text: "O que você nunca pediu — mas que mesmo assim te falta?", pauseAfter: 1800, inflection: ['gentle'] },
     { text: "Esse é o seu espelho. Não tem moldura. Não tem reflexo. Só pergunta.", pauseAfter: 1400, inflection: ['warm'] },
   ],
