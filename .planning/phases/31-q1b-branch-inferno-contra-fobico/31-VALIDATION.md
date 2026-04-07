@@ -2,7 +2,7 @@
 phase: 31
 slug: q1b-branch-inferno-contra-fobico
 status: draft
-nyquist_compliant: false
+nyquist_compliant: true
 wave_0_complete: false
 created: 2026-04-06
 ---
@@ -86,4 +86,4 @@ If existing test files don't yet have stubs for the new layers, the planner shou
 - [ ] Feedback latency < 60s (quick command ~10s)
 - [ ] `nyquist_compliant: true` set in frontmatter once planner aligns plan tasks
 
-**Approval:** pending — gsd-planner to fill task-level details and flip frontmatter
+**Approval:** approved 2026-04-06 — all 9 tasks across 31-01/02/03 have automated verify commands; baseline confirmed by gsd-plan-checker

@@ -11,9 +11,9 @@ Source of truth: `memory/next-milestone-v5-deep-branching.md` (blueprint complet
 
 ### Branching (Conditional Branches)
 
-- [ ] **BR-01**: Visitor com `q1='B' && q2='B'` (saiu da sala E ficou olhando a coisa) ouve a branch Q1B "A Porta no Fundo" — 8 entries no script (SETUP×3, PERGUNTA, RESPOSTA_A×2, FALLBACK, TIMEOUT), QUESTION_META[9], guard `shouldBranchQ1B`, estados Q1B_* na máquina, OracleExperience extended, 8 MP3s gerados
-- [ ] **BR-02**: Visitor com `q4='A' && q5='A'` (lembrou tudo E carrega a pergunta) ouve a branch Q5B "O Que Já Não Cabe" — 8 entries no script, QUESTION_META[10], guard `shouldBranchQ5B`, estados Q5B_*, OracleExperience extended, 8 MP3s gerados
-- [ ] **BR-03**: Visitor com `q5='B' && q6='A'` (dissolveu pergunta MAS pediu leitura) ouve a branch Q6B "O Espelho Extra" — 8 entries no script, QUESTION_META[11], guard `shouldBranchQ6B`, estados Q6B_*, OracleExperience extended, 8 MP3s gerados, transição condicional para DEVOLUCAO normal vs DEVOLUCAO_ESPELHO_SILENCIOSO
+- [ ] **BR-01**: Visitor com `q1='B' && q2='B'` (saiu da sala E ficou olhando a coisa) ouve a branch Q1B "A Porta no Fundo" — **6 SCRIPT keys** (SETUP, PERGUNTA, RESPOSTA_A, RESPOSTA_B, FALLBACK, TIMEOUT — onde SETUP/RESPOSTA são arrays multi-segmento gerando 1 MP3 cada, seguindo o padrão v4.0), QUESTION_META[9], guard `shouldBranchQ1B`, estados Q1B_* na máquina, OracleExperience extended, **6 MP3s** gerados
+- [ ] **BR-02**: Visitor com `q4='A' && q5='A'` (lembrou tudo E carrega a pergunta) ouve a branch Q5B "O Que Já Não Cabe" — 6 SCRIPT keys (mesmo padrão de BR-01), QUESTION_META[10], guard `shouldBranchQ5B`, estados Q5B_*, OracleExperience extended, 6 MP3s gerados
+- [ ] **BR-03**: Visitor com `q5='B' && q6='A'` (dissolveu pergunta MAS pediu leitura) ouve a branch Q6B "O Espelho Extra" — 6 SCRIPT keys (mesmo padrão), QUESTION_META[11], guard `shouldBranchQ6B`, estados Q6B_*, OracleExperience extended, 6 MP3s gerados, transição condicional para DEVOLUCAO normal vs DEVOLUCAO_ESPELHO_SILENCIOSO
 
 ### Arquétipos (Devoluções)
 
