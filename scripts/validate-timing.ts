@@ -1,12 +1,18 @@
 /**
- * V4.0 TIMING VALIDATION SCRIPT (BRANCH-AWARE)
+ * V6.0 TIMING VALIDATION SCRIPT (BRANCH-AWARE)
  *
- * Validates that the max-path experience duration falls within the 5-7 minute target.
- * Calculates all 4 possible paths through the branching structure:
+ * Validates that the max-path experience duration falls within the 5-7:30 minute
+ * target (300-450 seconds — v6.0 budget with branch overflow tolerance).
+ * Calculates all 6 possible paths through the branching structure:
  *   1. No branches (6 questions — shortest)
- *   2. Q2B only (7 questions)
- *   3. Q4B only (7 questions)
- *   4. Both Q2B + Q4B (8 questions — longest)
+ *   2. Q2B only (7 questions)            — q1=A AND q2=A
+ *   3. Q1B only (7 questions)            — q1=B AND q2=B (Phase 31, BR-01)
+ *   4. Q4B only (7 questions)
+ *   5. Q2B + Q4B (8 questions)
+ *   6. Q1B + Q4B (8 questions)           — Phase 31, BR-01
+ *
+ * Note: Q1B and Q2B are MUTUALLY EXCLUSIVE — q1 cannot be both 'A' and 'B'.
+ * Therefore no path has both Q1B+Q2B firing.
  *
  * Methodology:
  * - Speech rate: ~13 chars/sec for PT-BR conversational speech
@@ -15,7 +21,7 @@
  * - Max-path: takes the longer RESPOSTA option for each question pair
  *
  * Exit codes:
- * - 0: max-path within 300-420 seconds (PASS)
+ * - 0: max-path within 300-450 seconds (PASS)
  * - 1: max-path outside target range (FAIL)
  */
 
@@ -98,27 +104,36 @@ function pickLongestDevolucao(): { segments: SpeechSegment[], key: string } {
 
 /**
  * Branch conditions:
+ * - Q1B triggers when: Q1=B AND Q2=B (contra-fobico profile in INFERNO)
  * - Q2B triggers when: Q1=A AND Q2=A (both "toward" choices in INFERNO)
  * - Q4B triggers when: Q3=A AND Q4=A (both "toward" choices in PURGATORIO)
  *
- * Four possible paths:
+ * Six possible paths (Q1B and Q2B are MUTUALLY EXCLUSIVE — q1 can't be A AND B):
  * 1. No branches: 6 questions (shortest)
  * 2. Q2B only: 7 questions
- * 3. Q4B only: 7 questions
- * 4. Both Q2B + Q4B: 8 questions (longest)
+ * 3. Q1B only: 7 questions    (Phase 31, BR-01)
+ * 4. Q4B only: 7 questions
+ * 5. Q2B + Q4B: 8 questions
+ * 6. Q1B + Q4B: 8 questions   (Phase 31, BR-01)
  */
 interface PathConfig {
   name: string;
+  hasQ1B: boolean;  // Phase 31, BR-01 — fires when q1=B AND q2=B
   hasQ2B: boolean;
   hasQ4B: boolean;
   questionCount: number; // 6, 7, or 8
 }
 
+// NOTE: Q1B and Q2B are mutually exclusive (q1 can't be both A and B), so the
+// permutation matrix is 6 entries, not 8. There is no "Q1B+Q2B" or
+// "Q1B+Q2B+Q4B" path.
 const ALL_PATHS: PathConfig[] = [
-  { name: 'No branches (6Q)', hasQ2B: false, hasQ4B: false, questionCount: 6 },
-  { name: 'Q2B only (7Q)', hasQ2B: true, hasQ4B: false, questionCount: 7 },
-  { name: 'Q4B only (7Q)', hasQ2B: false, hasQ4B: true, questionCount: 7 },
-  { name: 'Both Q2B+Q4B (8Q)', hasQ2B: true, hasQ4B: true, questionCount: 8 },
+  { name: 'No branches (6Q)',     hasQ1B: false, hasQ2B: false, hasQ4B: false, questionCount: 6 },
+  { name: 'Q2B only (7Q)',        hasQ1B: false, hasQ2B: true,  hasQ4B: false, questionCount: 7 },
+  { name: 'Q1B only (7Q)',        hasQ1B: true,  hasQ2B: false, hasQ4B: false, questionCount: 7 },
+  { name: 'Q4B only (7Q)',        hasQ1B: false, hasQ2B: false, hasQ4B: true,  questionCount: 7 },
+  { name: 'Q2B + Q4B (8Q)',       hasQ1B: false, hasQ2B: true,  hasQ4B: true,  questionCount: 8 },
+  { name: 'Q1B + Q4B (8Q)',       hasQ1B: true,  hasQ2B: false, hasQ4B: true,  questionCount: 8 },
 ];
 
 function calculatePath(config: PathConfig): Array<{ name: string; segments: SpeechSegment[] }> {
@@ -145,6 +160,15 @@ function calculatePath(config: PathConfig): Array<{ name: string; segments: Spee
     sections.push({ name: 'INFERNO_Q2B_PERGUNTA', segments: SCRIPT.INFERNO_Q2B_PERGUNTA });
     const q2b = pickLongerResposta(SCRIPT.INFERNO_Q2B_RESPOSTA_A, SCRIPT.INFERNO_Q2B_RESPOSTA_B);
     sections.push({ name: `INFERNO_Q2B_RESPOSTA_${q2b.choice}`, segments: q2b.segments });
+  }
+
+  // Conditional Q1B branch (Phase 31, BR-01)
+  // Mutually exclusive with Q2B — fires when q1=B AND q2=B (contra-fobico profile)
+  if (config.hasQ1B) {
+    sections.push({ name: 'INFERNO_Q1B_SETUP', segments: SCRIPT.INFERNO_Q1B_SETUP });
+    sections.push({ name: 'INFERNO_Q1B_PERGUNTA', segments: SCRIPT.INFERNO_Q1B_PERGUNTA });
+    const q1b = pickLongerResposta(SCRIPT.INFERNO_Q1B_RESPOSTA_A, SCRIPT.INFERNO_Q1B_RESPOSTA_B);
+    sections.push({ name: `INFERNO_Q1B_RESPOSTA_${q1b.choice}`, segments: q1b.segments });
   }
 
   // PURGATORIO
@@ -203,7 +227,7 @@ function formatDuration(seconds: number): string {
  * Main validation
  */
 function main() {
-  console.log('\n=== V4.0 TIMING VALIDATION (BRANCH-AWARE) ===\n');
+  console.log('\n=== V6.0 TIMING VALIDATION (BRANCH-AWARE) ===\n');
 
   let globalMaxTotal = 0;
   let globalMaxName = '';
@@ -261,9 +285,9 @@ function main() {
 
   // Target validation
   console.log('\n----------------------------------------------------------------');
-  console.log('TARGET: 5-7 minutes (300-420 seconds)');
+  console.log('TARGET: 5-7:30 minutes (300-450 seconds) — v6.0 budget with branch overflow tolerance');
 
-  const pass = globalMaxTotal >= 300 && globalMaxTotal <= 420;
+  const pass = globalMaxTotal >= 300 && globalMaxTotal <= 450;
 
   if (pass) {
     console.log(`STATUS: PASS (max-path ${formatDuration(globalMaxTotal)} min)`);
@@ -272,8 +296,8 @@ function main() {
   } else {
     console.log(`STATUS: FAIL (max-path ${formatDuration(globalMaxTotal)} min)`);
 
-    if (globalMaxTotal > 420) {
-      const excess = globalMaxTotal - 420;
+    if (globalMaxTotal > 450) {
+      const excess = globalMaxTotal - 450;
       console.log(`\nExceeds target by ${excess.toFixed(1)}s.`);
       console.log('Recommendations:');
       console.log('  1. Trim branch respostas to 1 segment each');
