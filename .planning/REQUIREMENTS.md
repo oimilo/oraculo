@@ -1,103 +1,105 @@
 # Requirements: O Oraculo
 
-**Defined:** 2026-03-29
+**Defined:** 2026-04-06 (v6.0)
 **Core Value:** Experiencia seamless e imersiva como um jogo — o visitante fala, ouve, e e transformado.
 
-## v5.0 Requirements
+## v6.0 Requirements (Active)
 
-Requirements for Tester UI Polish milestone. Upgrade the visual layer for psychoanalyst testers — audio-reactive visuals, mic indicators, polished debug overlay, and refined dark-theme UX.
+Requirements for **Deep Branching** milestone. Adicionar 3 novas branches condicionais (Q1B, Q5B, Q6B) ao fluxo do Oráculo, mais o arquétipo DEVOLUCAO_ESPELHO_SILENCIOSO e 2 arquétipos detectáveis novos (CONTRA_FOBICO, PORTADOR), aprofundando a sensação oracular sem gamificar.
 
-### Visual (Background & Atmosphere)
+Source of truth: `memory/next-milestone-v5-deep-branching.md` (blueprint completo com scripts, guards, MP3 specs).
 
-- [x] **VIS-01**: Full-screen audio-reactive equalizer/particle background that responds to TTS playback intensity
-- [x] **VIS-02**: Background visual style changes per narrative phase (Inferno=red/fire, Purgatorio=blue/mist, Paraiso=gold/light)
-- [ ] **VIS-03**: Smooth visual transitions between phases (crossfade matching the 3s audio crossfade)
-- [ ] **VIS-04**: Idle state has subtle ambient animation (not static black screen)
+### Branching (Conditional Branches)
 
-### Microphone (Listening State)
+- [ ] **BR-01**: Visitor com `q1='B' && q2='B'` (saiu da sala E ficou olhando a coisa) ouve a branch Q1B "A Porta no Fundo" — 8 entries no script (SETUP×3, PERGUNTA, RESPOSTA_A×2, FALLBACK, TIMEOUT), QUESTION_META[9], guard `shouldBranchQ1B`, estados Q1B_* na máquina, OracleExperience extended, 8 MP3s gerados
+- [ ] **BR-02**: Visitor com `q4='A' && q5='A'` (lembrou tudo E carrega a pergunta) ouve a branch Q5B "O Que Já Não Cabe" — 8 entries no script, QUESTION_META[10], guard `shouldBranchQ5B`, estados Q5B_*, OracleExperience extended, 8 MP3s gerados
+- [ ] **BR-03**: Visitor com `q5='B' && q6='A'` (dissolveu pergunta MAS pediu leitura) ouve a branch Q6B "O Espelho Extra" — 8 entries no script, QUESTION_META[11], guard `shouldBranchQ6B`, estados Q6B_*, OracleExperience extended, 8 MP3s gerados, transição condicional para DEVOLUCAO normal vs DEVOLUCAO_ESPELHO_SILENCIOSO
 
-- [ ] **MIC-01**: Redesigned mic-active indicator — intuitive visual cue that the Oracle is listening (not just pulsing bars)
-- [ ] **MIC-02**: Mic indicator responds to actual audio input level (real-time visual feedback)
-- [ ] **MIC-03**: Clear visual transition between "Oracle speaking" and "your turn" states
+### Arquétipos (Devoluções)
 
-### Debug (Tester Overlay)
+- [ ] **AR-01**: DEVOLUCAO_ESPELHO_SILENCIOSO arquetipo criado — 6 segmentos no script (devolve forma em vez de conteúdo, ~22-28s), 6 MP3s, guard `isEspelhoSilencioso` com **highest priority** no `always` do estado DEVOLUCAO (deve verificar antes dos 8 arquétipos atuais), trigger: `q6b === 'B'`
+- [ ] **AR-02**: CONTRA_FOBICO arquétipo detectável — guard `isContraFobico` em `patternMatching.ts` (trigger: `q1==='B' && q2==='B' && q1b==='A'`), DEVOLUCAO_CONTRA_FOBICO script + MP3s, ordem nos `always` do DEVOLUCAO: ESPELHO_SILENCIOSO → CONTRA_FOBICO → PORTADOR → 8 atuais
+- [ ] **AR-03**: PORTADOR arquétipo detectável — guard `isPortador` (trigger: `q4==='A' && q5==='A' && q5b==='A'`), DEVOLUCAO_PORTADOR script + MP3s
 
-- [ ] **DBG-01**: Debug overlay redesigned as elegant status display with phase name, question number, and choice trail
-- [ ] **DBG-02**: Toggle via keyboard shortcut AND visible toggle button (testers won't know Ctrl+Shift+D)
-- [ ] **DBG-03**: Shows current narrative phase visually (not raw JSON state)
+### Polish & Validation
 
-### UX (Flow & Interaction)
+- [ ] **POL-01**: Max-path do fluxo permanece ≤ 7:30 — `scripts/validate-timing.ts` atualizado para cobrir todas as novas permutações (96 caminhos), pior caso (Q1B + Q4B + Q5B + Q6B) medido e documentado, mitigação aplicada se > 7:30 (cortar SETUPs base de Q1/Q3/Q5) ou overflow aceito com documentação
+- [ ] **POL-02**: ChoiceMap context type extended em `oracleMachine.types.ts` com campos opcionais `q1b?`, `q5b?`, `q6b?` sem quebrar arquétipos existentes (testes v4.0 continuam passando)
+- [ ] **POL-03**: `public/roteiro.html` atualizado com as 3 novas branches no Mermaid flowchart + texto narrativo, mantendo paridade com `src/data/script.ts`
 
-- [ ] **UX-01**: Start button redesigned with more presence and visual appeal
-- [ ] **UX-02**: Skip/Next button clearly visible during testing (not hidden in corner)
-- [ ] **UX-03**: Choice buttons (A/B) visually polished with hover/press states
-- [ ] **UX-04**: Permission screen refined with consistent design language
+### UAT
 
-### Polish (Theme & Consistency)
+- [ ] **UAT-01**: Browser UAT validado em ≥3 caminhos representativos: (a) caminho sem nenhuma branch nova ativa, (b) caminho com todas as branches Q1B+Q5B+Q4B disparando, (c) caminho com Q6B → DEVOLUCAO_ESPELHO_SILENCIOSO
 
-- [ ] **POL-01**: Consistent typography hierarchy (Cormorant for titles, Georgia/system for body)
-- [ ] **POL-02**: Smooth entry/exit animations for all UI elements (no abrupt appear/disappear)
-- [ ] **POL-03**: All components use consistent opacity, blur, and shadow language
+## v5.0 Tester UI Polish (Informally Shipped)
 
-## v4.0 Requirements (Complete)
+Phase 30 R3F audio-reactive visuals shipped via direct commits + subsequent ad-hoc work (ambient audio, voice pipeline 9 fixes, intro delay, roteiro page). Never formally closed via `/gsd:complete-milestone`.
 
-All 16 requirements satisfied. See `.planning/milestones/` for details.
+### Visual
+
+- [x] **VIS-01**: Full-screen audio-reactive R3F background (Phase 30) — Shipped
+- [x] **VIS-02**: Background visual style per narrative phase — Shipped (per recent commits)
+- [~] **VIS-03**: Smooth visual transitions between phases — Shipped via ad-hoc work
+- [~] **VIS-04**: Idle state ambient animation — Shipped via ad-hoc work
+
+### Microphone, Debug, UX, Polish
+
+VIS/MIC/DBG/UX/POL requirements from v5.0 dropped or absorbed into ad-hoc work. See git history for actual delivered scope (commits 5c121a1, ac8d8b7, 3273b38, 4499327, 92eeb36).
+
+## v4.0 Game Flow (Complete)
+
+All 16 requirements satisfied (PACE-01 through INTG-02). See `.planning/MILESTONES.md` and STATE.md history.
 
 ## Future Requirements
 
 ### Browser UAT (deferred from v1.0)
 
-- **UAT-01**: Multi-station isolation verified in browser
-- **UAT-02**: Inactivity timeout 30s → reset verified in browser
-- **UAT-03**: 2-3 simultaneous stations verified in browser
+- **UAT-MULTI-01**: Multi-station isolation verified in browser
+- **UAT-INACT-01**: Inactivity timeout 30s → reset verified in browser
+- **UAT-MULTI-02**: 2-3 simultaneous stations verified in browser
 
 ### Analytics (deferred from v1.1)
 
 - **ANALYTICS-01**: Supabase analytics backend (Phase 6)
 
-## Out of Scope
+## Out of Scope (v6.0)
 
 | Feature | Reason |
 |---------|--------|
-| 3D WebGL effects | Overkill for testing phase, performance risk on event laptops |
-| Sound design / new ambient tracks | Already have 4 ambient MP3s, audio layer complete |
-| Script or narrative changes | v4.0 script is final — this is purely visual |
-| Mobile responsive layout | Desktop laptop + headphone setup for Bienal |
-| Custom font loading (beyond Cormorant) | Keep load times fast, 2 fonts max |
+| Branches Q3B, Q6B-mainline | Out of scope for v6.0 — apenas Q1B, Q5B e Q6B-pre-devolução nesta milestone |
+| Arquétipo PORTADOR_DE_PERGUNTA (variante de PORTADOR) | Diferenciação muito sutil para o Bienal — uma única forma é suficiente |
+| Cortar SETUPs base de Q1/Q3/Q5 | Só se POL-01 falhar — primeira opção é aceitar overflow ~1-3% visitantes |
+| Translation/i18n da nova branch para outros idiomas | PT-BR only — Bienal SBPRP é evento brasileiro |
+| Refactor da arquitetura de guards atual | Manter padrão existente — adicionar guards segue o pattern já estabelecido |
+| Visual feedback diferente quando branch dispara | Branching deve sentir-se ORACULAR, não gamificado — visitante não vê "branch unlocked" |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| VIS-01 | Phase 30 | Complete |
-| VIS-02 | Phase 30 | Complete |
-| VIS-03 | Phase 30 | Pending |
-| VIS-04 | Phase 30 | Pending |
-| MIC-01 | Phase 31 | Pending |
-| MIC-02 | Phase 31 | Pending |
-| MIC-03 | Phase 31 | Pending |
-| DBG-01 | Phase 32 | Pending |
-| DBG-02 | Phase 32 | Pending |
-| DBG-03 | Phase 32 | Pending |
-| UX-01 | Phase 33 | Pending |
-| UX-02 | Phase 33 | Pending |
-| UX-03 | Phase 33 | Pending |
-| UX-04 | Phase 33 | Pending |
-| POL-01 | Phase 33 | Pending |
-| POL-02 | Phase 33 | Pending |
-| POL-03 | Phase 33 | Pending |
+| BR-01 | Phase 31 | Pending |
+| BR-02 | Phase 32 | Pending |
+| BR-03 | Phase 33 | Pending |
+| AR-01 | Phase 33 | Pending |
+| AR-02 | Phase 34 | Pending |
+| AR-03 | Phase 34 | Pending |
+| POL-01 | Phase 35 | Pending |
+| POL-02 | Phase 31 | Pending |
+| POL-03 | Phase 35 | Pending |
+| UAT-01 | Phase 35 | Pending |
 
 **Coverage:**
-- v5.0 requirements: 17 total
-- Mapped to phases: 17/17 (100%)
-- Unmapped: 0
+- v6.0 requirements: 10 total
+- Mapped to phases: 10/10 (100%)
+- Unmapped: 0 ✓
 
 **Phase breakdown:**
-- Phase 30 (Visual System): 4 requirements
-- Phase 31 (Mic Indicators): 3 requirements
-- Phase 32 (Debug Overlay): 3 requirements
-- Phase 33 (UX Polish): 7 requirements
+- Phase 31 (Q1B Branch): BR-01, POL-02 (ChoiceMap extension starts here)
+- Phase 32 (Q5B Branch): BR-02
+- Phase 33 (Q6B + ESPELHO_SILENCIOSO): BR-03, AR-01
+- Phase 34 (Detectable Archetypes): AR-02, AR-03
+- Phase 35 (Timing Mitigation + UAT): POL-01, POL-03, UAT-01
 
 ---
-*Requirements defined: 2026-03-29*
-*Last updated: 2026-03-29 after v5.0 roadmap creation*
+*Requirements defined: 2026-04-06*
+*Last updated: 2026-04-06 — v6.0 Deep Branching milestone start*
