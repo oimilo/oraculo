@@ -82,7 +82,7 @@ export interface QuestionMeta {
   defaultOnTimeout: 'A' | 'B';
 }
 
-/** NLU metadata for all questions (6 base + 3 branch — Q2B@7, Q4B@8, Q1B@9) */
+/** NLU metadata for all questions (6 base + 4 branch — Q2B@7, Q4B@8, Q1B@9, Q5B@10) */
 export const QUESTION_META: Record<number, QuestionMeta> = {
   1: {
     questionContext: 'Visitante numa sala confortável, escolhendo entre ficar no conforto ou procurar a porta de saída',
@@ -156,6 +156,16 @@ export const QUESTION_META: Record<number, QuestionMeta> = {
     optionB: 'Voltar',
     keywordsA: ['atravessar', 'atravesso', 'passar', 'ir', 'fresta', 'luz', 'sim', 'porta', 'frente'],
     keywordsB: ['voltar', 'volto', 'coisa', 'recuar', 'nao', 'atras', 'pulsar', 'reconhecer'],
+    defaultOnTimeout: 'A',
+  },
+  // Q5B branch metadata — triggers when Q4=A AND Q5=A (PORTADOR profile precursor)
+  // Phase 32, BR-02 — "O Que Já Não Cabe" (Fundir vs Ordenar)
+  10: {
+    questionContext: 'O Oraculo perguntou se o visitante deixa a memoria e a pergunta sem resposta se fundirem em uma so forma, ou se prefere ordenar cada uma no seu lugar como inventario',
+    optionA: 'Fundir',
+    optionB: 'Ordenar',
+    keywordsA: ['fundir', 'fundo', 'misturar', 'junto', 'mesmo', 'um so', 'uma so', 'deixar', 'sim', 'virar', 'forma', 'integrar'],
+    keywordsB: ['separar', 'ordenar', 'cada', 'lugar', 'segurar', 'arquivar', 'distinguir', 'manter', 'nao', 'inventario', 'guardar'],
     defaultOnTimeout: 'A',
   },
 };

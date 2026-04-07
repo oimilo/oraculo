@@ -51,3 +51,48 @@ describe('QUESTION_META — Q1B branch (Phase 31, BR-01)', () => {
     expect(QUESTION_META[9].questionContext).toContain('fresta de luz');
   });
 });
+
+describe('QUESTION_META — Q5B branch (Phase 32, BR-02)', () => {
+  it('Q5B (index 10) is defined', () => {
+    expect(QUESTION_META[10]).toBeDefined();
+  });
+
+  it('Q5B optionA is Fundir', () => {
+    expect(QUESTION_META[10].optionA).toBe('Fundir');
+  });
+
+  it('Q5B optionB is Ordenar', () => {
+    expect(QUESTION_META[10].optionB).toBe('Ordenar');
+  });
+
+  it('Q5B keywordsA includes core verbs (fundir, misturar, integrar)', () => {
+    expect(QUESTION_META[10].keywordsA).toContain('fundir');
+    expect(QUESTION_META[10].keywordsA).toContain('misturar');
+    expect(QUESTION_META[10].keywordsA).toContain('integrar');
+  });
+
+  it('Q5B keywordsB includes core verbs (separar, ordenar, arquivar)', () => {
+    expect(QUESTION_META[10].keywordsB).toContain('separar');
+    expect(QUESTION_META[10].keywordsB).toContain('ordenar');
+    expect(QUESTION_META[10].keywordsB).toContain('arquivar');
+  });
+
+  it('Q5B defaultOnTimeout is A (Fundir)', () => {
+    expect(QUESTION_META[10].defaultOnTimeout).toBe('A');
+  });
+
+  it('Q5B questionContext mentions memoria and pergunta sem resposta', () => {
+    expect(QUESTION_META[10].questionContext).toContain('memoria');
+    expect(QUESTION_META[10].questionContext).toContain('pergunta sem resposta');
+  });
+});
+
+describe('QUESTION_META — Phase 31 entries unchanged (regression)', () => {
+  it('Q1B (index 9) optionA still Atravessar', () => {
+    expect(QUESTION_META[9].optionA).toBe('Atravessar');
+  });
+
+  it('Q1B (index 9) optionB still Voltar', () => {
+    expect(QUESTION_META[9].optionB).toBe('Voltar');
+  });
+});
