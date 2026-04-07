@@ -40,6 +40,8 @@ export const oracleMachine = setup({
     // Branch guards (new)
     shouldBranchQ2B: ({ context }) => context.choiceMap.q1 === 'A' && context.choiceMap.q2 === 'A',
     shouldBranchQ4B: ({ context }) => context.choiceMap.q3 === 'A' && context.choiceMap.q4 === 'A',
+    // Branch guards (new — Phase 31, BR-01)
+    shouldBranchQ1B: ({ context }) => context.choiceMap.q1 === 'B' && context.choiceMap.q2 === 'B',
   },
 }).createMachine({
   id: 'oracle',
@@ -195,7 +197,10 @@ export const oracleMachine = setup({
         },
         Q2_RESPOSTA_B: {
           on: {
-            NARRATIVA_DONE: '#oracle.PURGATORIO',
+            NARRATIVA_DONE: [
+              { target: 'Q1B_SETUP', guard: 'shouldBranchQ1B' },
+              { target: '#oracle.PURGATORIO' },
+            ],
           },
         },
         // Q2B Branch states — conditional, only entered when shouldBranchQ2B guard passes
@@ -238,6 +243,52 @@ export const oracleMachine = setup({
           },
         },
         Q2B_RESPOSTA_B: {
+          on: {
+            NARRATIVA_DONE: '#oracle.PURGATORIO',
+          },
+        },
+        // Q1B Branch states — conditional, only entered when shouldBranchQ1B guard passes
+        // Triggers from Q2_RESPOSTA_B when q1='B' AND q2='B' (contra-fobico profile)
+        // Both rejoin at #oracle.PURGATORIO (Phase 31, BR-01)
+        Q1B_SETUP: {
+          on: {
+            NARRATIVA_DONE: 'Q1B_PERGUNTA',
+          },
+        },
+        Q1B_PERGUNTA: {
+          on: {
+            NARRATIVA_DONE: 'Q1B_AGUARDANDO',
+          },
+        },
+        Q1B_AGUARDANDO: {
+          after: {
+            25000: {
+              target: 'Q1B_TIMEOUT',
+              actions: assign(recordChoice('q1b', 'A')),
+            },
+          },
+          on: {
+            CHOICE_A: {
+              target: 'Q1B_RESPOSTA_A',
+              actions: assign(recordChoice('q1b', 'A')),
+            },
+            CHOICE_B: {
+              target: 'Q1B_RESPOSTA_B',
+              actions: assign(recordChoice('q1b', 'B')),
+            },
+          },
+        },
+        Q1B_TIMEOUT: {
+          on: {
+            NARRATIVA_DONE: 'Q1B_RESPOSTA_A',
+          },
+        },
+        Q1B_RESPOSTA_A: {
+          on: {
+            NARRATIVA_DONE: '#oracle.PURGATORIO',
+          },
+        },
+        Q1B_RESPOSTA_B: {
           on: {
             NARRATIVA_DONE: '#oracle.PURGATORIO',
           },

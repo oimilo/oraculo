@@ -97,6 +97,7 @@ interface PathConfig {
   q1: 'A' | 'B';
   q2: 'A' | 'B';
   q2b?: 'A' | 'B';  // Only used if Q1=A AND Q2=A
+  q1b?: 'A' | 'B';  // Only used if Q1=B AND Q2=B (Phase 31, BR-01)
   q3: 'A' | 'B';
   q4: 'A' | 'B';
   q4b?: 'A' | 'B';  // Only used if Q3=A AND Q4=A
@@ -134,6 +135,16 @@ function runFullPathV4(actor: ActorType, config: PathConfig) {
     actor.send({ type: 'NARRATIVA_DONE' }); // Q2B_PERGUNTA -> Q2B_AGUARDANDO
     actor.send({ type: q2bChoice === 'A' ? 'CHOICE_A' : 'CHOICE_B' });
     actor.send({ type: 'NARRATIVA_DONE' }); // Q2B_RESPOSTA -> PURGATORIO.INTRO
+  }
+
+  // Q1B branch (if Q1=B AND Q2=B) — Phase 31, BR-01 contra-fobico
+  const q1bTriggered = config.q1 === 'B' && config.q2 === 'B';
+  if (q1bTriggered) {
+    const q1bChoice = config.q1b ?? 'A';
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q1B_SETUP -> Q1B_PERGUNTA
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q1B_PERGUNTA -> Q1B_AGUARDANDO
+    actor.send({ type: q1bChoice === 'A' ? 'CHOICE_A' : 'CHOICE_B' });
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q1B_RESPOSTA -> PURGATORIO.INTRO
   }
 
   // PURGATORIO: INTRO -> Q3
@@ -253,9 +264,10 @@ describe('oracleMachine v4', () => {
       actor.stop();
     });
 
-    it('all visitors experience all 6 base questions with B choices (no branches)', () => {
+    it('all visitors experience all 6 base questions (non-branching path q1=A,q2=B)', () => {
+      // Use q1=A,q2=B to avoid both Q1B (needs q1=B,q2=B) and Q2B (needs q1=A,q2=A)
       const actor = createActor(oracleMachine).start();
-      runFullPathV4(actor, { q1: 'B', q2: 'B', q3: 'B', q4: 'B', q5: 'B', q6: 'B' });
+      runFullPathV4(actor, { q1: 'A', q2: 'B', q3: 'B', q4: 'B', q5: 'B', q6: 'B' });
       const state = actor.getSnapshot().value;
       expect(typeof state === 'string' && state.startsWith('DEVOLUCAO_')).toBe(true);
       expect(actor.getSnapshot().context.choices).toHaveLength(6);
@@ -558,11 +570,12 @@ describe('oracleMachine v4', () => {
     });
 
     it('6-choice path (no branches): choices.length === 6', () => {
+      // Use q1=A,q2=B to avoid both Q1B and Q2B branches
       const actor = createActor(oracleMachine).start();
-      runFullPathV4(actor, { q1: 'B', q2: 'B', q3: 'B', q4: 'B', q5: 'B', q6: 'B' });
+      runFullPathV4(actor, { q1: 'A', q2: 'B', q3: 'B', q4: 'B', q5: 'B', q6: 'B' });
       const ctx = actor.getSnapshot().context;
       expect(ctx.choices).toHaveLength(6);
-      expect(ctx.choices).toEqual(['B', 'B', 'B', 'B', 'B', 'B']);
+      expect(ctx.choices).toEqual(['A', 'B', 'B', 'B', 'B', 'B']);
       actor.stop();
     });
 
@@ -577,12 +590,14 @@ describe('oracleMachine v4', () => {
     });
 
     it('7-choice path (Q4B only): choices.length === 7, choiceMap has q4b', () => {
+      // Use q1=A,q2=B to avoid Q1B and Q2B (both Q1B q1=B,q2=B and Q2B q1=A,q2=A)
       const actor = createActor(oracleMachine).start();
-      runFullPathV4(actor, { q1: 'B', q2: 'B', q3: 'A', q4: 'A', q4b: 'B', q5: 'B', q6: 'B' });
+      runFullPathV4(actor, { q1: 'A', q2: 'B', q3: 'A', q4: 'A', q4b: 'B', q5: 'B', q6: 'B' });
       const ctx = actor.getSnapshot().context;
       expect(ctx.choices).toHaveLength(7);
       expect(ctx.choiceMap.q4b).toBe('B');
       expect(ctx.choiceMap.q2b).toBeUndefined();
+      expect(ctx.choiceMap.q1b).toBeUndefined();
       actor.stop();
     });
 
@@ -656,11 +671,12 @@ describe('oracleMachine v4', () => {
       actor.stop();
     });
 
-    it('all B (6 choices, no branches) -> DEVOLUCAO_SURFACE_KEEPER', () => {
+    it('all B with q1b=B (7 choices, Q1B branch) -> DEVOLUCAO_SURFACE_KEEPER', () => {
+      // q1=B,q2=B now triggers Q1B branch (Phase 31). With q1b=B, all 7 choices are B = SURFACE_KEEPER
       const actor = createActor(oracleMachine).start();
-      runFullPathV4(actor, { q1: 'B', q2: 'B', q3: 'B', q4: 'B', q5: 'B', q6: 'B' });
+      runFullPathV4(actor, { q1: 'B', q2: 'B', q1b: 'B', q3: 'B', q4: 'B', q5: 'B', q6: 'B' });
       expect(actor.getSnapshot().value).toBe('DEVOLUCAO_SURFACE_KEEPER');
-      expect(actor.getSnapshot().context.choices).toHaveLength(6);
+      expect(actor.getSnapshot().context.choices).toHaveLength(7);
       actor.stop();
     });
 
@@ -681,10 +697,11 @@ describe('oracleMachine v4', () => {
       actor.stop();
     });
 
-    it('GUARDIAN: mostly B (6 choices) -> DEVOLUCAO_GUARDIAN', () => {
-      // [B,B,B,B,B,A] = 5B/1A = 83.3% B (no branches: Q1=B, Q2=B)
+    it('GUARDIAN: mostly B (6 choices, non-branching) -> DEVOLUCAO_GUARDIAN', () => {
+      // Use q1=A,q2=B path to avoid both Q1B and Q2B branches.
+      // [A,B,B,B,B,B] = 5B/1A = 83.3% B = GUARDIAN
       const actor = createActor(oracleMachine).start();
-      runFullPathV4(actor, { q1: 'B', q2: 'B', q3: 'B', q4: 'B', q5: 'B', q6: 'A' });
+      runFullPathV4(actor, { q1: 'A', q2: 'B', q3: 'B', q4: 'B', q5: 'B', q6: 'B' });
       expect(actor.getSnapshot().value).toBe('DEVOLUCAO_GUARDIAN');
       expect(actor.getSnapshot().context.choices).toHaveLength(6);
       actor.stop();
@@ -700,26 +717,15 @@ describe('oracleMachine v4', () => {
       actor.stop();
     });
 
-    it('PIVOT_EARLY: B-heavy start, A-heavy end (6 choices) -> DEVOLUCAO_PIVOT_EARLY', () => {
-      // [B,B,B,A,A,A] = 3B/3A, firstThird(2): [B,B] 0% A <= 33%. lastThird(2): [A,A] 100% A >= 66%. aPercent=50% >= 40%
+    it('PIVOT_EARLY: B-heavy start, A-heavy end (8 choices with Q1B+Q4B) -> DEVOLUCAO_PIVOT_EARLY', () => {
+      // After Phase 31 BR-01: q1=B,q2=B triggers Q1B branch. Use q1b=A and q4b=A:
+      // [B,B,A,A,A,A,A,A] = 6A/2B (8 choices)
+      // firstThird(8//3=2): [B,B] 0% A <= 33%. lastThird(2): [A,A] 100% A >= 66%. aPercent=75% >= 40%. PIVOT_EARLY!
       const actor = createActor(oracleMachine).start();
-      runFullPathV4(actor, { q1: 'B', q2: 'B', q3: 'B', q4: 'B', q5: 'A', q6: 'A' });
-      // Wait - Q3=B, Q4=B, so no Q4B branch. Choices = [B,B,B,B,A,A]
-      // firstThird(2): [B,B] 0% A. lastThird(2): [A,A] 100% A. aPercent=2/6=33% < 40%. Won't be PIVOT_EARLY!
-      // Need more A's. Use BBBAAA: Q1=B, Q2=B(no branch), Q3=B, Q4=B(no branch), Q5=A, Q6=A
-      // = [B,B,B,B,A,A] firstThird=[B,B] 0%, lastThird=[A,A] 100%, aPercent=2/6=33% < 40%. Nope.
-      // Need BBBAAA with 6 choices where aPercent >= 40%:
-      // [B,B,A,A,A,A] -> Q1=B, Q2=A(no branch bc Q1=B), Q3=A, Q4=A(triggers Q4B!)
-      // Can't get [B,B,A,A,A,A] in 6 choices because Q3=A, Q4=A triggers Q4B.
-      // Use 7 choices: Q1=B, Q2=B, Q3=A, Q4=A, Q4B=A, Q5=A, Q6=A -> [B,B,A,A,A,A,A] = 5A/2B
-      // firstThird(7//3=2): [B,B] 0% A. lastThird(2): [A,A] 100% A. aPercent=5/7=71% >= 40%. PIVOT_EARLY!
+      runFullPathV4(actor, { q1: 'B', q2: 'B', q1b: 'A', q3: 'A', q4: 'A', q4b: 'A', q5: 'A', q6: 'A' });
+      expect(actor.getSnapshot().value).toBe('DEVOLUCAO_PIVOT_EARLY');
+      expect(actor.getSnapshot().context.choices).toHaveLength(8);
       actor.stop();
-
-      const actor2 = createActor(oracleMachine).start();
-      runFullPathV4(actor2, { q1: 'B', q2: 'B', q3: 'A', q4: 'A', q4b: 'A', q5: 'A', q6: 'A' });
-      expect(actor2.getSnapshot().value).toBe('DEVOLUCAO_PIVOT_EARLY');
-      expect(actor2.getSnapshot().context.choices).toHaveLength(7);
-      actor2.stop();
     });
 
     it('CONTRADICTED: mixed 50/50 no clear pattern (6 choices) -> DEVOLUCAO_CONTRADICTED', () => {
@@ -939,15 +945,17 @@ describe('oracleMachine v4', () => {
   // ═════════════════════════════════════════════════════════════════════════
 
   describe('full paths', () => {
-    it('Path 1: No branches (6Q) - all B end-to-end', () => {
+    it('Path 1: No branches (6Q) - all B with q1=A,q2=B end-to-end', () => {
+      // After Phase 31: q1=B,q2=B triggers Q1B branch. Use q1=A,q2=B to keep this 6-choice.
+      // [A,B,B,B,B,B] = 5B/1A = 83% B = GUARDIAN
       const actor = createActor(oracleMachine).start();
       expect(actor.getSnapshot().value).toBe('IDLE');
 
-      runFullPathV4(actor, { q1: 'B', q2: 'B', q3: 'B', q4: 'B', q5: 'B', q6: 'B' });
-      expect(actor.getSnapshot().value).toBe('DEVOLUCAO_SURFACE_KEEPER');
+      runFullPathV4(actor, { q1: 'A', q2: 'B', q3: 'B', q4: 'B', q5: 'B', q6: 'B' });
+      expect(actor.getSnapshot().value).toBe('DEVOLUCAO_GUARDIAN');
       expect(actor.getSnapshot().context.currentPhase).toBe('DEVOLUCAO');
       expect(actor.getSnapshot().context.choices).toHaveLength(6);
-      expect(actor.getSnapshot().context.choices).toEqual(['B', 'B', 'B', 'B', 'B', 'B']);
+      expect(actor.getSnapshot().context.choices).toEqual(['A', 'B', 'B', 'B', 'B', 'B']);
       expect(Object.keys(actor.getSnapshot().context.choiceMap).sort()).toEqual(['q1', 'q2', 'q3', 'q4', 'q5', 'q6']);
 
       actor.send({ type: 'NARRATIVA_DONE' });
@@ -988,14 +996,16 @@ describe('oracleMachine v4', () => {
       const actor = createActor(oracleMachine).start();
       expect(actor.getSnapshot().value).toBe('IDLE');
 
-      // Q1=B, Q2=B -> no Q2B, Q3=A, Q4=A -> Q4B triggered, Q4B=B, Q5=A, Q6=A
-      runFullPathV4(actor, { q1: 'B', q2: 'B', q3: 'A', q4: 'A', q4b: 'B', q5: 'A', q6: 'A' });
+      // After Phase 31: use q1=A,q2=B to skip both Q1B and Q2B; Q3=A, Q4=A triggers Q4B
+      // [A,B,A,A,B,A,A] = 7 choices, Q4B branch only
+      runFullPathV4(actor, { q1: 'A', q2: 'B', q3: 'A', q4: 'A', q4b: 'B', q5: 'A', q6: 'A' });
 
       const state = actor.getSnapshot().value;
       expect(typeof state === 'string' && state.startsWith('DEVOLUCAO_')).toBe(true);
       expect(actor.getSnapshot().context.choices).toHaveLength(7);
-      expect(actor.getSnapshot().context.choices).toEqual(['B', 'B', 'A', 'A', 'B', 'A', 'A']);
+      expect(actor.getSnapshot().context.choices).toEqual(['A', 'B', 'A', 'A', 'B', 'A', 'A']);
       expect(actor.getSnapshot().context.choiceMap.q2b).toBeUndefined();
+      expect(actor.getSnapshot().context.choiceMap.q1b).toBeUndefined();
       expect(actor.getSnapshot().context.choiceMap.q4b).toBe('B');
 
       actor.send({ type: 'NARRATIVA_DONE' }); // -> ENCERRAMENTO
