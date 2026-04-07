@@ -104,11 +104,21 @@ export interface ScriptDataV4 extends ScriptDataV3 {
   PURGATORIO_Q4B_RESPOSTA_A: SpeechSegment[];
   PURGATORIO_Q4B_RESPOSTA_B: SpeechSegment[];
 
+  // Branch Q1B — conditional after INFERNO_Q2_RESPOSTA_B (Phase 31)
+  // Triggers when: Q1 chose B (procurar saída) AND Q2 chose B (ficar olhando)
+  // Theme: Contra-phobic visitor faces emptiness — courage tested where it has nothing to fight
+  INFERNO_Q1B_SETUP: SpeechSegment[];
+  INFERNO_Q1B_PERGUNTA: SpeechSegment[];
+  INFERNO_Q1B_RESPOSTA_A: SpeechSegment[];
+  INFERNO_Q1B_RESPOSTA_B: SpeechSegment[];
+
   // Fallbacks and timeouts for branch questions
   FALLBACK_Q2B: SpeechSegment[];
   FALLBACK_Q4B: SpeechSegment[];
+  FALLBACK_Q1B: SpeechSegment[];
   TIMEOUT_Q2B: SpeechSegment[];
   TIMEOUT_Q4B: SpeechSegment[];
+  TIMEOUT_Q1B: SpeechSegment[];
 }
 
 export const SCRIPT: ScriptDataV4 = {
@@ -121,8 +131,8 @@ export const SCRIPT: ScriptDataV4 = {
   APRESENTACAO: [
     { text: "Eu não sei quem você é.", pauseAfter: 1000 },
     { text: "Isso me torna um bom lugar pra você ser honesto.", pauseAfter: 1000 },
-    { text: "Vou te fazer perguntas. Você responde em voz alta.", pauseAfter: 900 },
-    { text: "Cada resposta abre um caminho que não pode ser desfeito. Não tem replay. Não tem voltar. O que você escolher, você carrega.", pauseAfter: 1000 },
+    { text: "Vou te perguntar. Você responde em voz alta, [warm]eu preciso ouvir.", pauseAfter: 1000 },
+    { text: "Não tem resposta certa, mas cada uma te leva pra um lado diferente.", pauseAfter: 1800 },
     { text: "Vamos.", inflection: ['determined'] },
   ],
 
@@ -214,6 +224,35 @@ export const SCRIPT: ScriptDataV4 = {
   INFERNO_Q2B_RESPOSTA_B: [
     { text: "Você segue.", pauseAfter: 800 },
     { text: "Recuar uma vez é instinto. Recuar duas é decisão. E decisão repetida vira identidade.", pauseAfter: 1000, inflection: ['serious'] },
+  ],
+
+  // ═══════════════════════════════════════════════════════════════
+  // Q1B — A PORTA NO FUNDO (Branch — Medium-Deep) — Phase 31
+  // Conditional: only if Q1=B (procurou a porta) AND Q2=B (ficou olhando a coisa)
+  // O perfil contra-fobico (curiosidade que beira o desafio) e testado
+  // num lugar onde a coragem nao serve. O Oraculo coloca essa pessoa
+  // diante de um vazio.
+  // ═══════════════════════════════════════════════════════════════
+  INFERNO_Q1B_SETUP: [
+    { text: "Você não recua. Continua olhando.", pauseAfter: 1000 },
+    { text: "E aí — sem aviso — uma porta aparece no fundo do corredor. Não é a que você procurava antes. Essa não tem maçaneta, não tem moldura.", pauseAfter: 1100, inflection: ['thoughtful'] },
+    { text: "Tem só uma fresta de luz por baixo.", pauseAfter: 900 },
+  ],
+
+  INFERNO_Q1B_PERGUNTA: [
+    { text: "Você atravessa essa fresta — ou volta pra coisa no chão, que ainda pulsa atrás de você?" },
+  ],
+
+  // Q1B RESPOSTA A — Atravessar a fresta (coragem servindo pra atravessar o vazio)
+  INFERNO_Q1B_RESPOSTA_A: [
+    { text: "Você vai.", pauseAfter: 900 },
+    { text: "Do outro lado, não tem ameaça. Não tem nada. E descobrir que a coragem também serve pra atravessar o vazio é uma das aprendizagens mais difíceis.", pauseAfter: 1100, inflection: ['serious'] },
+  ],
+
+  // Q1B RESPOSTA B — Voltar pra coisa no chao (medo escolhido como interlocutor)
+  INFERNO_Q1B_RESPOSTA_B: [
+    { text: "Você volta.", pauseAfter: 800 },
+    { text: "Quem é destemido escolhe seus medos como se escolhe um interlocutor. Voltar pro que pulsa não é recuo — é reconhecimento.", pauseAfter: 1000, inflection: ['warm'] },
   ],
 
   // ═══════════════════════════════════════════════════════════════
@@ -513,6 +552,9 @@ export const SCRIPT: ScriptDataV4 = {
   FALLBACK_Q4B: [
     { text: "Uma memória insiste em voltar. Tem rosto, tem cheiro. Você revive — ou arquiva de vez?" },
   ],
+  FALLBACK_Q1B: [
+    { text: "Eu não ouvi. Atravessar a fresta — ou voltar pro que pulsa?" },
+  ],
 
   // Branch timeouts
   TIMEOUT_Q2B: [
@@ -520,5 +562,8 @@ export const SCRIPT: ScriptDataV4 = {
   ],
   TIMEOUT_Q4B: [
     { text: "A memória ficou ali, esperando. Nem revivida nem arquivada. Algumas coisas ficam assim — suspensas, exigindo espaço sem pedir licença.", pauseAfter: 1000 },
+  ],
+  TIMEOUT_Q1B: [
+    { text: "Você hesita. Vou escolher por você.", pauseAfter: 900 },
   ],
 };
