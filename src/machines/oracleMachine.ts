@@ -568,13 +568,55 @@ export const oracleMachine = setup({
         },
         Q6_RESPOSTA_A: {
           on: {
-            NARRATIVA_DONE: '#oracle.DEVOLUCAO',
+            NARRATIVA_DONE: [
+              { target: 'Q6B_SETUP', guard: 'shouldBranchQ6B' },
+              { target: '#oracle.DEVOLUCAO' },
+            ],
           },
         },
         Q6_RESPOSTA_B: {
           on: {
             NARRATIVA_DONE: '#oracle.DEVOLUCAO',
           },
+        },
+        // Phase 33 — Q6B branch ("O Espelho Extra")
+        // Triggered by shouldBranchQ6B (q5='B' && q6='A').
+        // Both rejoin paths use QUALIFIED '#oracle.DEVOLUCAO' (DEVOLUCAO is at machine root).
+        Q6B_SETUP: {
+          on: { NARRATIVA_DONE: 'Q6B_PERGUNTA' },
+        },
+        Q6B_PERGUNTA: {
+          on: { NARRATIVA_DONE: 'Q6B_AGUARDANDO' },
+        },
+        Q6B_AGUARDANDO: {
+          after: {
+            25000: {
+              target: 'Q6B_TIMEOUT',
+              // DEFAULT 'A' on silence — silence MUST NEVER fire ESPELHO_SILENCIOSO.
+              actions: assign(recordChoice('q6b', 'A')),
+            },
+          },
+          on: {
+            CHOICE_A: {
+              target: 'Q6B_RESPOSTA_A',
+              actions: assign(recordChoice('q6b', 'A')),
+            },
+            CHOICE_B: {
+              target: 'Q6B_RESPOSTA_B',
+              actions: assign(recordChoice('q6b', 'B')),
+            },
+          },
+        },
+        Q6B_TIMEOUT: {
+          on: { NARRATIVA_DONE: 'Q6B_RESPOSTA_A' },
+        },
+        Q6B_RESPOSTA_A: {
+          // QUALIFIED rejoin — DEVOLUCAO is at machine root, NOT inside PARAISO.
+          on: { NARRATIVA_DONE: '#oracle.DEVOLUCAO' },
+        },
+        Q6B_RESPOSTA_B: {
+          // QUALIFIED rejoin — once at DEVOLUCAO root, isEspelhoSilencioso at always[0] fires.
+          on: { NARRATIVA_DONE: '#oracle.DEVOLUCAO' },
         },
         // Q5B Branch states — conditional, only entered when shouldBranchQ5B guard passes
         // Triggers from Q5_RESPOSTA_A when q4='A' AND q5='A' (PORTADOR profile precursor)
