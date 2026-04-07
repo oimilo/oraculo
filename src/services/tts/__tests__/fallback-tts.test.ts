@@ -131,11 +131,11 @@ describe('FallbackTTSService', () => {
     expect(getUrl('TIMEOUT_Q6')).toBe('/audio/prerecorded/timeout_q6.mp3');
   });
 
-  it('should have a URL entry for every key in SCRIPT (67 keys)', () => {
+  it('should have a URL entry for every key in SCRIPT (73 keys)', () => {
     // SCRIPT imported at top of file
-    // 61 base keys (v4.0) + 6 Q1B branch keys (Phase 31, BR-01) = 67
+    // 61 base keys (v4.0) + 6 Q1B (Phase 31, BR-01) + 6 Q5B (Phase 32, BR-02) = 73
     const scriptKeyCount = Object.keys(SCRIPT).length;
-    expect(scriptKeyCount).toBe(67);
+    expect(scriptKeyCount).toBe(73);
 
     // Each script key should produce a valid URL
     for (const key of Object.keys(SCRIPT)) {
