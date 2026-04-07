@@ -82,7 +82,7 @@ export interface QuestionMeta {
   defaultOnTimeout: 'A' | 'B';
 }
 
-/** NLU metadata for all questions (6 base + 4 branch — Q2B@7, Q4B@8, Q1B@9, Q5B@10) */
+/** NLU metadata for all questions (6 base + 5 branch — Q2B@7, Q4B@8, Q1B@9, Q5B@10, Q6B@11) */
 export const QUESTION_META: Record<number, QuestionMeta> = {
   1: {
     questionContext: 'Visitante numa sala confortável, escolhendo entre ficar no conforto ou procurar a porta de saída',
@@ -166,6 +166,20 @@ export const QUESTION_META: Record<number, QuestionMeta> = {
     optionB: 'Ordenar',
     keywordsA: ['fundir', 'fundo', 'misturar', 'junto', 'mesmo', 'um so', 'uma so', 'deixar', 'sim', 'virar', 'forma', 'integrar'],
     keywordsB: ['separar', 'ordenar', 'cada', 'lugar', 'segurar', 'arquivar', 'distinguir', 'manter', 'nao', 'inventario', 'guardar'],
+    defaultOnTimeout: 'A',
+  },
+
+  // Q6B branch metadata — triggers when Q5=B AND Q6=A (dissolveu pergunta + pediu leitura)
+  // Phase 33, BR-03 — "O Espelho Extra" (Resposta vs Outra Pergunta)
+  // SEMANTIC ANCHOR: A=Resposta (closed reading → normal DEVOLUCAO)
+  //                  B=Outra Pergunta (open form → DEVOLUCAO_ESPELHO_SILENCIOSO, AR-01)
+  // defaultOnTimeout MUST be 'A' — silence must NEVER accidentally trigger ESPELHO_SILENCIOSO
+  11: {
+    questionContext: 'O Oraculo perguntou se o visitante quer uma resposta fechada e definitiva (uma leitura, um diagnostico, um padrao) ou se prefere outra pergunta aberta no mesmo espirito da que ele acabou de dissolver',
+    optionA: 'Resposta',
+    optionB: 'Pergunta',
+    keywordsA: ['resposta', 'responder', 'fechada', 'definitiva', 'fala', 'diz', 'dizer', 'mostra', 'mostrar', 'leitura', 'padrao', 'nome', 'sim', 'da', 'entrega', 'clara'],
+    keywordsB: ['pergunta', 'perguntar', 'outra', 'abre', 'aberta', 'espaco', 'dissolver', 'continuar', 'deixa', 'vazio', 'oco', 'silencio', 'forma', 'nao'],
     defaultOnTimeout: 'A',
   },
 };
