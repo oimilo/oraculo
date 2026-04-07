@@ -82,7 +82,7 @@ export interface QuestionMeta {
   defaultOnTimeout: 'A' | 'B';
 }
 
-/** NLU metadata for all questions (6 base + 2 branch) */
+/** NLU metadata for all questions (6 base + 3 branch — Q2B@7, Q4B@8, Q1B@9) */
 export const QUESTION_META: Record<number, QuestionMeta> = {
   1: {
     questionContext: 'Visitante numa sala confortável, escolhendo entre ficar no conforto ou procurar a porta de saída',
@@ -147,6 +147,15 @@ export const QUESTION_META: Record<number, QuestionMeta> = {
     optionB: 'Arquivar',
     keywordsA: ['reviver', 'revivo', 'voltar', 'lembrar', 'sim', 'quero', 'abrir', 'ver'],
     keywordsB: ['arquivar', 'guardar', 'fechar', 'nao', 'esquecer', 'passar', 'deixar'],
+    defaultOnTimeout: 'A',
+  },
+  // Q1B branch metadata — triggers when Q1=B AND Q2=B (contra-fobico profile)
+  9: {
+    questionContext: 'Visitante destemido encontra uma porta sem maçaneta com fresta de luz, escolhendo entre atravessar o vazio ou voltar pra coisa pulsante atras dele',
+    optionA: 'Atravessar',
+    optionB: 'Voltar',
+    keywordsA: ['atravessar', 'atravesso', 'passar', 'ir', 'fresta', 'luz', 'sim', 'porta', 'frente'],
+    keywordsB: ['voltar', 'volto', 'coisa', 'recuar', 'nao', 'atras', 'pulsar', 'reconhecer'],
     defaultOnTimeout: 'A',
   },
 };
