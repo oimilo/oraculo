@@ -12,7 +12,7 @@ Source of truth: `memory/next-milestone-v5-deep-branching.md` (blueprint complet
 ### Branching (Conditional Branches)
 
 - [x] **BR-01**: Visitor com `q1='B' && q2='B'` (saiu da sala E ficou olhando a coisa) ouve a branch Q1B "A Porta no Fundo" — **6 SCRIPT keys** (SETUP, PERGUNTA, RESPOSTA_A, RESPOSTA_B, FALLBACK, TIMEOUT — onde SETUP/RESPOSTA são arrays multi-segmento gerando 1 MP3 cada, seguindo o padrão v4.0), QUESTION_META[9], guard `shouldBranchQ1B`, estados Q1B_* na máquina, OracleExperience extended, **6 MP3s** gerados
-- [ ] **BR-02**: Visitor com `q4='A' && q5='A'` (lembrou tudo E carrega a pergunta) ouve a branch Q5B "O Que Já Não Cabe" — 6 SCRIPT keys (mesmo padrão de BR-01), QUESTION_META[10], guard `shouldBranchQ5B`, estados Q5B_*, OracleExperience extended, 6 MP3s gerados
+- [x] **BR-02**: Visitor com `q4='A' && q5='A'` (lembrou tudo E carrega a pergunta) ouve a branch Q5B "O Que Já Não Cabe" — 6 SCRIPT keys (mesmo padrão de BR-01), QUESTION_META[10], guard `shouldBranchQ5B`, estados Q5B_*, OracleExperience extended, 6 MP3s gerados
 - [ ] **BR-03**: Visitor com `q5='B' && q6='A'` (dissolveu pergunta MAS pediu leitura) ouve a branch Q6B "O Espelho Extra" — 6 SCRIPT keys (mesmo padrão), QUESTION_META[11], guard `shouldBranchQ6B`, estados Q6B_*, OracleExperience extended, 6 MP3s gerados, transição condicional para DEVOLUCAO normal vs DEVOLUCAO_ESPELHO_SILENCIOSO
 
 ### Arquétipos (Devoluções)
@@ -78,7 +78,7 @@ All 16 requirements satisfied (PACE-01 through INTG-02). See `.planning/MILESTON
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | BR-01 | Phase 31 | Complete |
-| BR-02 | Phase 32 | Pending |
+| BR-02 | Phase 32 | Complete |
 | BR-03 | Phase 33 | Pending |
 | AR-01 | Phase 33 | Pending |
 | AR-02 | Phase 34 | Pending |
