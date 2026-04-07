@@ -103,3 +103,68 @@ describe('OracleExperience Q5B helper contracts (Phase 32)', () => {
     expect(meta.keywordsB.length).toBeGreaterThan(0);
   });
 });
+
+/**
+ * OracleExperience Q6B Helper Smoke Tests — Phase 33 (BR-03)
+ */
+describe('OracleExperience Q6B helper contracts (Phase 33)', () => {
+  it('SCRIPT.PARAISO_Q6B_SETUP exists (getScriptKey contract)', () => {
+    expect(SCRIPT.PARAISO_Q6B_SETUP).toBeDefined();
+    expect(Array.isArray(SCRIPT.PARAISO_Q6B_SETUP)).toBe(true);
+    expect(SCRIPT.PARAISO_Q6B_SETUP.length).toBeGreaterThan(0);
+  });
+
+  it('SCRIPT.PARAISO_Q6B_PERGUNTA exists', () => {
+    expect(SCRIPT.PARAISO_Q6B_PERGUNTA).toBeDefined();
+  });
+
+  it('SCRIPT.PARAISO_Q6B_RESPOSTA_A exists', () => {
+    expect(SCRIPT.PARAISO_Q6B_RESPOSTA_A).toBeDefined();
+  });
+
+  it('SCRIPT.PARAISO_Q6B_RESPOSTA_B exists', () => {
+    expect(SCRIPT.PARAISO_Q6B_RESPOSTA_B).toBeDefined();
+  });
+
+  it('SCRIPT.FALLBACK_Q6B exists (getFallbackScript contract)', () => {
+    expect(SCRIPT.FALLBACK_Q6B).toBeDefined();
+    expect(SCRIPT.FALLBACK_Q6B.length).toBeGreaterThan(0);
+  });
+
+  it('SCRIPT.TIMEOUT_Q6B exists (getScriptKey timeout contract)', () => {
+    expect(SCRIPT.TIMEOUT_Q6B).toBeDefined();
+  });
+
+  it('QUESTION_META[11] is well-formed (buildChoiceConfig(11) contract)', () => {
+    const meta = QUESTION_META[11];
+    expect(meta).toBeDefined();
+    expect(meta.optionA).toBe('Resposta');
+    expect(meta.optionB).toBe('Pergunta');
+    expect(Array.isArray(meta.keywordsA)).toBe(true);
+    expect(meta.keywordsA.length).toBeGreaterThan(0);
+    expect(Array.isArray(meta.keywordsB)).toBe(true);
+    expect(meta.keywordsB.length).toBeGreaterThan(0);
+    expect(meta.defaultOnTimeout).toBe('A');
+  });
+});
+
+/**
+ * OracleExperience ESPELHO_SILENCIOSO Helper Smoke Tests — Phase 33 (AR-01)
+ */
+describe('OracleExperience ESPELHO_SILENCIOSO helper contracts (Phase 33)', () => {
+  it('SCRIPT.DEVOLUCAO_ESPELHO_SILENCIOSO exists (getScriptKey top-level contract)', () => {
+    expect(SCRIPT.DEVOLUCAO_ESPELHO_SILENCIOSO).toBeDefined();
+    expect(Array.isArray(SCRIPT.DEVOLUCAO_ESPELHO_SILENCIOSO)).toBe(true);
+    expect(SCRIPT.DEVOLUCAO_ESPELHO_SILENCIOSO.length).toBeGreaterThan(0);
+  });
+
+  it('DEVOLUCAO_ESPELHO_SILENCIOSO has expected structure (6 segments)', () => {
+    expect(SCRIPT.DEVOLUCAO_ESPELHO_SILENCIOSO.length).toBe(6);
+    // Verify each segment has text
+    SCRIPT.DEVOLUCAO_ESPELHO_SILENCIOSO.forEach((segment, i) => {
+      expect(segment.text).toBeDefined();
+      expect(typeof segment.text).toBe('string');
+      expect(segment.text.length).toBeGreaterThan(0);
+    });
+  });
+});
