@@ -46,6 +46,7 @@ const Q5_CHOICE = buildChoiceConfig(5);
 const Q6_CHOICE = buildChoiceConfig(6);
 const Q2B_CHOICE = buildChoiceConfig(7);
 const Q4B_CHOICE = buildChoiceConfig(8);
+const Q1B_CHOICE = buildChoiceConfig(9);
 
 /**
  * Breathing delay (ms) before sending NARRATIVA_DONE after TTS completes.
@@ -72,6 +73,9 @@ function getBreathingDelay(machineState: any): number {
   // Q2B last responses → PURGATORIO (always cross-phase after branch)
   if (machineState.matches({ INFERNO: 'Q2B_RESPOSTA_A' })) return LONG;
   if (machineState.matches({ INFERNO: 'Q2B_RESPOSTA_B' })) return LONG;
+  // Q1B last responses → PURGATORIO (always cross-phase after branch)
+  if (machineState.matches({ INFERNO: 'Q1B_RESPOSTA_A' })) return LONG;
+  if (machineState.matches({ INFERNO: 'Q1B_RESPOSTA_B' })) return LONG;
   // PURGATORIO last responses → PARAISO
   if (machineState.matches({ PURGATORIO: 'Q4_RESPOSTA_A' })) return MEDIUM;  // May branch to Q4B or cross to PARAISO
   if (machineState.matches({ PURGATORIO: 'Q4_RESPOSTA_B' })) return LONG;
@@ -98,6 +102,7 @@ function getBreathingDelay(machineState: any): number {
   if (machineState.matches({ INFERNO: 'Q1_RESPOSTA_B' })) return MEDIUM;
   if (machineState.matches({ INFERNO: 'Q2_SETUP' })) return MEDIUM;
   if (machineState.matches({ INFERNO: 'Q2B_SETUP' })) return MEDIUM;
+  if (machineState.matches({ INFERNO: 'Q1B_SETUP' })) return MEDIUM;
   if (machineState.matches({ PURGATORIO: 'INTRO' })) return MEDIUM;
   if (machineState.matches({ PURGATORIO: 'Q3_SETUP' })) return MEDIUM;
   if (machineState.matches({ PURGATORIO: 'Q3_RESPOSTA_A' })) return MEDIUM;
@@ -116,6 +121,7 @@ function getBreathingDelay(machineState: any): number {
   if (machineState.matches({ INFERNO: 'Q1_PERGUNTA' })) return NONE;
   if (machineState.matches({ INFERNO: 'Q2_PERGUNTA' })) return NONE;
   if (machineState.matches({ INFERNO: 'Q2B_PERGUNTA' })) return NONE;
+  if (machineState.matches({ INFERNO: 'Q1B_PERGUNTA' })) return NONE;
   if (machineState.matches({ PURGATORIO: 'Q3_PERGUNTA' })) return NONE;
   if (machineState.matches({ PURGATORIO: 'Q4_PERGUNTA' })) return NONE;
   if (machineState.matches({ PURGATORIO: 'Q4B_PERGUNTA' })) return NONE;
@@ -152,6 +158,12 @@ function getScriptKey(machineState: any): keyof typeof SCRIPT | null {
   if (machineState.matches({ INFERNO: 'Q2B_RESPOSTA_A' })) return 'INFERNO_Q2B_RESPOSTA_A';
   if (machineState.matches({ INFERNO: 'Q2B_RESPOSTA_B' })) return 'INFERNO_Q2B_RESPOSTA_B';
   if (machineState.matches({ INFERNO: 'Q2B_TIMEOUT' })) return 'TIMEOUT_Q2B';
+  // Q1B branch substates (Phase 31, BR-01)
+  if (machineState.matches({ INFERNO: 'Q1B_SETUP' })) return 'INFERNO_Q1B_SETUP';
+  if (machineState.matches({ INFERNO: 'Q1B_PERGUNTA' })) return 'INFERNO_Q1B_PERGUNTA';
+  if (machineState.matches({ INFERNO: 'Q1B_RESPOSTA_A' })) return 'INFERNO_Q1B_RESPOSTA_A';
+  if (machineState.matches({ INFERNO: 'Q1B_RESPOSTA_B' })) return 'INFERNO_Q1B_RESPOSTA_B';
+  if (machineState.matches({ INFERNO: 'Q1B_TIMEOUT' })) return 'TIMEOUT_Q1B';
 
   // PURGATORIO substates (Q3, Q4)
   if (machineState.matches({ PURGATORIO: 'INTRO' })) return 'PURGATORIO_INTRO';
@@ -205,6 +217,7 @@ function getFallbackScript(machineState: any): { segments: SpeechSegment[]; key:
   if (machineState.matches({ INFERNO: 'Q1_AGUARDANDO' })) return { segments: SCRIPT.FALLBACK_Q1, key: 'FALLBACK_Q1' };
   if (machineState.matches({ INFERNO: 'Q2_AGUARDANDO' })) return { segments: SCRIPT.FALLBACK_Q2, key: 'FALLBACK_Q2' };
   if (machineState.matches({ INFERNO: 'Q2B_AGUARDANDO' })) return { segments: SCRIPT.FALLBACK_Q2B, key: 'FALLBACK_Q2B' };
+  if (machineState.matches({ INFERNO: 'Q1B_AGUARDANDO' })) return { segments: SCRIPT.FALLBACK_Q1B, key: 'FALLBACK_Q1B' };
   if (machineState.matches({ PURGATORIO: 'Q3_AGUARDANDO' })) return { segments: SCRIPT.FALLBACK_Q3, key: 'FALLBACK_Q3' };
   if (machineState.matches({ PURGATORIO: 'Q4_AGUARDANDO' })) return { segments: SCRIPT.FALLBACK_Q4, key: 'FALLBACK_Q4' };
   if (machineState.matches({ PURGATORIO: 'Q4B_AGUARDANDO' })) return { segments: SCRIPT.FALLBACK_Q4B, key: 'FALLBACK_Q4B' };
@@ -256,6 +269,7 @@ export default function OracleExperience() {
     if (state.matches({ INFERNO: 'Q1_AGUARDANDO' })) return Q1_CHOICE;
     if (state.matches({ INFERNO: 'Q2_AGUARDANDO' })) return Q2_CHOICE;
     if (state.matches({ INFERNO: 'Q2B_AGUARDANDO' })) return Q2B_CHOICE;
+    if (state.matches({ INFERNO: 'Q1B_AGUARDANDO' })) return Q1B_CHOICE;
     if (state.matches({ PURGATORIO: 'Q3_AGUARDANDO' })) return Q3_CHOICE;
     if (state.matches({ PURGATORIO: 'Q4_AGUARDANDO' })) return Q4_CHOICE;
     if (state.matches({ PURGATORIO: 'Q4B_AGUARDANDO' })) return Q4B_CHOICE;
@@ -269,6 +283,7 @@ export default function OracleExperience() {
     state.matches({ INFERNO: 'Q1_AGUARDANDO' }) ||
     state.matches({ INFERNO: 'Q2_AGUARDANDO' }) ||
     state.matches({ INFERNO: 'Q2B_AGUARDANDO' }) ||
+    state.matches({ INFERNO: 'Q1B_AGUARDANDO' }) ||
     state.matches({ PURGATORIO: 'Q3_AGUARDANDO' }) ||
     state.matches({ PURGATORIO: 'Q4_AGUARDANDO' }) ||
     state.matches({ PURGATORIO: 'Q4B_AGUARDANDO' }) ||
@@ -315,6 +330,7 @@ export default function OracleExperience() {
     state.matches({ INFERNO: 'Q1_PERGUNTA' }) ||
     state.matches({ INFERNO: 'Q2_PERGUNTA' }) ||
     state.matches({ INFERNO: 'Q2B_PERGUNTA' }) ||
+    state.matches({ INFERNO: 'Q1B_PERGUNTA' }) ||
     state.matches({ PURGATORIO: 'Q3_PERGUNTA' }) ||
     state.matches({ PURGATORIO: 'Q4_PERGUNTA' }) ||
     state.matches({ PURGATORIO: 'Q4B_PERGUNTA' }) ||
