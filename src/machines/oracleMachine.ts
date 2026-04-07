@@ -42,6 +42,8 @@ export const oracleMachine = setup({
     shouldBranchQ4B: ({ context }) => context.choiceMap.q3 === 'A' && context.choiceMap.q4 === 'A',
     // Branch guards (new — Phase 31, BR-01)
     shouldBranchQ1B: ({ context }) => context.choiceMap.q1 === 'B' && context.choiceMap.q2 === 'B',
+    // Branch guards (new — Phase 32, BR-02)
+    shouldBranchQ5B: ({ context }) => context.choiceMap.q4 === 'A' && context.choiceMap.q5 === 'A',
   },
 }).createMachine({
   id: 'oracle',
@@ -511,7 +513,10 @@ export const oracleMachine = setup({
         },
         Q5_RESPOSTA_A: {
           on: {
-            NARRATIVA_DONE: 'Q6_SETUP',
+            NARRATIVA_DONE: [
+              { target: 'Q5B_SETUP', guard: 'shouldBranchQ5B' },
+              { target: 'Q6_SETUP' },
+            ],
           },
         },
         Q5_RESPOSTA_B: {
@@ -560,6 +565,53 @@ export const oracleMachine = setup({
         Q6_RESPOSTA_B: {
           on: {
             NARRATIVA_DONE: '#oracle.DEVOLUCAO',
+          },
+        },
+        // Q5B Branch states — conditional, only entered when shouldBranchQ5B guard passes
+        // Triggers from Q5_RESPOSTA_A when q4='A' AND q5='A' (PORTADOR profile precursor)
+        // Both rejoin at sibling Q6_SETUP (Phase 32, BR-02)
+        // CRITICAL: target is plain 'Q6_SETUP' (NO #oracle. prefix) — sibling reference inside PARAISO
+        Q5B_SETUP: {
+          on: {
+            NARRATIVA_DONE: 'Q5B_PERGUNTA',
+          },
+        },
+        Q5B_PERGUNTA: {
+          on: {
+            NARRATIVA_DONE: 'Q5B_AGUARDANDO',
+          },
+        },
+        Q5B_AGUARDANDO: {
+          after: {
+            25000: {
+              target: 'Q5B_TIMEOUT',
+              actions: assign(recordChoice('q5b', 'A')),
+            },
+          },
+          on: {
+            CHOICE_A: {
+              target: 'Q5B_RESPOSTA_A',
+              actions: assign(recordChoice('q5b', 'A')),
+            },
+            CHOICE_B: {
+              target: 'Q5B_RESPOSTA_B',
+              actions: assign(recordChoice('q5b', 'B')),
+            },
+          },
+        },
+        Q5B_TIMEOUT: {
+          on: {
+            NARRATIVA_DONE: 'Q5B_RESPOSTA_A',
+          },
+        },
+        Q5B_RESPOSTA_A: {
+          on: {
+            NARRATIVA_DONE: 'Q6_SETUP',
+          },
+        },
+        Q5B_RESPOSTA_B: {
+          on: {
+            NARRATIVA_DONE: 'Q6_SETUP',
           },
         },
       },

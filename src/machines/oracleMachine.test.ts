@@ -102,12 +102,13 @@ interface PathConfig {
   q4: 'A' | 'B';
   q4b?: 'A' | 'B';  // Only used if Q3=A AND Q4=A
   q5: 'A' | 'B';
+  q5b?: 'A' | 'B';  // Only used if Q4=A AND Q5=A (Phase 32, BR-02)
   q6: 'A' | 'B';
 }
 
 /**
  * Runs a full path through the branching machine with specified choices.
- * Handles Q2B and Q4B branches automatically based on guard conditions.
+ * Handles Q2B, Q1B, Q4B, and Q5B branches automatically based on guard conditions.
  * Actor ends at a DEVOLUCAO_* state.
  */
 function runFullPathV4(actor: ActorType, config: PathConfig) {
@@ -175,7 +176,17 @@ function runFullPathV4(actor: ActorType, config: PathConfig) {
   actor.send({ type: 'NARRATIVA_DONE' }); // Q5_SETUP -> Q5_PERGUNTA
   actor.send({ type: 'NARRATIVA_DONE' }); // Q5_PERGUNTA -> Q5_AGUARDANDO
   actor.send({ type: config.q5 === 'A' ? 'CHOICE_A' : 'CHOICE_B' });
-  actor.send({ type: 'NARRATIVA_DONE' }); // Q5_RESPOSTA -> Q6_SETUP
+  actor.send({ type: 'NARRATIVA_DONE' }); // Q5_RESPOSTA -> Q5B_SETUP (if branch) or Q6_SETUP
+
+  // Q5B branch (if Q4=A AND Q5=A) — Phase 32, BR-02
+  const q5bTriggered = config.q4 === 'A' && config.q5 === 'A';
+  if (q5bTriggered) {
+    const q5bChoice = config.q5b ?? 'A';
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q5B_SETUP -> Q5B_PERGUNTA
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q5B_PERGUNTA -> Q5B_AGUARDANDO
+    actor.send({ type: q5bChoice === 'A' ? 'CHOICE_A' : 'CHOICE_B' });
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q5B_RESPOSTA -> Q6_SETUP
+  }
 
   // Q6
   actor.send({ type: 'NARRATIVA_DONE' }); // Q6_SETUP -> Q6_PERGUNTA
@@ -601,14 +612,15 @@ describe('oracleMachine v4', () => {
       actor.stop();
     });
 
-    it('8-choice path (both branches): choices.length === 8, choiceMap has q2b AND q4b', () => {
+    it('9-choice path (Q2B+Q4B+Q5B): choices.length === 9, choiceMap has q2b AND q4b AND q5b', () => {
       const actor = createActor(oracleMachine).start();
-      runFullPathV4(actor, { q1: 'A', q2: 'A', q2b: 'A', q3: 'A', q4: 'A', q4b: 'A', q5: 'A', q6: 'A' });
+      runFullPathV4(actor, { q1: 'A', q2: 'A', q2b: 'A', q3: 'A', q4: 'A', q4b: 'A', q5: 'A', q5b: 'A', q6: 'A' });
       const ctx = actor.getSnapshot().context;
-      expect(ctx.choices).toHaveLength(8);
-      expect(ctx.choices).toEqual(['A', 'A', 'A', 'A', 'A', 'A', 'A', 'A']);
+      expect(ctx.choices).toHaveLength(9);
+      expect(ctx.choices).toEqual(['A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A']);
       expect(ctx.choiceMap.q2b).toBe('A');
       expect(ctx.choiceMap.q4b).toBe('A');
+      expect(ctx.choiceMap.q5b).toBe('A');
       actor.stop();
     });
 
@@ -626,13 +638,14 @@ describe('oracleMachine v4', () => {
       actor.stop();
     });
 
-    it('choiceMap has correct keys for 8-choice path', () => {
+    it('choiceMap has correct keys for 9-choice path (with Q5B)', () => {
       const actor = createActor(oracleMachine).start();
-      runFullPathV4(actor, { q1: 'A', q2: 'A', q2b: 'B', q3: 'A', q4: 'A', q4b: 'B', q5: 'A', q6: 'A' });
+      runFullPathV4(actor, { q1: 'A', q2: 'A', q2b: 'B', q3: 'A', q4: 'A', q4b: 'B', q5: 'A', q5b: 'B', q6: 'A' });
       const ctx = actor.getSnapshot().context;
-      expect(Object.keys(ctx.choiceMap).sort()).toEqual(['q1', 'q2', 'q2b', 'q3', 'q4', 'q4b', 'q5', 'q6']);
+      expect(Object.keys(ctx.choiceMap).sort()).toEqual(['q1', 'q2', 'q2b', 'q3', 'q4', 'q4b', 'q5', 'q5b', 'q6']);
       expect(ctx.choiceMap.q2b).toBe('B');
       expect(ctx.choiceMap.q4b).toBe('B');
+      expect(ctx.choiceMap.q5b).toBe('B');
       actor.stop();
     });
 
@@ -663,11 +676,11 @@ describe('oracleMachine v4', () => {
   // ═════════════════════════════════════════════════════════════════════════
 
   describe('devolucao routing (MACH-03)', () => {
-    it('all A (8 choices, both branches) -> DEVOLUCAO_DEPTH_SEEKER', () => {
+    it('all A (9 choices, Q2B+Q4B+Q5B branches) -> DEVOLUCAO_DEPTH_SEEKER', () => {
       const actor = createActor(oracleMachine).start();
-      runFullPathV4(actor, { q1: 'A', q2: 'A', q2b: 'A', q3: 'A', q4: 'A', q4b: 'A', q5: 'A', q6: 'A' });
+      runFullPathV4(actor, { q1: 'A', q2: 'A', q2b: 'A', q3: 'A', q4: 'A', q4b: 'A', q5: 'A', q5b: 'A', q6: 'A' });
       expect(actor.getSnapshot().value).toBe('DEVOLUCAO_DEPTH_SEEKER');
-      expect(actor.getSnapshot().context.choices).toHaveLength(8);
+      expect(actor.getSnapshot().context.choices).toHaveLength(9);
       actor.stop();
     });
 
@@ -688,12 +701,12 @@ describe('oracleMachine v4', () => {
       actor.stop();
     });
 
-    it('SEEKER: 75% A (8 choices) -> DEVOLUCAO_SEEKER', () => {
-      // q1=A, q2=A, q2b=A, q3=A, q4=A, q4b=B, q5=A, q6=A -> [A,A,A,A,A,B,A,A] = 7A/1B = 87.5%
+    it('SEEKER: 75% A (9 choices with Q5B) -> DEVOLUCAO_SEEKER', () => {
+      // q1=A, q2=A, q2b=A, q3=A, q4=A, q4b=B, q5=A, q5b=B, q6=A -> [A,A,A,A,A,B,A,B,A] = 7A/2B = 77.8%
       const actor = createActor(oracleMachine).start();
-      runFullPathV4(actor, { q1: 'A', q2: 'A', q2b: 'A', q3: 'A', q4: 'A', q4b: 'B', q5: 'A', q6: 'A' });
+      runFullPathV4(actor, { q1: 'A', q2: 'A', q2b: 'A', q3: 'A', q4: 'A', q4b: 'B', q5: 'A', q5b: 'B', q6: 'A' });
       expect(actor.getSnapshot().value).toBe('DEVOLUCAO_SEEKER');
-      expect(actor.getSnapshot().context.choices).toHaveLength(8);
+      expect(actor.getSnapshot().context.choices).toHaveLength(9);
       actor.stop();
     });
 
@@ -717,14 +730,17 @@ describe('oracleMachine v4', () => {
       actor.stop();
     });
 
-    it('PIVOT_EARLY: B-heavy start, A-heavy end (8 choices with Q1B+Q4B) -> DEVOLUCAO_PIVOT_EARLY', () => {
-      // After Phase 31 BR-01: q1=B,q2=B triggers Q1B branch. Use q1b=A and q4b=A:
-      // [B,B,A,A,A,A,A,A] = 6A/2B (8 choices)
-      // firstThird(8//3=2): [B,B] 0% A <= 33%. lastThird(2): [A,A] 100% A >= 66%. aPercent=75% >= 40%. PIVOT_EARLY!
+    it('PIVOT_EARLY: B-heavy start, A-heavy end (8 choices with Q1B+Q4B, no Q5B) -> DEVOLUCAO_PIVOT_EARLY', () => {
+      // After Phase 31 BR-01 + Phase 32 BR-02: To keep PIVOT_EARLY working with Q5B available, use q1b=B and q5=B.
+      // q1=B,q2=B triggers Q1B with q1b=B. q3=A,q4=A triggers Q4B with q4b=A. q5=B avoids Q5B.
+      // [B,B,B,A,A,A,B,A] = 5A/3B (8 choices)
+      // firstThird(8//3=2): [B,B]=0% A <= 33% ✓. lastThird(2): [B,A]=50% A (NOT >=66%). Still doesn't work.
+      // Alternative: Use q4=B to skip Q4B entirely, keep only Q1B. [B,B,B,A,B,A,A,A] = 5A/3B
+      // firstThird(8//3=2): [B,B]=0% A <= 33% ✓. lastThird(2): [A,A]=100% A >= 66% ✓. 5/8=62.5% >= 40% ✓
       const actor = createActor(oracleMachine).start();
-      runFullPathV4(actor, { q1: 'B', q2: 'B', q1b: 'A', q3: 'A', q4: 'A', q4b: 'A', q5: 'A', q6: 'A' });
+      runFullPathV4(actor, { q1: 'B', q2: 'B', q1b: 'B', q3: 'A', q4: 'B', q5: 'A', q6: 'A' });
       expect(actor.getSnapshot().value).toBe('DEVOLUCAO_PIVOT_EARLY');
-      expect(actor.getSnapshot().context.choices).toHaveLength(8);
+      expect(actor.getSnapshot().context.choices).toHaveLength(7); // Q1B only
       actor.stop();
     });
 
@@ -996,17 +1012,18 @@ describe('oracleMachine v4', () => {
       const actor = createActor(oracleMachine).start();
       expect(actor.getSnapshot().value).toBe('IDLE');
 
-      // After Phase 31: use q1=A,q2=B to skip both Q1B and Q2B; Q3=A, Q4=A triggers Q4B
-      // [A,B,A,A,B,A,A] = 7 choices, Q4B branch only
-      runFullPathV4(actor, { q1: 'A', q2: 'B', q3: 'A', q4: 'A', q4b: 'B', q5: 'A', q6: 'A' });
+      // After Phase 31 + Phase 32: use q1=A,q2=B to skip both Q1B and Q2B; Q3=A, Q4=A triggers Q4B; q5=B to skip Q5B
+      // [A,B,A,A,B,B,A] = 7 choices, Q4B branch only (Q5B skipped because q5=B)
+      runFullPathV4(actor, { q1: 'A', q2: 'B', q3: 'A', q4: 'A', q4b: 'B', q5: 'B', q6: 'A' });
 
       const state = actor.getSnapshot().value;
       expect(typeof state === 'string' && state.startsWith('DEVOLUCAO_')).toBe(true);
       expect(actor.getSnapshot().context.choices).toHaveLength(7);
-      expect(actor.getSnapshot().context.choices).toEqual(['A', 'B', 'A', 'A', 'B', 'A', 'A']);
+      expect(actor.getSnapshot().context.choices).toEqual(['A', 'B', 'A', 'A', 'B', 'B', 'A']);
       expect(actor.getSnapshot().context.choiceMap.q2b).toBeUndefined();
       expect(actor.getSnapshot().context.choiceMap.q1b).toBeUndefined();
       expect(actor.getSnapshot().context.choiceMap.q4b).toBe('B');
+      expect(actor.getSnapshot().context.choiceMap.q5b).toBeUndefined();
 
       actor.send({ type: 'NARRATIVA_DONE' }); // -> ENCERRAMENTO
       actor.send({ type: 'NARRATIVA_DONE' }); // -> FIM
@@ -1015,18 +1032,19 @@ describe('oracleMachine v4', () => {
       actor.stop();
     });
 
-    it('Path 4: Both branches (8Q) - all A end-to-end', () => {
+    it('Path 4: All three branches (9Q: Q2B+Q4B+Q5B) - all A end-to-end', () => {
       const actor = createActor(oracleMachine).start();
       expect(actor.getSnapshot().value).toBe('IDLE');
 
-      runFullPathV4(actor, { q1: 'A', q2: 'A', q2b: 'A', q3: 'A', q4: 'A', q4b: 'A', q5: 'A', q6: 'A' });
+      runFullPathV4(actor, { q1: 'A', q2: 'A', q2b: 'A', q3: 'A', q4: 'A', q4b: 'A', q5: 'A', q5b: 'A', q6: 'A' });
       expect(actor.getSnapshot().value).toBe('DEVOLUCAO_DEPTH_SEEKER');
       expect(actor.getSnapshot().context.currentPhase).toBe('DEVOLUCAO');
-      expect(actor.getSnapshot().context.choices).toHaveLength(8);
-      expect(actor.getSnapshot().context.choices).toEqual(['A', 'A', 'A', 'A', 'A', 'A', 'A', 'A']);
+      expect(actor.getSnapshot().context.choices).toHaveLength(9);
+      expect(actor.getSnapshot().context.choices).toEqual(['A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A']);
       expect(actor.getSnapshot().context.choiceMap.q2b).toBe('A');
       expect(actor.getSnapshot().context.choiceMap.q4b).toBe('A');
-      expect(Object.keys(actor.getSnapshot().context.choiceMap).sort()).toEqual(['q1', 'q2', 'q2b', 'q3', 'q4', 'q4b', 'q5', 'q6']);
+      expect(actor.getSnapshot().context.choiceMap.q5b).toBe('A');
+      expect(Object.keys(actor.getSnapshot().context.choiceMap).sort()).toEqual(['q1', 'q2', 'q2b', 'q3', 'q4', 'q4b', 'q5', 'q5b', 'q6']);
 
       actor.send({ type: 'NARRATIVA_DONE' });
       expect(actor.getSnapshot().value).toBe('ENCERRAMENTO');
@@ -1209,6 +1227,328 @@ describe('oracleMachine v4', () => {
       actor.send({ type: 'CHOICE_A' });
       actor.send({ type: 'NARRATIVA_DONE' });
       expect(actor.getSnapshot().matches({ INFERNO: 'Q2B_SETUP' })).toBe(true);
+      actor.stop();
+    });
+  });
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // Q5B Branch (Phase 32, BR-02) — O Que Já Não Cabe
+  // Triggers when q4=A (lembrou tudo) AND q5=A (carrega a pergunta)
+  // PORTADOR precursor: visitor who fuses memory + unanswerable into one form
+  // ═════════════════════════════════════════════════════════════════════════
+
+  describe('Q5B Branch (Phase 32, BR-02)', () => {
+    /**
+     * Advance to Q5_AGUARDANDO with q4='A' (so Q5B can trigger when q5='A' is sent next).
+     * This is the PORTADOR-precursor path setup — visitor carregou o que parecia inutil.
+     * Default Q1/Q2 to B/A (avoids Q1B and Q2B), Q3 to B (avoids Q4B fire later — though Q4B
+     * may also fire; tests that need ONLY Q5B to fire MUST avoid q3=A AND q4=A).
+     */
+    function advanceToQ5AguardandoQ5B(actor: ActorType) {
+      actor.send({ type: 'START' });
+      actor.send({ type: 'NARRATIVA_DONE' }); // APRESENTACAO -> INFERNO.INTRO
+      actor.send({ type: 'NARRATIVA_DONE' }); // INTRO -> Q1_SETUP
+      actor.send({ type: 'NARRATIVA_DONE' }); // Q1_SETUP -> Q1_PERGUNTA
+      actor.send({ type: 'NARRATIVA_DONE' }); // Q1_PERGUNTA -> Q1_AGUARDANDO
+      actor.send({ type: 'CHOICE_B' });        // Q1=B (avoid Q2B and Q1B mix)
+      actor.send({ type: 'NARRATIVA_DONE' }); // Q1_RESPOSTA_B -> Q2_SETUP
+      actor.send({ type: 'NARRATIVA_DONE' }); // Q2_SETUP -> Q2_PERGUNTA
+      actor.send({ type: 'NARRATIVA_DONE' }); // Q2_PERGUNTA -> Q2_AGUARDANDO
+      actor.send({ type: 'CHOICE_A' });        // Q2=A (q1=B,q2=A — neither Q1B nor Q2B fires)
+      actor.send({ type: 'NARRATIVA_DONE' }); // Q2_RESPOSTA_A -> PURGATORIO.INTRO (Q2B guard fails because q1=B)
+      actor.send({ type: 'NARRATIVA_DONE' }); // PURGATORIO.INTRO -> Q3_SETUP
+      actor.send({ type: 'NARRATIVA_DONE' }); // Q3_SETUP -> Q3_PERGUNTA
+      actor.send({ type: 'NARRATIVA_DONE' }); // Q3_PERGUNTA -> Q3_AGUARDANDO
+      actor.send({ type: 'CHOICE_B' });        // Q3=B (avoid Q4B firing — Q4B needs q3=A AND q4=A)
+      actor.send({ type: 'NARRATIVA_DONE' }); // Q3_RESPOSTA_B -> Q4_SETUP
+      actor.send({ type: 'NARRATIVA_DONE' }); // Q4_SETUP -> Q4_PERGUNTA
+      actor.send({ type: 'NARRATIVA_DONE' }); // Q4_PERGUNTA -> Q4_AGUARDANDO
+      actor.send({ type: 'CHOICE_A' });        // Q4=A (Q4B does NOT fire because q3=B)
+      actor.send({ type: 'NARRATIVA_DONE' }); // Q4_RESPOSTA_A -> PARAISO.INTRO (Q4B guard fails)
+      actor.send({ type: 'NARRATIVA_DONE' }); // PARAISO.INTRO -> Q5_SETUP
+      actor.send({ type: 'NARRATIVA_DONE' }); // Q5_SETUP -> Q5_PERGUNTA
+      actor.send({ type: 'NARRATIVA_DONE' }); // Q5_PERGUNTA -> Q5_AGUARDANDO
+      // Now in Q5_AGUARDANDO with choiceMap = { q1:'B', q2:'A', q3:'B', q4:'A' }
+    }
+
+    it('triggers Q5B branch when q4=A AND q5=A', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+      advanceToQ5AguardandoQ5B(actor);
+      actor.send({ type: 'CHOICE_A' }); // Q5=A
+      actor.send({ type: 'NARRATIVA_DONE' }); // Q5_RESPOSTA_A → Q5B_SETUP (guard passes)
+      expect(actor.getSnapshot().matches({ PARAISO: 'Q5B_SETUP' })).toBe(true);
+      expect(actor.getSnapshot().context.choiceMap.q4).toBe('A');
+      expect(actor.getSnapshot().context.choiceMap.q5).toBe('A');
+      actor.stop();
+    });
+
+    it('SKIPS Q5B when q4=A and q5=B (q5 mismatch — guard fails)', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+      advanceToQ5AguardandoQ5B(actor);
+      actor.send({ type: 'CHOICE_B' }); // Q5=B
+      actor.send({ type: 'NARRATIVA_DONE' }); // Q5_RESPOSTA_B → Q6_SETUP (Q5B does NOT trigger from Q5_RESPOSTA_B at all)
+      expect(actor.getSnapshot().matches({ PARAISO: 'Q6_SETUP' })).toBe(true);
+      actor.stop();
+    });
+
+    it('SKIPS Q5B when q4=B and q5=A (q4 mismatch — guard fails)', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+      // Walk through with q4=B
+      actor.send({ type: 'START' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_B' });        // Q1=B
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_A' });        // Q2=A
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_B' });        // Q3=B
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_B' });        // Q4=B
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_A' });        // Q5=A
+      actor.send({ type: 'NARRATIVA_DONE' });  // Q5_RESPOSTA_A → Q6_SETUP (Q5B guard fails because q4=B)
+      expect(actor.getSnapshot().matches({ PARAISO: 'Q6_SETUP' })).toBe(true);
+      actor.stop();
+    });
+
+    it('Q5B_SETUP → Q5B_PERGUNTA → Q5B_AGUARDANDO transition chain', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+      advanceToQ5AguardandoQ5B(actor);
+      actor.send({ type: 'CHOICE_A' });
+      actor.send({ type: 'NARRATIVA_DONE' }); // → Q5B_SETUP
+      actor.send({ type: 'NARRATIVA_DONE' }); // → Q5B_PERGUNTA
+      expect(actor.getSnapshot().matches({ PARAISO: 'Q5B_PERGUNTA' })).toBe(true);
+      actor.send({ type: 'NARRATIVA_DONE' }); // → Q5B_AGUARDANDO
+      expect(actor.getSnapshot().matches({ PARAISO: 'Q5B_AGUARDANDO' })).toBe(true);
+      actor.stop();
+    });
+
+    it('Q5B_AGUARDANDO + CHOICE_A → Q5B_RESPOSTA_A and choiceMap.q5b=A', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+      advanceToQ5AguardandoQ5B(actor);
+      actor.send({ type: 'CHOICE_A' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_A' });
+      expect(actor.getSnapshot().matches({ PARAISO: 'Q5B_RESPOSTA_A' })).toBe(true);
+      expect(actor.getSnapshot().context.choiceMap.q5b).toBe('A');
+      // choices array: q1=B, q2=A, q3=B, q4=A, q5=A, q5b=A
+      expect(actor.getSnapshot().context.choices).toEqual(['B', 'A', 'B', 'A', 'A', 'A']);
+      actor.stop();
+    });
+
+    it('Q5B_AGUARDANDO + CHOICE_B → Q5B_RESPOSTA_B and choiceMap.q5b=B', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+      advanceToQ5AguardandoQ5B(actor);
+      actor.send({ type: 'CHOICE_A' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_B' });
+      expect(actor.getSnapshot().matches({ PARAISO: 'Q5B_RESPOSTA_B' })).toBe(true);
+      expect(actor.getSnapshot().context.choiceMap.q5b).toBe('B');
+      expect(actor.getSnapshot().context.choices).toEqual(['B', 'A', 'B', 'A', 'A', 'B']);
+      actor.stop();
+    });
+
+    it('Q5B_AGUARDANDO timeout → Q5B_TIMEOUT with default q5b=A', () => {
+      vi.useFakeTimers();
+      const actor = createActor(oracleMachine);
+      actor.start();
+      advanceToQ5AguardandoQ5B(actor);
+      actor.send({ type: 'CHOICE_A' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      vi.advanceTimersByTime(25000);
+      expect(actor.getSnapshot().matches({ PARAISO: 'Q5B_TIMEOUT' })).toBe(true);
+      expect(actor.getSnapshot().context.choiceMap.q5b).toBe('A');
+      vi.useRealTimers();
+      actor.stop();
+    });
+
+    it('Q5B_TIMEOUT → Q5B_RESPOSTA_A on NARRATIVA_DONE', () => {
+      vi.useFakeTimers();
+      const actor = createActor(oracleMachine);
+      actor.start();
+      advanceToQ5AguardandoQ5B(actor);
+      actor.send({ type: 'CHOICE_A' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      vi.advanceTimersByTime(25000);
+      vi.useRealTimers();
+      actor.send({ type: 'NARRATIVA_DONE' });
+      expect(actor.getSnapshot().matches({ PARAISO: 'Q5B_RESPOSTA_A' })).toBe(true);
+      actor.stop();
+    });
+
+    it('Q5B_RESPOSTA_A → Q6_SETUP on NARRATIVA_DONE (sibling rejoin — stays in PARAISO)', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+      advanceToQ5AguardandoQ5B(actor);
+      actor.send({ type: 'CHOICE_A' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_A' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      expect(actor.getSnapshot().matches({ PARAISO: 'Q6_SETUP' })).toBe(true);
+      actor.stop();
+    });
+
+    it('Q5B_RESPOSTA_B → Q6_SETUP on NARRATIVA_DONE (sibling rejoin — stays in PARAISO)', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+      advanceToQ5AguardandoQ5B(actor);
+      actor.send({ type: 'CHOICE_A' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_B' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      expect(actor.getSnapshot().matches({ PARAISO: 'Q6_SETUP' })).toBe(true);
+      actor.stop();
+    });
+
+    it('CRITICAL coexistence: Q4B + Q5B both fire when q3=A, q4=A, q5=A', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+      // Walk through with q1=B, q2=A (avoid Q1B/Q2B), then q3=A, q4=A (triggers Q4B), then q5=A (triggers Q5B)
+      actor.send({ type: 'START' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_B' });        // Q1=B
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_A' });        // Q2=A
+      actor.send({ type: 'NARRATIVA_DONE' });  // → PURGATORIO.INTRO (Q2B fails: q1=B)
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_A' });        // Q3=A
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_A' });        // Q4=A
+      actor.send({ type: 'NARRATIVA_DONE' });  // Q4_RESPOSTA_A → Q4B_SETUP (Q4B guard passes)
+      expect(actor.getSnapshot().matches({ PURGATORIO: 'Q4B_SETUP' })).toBe(true);
+
+      // Walk through Q4B branch
+      actor.send({ type: 'NARRATIVA_DONE' });  // → Q4B_PERGUNTA
+      actor.send({ type: 'NARRATIVA_DONE' });  // → Q4B_AGUARDANDO
+      actor.send({ type: 'CHOICE_A' });        // Q4B=A
+      actor.send({ type: 'NARRATIVA_DONE' });  // Q4B_RESPOSTA_A → PARAISO.INTRO (cross-phase)
+
+      expect(actor.getSnapshot().context.choiceMap.q4b).toBe('A');
+
+      // Walk through Q5
+      actor.send({ type: 'NARRATIVA_DONE' });  // → Q5_SETUP
+      actor.send({ type: 'NARRATIVA_DONE' });  // → Q5_PERGUNTA
+      actor.send({ type: 'NARRATIVA_DONE' });  // → Q5_AGUARDANDO
+      actor.send({ type: 'CHOICE_A' });        // Q5=A
+      actor.send({ type: 'NARRATIVA_DONE' });  // Q5_RESPOSTA_A → Q5B_SETUP (Q5B guard passes — q4=A & q5=A)
+
+      // Q5B fires AFTER Q4B already fired
+      expect(actor.getSnapshot().matches({ PARAISO: 'Q5B_SETUP' })).toBe(true);
+      expect(actor.getSnapshot().context.choiceMap.q4b).toBe('A'); // Q4B still recorded
+      actor.stop();
+    });
+
+    it('Q1B regression: q1=B AND q2=B still triggers Q1B (Q5B addition did not break Q1B)', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+      actor.send({ type: 'START' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_B' });        // Q1=B
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_B' });        // Q2=B
+      actor.send({ type: 'NARRATIVA_DONE' });  // → Q1B_SETUP
+      expect(actor.getSnapshot().matches({ INFERNO: 'Q1B_SETUP' })).toBe(true);
+      actor.stop();
+    });
+
+    it('Q2B regression: q1=A AND q2=A still triggers Q2B (Q5B addition did not break Q2B)', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+      actor.send({ type: 'START' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_A' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_A' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      expect(actor.getSnapshot().matches({ INFERNO: 'Q2B_SETUP' })).toBe(true);
+      actor.stop();
+    });
+
+    it('Q4B regression with q5=B: Q4B fires but Q5B does NOT fire', () => {
+      const actor = createActor(oracleMachine);
+      actor.start();
+      actor.send({ type: 'START' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_B' });        // Q1=B
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_A' });        // Q2=A
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_A' });        // Q3=A
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_A' });        // Q4=A → Q4B should fire
+      actor.send({ type: 'NARRATIVA_DONE' });
+      expect(actor.getSnapshot().matches({ PURGATORIO: 'Q4B_SETUP' })).toBe(true);
+
+      // Walk through Q4B
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_B' });        // Q4B=B
+      actor.send({ type: 'NARRATIVA_DONE' });  // → PARAISO.INTRO
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'NARRATIVA_DONE' });
+      actor.send({ type: 'CHOICE_B' });        // Q5=B
+      actor.send({ type: 'NARRATIVA_DONE' });  // Q5_RESPOSTA_B → Q6_SETUP (Q5B does NOT fire because q5=B)
+      expect(actor.getSnapshot().matches({ PARAISO: 'Q6_SETUP' })).toBe(true);
       actor.stop();
     });
   });
