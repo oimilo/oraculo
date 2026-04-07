@@ -52,7 +52,8 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 ### Shipped (v6.0 — Deep Branching, in progress)
 
 - [x] Q1B "A Porta no Fundo" branch contra-fobica (BR-01) — script + QUESTION_META[9] + shouldBranchQ1B guard + 6 machine states + OracleExperience helpers + 6 MP3s + timing-validation matrix + roteiro.html docs — *Validated in Phase 31*
-- [x] POL-02 ChoiceMap extension without modifying patternMatching.ts — *Validated in Phase 31*
+- [x] Q5B "O Que Já Não Cabe" branch no Paraíso (BR-02) — script + QUESTION_META[10] + shouldBranchQ5B guard (q4=A && q5=A) + 6 machine states + OracleExperience helpers + 6 MP3s + 12-path timing matrix + roteiro.html sync — *Validated in Phase 32*
+- [x] POL-02 ChoiceMap extension without modifying patternMatching.ts — *Validated in Phases 31 and 32*
 
 ### Shipped (v3.2 — Integration & Audio)
 
@@ -157,4 +158,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-07 — Phase 31 Q1B Branch complete (BR-01, POL-02 satisfied; Q1B fully wired end-to-end, max-path 6:14 min within budget; browser UAT deferred to Phase 35)*
+*Last updated: 2026-04-07 — Phase 32 Q5B Paraíso Branch complete (BR-02 satisfied; Q5B fully wired end-to-end, max-path 6:53.7 min within 7:30 budget with 36s headroom; browser UAT deferred to Phase 35)*
