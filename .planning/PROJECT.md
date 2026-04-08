@@ -55,7 +55,9 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 - [x] Q5B "O Que Já Não Cabe" branch no Paraíso (BR-02) — script + QUESTION_META[10] + shouldBranchQ5B guard (q4=A && q5=A) + 6 machine states + OracleExperience helpers + 6 MP3s + 12-path timing matrix + roteiro.html sync — *Validated in Phase 32*
 - [x] Q6B "O Espelho Extra" branch pré-devolução (BR-03) — script + QUESTION_META[11] + shouldBranchQ6B guard (q5=B && q6=A) + 6 machine states with qualified #oracle.DEVOLUCAO rejoin + OracleExperience helpers + 6 MP3s + 20-path timing matrix + roteiro.html sync — *Validated in Phase 33*
 - [x] DEVOLUCAO_ESPELHO_SILENCIOSO archetype (AR-01) — script (6 segments, ~24s) + isEspelhoSilencioso guard + DEVOLUCAO.always[0] HIGHEST priority insertion + top-level state + OracleExperience helpers + 1 MP3 — *Validated in Phase 33*
-- [x] POL-02 ChoiceMap extension without modifying patternMatching.ts — *Validated in Phases 31, 32, and 33*
+- [x] DEVOLUCAO_CONTRA_FOBICO archetype (AR-02) — script (6 segments) + isContraFobico guard (q1=B && q2=B && q1b=A) + DEVOLUCAO.always[1] priority + top-level state + OracleExperience.getScriptKey + 1 MP3 (1.06 MB) + roteiro card — *Validated in Phase 34*
+- [x] DEVOLUCAO_PORTADOR archetype (AR-03) — script (6 segments) + isPortador guard (q4=A && q5=A && q5b=A) + DEVOLUCAO.always[2] priority + top-level state + OracleExperience.getScriptKey + 1 MP3 (1.10 MB) + roteiro card — *Validated in Phase 34*
+- [x] POL-02 ChoiceMap extension without modifying patternMatching.ts — *Validated in Phases 31, 32, 33, and 34*
 
 ### Shipped (v3.2 — Integration & Audio)
 
@@ -160,4 +162,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-07 — Phase 33 Q6B + ESPELHO_SILENCIOSO complete (BR-03 + AR-01 satisfied; Q6B wired with qualified #oracle.DEVOLUCAO rejoin, DEVOLUCAO_ESPELHO_SILENCIOSO inserted at DEVOLUCAO.always[0] HIGHEST priority, 7 new MP3s, 20-path timing matrix max 7:01.2 min within 7:30 budget with 28.8s headroom; POL-02 intact; browser UAT deferred to Phase 35)*
+*Last updated: 2026-04-08 — Phase 34 Detectable Archetypes complete (AR-02 + AR-03 satisfied; isContraFobico + isPortador guards wired into oracleMachine at DEVOLUCAO.always[1]+[2] priority below ESPELHO_SILENCIOSO, 2 new top-level devolução states, 2 new MP3s, 24-path timing matrix max 7:11.2 min within 7:30 budget with 18.8s headroom; POL-02 deeper invariant preserved via field-isolated choiceMap reads — 78/78 patternMatching tests pass; 14/14 must-haves verified; browser UAT deferred to Phase 35)*
