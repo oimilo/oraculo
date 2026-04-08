@@ -1,11 +1,23 @@
 import type { ChoiceAB, ChoicePattern, DevolucaoArchetype } from '@/types';
 
 /**
+ * Phase 34 — local ChoiceMap shape mirroring oracleMachine.types.ts.
+ * Defined locally (not imported) to avoid a cross-package coupling that
+ * would force patternMatching.ts to depend on the full machine types module.
+ */
+type ChoiceMap = Partial<Record<'q1' | 'q2' | 'q2b' | 'q3' | 'q4' | 'q4b' | 'q5' | 'q6' | 'q1b' | 'q5b' | 'q6b', ChoiceAB>>;
+
+/**
  * Interface for context shape used in pattern matching guards.
- * This allows guards to work before OracleContextV3 is fully imported.
+ * - choices: positional array (used by 8 baseline guards via determineArchetype)
+ * - choiceMap: named lookup (used by Phase 34 guards isContraFobico + isPortador)
+ *
+ * choiceMap is OPTIONAL — baseline guards never read it, and Phase 34 guards
+ * return false safely when undefined.
  */
 interface PatternContext {
   choices: ChoicePattern;
+  choiceMap?: ChoiceMap;
 }
 
 /**
@@ -117,6 +129,49 @@ export function createArchetypeGuard(
 }
 
 /**
+ * Phase 34 — AR-02: CONTRA_FOBICO archetype guard.
+ *
+ * Triggers when visitor procurou a porta (q1='B'), ficou olhando o que repugna (q2='B'),
+ * E atravessou o vazio na ramificação Q1B (q1b='A'). The contra-phobic gesture: courage
+ * walking toward what threatens it.
+ *
+ * Reads context.choiceMap (named lookup), NOT context.choices (positional). This is
+ * intentional — the 8 baseline archetypes use positional logic via determineArchetype()
+ * which cannot distinguish q1b from q2b from q4b. Phase 34 guards live alongside the
+ * baseline guards but read from a different field (choiceMap), so they cannot interfere
+ * with positional logic (POL-02 deeper invariant preserved).
+ *
+ * Returns false safely when choiceMap is undefined or any required field is missing.
+ */
+export function isContraFobico({ context }: { context: PatternContext }): boolean {
+  if (!context.choiceMap) return false;
+  return (
+    context.choiceMap.q1 === 'B' &&
+    context.choiceMap.q2 === 'B' &&
+    context.choiceMap.q1b === 'A'
+  );
+}
+
+/**
+ * Phase 34 — AR-03: PORTADOR archetype guard.
+ *
+ * Triggers when visitor lembrou tudo (q4='A'), carrega a pergunta (q5='A'), E fundiu
+ * memória e pergunta numa só carga na ramificação Q5B (q5b='A'). The carrier gesture:
+ * the question as treasure, not problem.
+ *
+ * Same field-isolation rationale as isContraFobico — reads choiceMap (named lookup)
+ * not choices (positional). Cannot interfere with the 8 baseline archetypes.
+ */
+export function isPortador({ context }: { context: PatternContext }): boolean {
+  if (!context.choiceMap) return false;
+  return (
+    context.choiceMap.q4 === 'A' &&
+    context.choiceMap.q5 === 'A' &&
+    context.choiceMap.q5b === 'A'
+  );
+}
+
+/**
  * Pre-built archetype guards for XState machine setup.
  * Each guard checks if the visitor's choice pattern matches a specific archetype.
  *
@@ -147,4 +202,6 @@ export const ARCHETYPE_GUARDS = {
   isDepthSeeker: createArchetypeGuard('DEPTH_SEEKER'),
   isSurfaceKeeper: createArchetypeGuard('SURFACE_KEEPER'),
   isMirror: createArchetypeGuard('MIRROR'),
+  isContraFobico,    // Phase 34, AR-02 — reads choiceMap.q1b (NOT positional)
+  isPortador,        // Phase 34, AR-03 — reads choiceMap.q5b (NOT positional)
 } as const;

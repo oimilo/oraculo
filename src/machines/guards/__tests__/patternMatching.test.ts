@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { determineArchetype, createArchetypeGuard, ARCHETYPE_GUARDS } from '../patternMatching';
+import {
+  determineArchetype,
+  createArchetypeGuard,
+  ARCHETYPE_GUARDS,
+  isContraFobico,
+  isPortador,
+} from '../patternMatching';
 import type { ChoiceAB, ChoicePattern, DevolucaoArchetype } from '@/types';
 
 /**
@@ -12,6 +18,22 @@ interface MockContext {
 
 const makeContext = (choices: ChoicePattern): MockContext => ({
   choices,
+});
+
+/**
+ * Helper to create mock context with both choices array and choiceMap (Phase 34).
+ * isContraFobico and isPortador read context.choiceMap (named lookup), not context.choices.
+ */
+type MockChoiceMap = Partial<Record<'q1' | 'q2' | 'q2b' | 'q3' | 'q4' | 'q4b' | 'q5' | 'q6' | 'q1b' | 'q5b' | 'q6b', 'A' | 'B'>>;
+
+interface MockContextWithMap {
+  choices: ChoicePattern;
+  choiceMap?: MockChoiceMap;
+}
+
+const makeContextWithMap = (choiceMap: MockChoiceMap | undefined): MockContextWithMap => ({
+  choices: [],
+  choiceMap,
 });
 
 describe('determineArchetype', () => {
@@ -404,5 +426,116 @@ describe('variable-length choice arrays (v4.0 branching)', () => {
       const pattern: ChoicePattern = ['A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A'];
       expect(determineArchetype(pattern)).toBe('DEPTH_SEEKER');
     });
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// Phase 34 — AR-02: isContraFobico guard tests
+// Trigger: q1='B' && q2='B' && q1b='A' (visitor stayed, looked, crossed void)
+// ═══════════════════════════════════════════════════════════════
+describe('isContraFobico (Phase 34 — AR-02)', () => {
+  it('returns true when q1=B && q2=B && q1b=A (full trigger)', () => {
+    const context = makeContextWithMap({ q1: 'B', q2: 'B', q1b: 'A' });
+    expect(isContraFobico({ context })).toBe(true);
+  });
+
+  it('returns true when full trigger plus extra fields (extra fields ignored)', () => {
+    const context = makeContextWithMap({ q1: 'B', q2: 'B', q1b: 'A', q3: 'A', q4: 'B', q5: 'A', q6: 'B' });
+    expect(isContraFobico({ context })).toBe(true);
+  });
+
+  it('returns false when q1b is missing (visitor never entered Q1B branch)', () => {
+    const context = makeContextWithMap({ q1: 'B', q2: 'B' });
+    expect(isContraFobico({ context })).toBe(false);
+  });
+
+  it('returns false when q1=A (wrong q1)', () => {
+    const context = makeContextWithMap({ q1: 'A', q2: 'B', q1b: 'A' });
+    expect(isContraFobico({ context })).toBe(false);
+  });
+
+  it('returns false when q2=A (wrong q2)', () => {
+    const context = makeContextWithMap({ q1: 'B', q2: 'A', q1b: 'A' });
+    expect(isContraFobico({ context })).toBe(false);
+  });
+
+  it('returns false when q1b=B (visitor turned back at the void)', () => {
+    const context = makeContextWithMap({ q1: 'B', q2: 'B', q1b: 'B' });
+    expect(isContraFobico({ context })).toBe(false);
+  });
+
+  it('returns false when choiceMap is empty', () => {
+    const context = makeContextWithMap({});
+    expect(isContraFobico({ context })).toBe(false);
+  });
+
+  it('returns false when choiceMap is undefined', () => {
+    const context = makeContextWithMap(undefined);
+    expect(isContraFobico({ context })).toBe(false);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// Phase 34 — AR-03: isPortador guard tests
+// Trigger: q4='A' && q5='A' && q5b='A' (visitor remembered, carries, fused them)
+// ═══════════════════════════════════════════════════════════════
+describe('isPortador (Phase 34 — AR-03)', () => {
+  it('returns true when q4=A && q5=A && q5b=A (full trigger)', () => {
+    const context = makeContextWithMap({ q4: 'A', q5: 'A', q5b: 'A' });
+    expect(isPortador({ context })).toBe(true);
+  });
+
+  it('returns true when full trigger plus extra fields', () => {
+    const context = makeContextWithMap({ q1: 'B', q2: 'B', q3: 'A', q4: 'A', q5: 'A', q5b: 'A', q6: 'B' });
+    expect(isPortador({ context })).toBe(true);
+  });
+
+  it('returns false when q5b is missing', () => {
+    const context = makeContextWithMap({ q4: 'A', q5: 'A' });
+    expect(isPortador({ context })).toBe(false);
+  });
+
+  it('returns false when q4=B (wrong q4)', () => {
+    const context = makeContextWithMap({ q4: 'B', q5: 'A', q5b: 'A' });
+    expect(isPortador({ context })).toBe(false);
+  });
+
+  it('returns false when q5=B (wrong q5)', () => {
+    const context = makeContextWithMap({ q4: 'A', q5: 'B', q5b: 'A' });
+    expect(isPortador({ context })).toBe(false);
+  });
+
+  it('returns false when q5b=B (visitor chose to dissolve, not carry)', () => {
+    const context = makeContextWithMap({ q4: 'A', q5: 'A', q5b: 'B' });
+    expect(isPortador({ context })).toBe(false);
+  });
+
+  it('returns false when choiceMap is empty', () => {
+    const context = makeContextWithMap({});
+    expect(isPortador({ context })).toBe(false);
+  });
+
+  it('returns false when choiceMap is undefined', () => {
+    const context = makeContextWithMap(undefined);
+    expect(isPortador({ context })).toBe(false);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// Phase 34 — ARCHETYPE_GUARDS export contains new guards
+// ═══════════════════════════════════════════════════════════════
+describe('ARCHETYPE_GUARDS includes Phase 34 guards', () => {
+  it('exports isContraFobico in ARCHETYPE_GUARDS', () => {
+    expect(ARCHETYPE_GUARDS.isContraFobico).toBeDefined();
+    expect(typeof ARCHETYPE_GUARDS.isContraFobico).toBe('function');
+  });
+
+  it('exports isPortador in ARCHETYPE_GUARDS', () => {
+    expect(ARCHETYPE_GUARDS.isPortador).toBeDefined();
+    expect(typeof ARCHETYPE_GUARDS.isPortador).toBe('function');
+  });
+
+  it('ARCHETYPE_GUARDS has 10 keys (8 baseline + isContraFobico + isPortador)', () => {
+    expect(Object.keys(ARCHETYPE_GUARDS).length).toBe(10);
   });
 });
