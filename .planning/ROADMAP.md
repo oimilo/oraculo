@@ -166,7 +166,13 @@ Plans:
 **Goal**: Add 2 new detectable archetypes leveraging new branch choice data. Guard priority: ESPELHO_SILENCIOSO → CONTRA_FOBICO → PORTADOR → 8 existing.
 **Depends on**: Phase 33
 **Requirements**: AR-02, AR-03
-**Plans**: TBD
+**Plans:** 3 plans
+
+Plans:
+- [ ] 34-01-PLAN.md — Data + Types: DevolucaoArchetype union extension (+ ESPELHO_SILENCIOSO backfill) + DEVOLUCAO_CONTRA_FOBICO and DEVOLUCAO_PORTADOR SCRIPT keys with drafted segment text (Wave 1)
+- [ ] 34-02-PLAN.md — Guards + Machine + UI + Tests: isContraFobico/isPortador guards, oracleMachine setup.guards + DEVOLUCAO.always insertion + 2 new top-level states, OracleExperience getScriptKey extensions, TDD across 3 suites (Wave 2, depends on 34-01)
+- [ ] 34-03-PLAN.md — Audio + Timing + Roteiro: generate 2 MP3s via ElevenLabs v3, extend validate-timing.ts (24 paths, trigger-aware pickLongestDevolucao), fix fallback-tts SCRIPT count (80→82), update roteiro.html with 2 new cards + 11-archetype priority list (Wave 3, depends on 34-02)
+
 **UI hint**: no
 
 #### Phase 35: Timing Mitigation + Browser UAT
@@ -352,4 +358,4 @@ v6.0 Deep Branching (active):
 
 ---
 
-*Last updated: 2026-04-07 -- Phase 33 planned (3 plans, Wave 1-3 structure mirroring Phase 31/32 with QUALIFIED #oracle.DEVOLUCAO rejoin + DEVOLUCAO.always[0] insertion for ESPELHO_SILENCIOSO highest priority)*
+*Last updated: 2026-04-07 -- Phase 34 planned (3 plans, Wave 1-3 structure mirroring Phases 31-33; adds 2 new detectable archetypes CONTRA_FOBICO + PORTADOR on top of ESPELHO_SILENCIOSO priority stack)*
