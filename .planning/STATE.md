@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v6.0
 milestone_name: Deep Branching
 status: executing
-stopped_at: "Completed 34-01-PLAN.md (Wave 1: data + types)"
-last_updated: "2026-04-08T01:15:34.100Z"
+stopped_at: "Completed 34-02-PLAN.md (Wave 2: isContraFobico + isPortador guards wired)"
+last_updated: "2026-04-08T01:28:22.059Z"
 last_activity: 2026-04-08
 progress:
   total_phases: 5
   completed_phases: 3
   total_plans: 12
-  completed_plans: 10
+  completed_plans: 11
   percent: 0
 ---
 
@@ -27,7 +27,7 @@ progress:
 ## Current Position
 
 Phase: 34 (detectable-archetypes-contra-fobico-portador) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 Status: Ready to execute
 Last activity: 2026-04-08
 
@@ -123,6 +123,7 @@ Recent decisions affecting current work:
 - [Phase 33]: ESPELHO_SILENCIOSO Option B chosen (silêncio que tem forma, 6 segments)
 - [Phase 33]: ESPELHO packing: ONE key with 6 segments (matches 8 existing archetypes)
 - [Phase 34-detectable-archetypes-contra-fobico-portador]: Phase 34 Wave 1 shipped: DEVOLUCAO_CONTRA_FOBICO + DEVOLUCAO_PORTADOR scripts (6 segments each), DevolucaoArchetype union 8 to 11 variants (backfilled ESPELHO_SILENCIOSO from Phase 33 type-gap), test baseline 697/17/3
+- [Phase 34-detectable-archetypes-contra-fobico-portador]: Phase 34 Wave 2: isContraFobico + isPortador guards wired with field-isolated choiceMap reads (POL-02 invariant preserved). Priority: ESPELHO[0] > CONTRA_FOBICO[1] > PORTADOR[2] > 8 baseline > unguarded CONTRADICTED.
 
 ### Active TODOs
 
@@ -135,6 +136,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-08T01:15:34.097Z
-Stopped at: Completed 34-01-PLAN.md (Wave 1: data + types)
+Last session: 2026-04-08T01:28:22.055Z
+Stopped at: Completed 34-02-PLAN.md (Wave 2: isContraFobico + isPortador guards wired)
 Resume: `/gsd:execute-plan 31-03` (Q1B audio generation + timing validation + roteiro docs)
