@@ -374,7 +374,7 @@
     <li><strong>Estrutura:</strong> Apresenta&ccedil;&atilde;o &rarr; Inferno &rarr; Purgat&oacute;rio &rarr; Para&iacute;so &rarr; Devolu&ccedil;&atilde;o &rarr; Encerramento</li>
     <li><strong>Escolhas:</strong> 6 perguntas bin&aacute;rias (A ou B) + 5 perguntas condicionais (Q1B, Q2B, Q4B, Q5B, Q6B)</li>
     <li><strong>Ramifica&ccedil;&otilde;es:</strong> Q1B aparece se Q1=B e Q2=B (perfil contra-f&oacute;bico). Q2B aparece se Q1=A e Q2=A. Q4B aparece se Q3=A e Q4=A. Q5B aparece se Q4=A e Q5=A (perfil PORTADOR). Q6B aparece se Q5=B e Q6=A (dissolveu pergunta MAS abriu para ser visto).</li>
-    <li><strong>Devolu&ccedil;&atilde;o:</strong> 9 arqu&eacute;tipos poss&iacute;veis (8 padr&otilde;es + Espelho Silencioso quando Q6B=B), derivados do <em>padr&atilde;o</em> de escolhas (n&atilde;o de cada escolha individual)</li>
+    <li><strong>Devolu&ccedil;&atilde;o:</strong> 11 arqu&eacute;tipos poss&iacute;veis (8 padr&otilde;es base + Espelho Silencioso quando Q6B=B + Contra-F&oacute;bico quando Q1B=A + Portador quando Q5B=A), derivados do <em>padr&atilde;o</em> de escolhas (n&atilde;o de cada escolha individual)</li>
     <li><strong>Escala de profundidade:</strong> Light &rarr; Medium &rarr; Deep &rarr; Profound</li>
     <li><strong>Privacidade:</strong> Zero dados armazenados. &Aacute;udio descartado ap&oacute;s classifica&ccedil;&atilde;o (LGPD).</li>
   </ul>
@@ -428,9 +428,14 @@ graph TD
     Q6B -->|"A: Resposta"| DEV
     Q6B -->|"B: Pergunta"| ESPELHO["<strong>DEVOLU&Ccedil;&Atilde;O</strong><br/><strong>Espelho Silencioso</strong><br/><em>Estrutura aberta, n&atilde;o diagn&oacute;stico</em>"]
 
-    DEV["<strong>DEVOLU&Ccedil;&Atilde;O</strong><br/><em>1 de 8 arqu&eacute;tipos<br/>baseado no padr&atilde;o de escolhas</em>"]
+    Q1B -.->|"A: Atravessar (perfil)"| CONTRA_FOBICO["<strong>DEVOLU&Ccedil;&Atilde;O</strong><br/><strong>Contra-F&oacute;bico</strong><br/><em>Atravessou o vazio sem nome de coragem</em>"]
+    Q5B -.->|"A: Fundir (perfil)"| PORTADOR_NODE["<strong>DEVOLU&Ccedil;&Atilde;O</strong><br/><strong>Portador</strong><br/><em>Carrega a pergunta como tesouro herdado</em>"]
+
+    DEV["<strong>DEVOLU&Ccedil;&Atilde;O</strong><br/><em>1 de 8 arqu&eacute;tipos baseline<br/>baseado no padr&atilde;o de escolhas</em>"]
 
     ESPELHO --> FIM
+    CONTRA_FOBICO --> FIM
+    PORTADOR_NODE --> FIM
 
     DEV --> FIM["<strong>ENCERRAMENTO</strong><br/><em>O Or&aacute;culo se dissolve</em>"]
 
@@ -446,7 +451,7 @@ graph TD
     class INF_INTRO inferno
     class PURG purgatorio
     class PAR paraiso
-    class DEV,ESPELHO phase
+    class DEV,ESPELHO,CONTRA_FOBICO,PORTADOR_NODE phase
     class Q1,Q2,Q3,Q4,Q5,Q6 question
     class Q1B,Q2B,Q4B,Q5B,Q6B branch
   </div>

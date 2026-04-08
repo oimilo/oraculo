@@ -2,17 +2,17 @@
 
 ## What This Is
 
-Interactive voice art installation for the VII Bienal de Psicanalise e Cultura (SBPRP 2026, May 29-30). A visitor puts on headphones, the Oracle guides them through a Dante-inspired journey (Inferno → Purgatorio → Paraiso) with 8 branching voice decisions in 5-7 minutes, then delivers a personalized devolucao based on their choice pattern.
+Interactive voice art installation for the VII Bienal de Psicanalise e Cultura (SBPRP 2026, May 29-30). A visitor puts on headphones, the Oracle guides them through a Dante-inspired journey (Inferno → Purgatorio → Paraiso) with up to 11 max decisions (6 base + 5 conditional branches) in 5-7 minutes, then delivers a personalized devolucao based on their choice pattern.
 
-**Status:** v4.0 Game Flow complete. All code, script, machine, and 61 MP3s shipped. Pending: browser UAT + event deploy.
+**Status:** v6.0 Deep Branching complete. All code, script, machine, and 82 MP3s shipped. Pending: browser UAT + event deploy.
 
 ## Stack
 
 - **Next.js 15** App Router (API routes as server-side proxies)
 - **React 19** (client-side only, `'use client'` everywhere)
-- **XState v5** state machine (~54 states, 8 decision points, branching)
+- **XState v5** state machine (~78 states, 11 decision points, 5 conditional branches)
 - **Tailwind CSS v4** (dark theme, minimal UI — voice is primary)
-- **Vitest** + Testing Library (32/34 suites pass, 496 tests)
+- **Vitest** + Testing Library (~750 tests, 733 passing baseline)
 - **TypeScript 5.7** strict mode, `@/` path alias
 
 ## Architecture
@@ -20,14 +20,17 @@ Interactive voice art installation for the VII Bienal de Psicanalise e Cultura (
 ### State Machine (single source of truth)
 
 ```
-IDLE → APRESENTACAO → INFERNO → [Q2B branch?] → PURGATORIO → [Q4B branch?] → PARAISO → DEVOLUCAO → ENCERRAMENTO → FIM
+IDLE → APRESENTACAO → INFERNO → [Q1B|Q2B] → PURGATORIO → [Q4B] → PARAISO → [Q5B|Q6B] → DEVOLUCAO → ENCERRAMENTO → FIM
 ```
 
-- **6 base questions** (Q1-Q6) + **2 conditional branches** (Q2B, Q4B) = 8 max decisions
+- **6 base questions** (Q1-Q6) + **5 conditional branches** (Q1B, Q2B, Q4B, Q5B, Q6B) = up to 11 max decisions
+- Q1B triggers when Q1=B AND Q2=B (contra-fobico profile in Inferno)
 - Q2B triggers when Q1=A AND Q2=A (both cautious choices in Inferno)
 - Q4B triggers when Q3=A AND Q4=A (both engaged choices in Purgatorio)
-- 8 devolucao archetypes: SEEKER, GUARDIAN, CONTRADICTED, PIVOT_EARLY, PIVOT_LATE, DEPTH_SEEKER, SURFACE_KEEPER, MIRROR
-- Pattern matching uses percentage-based thresholds on variable-length ChoicePattern (6-10 choices)
+- Q5B triggers when Q4=A AND Q5=A (PORTADOR profile in Paraiso)
+- Q6B triggers when Q5=B AND Q6=A (dissolved question + open to be seen)
+- 11 devolucao archetypes: 8 baseline (SEEKER, GUARDIAN, CONTRADICTED, PIVOT_EARLY, PIVOT_LATE, DEPTH_SEEKER, SURFACE_KEEPER, MIRROR) + ESPELHO_SILENCIOSO (Q6B=B) + CONTRA_FOBICO (Q1B=A) + PORTADOR (Q5B=A)
+- Pattern matching uses percentage-based thresholds on variable-length ChoicePattern (6-9 choices)
 
 **Files:** `src/machines/oracleMachine.ts` (machine), `src/machines/oracleMachine.types.ts` (types + context)
 
@@ -37,7 +40,7 @@ Every external service follows: `index.ts` (interface + factory) → `mock.ts` �
 
 | Service | Real Provider | Factory | Toggle |
 |---------|--------------|---------|--------|
-| TTS | ElevenLabs v3 + FallbackTTS (61 MP3s) | `createTTSService()` | `NEXT_PUBLIC_USE_REAL_APIS` |
+| TTS | ElevenLabs v3 + FallbackTTS (82 MP3s) | `createTTSService()` | `NEXT_PUBLIC_USE_REAL_APIS` |
 | STT | OpenAI Whisper | `createSTTService()` | same |
 | NLU | Claude Haiku (keyword pre-match → LLM) | `createNLUService()` | same |
 | Analytics | localStorage mock (Supabase deferred) | `createAnalyticsService()` | same |
@@ -55,11 +58,11 @@ Mic records 4s → Whisper STT → keyword match (instant) or Claude NLU (2s) �
 
 ### Script & Audio
 
-- **Script:** `src/data/script.ts` — 61 keys, all PT-BR, with `pauseAfter` timing and `inflection` tags
-- **NLU metadata:** `QUESTION_META` in `src/types/index.ts` — 8 questions with keywords, labels, context
-- **MP3s:** `public/audio/oracle/` — 61 files, ~17MB total, mp3_44100_192 via ElevenLabs v3
+- **Script:** `src/data/script.ts` — 82 keys, all PT-BR, with `pauseAfter` timing and `inflection` tags
+- **NLU metadata:** `QUESTION_META` in `src/types/index.ts` — 11 questions with keywords, labels, context
+- **MP3s:** `public/audio/prerecorded/` — 82 files, ~24MB total, mp3_44100_192 via ElevenLabs v3
 - **Generation:** `scripts/generate-audio-v3.ts` imports from `script.ts` directly
-- **Timing validation:** `scripts/validate-timing.ts` checks all 4 branch permutations (max-path: 5:57 min)
+- **Timing validation:** `scripts/validate-timing.ts` checks all 24 branch permutations (max-path: 7:11.2 min, 18.8s headroom under 7:30 budget)
 
 ### Key Component
 
@@ -68,7 +71,7 @@ Mic records 4s → Whisper STT → keyword match (instant) or Claude NLU (2s) �
 - `getBreathingDelay()` → pause between states (SHORT/MEDIUM/LONG)
 - `getFallbackScript()` → fallback text per AGUARDANDO state
 - `activeChoiceConfig` → which ChoiceConfig to use for voice choice pipeline
-- 8 `buildChoiceConfig(N)` instances from `QUESTION_META`
+- 11 `buildChoiceConfig(N)` instances from `QUESTION_META`
 
 ## Conventions
 
@@ -98,7 +101,7 @@ Mic records 4s → Whisper STT → keyword match (instant) or Claude NLU (2s) �
 
 ### Run tests
 ```bash
-npm test              # all tests (32/34 suites, 496 tests)
+npm test              # all tests (~750 tests, 733 passing baseline / 16 failing pre-existing)
 npm run test:watch    # watch mode
 npx vitest run src/data/  # specific directory
 ```
@@ -135,10 +138,10 @@ src/
     WaveformVisualizer.tsx      # Canvas waveform
     ListeningIndicator.tsx      # Mic active indicator
   machines/
-    oracleMachine.ts            # XState v5 machine (~54 states)
+    oracleMachine.ts            # XState v5 machine (~78 states)
     oracleMachine.types.ts      # Context, events, types
   data/
-    script.ts                   # Full PT-BR script (61 keys)
+    script.ts                   # Full PT-BR script (82 keys)
   types/
     index.ts                    # Core types + QUESTION_META
   hooks/
@@ -155,8 +158,8 @@ src/
     audioContext.ts             # AudioContext singleton
 scripts/
   generate-audio-v3.ts         # MP3 generation via ElevenLabs
-  validate-timing.ts           # Duration validation (4 branch paths)
-public/audio/oracle/           # 61 pre-recorded MP3s (~17MB)
+  validate-timing.ts           # Duration validation (24 branch paths)
+public/audio/prerecorded/      # 82 pre-recorded MP3s (~24MB)
 ```
 
 ## Important Constraints
