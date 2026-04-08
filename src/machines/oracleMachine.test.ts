@@ -676,10 +676,14 @@ describe('oracleMachine v4', () => {
   // ═════════════════════════════════════════════════════════════════════════
 
   describe('devolucao routing (MACH-03)', () => {
-    it('all A (9 choices, Q2B+Q4B+Q5B branches) -> DEVOLUCAO_DEPTH_SEEKER', () => {
+    it('all A (9 choices, Q2B+Q4B+Q5B branches) -> DEVOLUCAO_PORTADOR (Phase 34 priority)', () => {
+      // Phase 34: when q4='A' && q5='A' && q5b='A', the new isPortador guard fires
+      // at DEVOLUCAO.always[2], which beats DEPTH_SEEKER (now at index [4]).
+      // PORTADOR is the more specific reading of this all-A path: visitor remembered
+      // (q4=A), carries the question (q5=A), and fused them (q5b=A).
       const actor = createActor(oracleMachine).start();
       runFullPathV4(actor, { q1: 'A', q2: 'A', q2b: 'A', q3: 'A', q4: 'A', q4b: 'A', q5: 'A', q5b: 'A', q6: 'A' });
-      expect(actor.getSnapshot().value).toBe('DEVOLUCAO_DEPTH_SEEKER');
+      expect(actor.getSnapshot().value).toBe('DEVOLUCAO_PORTADOR');
       expect(actor.getSnapshot().context.choices).toHaveLength(9);
       actor.stop();
     });
@@ -1034,12 +1038,14 @@ describe('oracleMachine v4', () => {
       actor.stop();
     });
 
-    it('Path 4: All three branches (9Q: Q2B+Q4B+Q5B) - all A end-to-end', () => {
+    it('Path 4: All three branches (9Q: Q2B+Q4B+Q5B) - all A end-to-end (PORTADOR per Phase 34)', () => {
+      // Phase 34: all-A 9Q path now routes to PORTADOR (q4=A && q5=A && q5b=A trigger at always[2])
+      // beating DEPTH_SEEKER (now at always[4]). The pure all-A reading is the carrier gesture.
       const actor = createActor(oracleMachine).start();
       expect(actor.getSnapshot().value).toBe('IDLE');
 
       runFullPathV4(actor, { q1: 'A', q2: 'A', q2b: 'A', q3: 'A', q4: 'A', q4b: 'A', q5: 'A', q5b: 'A', q6: 'A' });
-      expect(actor.getSnapshot().value).toBe('DEVOLUCAO_DEPTH_SEEKER');
+      expect(actor.getSnapshot().value).toBe('DEVOLUCAO_PORTADOR');
       expect(actor.getSnapshot().context.currentPhase).toBe('DEVOLUCAO');
       expect(actor.getSnapshot().context.choices).toHaveLength(9);
       expect(actor.getSnapshot().context.choices).toEqual(['A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A']);
@@ -2264,5 +2270,190 @@ describe('oracleMachine v4', () => {
       expect(machineConfig.states).toHaveProperty('DEVOLUCAO_GUARDIAN');
       expect(machineConfig.states).toHaveProperty('DEVOLUCAO_CONTRADICTED');
     });
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// Phase 34 — AR-02 + AR-03: CONTRA_FOBICO + PORTADOR Priority Routing
+// ═══════════════════════════════════════════════════════════════
+describe('Phase 34 — DEVOLUCAO.always priority for CONTRA_FOBICO + PORTADOR', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('CONTRA_FOBICO wins when q1=B && q2=B && q1b=A (no ESPELHO trigger)', () => {
+    const actor = createActor(oracleMachine).start();
+    runFullPathV4(actor, {
+      q1: 'B', q2: 'B', q1b: 'A',
+      q3: 'A', q4: 'B',
+      q5: 'A',
+      q6: 'A',
+    });
+    expect(actor.getSnapshot().value).toBe('DEVOLUCAO_CONTRA_FOBICO');
+    actor.stop();
+  });
+
+  it('PORTADOR wins when q4=A && q5=A && q5b=A (no CONTRA_FOBICO, no ESPELHO)', () => {
+    const actor = createActor(oracleMachine).start();
+    runFullPathV4(actor, {
+      // q1=A,q2=B avoids both Q1B (need q1=B,q2=B) and Q2B (need q1=A,q2=A)
+      q1: 'A', q2: 'B',
+      // q3=B avoids Q4B (need q3=A && q4=A)
+      q3: 'B', q4: 'A',
+      // Q5B fires (q4=A && q5=A) — q5b=A triggers PORTADOR
+      q5: 'A', q5b: 'A',
+      q6: 'B',
+    });
+    expect(actor.getSnapshot().value).toBe('DEVOLUCAO_PORTADOR');
+    actor.stop();
+  });
+
+  it('CONTRA_FOBICO wins over PORTADOR when both triggers fire', () => {
+    const actor = createActor(oracleMachine).start();
+    runFullPathV4(actor, {
+      q1: 'B', q2: 'B', q1b: 'A',  // CONTRA_FOBICO trigger
+      q3: 'B', q4: 'A',
+      q5: 'A', q5b: 'A',           // PORTADOR trigger
+      q6: 'B',
+    });
+    // Both guards return true; CONTRA_FOBICO is at always[1], PORTADOR at always[2] — first match wins.
+    expect(actor.getSnapshot().value).toBe('DEVOLUCAO_CONTRA_FOBICO');
+    actor.stop();
+  });
+
+  it('ESPELHO_SILENCIOSO wins over CONTRA_FOBICO when q6b=B (ESPELHO at [0] beats all)', () => {
+    // To trigger Q6B: q5=B && q6=A. Then q6b=B → ESPELHO.
+    // To also trigger CONTRA_FOBICO: q1=B && q2=B && q1b=A
+    // runFullPathV4 doesn't support q6b — drive Q6B branch manually after the main path.
+    const actor = createActor(oracleMachine).start();
+    actor.send({ type: 'START' });
+    actor.send({ type: 'NARRATIVA_DONE' }); // APRESENTACAO -> INFERNO.INTRO
+    actor.send({ type: 'NARRATIVA_DONE' }); // INTRO -> Q1_SETUP
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q1_SETUP -> Q1_PERGUNTA
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q1_PERGUNTA -> Q1_AGUARDANDO
+    actor.send({ type: 'CHOICE_B' });        // q1=B
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q1_RESPOSTA_B -> Q2_SETUP
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q2_SETUP -> Q2_PERGUNTA
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q2_PERGUNTA -> Q2_AGUARDANDO
+    actor.send({ type: 'CHOICE_B' });        // q2=B → Q1B branch fires
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q2_RESPOSTA_B -> Q1B_SETUP
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q1B_SETUP -> Q1B_PERGUNTA
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q1B_PERGUNTA -> Q1B_AGUARDANDO
+    actor.send({ type: 'CHOICE_A' });        // q1b=A → CONTRA_FOBICO would fire
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q1B_RESPOSTA_A -> PURGATORIO.INTRO
+    actor.send({ type: 'NARRATIVA_DONE' }); // INTRO -> Q3_SETUP
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q3_SETUP -> Q3_PERGUNTA
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q3_PERGUNTA -> Q3_AGUARDANDO
+    actor.send({ type: 'CHOICE_A' });        // q3=A
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q3_RESPOSTA_A -> Q4_SETUP
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q4_SETUP -> Q4_PERGUNTA
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q4_PERGUNTA -> Q4_AGUARDANDO
+    actor.send({ type: 'CHOICE_B' });        // q4=B (avoid Q4B)
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q4_RESPOSTA_B -> PARAISO.INTRO
+    actor.send({ type: 'NARRATIVA_DONE' }); // INTRO -> Q5_SETUP
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q5_SETUP -> Q5_PERGUNTA
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q5_PERGUNTA -> Q5_AGUARDANDO
+    actor.send({ type: 'CHOICE_B' });        // q5=B
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q5_RESPOSTA_B -> Q6_SETUP
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q6_SETUP -> Q6_PERGUNTA
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q6_PERGUNTA -> Q6_AGUARDANDO
+    actor.send({ type: 'CHOICE_A' });        // q6=A → Q6B branch fires (q5=B && q6=A)
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q6_RESPOSTA_A -> Q6B_SETUP
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q6B_SETUP -> Q6B_PERGUNTA
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q6B_PERGUNTA -> Q6B_AGUARDANDO
+    actor.send({ type: 'CHOICE_B' });        // q6b=B → ESPELHO trigger
+    actor.send({ type: 'NARRATIVA_DONE' }); // Q6B_RESPOSTA_B -> #oracle.DEVOLUCAO
+
+    // ESPELHO at always[0] beats CONTRA_FOBICO at always[1]
+    expect(actor.getSnapshot().value).toBe('DEVOLUCAO_ESPELHO_SILENCIOSO');
+    expect(actor.getSnapshot().context.choiceMap.q1b).toBe('A');
+    expect(actor.getSnapshot().context.choiceMap.q6b).toBe('B');
+    actor.stop();
+  });
+
+  it('baseline archetype routes correctly when no Phase 34 guards fire', () => {
+    const actor = createActor(oracleMachine).start();
+    // Use q1=A,q2=B to skip Q2B (needs q1=A,q2=A) and Q1B (needs q1=B,q2=B)
+    // q3=B,q4=B → no Q4B
+    // q5=A but q4=B → no Q5B
+    // q6=B → no Q6B
+    runFullPathV4(actor, {
+      q1: 'A', q2: 'B',
+      q3: 'B', q4: 'B',
+      q5: 'A',
+      q6: 'B',
+    });
+    const finalState = actor.getSnapshot().value;
+    // Should NOT be a Phase 34 state (no Phase 34 guards fired)
+    expect(finalState).not.toBe('DEVOLUCAO_CONTRA_FOBICO');
+    expect(finalState).not.toBe('DEVOLUCAO_PORTADOR');
+    expect(finalState).not.toBe('DEVOLUCAO_ESPELHO_SILENCIOSO');
+    // Should be one of the 8 baseline archetypes
+    expect([
+      'DEVOLUCAO_SEEKER', 'DEVOLUCAO_GUARDIAN', 'DEVOLUCAO_CONTRADICTED',
+      'DEVOLUCAO_PIVOT_EARLY', 'DEVOLUCAO_PIVOT_LATE',
+      'DEVOLUCAO_DEPTH_SEEKER', 'DEVOLUCAO_SURFACE_KEEPER', 'DEVOLUCAO_MIRROR',
+    ]).toContain(finalState);
+    actor.stop();
+  });
+
+  it('DEVOLUCAO_CONTRA_FOBICO transitions to ENCERRAMENTO on NARRATIVA_DONE', () => {
+    const actor = createActor(oracleMachine).start();
+    runFullPathV4(actor, {
+      q1: 'B', q2: 'B', q1b: 'A',
+      q3: 'A', q4: 'B',
+      q5: 'A',
+      q6: 'A',
+    });
+    expect(actor.getSnapshot().value).toBe('DEVOLUCAO_CONTRA_FOBICO');
+    actor.send({ type: 'NARRATIVA_DONE' });
+    expect(actor.getSnapshot().value).toBe('ENCERRAMENTO');
+    actor.stop();
+  });
+
+  it('DEVOLUCAO_PORTADOR transitions to ENCERRAMENTO on NARRATIVA_DONE', () => {
+    const actor = createActor(oracleMachine).start();
+    runFullPathV4(actor, {
+      q1: 'A', q2: 'B',
+      q3: 'B', q4: 'A',
+      q5: 'A', q5b: 'A',
+      q6: 'B',
+    });
+    expect(actor.getSnapshot().value).toBe('DEVOLUCAO_PORTADOR');
+    actor.send({ type: 'NARRATIVA_DONE' });
+    expect(actor.getSnapshot().value).toBe('ENCERRAMENTO');
+    actor.stop();
+  });
+
+  it('DEVOLUCAO_CONTRA_FOBICO appears between ESPELHO and MIRROR in source text (priority order)', () => {
+    const fs = require('fs');
+    const machineSource = fs.readFileSync('C:\\Users\\USER\\Oraculo\\src\\machines\\oracleMachine.ts', 'utf8');
+
+    const contraFobicoIndex = machineSource.indexOf('DEVOLUCAO_CONTRA_FOBICO');
+    const portadorIndex = machineSource.indexOf('DEVOLUCAO_PORTADOR');
+    const mirrorIndex = machineSource.indexOf('DEVOLUCAO_MIRROR');
+    const espelhoIndex = machineSource.indexOf('DEVOLUCAO_ESPELHO_SILENCIOSO');
+
+    expect(contraFobicoIndex).toBeGreaterThan(0);
+    expect(portadorIndex).toBeGreaterThan(0);
+    expect(espelhoIndex).toBeGreaterThan(0);
+    expect(mirrorIndex).toBeGreaterThan(0);
+
+    // Priority order in DEVOLUCAO.always: ESPELHO[0] < CONTRA_FOBICO[1] < PORTADOR[2] < MIRROR[3]
+    expect(espelhoIndex).toBeLessThan(contraFobicoIndex);
+    expect(contraFobicoIndex).toBeLessThan(portadorIndex);
+    expect(portadorIndex).toBeLessThan(mirrorIndex);
+  });
+
+  it('top-level state DEVOLUCAO_CONTRA_FOBICO is registered in machine config', () => {
+    expect(oracleMachine.config.states).toHaveProperty('DEVOLUCAO_CONTRA_FOBICO');
+  });
+
+  it('top-level state DEVOLUCAO_PORTADOR is registered in machine config', () => {
+    expect(oracleMachine.config.states).toHaveProperty('DEVOLUCAO_PORTADOR');
   });
 });

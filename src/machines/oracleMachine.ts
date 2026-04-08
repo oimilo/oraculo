@@ -37,6 +37,9 @@ export const oracleMachine = setup({
     isSeeker: ARCHETYPE_GUARDS.isSeeker,
     isGuardian: ARCHETYPE_GUARDS.isGuardian,
     isContradicted: ARCHETYPE_GUARDS.isContradicted,
+    // Phase 34 — AR-02 + AR-03 archetype guards (read context.choiceMap)
+    isContraFobico: ARCHETYPE_GUARDS.isContraFobico,
+    isPortador: ARCHETYPE_GUARDS.isPortador,
     // Branch guards (new)
     shouldBranchQ2B: ({ context }) => context.choiceMap.q1 === 'A' && context.choiceMap.q2 === 'A',
     shouldBranchQ4B: ({ context }) => context.choiceMap.q3 === 'A' && context.choiceMap.q4 === 'A',
@@ -672,11 +675,17 @@ export const oracleMachine = setup({
       id: 'DEVOLUCAO',
       entry: assign({ currentPhase: 'DEVOLUCAO' }),
       always: [
-        // Phase 33 — AR-01 — HIGHEST PRIORITY (NEW, index [0])
+        // [0] HIGHEST PRIORITY — Phase 33, AR-01
         // ESPELHO_SILENCIOSO must be checked FIRST. Triggered by isEspelhoSilencioso (q6b='B').
         // First-match-wins: this entry MUST stay at index [0] or routing breaks.
         { target: 'DEVOLUCAO_ESPELHO_SILENCIOSO', guard: 'isEspelhoSilencioso' },
-        // Existing 8 entries — PRESERVED IN REAL ORDER (copied verbatim from lines 675-682):
+        // [1] Phase 34 — AR-02 — CONTRA_FOBICO (q1=B && q2=B && q1b=A)
+        // Reads choiceMap.q1b — bespoke field-isolated guard (POL-02 deeper invariant).
+        { target: 'DEVOLUCAO_CONTRA_FOBICO', guard: 'isContraFobico' },
+        // [2] Phase 34 — AR-03 — PORTADOR (q4=A && q5=A && q5b=A)
+        // Reads choiceMap.q5b — bespoke field-isolated guard.
+        { target: 'DEVOLUCAO_PORTADOR', guard: 'isPortador' },
+        // [3-10] — 8 baseline archetypes (preserved order, indices shifted +2 from Phase 33)
         { target: 'DEVOLUCAO_MIRROR', guard: 'isMirror' },
         { target: 'DEVOLUCAO_DEPTH_SEEKER', guard: 'isDepthSeeker' },
         { target: 'DEVOLUCAO_SURFACE_KEEPER', guard: 'isSurfaceKeeper' },
@@ -684,7 +693,8 @@ export const oracleMachine = setup({
         { target: 'DEVOLUCAO_PIVOT_LATE', guard: 'isPivotLate' },
         { target: 'DEVOLUCAO_SEEKER', guard: 'isSeeker' },
         { target: 'DEVOLUCAO_GUARDIAN', guard: 'isGuardian' },
-        { target: 'DEVOLUCAO_CONTRADICTED' },        // ← UNGUARDED FALLTHROUGH (preserved — NO guard field)
+        // [11] UNGUARDED FALLTHROUGH — preserved (NO guard field)
+        { target: 'DEVOLUCAO_CONTRADICTED' },
       ],
     },
 
@@ -695,6 +705,45 @@ export const oracleMachine = setup({
       on: { NARRATIVA_DONE: 'ENCERRAMENTO' },
       after: {
         // Standard 5-min idle reset (matches all other DEVOLUCAO_* states for Bienal).
+        300000: {
+          target: '#oracle.IDLE',
+          actions: assign({
+            sessionId: '',
+            choices: [],
+            choiceMap: {},
+            fallbackCount: 0,
+            currentPhase: 'APRESENTACAO',
+          }),
+        },
+      },
+    },
+
+    // Phase 34 — AR-02 — DEVOLUCAO_CONTRA_FOBICO archetype state
+    // Sibling of all other DEVOLUCAO_* states (top-level, NOT inside DEVOLUCAO).
+    // Triggered by isContraFobico at DEVOLUCAO.always[1].
+    DEVOLUCAO_CONTRA_FOBICO: {
+      on: { NARRATIVA_DONE: 'ENCERRAMENTO' },
+      after: {
+        // Standard 5-min idle reset (matches all other DEVOLUCAO_* states for Bienal).
+        300000: {
+          target: '#oracle.IDLE',
+          actions: assign({
+            sessionId: '',
+            choices: [],
+            choiceMap: {},
+            fallbackCount: 0,
+            currentPhase: 'APRESENTACAO',
+          }),
+        },
+      },
+    },
+
+    // Phase 34 — AR-03 — DEVOLUCAO_PORTADOR archetype state
+    // Sibling of all other DEVOLUCAO_* states.
+    // Triggered by isPortador at DEVOLUCAO.always[2].
+    DEVOLUCAO_PORTADOR: {
+      on: { NARRATIVA_DONE: 'ENCERRAMENTO' },
+      after: {
         300000: {
           target: '#oracle.IDLE',
           actions: assign({
