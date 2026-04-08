@@ -18,8 +18,8 @@ Source of truth: `memory/next-milestone-v5-deep-branching.md` (blueprint complet
 ### Arquétipos (Devoluções)
 
 - [x] **AR-01**: DEVOLUCAO_ESPELHO_SILENCIOSO arquetipo criado — 6 segmentos no script (devolve forma em vez de conteúdo, ~22-28s), 6 MP3s, guard `isEspelhoSilencioso` com **highest priority** no `always` do estado DEVOLUCAO (deve verificar antes dos 8 arquétipos atuais), trigger: `q6b === 'B'`
-- [ ] **AR-02**: CONTRA_FOBICO arquétipo detectável — guard `isContraFobico` em `patternMatching.ts` (trigger: `q1==='B' && q2==='B' && q1b==='A'`), DEVOLUCAO_CONTRA_FOBICO script + MP3s, ordem nos `always` do DEVOLUCAO: ESPELHO_SILENCIOSO → CONTRA_FOBICO → PORTADOR → 8 atuais
-- [ ] **AR-03**: PORTADOR arquétipo detectável — guard `isPortador` (trigger: `q4==='A' && q5==='A' && q5b==='A'`), DEVOLUCAO_PORTADOR script + MP3s
+- [x] **AR-02**: CONTRA_FOBICO arquétipo detectável — guard `isContraFobico` em `patternMatching.ts` (trigger: `q1==='B' && q2==='B' && q1b==='A'`), DEVOLUCAO_CONTRA_FOBICO script + MP3s, ordem nos `always` do DEVOLUCAO: ESPELHO_SILENCIOSO → CONTRA_FOBICO → PORTADOR → 8 atuais
+- [x] **AR-03**: PORTADOR arquétipo detectável — guard `isPortador` (trigger: `q4==='A' && q5==='A' && q5b==='A'`), DEVOLUCAO_PORTADOR script + MP3s
 
 ### Polish & Validation
 
@@ -81,8 +81,8 @@ All 16 requirements satisfied (PACE-01 through INTG-02). See `.planning/MILESTON
 | BR-02 | Phase 32 | Complete |
 | BR-03 | Phase 33 | Complete |
 | AR-01 | Phase 33 | Complete |
-| AR-02 | Phase 34 | Pending |
-| AR-03 | Phase 34 | Pending |
+| AR-02 | Phase 34 | Complete |
+| AR-03 | Phase 34 | Complete |
 | POL-01 | Phase 35 | Complete |
 | POL-02 | Phase 31 | Complete |
 | POL-03 | Phase 35 | Pending |

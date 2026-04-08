@@ -166,10 +166,10 @@ Plans:
 **Goal**: Add 2 new detectable archetypes leveraging new branch choice data. Guard priority: ESPELHO_SILENCIOSO → CONTRA_FOBICO → PORTADOR → 8 existing.
 **Depends on**: Phase 33
 **Requirements**: AR-02, AR-03
-**Plans:** 3 plans
+**Plans:** 1/3 plans executed
 
 Plans:
-- [ ] 34-01-PLAN.md — Data + Types: DevolucaoArchetype union extension (+ ESPELHO_SILENCIOSO backfill) + DEVOLUCAO_CONTRA_FOBICO and DEVOLUCAO_PORTADOR SCRIPT keys with drafted segment text (Wave 1)
+- [x] 34-01-PLAN.md — Data + Types: DevolucaoArchetype union extension (+ ESPELHO_SILENCIOSO backfill) + DEVOLUCAO_CONTRA_FOBICO and DEVOLUCAO_PORTADOR SCRIPT keys with drafted segment text (Wave 1)
 - [ ] 34-02-PLAN.md — Guards + Machine + UI + Tests: isContraFobico/isPortador guards, oracleMachine setup.guards + DEVOLUCAO.always insertion + 2 new top-level states, OracleExperience getScriptKey extensions, TDD across 3 suites (Wave 2, depends on 34-01)
 - [ ] 34-03-PLAN.md — Audio + Timing + Roteiro: generate 2 MP3s via ElevenLabs v3, extend validate-timing.ts (24 paths, trigger-aware pickLongestDevolucao), fix fallback-tts SCRIPT count (80→82), update roteiro.html with 2 new cards + 11-archetype priority list (Wave 3, depends on 34-02)
 
@@ -340,7 +340,7 @@ Plans:
 | 31. Q1B Branch | v6.0 | 3/3 | Complete    | 2026-04-07 |
 | 32. Q5B Branch | v6.0 | 3/3 | Complete    | 2026-04-07 |
 | 33. Q6B + ESPELHO_SILENCIOSO | v6.0 | 3/3 | Complete    | 2026-04-07 |
-| 34. Detectable Archetypes | v6.0 | 0/TBD | Not started | - |
+| 34. Detectable Archetypes | v6.0 | 1/3 | In Progress|  |
 | 35. Timing + UAT | v6.0 | 0/TBD | Not started | - |
 
 ## Dependencies

@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v6.0
 milestone_name: Deep Branching
-status: verifying
-stopped_at: Phase 34 context gathered
-last_updated: "2026-04-08T00:02:04.853Z"
-last_activity: 2026-04-07
+status: executing
+stopped_at: "Completed 34-01-PLAN.md (Wave 1: data + types)"
+last_updated: "2026-04-08T01:15:34.100Z"
+last_activity: 2026-04-08
 progress:
   total_phases: 5
   completed_phases: 3
-  total_plans: 9
-  completed_plans: 9
+  total_plans: 12
+  completed_plans: 10
   percent: 0
 ---
 
@@ -22,14 +22,14 @@ progress:
 
 **Current Milestone:** v6.0 Deep Branching
 
-**Current Focus:** Phase 33 — q6b-espelho-silencioso
+**Current Focus:** Phase 34 — detectable-archetypes-contra-fobico-portador
 
 ## Current Position
 
-Phase: 34
-Plan: Not started
-Status: Phase complete — ready for verification
-Last activity: 2026-04-07
+Phase: 34 (detectable-archetypes-contra-fobico-portador) — EXECUTING
+Plan: 2 of 3
+Status: Ready to execute
+Last activity: 2026-04-08
 
 Progress: [░░░░░░░░░░] 0% (0/5 phases)
 
@@ -122,6 +122,7 @@ Recent decisions affecting current work:
 - [Phase 33]: Q6B narrative Option C chosen (most cinematic, echoes Q5 dissolution)
 - [Phase 33]: ESPELHO_SILENCIOSO Option B chosen (silêncio que tem forma, 6 segments)
 - [Phase 33]: ESPELHO packing: ONE key with 6 segments (matches 8 existing archetypes)
+- [Phase 34-detectable-archetypes-contra-fobico-portador]: Phase 34 Wave 1 shipped: DEVOLUCAO_CONTRA_FOBICO + DEVOLUCAO_PORTADOR scripts (6 segments each), DevolucaoArchetype union 8 to 11 variants (backfilled ESPELHO_SILENCIOSO from Phase 33 type-gap), test baseline 697/17/3
 
 ### Active TODOs
 
@@ -134,6 +135,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-08T00:02:04.850Z
-Stopped at: Phase 34 context gathered
+Last session: 2026-04-08T01:15:34.097Z
+Stopped at: Completed 34-01-PLAN.md (Wave 1: data + types)
 Resume: `/gsd:execute-plan 31-03` (Q1B audio generation + timing validation + roteiro docs)
