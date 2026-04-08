@@ -132,6 +132,14 @@ export interface ScriptDataV4 extends ScriptDataV3 {
   // The ONLY archetype that returns form instead of content — 6 segments, ~24s
   DEVOLUCAO_ESPELHO_SILENCIOSO: SpeechSegment[];
 
+  // Archetype DEVOLUCAO_CONTRA_FOBICO (Phase 34, AR-02) — triggers when q1='B' && q2='B' && q1b='A'
+  // Visitor walked toward what threatens, atravessou o vazio — 6 segments, ~23-25s
+  DEVOLUCAO_CONTRA_FOBICO: SpeechSegment[];
+
+  // Archetype DEVOLUCAO_PORTADOR (Phase 34, AR-03) — triggers when q4='A' && q5='A' && q5b='A'
+  // Visitor fused memory + carried question, the question as treasure — 6 segments, ~23-25s
+  DEVOLUCAO_PORTADOR: SpeechSegment[];
+
   // Fallbacks and timeouts for branch questions
   FALLBACK_Q2B: SpeechSegment[];
   FALLBACK_Q4B: SpeechSegment[];
@@ -584,6 +592,45 @@ export const SCRIPT: ScriptDataV4 = {
     { text: "Aqui:", pauseAfter: 2000 },
     { text: "O que você nunca pediu — mas que mesmo assim te falta?", pauseAfter: 1800, inflection: ['gentle'] },
     { text: "Esse é o seu espelho. Não tem moldura. Não tem reflexo. Só pergunta.", pauseAfter: 1400, inflection: ['warm'] },
+  ],
+
+  // ═══════════════════════════════════════════════════════════════
+  // DEVOLUCAO_CONTRA_FOBICO (Phase 34, AR-02)
+  // Triggered when q1='B' && q2='B' && q1b='A':
+  //   visitor procurou a porta, ficou olhando o que repugna, atravessou o vazio.
+  // 3-layer mirror: recognition (sees the gesture) → reframing (refuses bravado)
+  //                 → naming (a rare profile, not a hero). Closing line refuses
+  //                 to label the visitor — preserves open form (like ESPELHO).
+  // 6 segments, target ~23-25s. Echoes Q1B "porta no fundo" / "câmara queimando"
+  // imagery without recapping. Distinguishes from PIVOT_EARLY (which pivots LATER).
+  // ═══════════════════════════════════════════════════════════════
+  DEVOLUCAO_CONTRA_FOBICO: [
+    { text: "Você não fugiu do que arde.", pauseAfter: 1000, inflection: ['warm'] },
+    { text: "Quase ninguém fica na sala quando a saída aparece. Quase ninguém olha o que repugna. E quase ninguém atravessa quando o vazio convida.", pauseAfter: 1000 },
+    { text: "Isso não é coragem. Coragem ainda tem um nome — e o nome serve de muleta.", pauseAfter: 900, inflection: ['thoughtful'] },
+    { text: "O que você fez é mais raro: caminhar em direção ao que ameaça, sem precisar chamar de heroísmo.", pauseAfter: 1000 },
+    { text: "Quem anda para dentro do fogo não está procurando queimar. Está procurando o que só o fogo mostra.", pauseAfter: 1000, inflection: ['serious'] },
+    { text: "Eu não vou te dar um nome para isso. Esse gesto é seu — e ele já te conhece.", pauseAfter: 1800, inflection: ['warm'] },
+  ],
+
+  // ═══════════════════════════════════════════════════════════════
+  // DEVOLUCAO_PORTADOR (Phase 34, AR-03)
+  // Triggered when q4='A' && q5='A' && q5b='A':
+  //   visitor lembrou tudo, carrega a pergunta, fundiu memória e pergunta numa só carga.
+  // 3-layer mirror: recognition (some questions are not problems) → reframing
+  //                 (cargo, not burden) → distinguishing from GUARDIAN (holds FOR
+  //                 vs holds AGAINST). Closing line refuses prescription — the
+  //                 carrier IS the inheritance.
+  // 6 segments, target ~23-25s. Echoes Q5B "memória que pesa" / "tesouro" without
+  // repeating words. Distinguishes from GUARDIAN (protective) and DEPTH_SEEKER (compulsive).
+  // ═══════════════════════════════════════════════════════════════
+  DEVOLUCAO_PORTADOR: [
+    { text: "Você lembrou de tudo. E mesmo assim escolheu carregar.", pauseAfter: 1000, inflection: ['warm'] },
+    { text: "Tem perguntas que não são problemas. Não pedem solução, não esperam alívio.", pauseAfter: 900, inflection: ['thoughtful'] },
+    { text: "Elas são cargas. E quem carrega não está preso — está sendo herdeiro de alguma coisa que ainda não tem nome.", pauseAfter: 1000 },
+    { text: "Guardião segura para que nada entre. Você segura para que algo continue existindo. É outro gesto.", pauseAfter: 1000, inflection: ['gentle'] },
+    { text: "A pergunta que pesa em você não é um peso a tirar. É um tesouro que pede um corpo para continuar fazendo sentido.", pauseAfter: 1000, inflection: ['serious'] },
+    { text: "Eu não vou te dizer o que ela quer dizer. Mas ela está bem onde está — e você também.", pauseAfter: 1800, inflection: ['warm'] },
   ],
 
   // ═══════════════════════════════════════════════════════════════
