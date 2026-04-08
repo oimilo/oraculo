@@ -1,9 +1,10 @@
 /**
- * V6.0 TIMING VALIDATION SCRIPT (BRANCH-AWARE) — Phase 33 Extended
+ * V6.0 TIMING VALIDATION SCRIPT (BRANCH-AWARE) — Phase 34 Extended
  *
  * Validates that the max-path experience duration falls within the 5-7:30 minute
  * target (300-450 seconds — v6.0 budget with branch overflow tolerance).
- * Calculates all 20 possible paths through the branching structure (Phase 33 adds Q6B + ESPELHO).
+ * Calculates all 24 possible paths through the branching structure
+ * (Phase 33 added Q6B + ESPELHO; Phase 34 adds CONTRA_FOBICO + PORTADOR archetypes).
  *
  *   No branches:
  *     1. No branches (6Q)
@@ -39,10 +40,22 @@
  *   Q5B combos (Phase 32):
  *    20. Q1B + Q4B + Q5B (9Q)                — q1=B, q2=B, q3=A, q4=A, q5=A (Phase 32 max-path baseline)
  *
+ *   Phase 34 — CONTRA_FOBICO paths (AR-02):
+ *    21. Q1B + CONTRA_FOBICO (7Q)            — Phase 34, AR-02 (q1=B && q2=B && q1b=A)
+ *    22. Q1B + Q4B + CONTRA_FOBICO (8Q)      — Phase 34, AR-02 with PURGATORIO branch
+ *
+ *   Phase 34 — PORTADOR paths (AR-03):
+ *    23. Q5B + PORTADOR (7Q)                 — Phase 34, AR-03 (q4=A && q5=A && q5b=A)
+ *    24. Q1B + Q4B + Q5B + PORTADOR + CONTRA_FOBICO (9Q — worst case)
+ *                                            — Phase 34 WORST CASE: max branch stacking with both
+ *                                              new archetype triggers (CONTRA_FOBICO wins via priority)
+ *
  * Mutual exclusion rules:
  *   - Q1B and Q2B are mutually exclusive (q1 cannot be both 'A' and 'B')
  *   - Q5B and Q6B are mutually exclusive (Q5B needs q5='A', Q6B needs q5='B')
  *   - hasEspelhoSilencioso implies hasQ6B (ESPELHO only reachable via Q6B)
+ *   - hasContraFobico implies hasQ1B (CONTRA_FOBICO only reachable via Q1B branch — Phase 34)
+ *   - hasPortador implies hasQ5B (PORTADOR only reachable via Q5B branch — Phase 34)
  *
  * Methodology:
  * - Speech rate: ~13 chars/sec for PT-BR conversational speech
@@ -104,16 +117,38 @@ function pickLongerResposta(
 }
 
 /**
- * Pick the longest DEVOLUCAO for max-path calculation (Phase 33 extended)
- * ESPELHO_SILENCIOSO has HIGHEST priority (mimics DEVOLUCAO.always[0] in oracleMachine)
+ * Pick the longest DEVOLUCAO for max-path calculation (Phase 34 extended from Phase 33)
+ *
+ * Priority order (mirrors oracleMachine.ts DEVOLUCAO.always):
+ * - [0] ESPELHO_SILENCIOSO (Phase 33) — fires when q6b='B'
+ * - [1] CONTRA_FOBICO (Phase 34) — fires when q1=B && q2=B && q1b=A
+ * - [2] PORTADOR (Phase 34) — fires when q4=A && q5=A && q5b=A
+ * - [3-10] 8 baseline archetypes (longest picked via loop)
+ *
+ * When multiple priority-0/1/2 guards could fire, the HIGHEST priority wins
+ * (first-match-wins in always[]). This mirrors runtime behavior exactly.
  */
-function pickLongestDevolucao(hasEspelhoSilencioso: boolean): { segments: SpeechSegment[], key: string } {
+function pickLongestDevolucao(
+  hasEspelhoSilencioso: boolean,
+  hasContraFobico: boolean,
+  hasPortador: boolean,
+): { segments: SpeechSegment[], key: string } {
   // Phase 33 — ESPELHO_SILENCIOSO pre-empts all other archetypes
   if (hasEspelhoSilencioso) {
     return { key: 'DEVOLUCAO_ESPELHO_SILENCIOSO', segments: SCRIPT.DEVOLUCAO_ESPELHO_SILENCIOSO };
   }
 
-  // Existing 8 archetypes
+  // Phase 34 — CONTRA_FOBICO pre-empts PORTADOR and baseline archetypes
+  if (hasContraFobico) {
+    return { key: 'DEVOLUCAO_CONTRA_FOBICO', segments: SCRIPT.DEVOLUCAO_CONTRA_FOBICO };
+  }
+
+  // Phase 34 — PORTADOR pre-empts baseline archetypes
+  if (hasPortador) {
+    return { key: 'DEVOLUCAO_PORTADOR', segments: SCRIPT.DEVOLUCAO_PORTADOR };
+  }
+
+  // Existing 8 baseline archetypes (longest wins)
   const devolucoes = [
     { key: 'DEVOLUCAO_SEEKER', segments: SCRIPT.DEVOLUCAO_SEEKER },
     { key: 'DEVOLUCAO_GUARDIAN', segments: SCRIPT.DEVOLUCAO_GUARDIAN },
@@ -161,6 +196,8 @@ interface PathConfig {
   hasQ5B: boolean;  // Phase 32, BR-02 — fires when q4=A AND q5=A
   hasQ6B: boolean;  // Phase 33, BR-03 — fires when q5=B AND q6=A
   hasEspelhoSilencioso: boolean; // Phase 33, AR-01 — fires when q6b=B (implies hasQ6B)
+  hasContraFobico: boolean;  // Phase 34, AR-02 — implies hasQ1B (only reachable via Q1B branch)
+  hasPortador: boolean;      // Phase 34, AR-03 — implies hasQ5B (only reachable via Q5B branch)
   questionCount: number; // 6, 7, 8, or 9
 }
 
@@ -175,48 +212,72 @@ function assertValidPath(p: PathConfig): void {
   if (p.hasQ1B && p.hasQ2B) {
     throw new Error(`Path "${p.name}": Q1B and Q2B are mutually exclusive (q1 cannot be both 'A' and 'B')`);
   }
+  // Phase 34 — CONTRA_FOBICO requires Q1B branch (only reachable via q1b response)
+  if (p.hasContraFobico && !p.hasQ1B) {
+    throw new Error(`Path "${p.name}": hasContraFobico requires hasQ1B (CONTRA_FOBICO only reachable via Q1B branch)`);
+  }
+  // Phase 34 — PORTADOR requires Q5B branch (only reachable via q5b response)
+  if (p.hasPortador && !p.hasQ5B) {
+    throw new Error(`Path "${p.name}": hasPortador requires hasQ5B (PORTADOR only reachable via Q5B branch)`);
+  }
 }
 
 // NOTE: Q1B and Q2B are mutually exclusive (q1 can't be both A and B).
 // Q5B and Q6B are mutually exclusive (q5 can't be both A and B).
 // ESPELHO_SILENCIOSO implies Q6B (only reachable via Q6B branch).
-// The matrix has 20 entries (Phase 33 extends from 12 to 20).
+// CONTRA_FOBICO implies Q1B (Phase 34 — only reachable via Q1B branch).
+// PORTADOR implies Q5B (Phase 34 — only reachable via Q5B branch).
+// The matrix has 24 entries (Phase 33 had 20; Phase 34 adds 4 new permutations).
 const ALL_PATHS: PathConfig[] = [
   // ========== No branches ==========
-  { name: 'No branches (6Q)', hasQ1B: false, hasQ2B: false, hasQ4B: false, hasQ5B: false, hasQ6B: false, hasEspelhoSilencioso: false, questionCount: 6 },
+  { name: 'No branches (6Q)', hasQ1B: false, hasQ2B: false, hasQ4B: false, hasQ5B: false, hasQ6B: false, hasEspelhoSilencioso: false, hasContraFobico: false, hasPortador: false, questionCount: 6 },
 
   // ========== Single branch (Q5B or Q6B) ==========
-  { name: 'Q5B only (7Q)', hasQ1B: false, hasQ2B: false, hasQ4B: false, hasQ5B: true, hasQ6B: false, hasEspelhoSilencioso: false, questionCount: 7 },
-  { name: 'Q6B only (7Q)', hasQ1B: false, hasQ2B: false, hasQ4B: false, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: false, questionCount: 7 },
-  { name: 'Q6B + ESPELHO (7Q)', hasQ1B: false, hasQ2B: false, hasQ4B: false, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: true, questionCount: 7 },
+  { name: 'Q5B only (7Q)', hasQ1B: false, hasQ2B: false, hasQ4B: false, hasQ5B: true, hasQ6B: false, hasEspelhoSilencioso: false, hasContraFobico: false, hasPortador: false, questionCount: 7 },
+  { name: 'Q6B only (7Q)', hasQ1B: false, hasQ2B: false, hasQ4B: false, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: false, hasContraFobico: false, hasPortador: false, questionCount: 7 },
+  { name: 'Q6B + ESPELHO (7Q)', hasQ1B: false, hasQ2B: false, hasQ4B: false, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: true, hasContraFobico: false, hasPortador: false, questionCount: 7 },
 
   // ========== Q2B INFERNO branch ==========
-  { name: 'Q2B only (7Q)', hasQ1B: false, hasQ2B: true, hasQ4B: false, hasQ5B: false, hasQ6B: false, hasEspelhoSilencioso: false, questionCount: 7 },
-  { name: 'Q2B + Q6B (8Q)', hasQ1B: false, hasQ2B: true, hasQ4B: false, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: false, questionCount: 8 },
-  { name: 'Q2B + Q6B + ESPELHO (8Q)', hasQ1B: false, hasQ2B: true, hasQ4B: false, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: true, questionCount: 8 },
+  { name: 'Q2B only (7Q)', hasQ1B: false, hasQ2B: true, hasQ4B: false, hasQ5B: false, hasQ6B: false, hasEspelhoSilencioso: false, hasContraFobico: false, hasPortador: false, questionCount: 7 },
+  { name: 'Q2B + Q6B (8Q)', hasQ1B: false, hasQ2B: true, hasQ4B: false, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: false, hasContraFobico: false, hasPortador: false, questionCount: 8 },
+  { name: 'Q2B + Q6B + ESPELHO (8Q)', hasQ1B: false, hasQ2B: true, hasQ4B: false, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: true, hasContraFobico: false, hasPortador: false, questionCount: 8 },
 
   // ========== Q1B INFERNO branch ==========
-  { name: 'Q1B only (7Q)', hasQ1B: true, hasQ2B: false, hasQ4B: false, hasQ5B: false, hasQ6B: false, hasEspelhoSilencioso: false, questionCount: 7 },
-  { name: 'Q1B + Q6B (8Q)', hasQ1B: true, hasQ2B: false, hasQ4B: false, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: false, questionCount: 8 },
-  { name: 'Q1B + Q6B + ESPELHO (8Q)', hasQ1B: true, hasQ2B: false, hasQ4B: false, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: true, questionCount: 8 },
+  { name: 'Q1B only (7Q)', hasQ1B: true, hasQ2B: false, hasQ4B: false, hasQ5B: false, hasQ6B: false, hasEspelhoSilencioso: false, hasContraFobico: false, hasPortador: false, questionCount: 7 },
+  { name: 'Q1B + Q6B (8Q)', hasQ1B: true, hasQ2B: false, hasQ4B: false, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: false, hasContraFobico: false, hasPortador: false, questionCount: 8 },
+  { name: 'Q1B + Q6B + ESPELHO (8Q)', hasQ1B: true, hasQ2B: false, hasQ4B: false, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: true, hasContraFobico: false, hasPortador: false, questionCount: 8 },
 
   // ========== Q4B PURGATORIO branch (no INFERNO branch) ==========
-  { name: 'Q4B only (7Q)', hasQ1B: false, hasQ2B: false, hasQ4B: true, hasQ5B: false, hasQ6B: false, hasEspelhoSilencioso: false, questionCount: 7 },
-  { name: 'Q4B + Q6B (8Q)', hasQ1B: false, hasQ2B: false, hasQ4B: true, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: false, questionCount: 8 },
-  { name: 'Q4B + Q6B + ESPELHO (8Q)', hasQ1B: false, hasQ2B: false, hasQ4B: true, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: true, questionCount: 8 },
+  { name: 'Q4B only (7Q)', hasQ1B: false, hasQ2B: false, hasQ4B: true, hasQ5B: false, hasQ6B: false, hasEspelhoSilencioso: false, hasContraFobico: false, hasPortador: false, questionCount: 7 },
+  { name: 'Q4B + Q6B (8Q)', hasQ1B: false, hasQ2B: false, hasQ4B: true, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: false, hasContraFobico: false, hasPortador: false, questionCount: 8 },
+  { name: 'Q4B + Q6B + ESPELHO (8Q)', hasQ1B: false, hasQ2B: false, hasQ4B: true, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: true, hasContraFobico: false, hasPortador: false, questionCount: 8 },
 
   // ========== Q2B + Q4B combos ==========
-  { name: 'Q2B + Q4B (8Q)', hasQ1B: false, hasQ2B: true, hasQ4B: true, hasQ5B: false, hasQ6B: false, hasEspelhoSilencioso: false, questionCount: 8 },
-  { name: 'Q2B + Q4B + Q6B (9Q)', hasQ1B: false, hasQ2B: true, hasQ4B: true, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: false, questionCount: 9 },
-  { name: 'Q2B + Q4B + Q6B + ESPELHO (9Q)', hasQ1B: false, hasQ2B: true, hasQ4B: true, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: true, questionCount: 9 },
+  { name: 'Q2B + Q4B (8Q)', hasQ1B: false, hasQ2B: true, hasQ4B: true, hasQ5B: false, hasQ6B: false, hasEspelhoSilencioso: false, hasContraFobico: false, hasPortador: false, questionCount: 8 },
+  { name: 'Q2B + Q4B + Q6B (9Q)', hasQ1B: false, hasQ2B: true, hasQ4B: true, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: false, hasContraFobico: false, hasPortador: false, questionCount: 9 },
+  { name: 'Q2B + Q4B + Q6B + ESPELHO (9Q)', hasQ1B: false, hasQ2B: true, hasQ4B: true, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: true, hasContraFobico: false, hasPortador: false, questionCount: 9 },
 
   // ========== Q1B + Q4B combos ==========
-  { name: 'Q1B + Q4B (8Q)', hasQ1B: true, hasQ2B: false, hasQ4B: true, hasQ5B: false, hasQ6B: false, hasEspelhoSilencioso: false, questionCount: 8 },
-  { name: 'Q1B + Q4B + Q6B (9Q)', hasQ1B: true, hasQ2B: false, hasQ4B: true, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: false, questionCount: 9 },
-  { name: 'Q1B + Q4B + Q6B + ESPELHO (9Q)', hasQ1B: true, hasQ2B: false, hasQ4B: true, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: true, questionCount: 9 },
+  { name: 'Q1B + Q4B (8Q)', hasQ1B: true, hasQ2B: false, hasQ4B: true, hasQ5B: false, hasQ6B: false, hasEspelhoSilencioso: false, hasContraFobico: false, hasPortador: false, questionCount: 8 },
+  { name: 'Q1B + Q4B + Q6B (9Q)', hasQ1B: true, hasQ2B: false, hasQ4B: true, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: false, hasContraFobico: false, hasPortador: false, questionCount: 9 },
+  { name: 'Q1B + Q4B + Q6B + ESPELHO (9Q)', hasQ1B: true, hasQ2B: false, hasQ4B: true, hasQ5B: false, hasQ6B: true, hasEspelhoSilencioso: true, hasContraFobico: false, hasPortador: false, questionCount: 9 },
 
   // ========== Q5B combo (Phase 32 max-path baseline) ==========
-  { name: 'Q1B + Q4B + Q5B (9Q - Phase 32 baseline)', hasQ1B: true, hasQ2B: false, hasQ4B: true, hasQ5B: true, hasQ6B: false, hasEspelhoSilencioso: false, questionCount: 9 },
+  { name: 'Q1B + Q4B + Q5B (9Q - Phase 32 baseline)', hasQ1B: true, hasQ2B: false, hasQ4B: true, hasQ5B: true, hasQ6B: false, hasEspelhoSilencioso: false, hasContraFobico: false, hasPortador: false, questionCount: 9 },
+
+  // ========== Phase 34 — CONTRA_FOBICO paths (AR-02) ==========
+  // CONTRA_FOBICO fires when hasQ1B AND q1b_response='A' (visitor atravessou o vazio).
+  // The validator picks longest RESPOSTA, so it can't force q1b='A' directly,
+  // but the CONTRA_FOBICO devolução is SELECTED by pickLongestDevolucao regardless.
+  { name: 'Q1B + CONTRA_FOBICO (7Q)', hasQ1B: true, hasQ2B: false, hasQ4B: false, hasQ5B: false, hasQ6B: false, hasEspelhoSilencioso: false, hasContraFobico: true, hasPortador: false, questionCount: 7 },
+  { name: 'Q1B + Q4B + CONTRA_FOBICO (8Q)', hasQ1B: true, hasQ2B: false, hasQ4B: true, hasQ5B: false, hasQ6B: false, hasEspelhoSilencioso: false, hasContraFobico: true, hasPortador: false, questionCount: 8 },
+
+  // ========== Phase 34 — PORTADOR paths (AR-03) ==========
+  // PORTADOR fires when hasQ5B AND q5b_response='A' (visitor fundiu pergunta e memória).
+  { name: 'Q5B + PORTADOR (7Q)', hasQ1B: false, hasQ2B: false, hasQ4B: false, hasQ5B: true, hasQ6B: false, hasEspelhoSilencioso: false, hasContraFobico: false, hasPortador: true, questionCount: 7 },
+  // Worst case Phase 34: max branch stacking with both new triggers fired.
+  // CONTRA_FOBICO wins via priority [1] over PORTADOR [2] in DEVOLUCAO.always — mirrors runtime.
+  { name: 'Q1B + Q4B + Q5B + PORTADOR + CONTRA_FOBICO (9Q — worst case)', hasQ1B: true, hasQ2B: false, hasQ4B: true, hasQ5B: true, hasQ6B: false, hasEspelhoSilencioso: false, hasContraFobico: true, hasPortador: true, questionCount: 9 },
 ];
 
 // Validate all paths before running
@@ -308,8 +369,12 @@ function calculatePath(config: PathConfig): Array<{ name: string; segments: Spee
     sections.push({ name: `PARAISO_Q6B_RESPOSTA_${q6b.choice}`, segments: q6b.segments });
   }
 
-  // Longest devolucao (Phase 33: ESPELHO_SILENCIOSO overrides archetype choice)
-  const longestDevolucao = pickLongestDevolucao(config.hasEspelhoSilencioso);
+  // Longest devolucao (Phase 34: ESPELHO > CONTRA_FOBICO > PORTADOR > 8 baseline)
+  const longestDevolucao = pickLongestDevolucao(
+    config.hasEspelhoSilencioso,
+    config.hasContraFobico,
+    config.hasPortador,
+  );
   sections.push({ name: longestDevolucao.key, segments: longestDevolucao.segments });
 
   // Encerramento
@@ -332,7 +397,7 @@ function formatDuration(seconds: number): string {
  * Main validation
  */
 function main() {
-  console.log('\n=== V6.0 TIMING VALIDATION (BRANCH-AWARE) — PHASE 33 (20 PATHS) ===\n');
+  console.log('\n=== V6.0 TIMING VALIDATION (BRANCH-AWARE) — PHASE 34 (24 PATHS) ===\n');
 
   let globalMaxTotal = 0;
   let globalMaxName = '';
@@ -396,7 +461,7 @@ function main() {
 
   if (pass) {
     console.log(`STATUS: PASS (max-path ${formatDuration(globalMaxTotal)} min)`);
-    console.log('\nAll 20 paths fall within acceptable range.');
+    console.log('\nAll 24 paths fall within acceptable range.');
     process.exit(0);
   } else {
     console.log(`STATUS: FAIL (max-path ${formatDuration(globalMaxTotal)} min)`);
