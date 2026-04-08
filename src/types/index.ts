@@ -22,14 +22,17 @@ export type ChoicePattern = ChoiceAB[];
 
 /** Devolução archetype derived from pattern analysis */
 export type DevolucaoArchetype =
-  | 'SEEKER'          // mostly toward + movement
-  | 'GUARDIAN'        // mostly away + stillness
-  | 'CONTRADICTED'    // mixed pattern
-  | 'PIVOT_EARLY'     // switches direction in first half
-  | 'PIVOT_LATE'      // switches direction in second half
-  | 'DEPTH_SEEKER'    // chose "deeper" option consistently
-  | 'SURFACE_KEEPER'  // chose "safer" option consistently
-  | 'MIRROR';         // alternating pattern — perfect balance
+  | 'SEEKER'              // mostly toward + movement
+  | 'GUARDIAN'            // mostly away + stillness
+  | 'CONTRADICTED'        // mixed pattern
+  | 'PIVOT_EARLY'         // switches direction in first half
+  | 'PIVOT_LATE'          // switches direction in second half
+  | 'DEPTH_SEEKER'        // chose "deeper" option consistently
+  | 'SURFACE_KEEPER'      // chose "safer" option consistently
+  | 'MIRROR'              // alternating pattern — perfect balance
+  | 'ESPELHO_SILENCIOSO'  // Phase 33, AR-01 — q6b='B', form-not-content devolução
+  | 'CONTRA_FOBICO'       // Phase 34, AR-02 — q1='B' && q2='B' && q1b='A', courage walking toward what threatens
+  | 'PORTADOR';           // Phase 34, AR-03 — q4='A' && q5='A' && q5b='A', the question as treasure
 
 // Legacy types kept for backward compatibility during transition
 /** @deprecated Use ChoiceAB instead */
