@@ -222,8 +222,10 @@ function getScriptKey(machineState: any): keyof typeof SCRIPT | null {
   if (machineState.matches({ PARAISO: 'Q6B_RESPOSTA_B' })) return 'PARAISO_Q6B_RESPOSTA_B';
   if (machineState.matches({ PARAISO: 'Q6B_TIMEOUT' })) return 'TIMEOUT_Q6B';
 
-  // 9 DEVOLUCAO archetypes (top-level states) — Phase 33 added ESPELHO_SILENCIOSO
+  // 11 DEVOLUCAO archetypes (top-level states) — Phase 34 added CONTRA_FOBICO + PORTADOR
   if (machineState.matches('DEVOLUCAO_ESPELHO_SILENCIOSO')) return 'DEVOLUCAO_ESPELHO_SILENCIOSO';
+  if (machineState.matches('DEVOLUCAO_CONTRA_FOBICO')) return 'DEVOLUCAO_CONTRA_FOBICO';  // Phase 34, AR-02
+  if (machineState.matches('DEVOLUCAO_PORTADOR')) return 'DEVOLUCAO_PORTADOR';            // Phase 34, AR-03
   if (machineState.matches('DEVOLUCAO_SEEKER')) return 'DEVOLUCAO_SEEKER';
   if (machineState.matches('DEVOLUCAO_GUARDIAN')) return 'DEVOLUCAO_GUARDIAN';
   if (machineState.matches('DEVOLUCAO_CONTRADICTED')) return 'DEVOLUCAO_CONTRADICTED';

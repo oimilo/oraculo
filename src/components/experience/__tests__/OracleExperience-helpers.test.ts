@@ -168,3 +168,64 @@ describe('OracleExperience ESPELHO_SILENCIOSO helper contracts (Phase 33)', () =
     });
   });
 });
+
+// ═══════════════════════════════════════════════════════════════
+// Phase 34 — AR-02 + AR-03: CONTRA_FOBICO + PORTADOR helper contracts
+// ═══════════════════════════════════════════════════════════════
+describe('OracleExperience Phase 34 helper contracts (CONTRA_FOBICO + PORTADOR)', () => {
+  it('SCRIPT.DEVOLUCAO_CONTRA_FOBICO exists (getScriptKey contract for top-level state)', () => {
+    expect(SCRIPT.DEVOLUCAO_CONTRA_FOBICO).toBeDefined();
+    expect(Array.isArray(SCRIPT.DEVOLUCAO_CONTRA_FOBICO)).toBe(true);
+    expect(SCRIPT.DEVOLUCAO_CONTRA_FOBICO.length).toBeGreaterThanOrEqual(5);
+    expect(SCRIPT.DEVOLUCAO_CONTRA_FOBICO.length).toBeLessThanOrEqual(7);
+  });
+
+  it('SCRIPT.DEVOLUCAO_CONTRA_FOBICO segments have valid SpeechSegment shape', () => {
+    for (const segment of SCRIPT.DEVOLUCAO_CONTRA_FOBICO) {
+      expect(typeof segment.text).toBe('string');
+      expect(segment.text.length).toBeGreaterThan(0);
+      // pauseAfter and inflection are optional
+      if (segment.pauseAfter !== undefined) {
+        expect(typeof segment.pauseAfter).toBe('number');
+      }
+      if (segment.inflection !== undefined) {
+        expect(Array.isArray(segment.inflection)).toBe(true);
+      }
+    }
+  });
+
+  it('SCRIPT.DEVOLUCAO_PORTADOR exists (getScriptKey contract for top-level state)', () => {
+    expect(SCRIPT.DEVOLUCAO_PORTADOR).toBeDefined();
+    expect(Array.isArray(SCRIPT.DEVOLUCAO_PORTADOR)).toBe(true);
+    expect(SCRIPT.DEVOLUCAO_PORTADOR.length).toBeGreaterThanOrEqual(5);
+    expect(SCRIPT.DEVOLUCAO_PORTADOR.length).toBeLessThanOrEqual(7);
+  });
+
+  it('SCRIPT.DEVOLUCAO_PORTADOR segments have valid SpeechSegment shape', () => {
+    for (const segment of SCRIPT.DEVOLUCAO_PORTADOR) {
+      expect(typeof segment.text).toBe('string');
+      expect(segment.text.length).toBeGreaterThan(0);
+      if (segment.pauseAfter !== undefined) {
+        expect(typeof segment.pauseAfter).toBe('number');
+      }
+      if (segment.inflection !== undefined) {
+        expect(Array.isArray(segment.inflection)).toBe(true);
+      }
+    }
+  });
+
+  it('OracleExperience.tsx source matches DEVOLUCAO_CONTRA_FOBICO state (string-form state.matches contract)', () => {
+    const fs = require('fs');
+    const source = fs.readFileSync('C:\\Users\\USER\\Oraculo\\src\\components\\experience\\OracleExperience.tsx', 'utf8');
+    // Verify the new getScriptKey if-block exists
+    expect(source).toMatch(/machineState\.matches\(['"]DEVOLUCAO_CONTRA_FOBICO['"]\)/);
+    expect(source).toMatch(/return ['"]DEVOLUCAO_CONTRA_FOBICO['"]/);
+  });
+
+  it('OracleExperience.tsx source matches DEVOLUCAO_PORTADOR state (string-form state.matches contract)', () => {
+    const fs = require('fs');
+    const source = fs.readFileSync('C:\\Users\\USER\\Oraculo\\src\\components\\experience\\OracleExperience.tsx', 'utf8');
+    expect(source).toMatch(/machineState\.matches\(['"]DEVOLUCAO_PORTADOR['"]\)/);
+    expect(source).toMatch(/return ['"]DEVOLUCAO_PORTADOR['"]/);
+  });
+});
