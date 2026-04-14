@@ -93,8 +93,10 @@ function getBreathingDelay(machineState: any): number {
   // Q6B last responses → DEVOLUCAO (qualified rejoin)
   if (machineState.matches({ PARAISO: 'Q6B_RESPOSTA_A' })) return LONG;
   if (machineState.matches({ PARAISO: 'Q6B_RESPOSTA_B' })) return LONG;
-  // All 9 DEVOLUCAO archetypes → ENCERRAMENTO (Phase 33 added ESPELHO_SILENCIOSO)
+  // All 11 DEVOLUCAO archetypes → ENCERRAMENTO
   if (machineState.matches('DEVOLUCAO_ESPELHO_SILENCIOSO')) return LONG;
+  if (machineState.matches('DEVOLUCAO_CONTRA_FOBICO')) return LONG;
+  if (machineState.matches('DEVOLUCAO_PORTADOR')) return LONG;
   if (machineState.matches('DEVOLUCAO_SEEKER')) return LONG;
   if (machineState.matches('DEVOLUCAO_GUARDIAN')) return LONG;
   if (machineState.matches('DEVOLUCAO_CONTRADICTED')) return LONG;
