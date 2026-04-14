@@ -303,7 +303,7 @@ export const SCRIPT: ScriptDataV4 = {
   // ═══════════════════════════════════════════════════════════════
   PURGATORIO_Q3_SETUP: [
     { text: "Você está na entrada de um jardim. Cada flor aberta, cada cor no auge.", pauseAfter: 900 },
-    { text: "Mas tem fumaça no vento.", pauseAfter: 900 },
+    { text: "Mas tem fumaça no vento.", pauseAfter: 300 },
     { text: "De manhã, nada disso vai existir.", pauseAfter: 900, inflection: ['sad'] },
   ],
 
