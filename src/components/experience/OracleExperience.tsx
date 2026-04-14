@@ -118,13 +118,13 @@ function getBreathingDelay(machineState: any): number {
   if (machineState.matches({ PURGATORIO: 'Q3_RESPOSTA_B' })) return MEDIUM;
   if (machineState.matches({ PURGATORIO: 'Q4_SETUP' })) return MEDIUM;
   if (machineState.matches({ PURGATORIO: 'Q4B_SETUP' })) return MEDIUM;
-  if (machineState.matches({ PARAISO: 'INTRO' })) return MEDIUM;
-  if (machineState.matches({ PARAISO: 'Q5_SETUP' })) return MEDIUM;
-  if (machineState.matches({ PARAISO: 'Q5_RESPOSTA_A' })) return MEDIUM;
-  if (machineState.matches({ PARAISO: 'Q5_RESPOSTA_B' })) return MEDIUM;
-  if (machineState.matches({ PARAISO: 'Q5B_SETUP' })) return MEDIUM;
-  if (machineState.matches({ PARAISO: 'Q6_SETUP' })) return MEDIUM;
-  if (machineState.matches({ PARAISO: 'Q6B_SETUP' })) return MEDIUM;
+  if (machineState.matches({ PARAISO: 'INTRO' })) return SHORT;
+  if (machineState.matches({ PARAISO: 'Q5_SETUP' })) return MEDIUM;  // First in garden — keep breathing room
+  if (machineState.matches({ PARAISO: 'Q5_RESPOSTA_A' })) return SHORT;
+  if (machineState.matches({ PARAISO: 'Q5_RESPOSTA_B' })) return SHORT;
+  if (machineState.matches({ PARAISO: 'Q5B_SETUP' })) return SHORT;
+  if (machineState.matches({ PARAISO: 'Q6_SETUP' })) return SHORT;
+  if (machineState.matches({ PARAISO: 'Q6B_SETUP' })) return SHORT;
 
   // --- NONE: Perguntas (question → AGUARDANDO) ---
   // Zero delay so mic opens immediately after question finishes.

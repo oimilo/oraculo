@@ -267,24 +267,23 @@ export const SCRIPT: ScriptDataV4 = {
   // ═══════════════════════════════════════════════════════════════
   INFERNO_Q1B_SETUP: [
     { text: "Você não recua. Continua olhando.", pauseAfter: 1000 },
-    { text: "E aí — sem aviso — uma porta aparece no fundo do corredor. Não é a que você procurava antes. Essa não tem maçaneta, não tem moldura.", pauseAfter: 1100, inflection: ['thoughtful'] },
-    { text: "Tem só uma fresta de luz por baixo.", pauseAfter: 900 },
+    { text: "Uma porta aparece no fundo. Sem maçaneta, sem moldura. Só uma fresta de luz por baixo.", pauseAfter: 1000, inflection: ['thoughtful'] },
   ],
 
   INFERNO_Q1B_PERGUNTA: [
-    { text: "Você atravessa essa fresta — ou volta pra coisa no chão, que ainda pulsa atrás de você?" },
+    { text: "Você atravessa a fresta — ou volta pra coisa que ainda pulsa?" },
   ],
 
   // Q1B RESPOSTA A — Atravessar a fresta (coragem servindo pra atravessar o vazio)
   INFERNO_Q1B_RESPOSTA_A: [
-    { text: "Você vai.", pauseAfter: 900 },
-    { text: "Do outro lado, não tem ameaça. Não tem nada. E descobrir que a coragem também serve pra atravessar o vazio é uma das aprendizagens mais difíceis.", pauseAfter: 1100, inflection: ['serious'] },
+    { text: "Você vai.", pauseAfter: 800 },
+    { text: "Do outro lado, não tem nada. A coragem que serve pra atravessar o vazio — essa é a mais difícil.", pauseAfter: 1000, inflection: ['serious'] },
   ],
 
   // Q1B RESPOSTA B — Voltar pra coisa no chao (medo escolhido como interlocutor)
   INFERNO_Q1B_RESPOSTA_B: [
     { text: "Você volta.", pauseAfter: 800 },
-    { text: "Quem é destemido escolhe seus medos como se escolhe um interlocutor. Voltar pro que pulsa não é recuo — é reconhecimento.", pauseAfter: 1000, inflection: ['warm'] },
+    { text: "Voltar pro que pulsa não é recuo — é reconhecimento.", pauseAfter: 1000, inflection: ['warm'] },
   ],
 
   // ═══════════════════════════════════════════════════════════════
@@ -361,8 +360,8 @@ export const SCRIPT: ScriptDataV4 = {
   // Reviver ou arquivar?
   // ═══════════════════════════════════════════════════════════════
   PURGATORIO_Q4B_SETUP: [
-    { text: "Uma memória específica aparece. Não é a que você esperava — é a que insiste.", pauseAfter: 1000, inflection: ['thoughtful'] },
-    { text: "Tem cheiro. Tem textura. Tem o rosto de alguém que você não vê faz tempo.", pauseAfter: 1200 },
+    { text: "Uma memória específica aparece. Não é a que você esperava — é a que insiste.", pauseAfter: 900, inflection: ['thoughtful'] },
+    { text: "Tem cheiro. Tem textura. Tem o rosto de alguém que você não vê faz tempo.", pauseAfter: 1000 },
   ],
 
   PURGATORIO_Q4B_PERGUNTA: [
@@ -428,8 +427,7 @@ export const SCRIPT: ScriptDataV4 = {
   // ═══════════════════════════════════════════════════════════════
   PARAISO_Q5B_SETUP: [
     { text: "Você lembrou. Você carregou.", pauseAfter: 1000, inflection: ['thoughtful'] },
-    { text: "E agora descobre — o peso da memória e o peso da pergunta não são dois pesos. Encostam um no outro até virarem a mesma forma.", pauseAfter: 1200, inflection: ['gentle'] },
-    { text: "Já não cabem separados.", pauseAfter: 1100 },
+    { text: "O peso da memória e o peso da pergunta encostam um no outro. Já não cabem separados.", pauseAfter: 1100, inflection: ['gentle'] },
   ],
 
   PARAISO_Q5B_PERGUNTA: [
@@ -438,14 +436,14 @@ export const SCRIPT: ScriptDataV4 = {
 
   // Q5B RESPOSTA A — Fundir (memória e pergunta viram a mesma forma — PORTADOR seed)
   PARAISO_Q5B_RESPOSTA_A: [
-    { text: "Você deixa.", pauseAfter: 900 },
-    { text: "Quando o que aconteceu e o que não tem resposta param de se distinguir, você não carrega mais — você é a forma que se faz disso.", pauseAfter: 1100, inflection: ['warm'] },
+    { text: "Você deixa.", pauseAfter: 800 },
+    { text: "Quando param de se distinguir, você não carrega mais — você é a forma que se faz disso.", pauseAfter: 1000, inflection: ['warm'] },
   ],
 
   // Q5B RESPOSTA B — Ordenar (separar memória e pergunta como inventário — dignified)
   PARAISO_Q5B_RESPOSTA_B: [
-    { text: "Você separa.", pauseAfter: 900 },
-    { text: "Manter cada coisa no lugar dela é uma forma de respeito — a memória pede um arquivo, a pergunta pede um silêncio. Cada uma com seu cuidado.", pauseAfter: 1100, inflection: ['gentle'] },
+    { text: "Você separa.", pauseAfter: 800 },
+    { text: "Manter cada coisa no lugar dela é uma forma de respeito. Cada uma com seu cuidado.", pauseAfter: 1000, inflection: ['gentle'] },
   ],
 
   // ═══════════════════════════════════════════════════════════════
@@ -484,9 +482,8 @@ export const SCRIPT: ScriptDataV4 = {
   // SEMANTIC ANCHOR: A=Resposta (closed), B=Outra Pergunta (open) → ESPELHO
   // ═══════════════════════════════════════════════════════════════
   PARAISO_Q6B_SETUP: [
-    { text: "Antes de eu começar.", pauseAfter: 1200, inflection: ['serious'] },
-    { text: "Você lembra do que você fez lá atrás? Você deixou uma pergunta dissolver. Disse: nem tudo precisa ser carregado.", pauseAfter: 1300, inflection: ['warm'] },
-    { text: "Eu vou te respeitar. Eu posso te dar uma resposta — fechada, definitiva — ou eu posso te dar outra pergunta. Aberta. Como a que você acabou de soltar.", pauseAfter: 1400 },
+    { text: "Antes de eu começar.", pauseAfter: 1000, inflection: ['serious'] },
+    { text: "Eu posso te dar uma resposta — ou te dar outra pergunta. Aberta, como a que você acabou de soltar.", pauseAfter: 1200 },
   ],
 
   PARAISO_Q6B_PERGUNTA: [
@@ -495,14 +492,14 @@ export const SCRIPT: ScriptDataV4 = {
 
   // Q6B RESPOSTA A — Resposta (closed reading → routes to NORMAL DEVOLUCAO, one of 8 archetypes)
   PARAISO_Q6B_RESPOSTA_A: [
-    { text: "Resposta.", pauseAfter: 1000 },
-    { text: "Eu vou te dar o que eu vi. Vai ser uma forma — você decide o que faz com ela.", pauseAfter: 1100, inflection: ['warm'] },
+    { text: "Resposta.", pauseAfter: 800 },
+    { text: "Eu vou te dar o que eu vi. Você decide o que faz com isso.", pauseAfter: 1000, inflection: ['warm'] },
   ],
 
   // Q6B RESPOSTA B — Outra pergunta (open form → routes to DEVOLUCAO_ESPELHO_SILENCIOSO)
   PARAISO_Q6B_RESPOSTA_B: [
-    { text: "Outra pergunta.", pauseAfter: 1000 },
-    { text: "Você continua na coragem. Você vai sair daqui com mais espaço, não com mais palavra.", pauseAfter: 1300, inflection: ['gentle'] },
+    { text: "Outra pergunta.", pauseAfter: 800 },
+    { text: "Mais espaço, não mais palavra.", pauseAfter: 1000, inflection: ['gentle'] },
   ],
 
   // ═══════════════════════════════════════════════════════════════
@@ -581,56 +578,39 @@ export const SCRIPT: ScriptDataV4 = {
   // DEVOLUCAO_ESPELHO_SILENCIOSO (Phase 33, AR-01)
   // The ONLY archetype that returns form instead of content.
   // Triggers when q6b='B' — visitor explicitly chose open form in Q6B.
-  // 6 segments, ~24s target. No declarative diagnosis. No framework names.
-  // Structure: acceptance → reframing → withholding → silence anchor →
-  //            open question → meta-frame. "Silêncio que tem forma."
+  // 4 segments, ~20s target. No diagnosis. Just a question as mirror.
   // ═══════════════════════════════════════════════════════════════
   DEVOLUCAO_ESPELHO_SILENCIOSO: [
-    { text: "Tudo bem.", pauseAfter: 1500, inflection: ['warm'] },
-    { text: "Você não vai sair daqui com um nome. Você vai sair com um silêncio que tem forma.", pauseAfter: 1500 },
-    { text: "Eu não vou te dizer o que eu vi. Vou te dar o lugar onde isso poderia ser dito.", pauseAfter: 1500, inflection: ['thoughtful'] },
-    { text: "Aqui:", pauseAfter: 2000 },
-    { text: "O que você nunca pediu — mas que mesmo assim te falta?", pauseAfter: 1800, inflection: ['gentle'] },
-    { text: "Esse é o seu espelho. Não tem moldura. Não tem reflexo. Só pergunta.", pauseAfter: 1400, inflection: ['warm'] },
+    { text: "Tudo bem.", pauseAfter: 1000, inflection: ['warm'] },
+    { text: "Eu não vou te dizer o que eu vi. Vou te dar um silêncio que tem forma.", pauseAfter: 1200 },
+    { text: "O que você nunca pediu — mas que mesmo assim te falta?", pauseAfter: 1500, inflection: ['gentle'] },
+    { text: "Esse é o seu espelho. Só pergunta.", pauseAfter: 1000, inflection: ['warm'] },
   ],
 
   // ═══════════════════════════════════════════════════════════════
   // DEVOLUCAO_CONTRA_FOBICO (Phase 34, AR-02)
   // Triggered when q1='B' && q2='B' && q1b='A':
   //   visitor procurou a porta, ficou olhando o que repugna, atravessou o vazio.
-  // 3-layer mirror: recognition (sees the gesture) → reframing (refuses bravado)
-  //                 → naming (a rare profile, not a hero). Closing line refuses
-  //                 to label the visitor — preserves open form (like ESPELHO).
-  // 6 segments, target ~23-25s. Echoes Q1B "porta no fundo" / "câmara queimando"
-  // imagery without recapping. Distinguishes from PIVOT_EARLY (which pivots LATER).
+  // 4 segments, ~24s. Same density as remote devoluções.
   // ═══════════════════════════════════════════════════════════════
   DEVOLUCAO_CONTRA_FOBICO: [
-    { text: "Você não fugiu do que arde.", pauseAfter: 1000, inflection: ['warm'] },
-    { text: "Quase ninguém fica na sala quando a saída aparece. Quase ninguém olha o que repugna. E quase ninguém atravessa quando o vazio convida.", pauseAfter: 1000 },
-    { text: "Isso não é coragem. Coragem ainda tem um nome — e o nome serve de muleta.", pauseAfter: 900, inflection: ['thoughtful'] },
-    { text: "O que você fez é mais raro: caminhar em direção ao que ameaça, sem precisar chamar de heroísmo.", pauseAfter: 1000 },
-    { text: "Quem anda para dentro do fogo não está procurando queimar. Está procurando o que só o fogo mostra.", pauseAfter: 1000, inflection: ['serious'] },
-    { text: "Eu não vou te dar um nome para isso. Esse gesto é seu — e ele já te conhece.", pauseAfter: 1800, inflection: ['warm'] },
+    { text: "Você não fugiu do que arde.", pauseAfter: 800, inflection: ['warm'] },
+    { text: "Isso não é coragem. Coragem tem nome — e o nome serve de muleta.", pauseAfter: 900, inflection: ['thoughtful'] },
+    { text: "Quem anda para dentro do fogo não está procurando queimar. Está procurando o que só o fogo mostra.", pauseAfter: 900, inflection: ['serious'] },
+    { text: "Esse gesto não precisa de nome. Ele já te conhece.", pauseAfter: 900, inflection: ['warm'] },
   ],
 
   // ═══════════════════════════════════════════════════════════════
   // DEVOLUCAO_PORTADOR (Phase 34, AR-03)
   // Triggered when q4='A' && q5='A' && q5b='A':
-  //   visitor lembrou tudo, carrega a pergunta, fundiu memória e pergunta numa só carga.
-  // 3-layer mirror: recognition (some questions are not problems) → reframing
-  //                 (cargo, not burden) → distinguishing from GUARDIAN (holds FOR
-  //                 vs holds AGAINST). Closing line refuses prescription — the
-  //                 carrier IS the inheritance.
-  // 6 segments, target ~23-25s. Echoes Q5B "memória que pesa" / "tesouro" without
-  // repeating words. Distinguishes from GUARDIAN (protective) and DEPTH_SEEKER (compulsive).
+  //   visitor lembrou tudo, carrega a pergunta, fundiu memória e pergunta.
+  // 4 segments, ~24s. Same density as remote devoluções.
   // ═══════════════════════════════════════════════════════════════
   DEVOLUCAO_PORTADOR: [
-    { text: "Você lembrou de tudo. E mesmo assim escolheu carregar.", pauseAfter: 1000, inflection: ['warm'] },
-    { text: "Tem perguntas que não são problemas. Não pedem solução, não esperam alívio.", pauseAfter: 900, inflection: ['thoughtful'] },
-    { text: "Elas são cargas. E quem carrega não está preso — está sendo herdeiro de alguma coisa que ainda não tem nome.", pauseAfter: 1000 },
-    { text: "Guardião segura para que nada entre. Você segura para que algo continue existindo. É outro gesto.", pauseAfter: 1000, inflection: ['gentle'] },
-    { text: "A pergunta que pesa em você não é um peso a tirar. É um tesouro que pede um corpo para continuar fazendo sentido.", pauseAfter: 1000, inflection: ['serious'] },
-    { text: "Eu não vou te dizer o que ela quer dizer. Mas ela está bem onde está — e você também.", pauseAfter: 1800, inflection: ['warm'] },
+    { text: "Você lembrou de tudo. E mesmo assim escolheu carregar.", pauseAfter: 800, inflection: ['warm'] },
+    { text: "Tem perguntas que não pedem solução. São cargas — e quem carrega está sendo herdeiro de algo que ainda não tem nome.", pauseAfter: 900, inflection: ['thoughtful'] },
+    { text: "Esse peso não é pra tirar. É um tesouro que precisa de corpo pra continuar existindo.", pauseAfter: 900, inflection: ['serious'] },
+    { text: "Ele está bem onde está — e você também.", pauseAfter: 900, inflection: ['warm'] },
   ],
 
   // ═══════════════════════════════════════════════════════════════
