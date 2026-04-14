@@ -22,12 +22,15 @@ describe('ListeningIndicator', () => {
     expect(indicator).toBeInTheDocument();
   });
 
-  it('uses CSS animation classes for pulsing effect', () => {
+  it('uses CSS animation for pulsing effect', () => {
     render(<ListeningIndicator isListening={true} />);
     const indicator = screen.getByTestId('listening-indicator');
-    // Check for animated bars (spans with animate-pulse)
-    const animatedBars = indicator.querySelectorAll('.animate-pulse');
-    expect(animatedBars.length).toBeGreaterThan(0);
+    // Check for animated bars (spans with inline animation style)
+    const bars = indicator.querySelectorAll('span');
+    const hasAnimation = Array.from(bars).every(bar =>
+      bar.style.animation.includes('listening-bar')
+    );
+    expect(hasAnimation).toBe(true);
   });
 
   it('renders exactly 5 pulsing bars', () => {

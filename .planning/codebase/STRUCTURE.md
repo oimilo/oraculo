@@ -1,405 +1,269 @@
 # Codebase Structure
 
-**Analysis Date:** 2026-03-25
+**Analysis Date:** 2026-03-29
 
 ## Directory Layout
 
 ```
-Oraculo/
-├── .claude/                    # Claude Code agent config
-├── .planning/                  # GSD workflow planning docs
-│   ├── codebase/               # Codebase analysis (this file)
-│   ├── milestones/             # Milestone definitions
-│   ├── phases/                 # Phase plans and execution logs
-│   └── research/               # Research notes
-├── public/
-│   └── audio/                  # Static audio assets (ambient tracks, prerecorded)
-│       └── prerecorded/        # 25 pre-recorded MP3s for fallback TTS
+oraculo/
 ├── src/
-│   ├── __tests__/              # Cross-cutting integration tests
-│   ├── app/                    # Next.js App Router pages and API routes
-│   │   ├── admin/              # Admin dashboard route
-│   │   │   ├── components/     # Admin-specific components
-│   │   │   └── page.tsx        # Admin page
-│   │   ├── api/                # Server-side API routes
-│   │   │   ├── nlu/            # NLU classification endpoint
-│   │   │   ├── stt/            # Speech-to-text endpoint
-│   │   │   └── tts/            # Text-to-speech endpoint
-│   │   ├── layout.tsx          # Root layout
-│   │   └── page.tsx            # Main experience page
-│   ├── components/             # React UI components
-│   │   ├── audio/              # Audio visualization components
-│   │   └── experience/         # Core experience flow components
-│   ├── data/                   # Static data (narrative script)
-│   ├── hooks/                  # Custom React hooks
-│   │   └── __tests__/          # Hook tests
-│   ├── lib/                    # Shared utilities
-│   │   ├── api/                # API utilities (env validation)
-│   │   └── audio/              # Audio context and speech synthesis
-│   ├── machines/               # XState state machine definitions
-│   ├── services/               # Service layer (interface+factory+mock pattern)
-│   │   ├── analytics/          # Session analytics service
-│   │   ├── audio/              # Ambient audio player and crossfader
-│   │   ├── nlu/                # Natural language understanding service
-│   │   ├── station/            # Multi-station registry
-│   │   ├── stt/                # Speech-to-text service
-│   │   └── tts/                # Text-to-speech service
-│   ├── test/                   # Test configuration
-│   └── types/                  # TypeScript type definitions
-├── .env.example                # Environment variable template
-├── .eslintrc.json              # ESLint config
-├── .gitignore                  # Git ignore rules
-├── next.config.ts              # Next.js config (minimal)
-├── package.json                # Dependencies and scripts
-├── postcss.config.mjs          # PostCSS config for Tailwind
-├── PRD.md                      # Product requirements document
-├── tailwind.config.ts          # Tailwind CSS config
-├── tsconfig.json               # TypeScript config
-└── vitest.config.ts            # Vitest test runner config
+│   ├── app/                        # Next.js App Router
+│   │   ├── layout.tsx              # Root layout (black bg, pt-BR lang)
+│   │   ├── page.tsx                # Home page -> OracleExperience
+│   │   ├── globals.css             # Global styles
+│   │   ├── admin/                  # Admin dashboard
+│   │   │   ├── page.tsx            # Station monitoring page
+│   │   │   └── components/         # StationCard, SessionMetrics, PathDistribution
+│   │   └── api/                    # API route handlers (server-side proxies)
+│   │       ├── tts/route.ts        # ElevenLabs TTS proxy
+│   │       ├── stt/route.ts        # OpenAI Whisper STT proxy
+│   │       └── nlu/route.ts        # Anthropic Claude NLU proxy
+│   ├── components/                 # React UI components
+│   │   ├── experience/             # Core experience components
+│   │   │   ├── OracleExperience.tsx  # Main orchestrator (570 lines)
+│   │   │   ├── PermissionScreen.tsx  # Mic permission request
+│   │   │   ├── StartButton.tsx       # Start experience button
+│   │   │   ├── PhaseBackground.tsx   # Phase-colored background
+│   │   │   ├── ChoiceButtons.tsx     # A/B choice buttons with countdown
+│   │   │   └── EndFade.tsx           # End-of-experience fade
+│   │   ├── audio/                  # Audio visualization
+│   │   │   ├── WaveformVisualizer.tsx
+│   │   │   └── ListeningIndicator.tsx
+│   │   └── debug/                  # Dev-only debug panel
+│   │       └── DebugPanel.tsx
+│   ├── machines/                   # XState state machines
+│   │   ├── oracleMachine.ts        # v4 machine definition (710 lines)
+│   │   ├── oracleMachine.types.ts  # Context, events, helpers (v4 + deprecated v3/v2)
+│   │   └── guards/                 # XState guards
+│   │       └── patternMatching.ts  # Archetype detection algorithm
+│   ├── services/                   # Service layer (interface + factory + impl + mock)
+│   │   ├── tts/                    # Text-to-Speech
+│   │   │   ├── index.ts            # TTSService interface + factory + voice settings
+│   │   │   ├── elevenlabs.ts       # ElevenLabs implementation
+│   │   │   ├── fallback.ts         # Pre-recorded MP3 fallback
+│   │   │   └── mock.ts             # Test mock
+│   │   ├── stt/                    # Speech-to-Text
+│   │   │   ├── index.ts            # STTService interface + factory
+│   │   │   ├── whisper.ts          # OpenAI Whisper implementation
+│   │   │   └── mock.ts             # Test mock
+│   │   ├── nlu/                    # Natural Language Understanding
+│   │   │   ├── index.ts            # NLUService interface + factory
+│   │   │   ├── claude.ts           # Claude Haiku implementation
+│   │   │   └── mock.ts             # Test mock
+│   │   ├── analytics/              # Session analytics
+│   │   │   ├── index.ts            # AnalyticsService interface + factory
+│   │   │   └── mock.ts             # localStorage-based mock
+│   │   ├── audio/                  # Ambient audio
+│   │   │   ├── ambientPlayer.ts    # Phase-based ambient audio player
+│   │   │   └── crossfader.ts       # Equal-power crossfade utilities
+│   │   └── station/                # Station registry (multi-kiosk)
+│   │       ├── index.ts            # Re-export
+│   │       └── registry.ts         # localStorage-based heartbeat registry
+│   ├── hooks/                      # React hooks
+│   │   ├── useVoiceChoice.ts       # Voice capture pipeline (384 lines)
+│   │   ├── useTTSOrchestrator.ts   # TTS service lifecycle
+│   │   ├── useMicrophone.ts        # MediaRecorder wrapper
+│   │   ├── useAmbientAudio.ts      # Ambient audio lifecycle
+│   │   ├── useSessionAnalytics.ts  # Analytics hook
+│   │   ├── useWaveform.ts          # Waveform visualization
+│   │   └── useKeyboardShortcut.ts  # Dev keyboard shortcuts
+│   ├── data/                       # Narrative content
+│   │   └── script.ts              # Full Portuguese script (523 lines, 61 entries)
+│   ├── types/                      # TypeScript type definitions
+│   │   ├── index.ts               # Core types + QUESTION_META + PHASE_COLORS
+│   │   ├── analytics.ts           # Analytics types
+│   │   └── station.ts             # Station types
+│   ├── lib/                       # Shared utilities
+│   │   ├── audio/                 # Audio utilities
+│   │   │   ├── audioContext.ts    # Singleton AudioContext manager
+│   │   │   ├── speechSynthesis.ts # Browser SpeechSynthesis helpers
+│   │   │   └── v3-conversion.ts   # ElevenLabs v3 text conversion
+│   │   ├── api/
+│   │   │   └── validateEnv.ts     # requireEnv() helper
+│   │   └── debug/
+│   │       └── logger.ts          # createLogger(namespace) utility
+│   ├── test/
+│   │   └── setup.ts               # Vitest setup (jest-dom matchers)
+│   └── __tests__/                 # Integration test files
+│       ├── flow-sequencing.test.ts        # STALE: v1 flow tests (FAILING)
+│       ├── voice-flow-integration.test.ts # STALE: v1 integration tests (FAILING)
+│       ├── mic-lifecycle.test.ts
+│       └── stt-nlu-pipeline.test.ts
+├── public/
+│   └── audio/
+│       ├── prerecorded/           # 61 pre-recorded MP3 files
+│       │   ├── apresentacao.mp3
+│       │   ├── inferno_intro.mp3
+│       │   ├── inferno_q1_setup.mp3
+│       │   ├── ... (61 files total)
+│       │   └── timeout_q4b.mp3
+│       └── README.md
+├── scripts/                       # Build/utility scripts
+│   ├── generate-audio.mjs         # ElevenLabs MP3 generation (v2)
+│   ├── generate-audio-v3.ts       # ElevenLabs MP3 generation (v3)
+│   ├── validate-timing.ts         # Script timing validation
+│   └── narrative-proposals/       # Research materials
+│       ├── lacanian.ts
+│       ├── winnicottian.ts
+│       ├── bionian.ts
+│       ├── FINAL.ts
+│       └── RESEARCH-SYNTHESIS.md
+├── .planning/                     # GSD planning documents
+├── package.json
+├── tsconfig.json
+├── vitest.config.ts
+├── tailwind.config.ts
+├── postcss.config.mjs
+├── next.config.ts
+├── .env.example
+├── .eslintrc.json
+└── PRD.md                         # Product Requirements Document
 ```
 
 ## Directory Purposes
 
-### `src/app/` -- Next.js App Router
+**`src/app/`:**
+- Next.js App Router pages and API routes
+- `page.tsx` is the single user-facing page
+- `admin/page.tsx` is a separate monitoring dashboard
+- `api/` contains 3 server-side proxy routes
 
-- Purpose: File-based routing, pages, layouts, and API routes
-- Contains: Page components (`page.tsx`), layouts (`layout.tsx`), API route handlers (`route.ts`)
-- Key files:
-  - `src/app/page.tsx`: Main experience entry point, renders `<OracleExperience />`
-  - `src/app/layout.tsx`: Root HTML layout (lang=pt-BR, dark theme)
-  - `src/app/admin/page.tsx`: Admin dashboard with session metrics and station monitoring
+**`src/components/experience/`:**
+- Core experience UI components
+- `OracleExperience.tsx` is the main orchestrator (largest component, 570 lines)
+- Other components are small, focused UI pieces
 
-### `src/app/api/` -- Server-Side API Routes
+**`src/machines/`:**
+- XState v5 state machine definition and types
+- `oracleMachine.ts` is the heart of the application (710 lines)
+- `guards/patternMatching.ts` contains the archetype classification algorithm
 
-- Purpose: Proxy external AI service calls, keeping API keys server-side
-- Contains: POST route handlers for TTS, STT, NLU
-- Each route directory has a `route.ts` and `__tests__/` subdirectory
-- Key files:
-  - `src/app/api/tts/route.ts`: ElevenLabs TTS proxy with concurrency limiter and retry
-  - `src/app/api/stt/route.ts`: OpenAI Whisper proxy for Portuguese transcription
-  - `src/app/api/nlu/route.ts`: Anthropic Claude Haiku proxy for binary classification
+**`src/services/`:**
+- Each service follows: `index.ts` (interface + factory), `{impl}.ts`, `mock.ts`
+- Factory functions check `typeof window` and `NEXT_PUBLIC_USE_REAL_APIS`
 
-### `src/machines/` -- State Machine
+**`src/hooks/`:**
+- Bridge between services and React
+- `useVoiceChoice.ts` is the most complex (384 lines, internal state machine)
+- Each hook manages one concern
 
-- Purpose: Core experience flow logic
-- Contains: XState v5 machine definition and TypeScript types
-- Key files:
-  - `src/machines/oracleMachine.ts`: 17-state machine with branching, timeouts, guards
-  - `src/machines/oracleMachine.types.ts`: Context, event, and initial context types
-  - `src/machines/oracleMachine.test.ts`: State transition tests
+**`src/data/`:**
+- `script.ts` contains the full Portuguese narrative (all 61 script entries)
+- Script keys map 1:1 to machine states and MP3 filenames
 
-### `src/services/` -- Service Layer
+**`src/types/`:**
+- `index.ts` has core types + `QUESTION_META` (NLU context for each question) + `PHASE_COLORS`
+- Legacy v2/v3 types are deprecated but still exported for backward compatibility
 
-- Purpose: External service abstractions following interface + factory + mock pattern
-- Contains: One directory per service domain, each with `index.ts` (interface + factory), `mock.ts`, and optional real implementation
-- Structure per service:
-  ```
-  services/{name}/
-  ├── index.ts          # Interface + factory function + re-exports
-  ├── mock.ts           # Mock implementation (browser APIs or stubs)
-  ├── {provider}.ts     # Real implementation (e.g., elevenlabs.ts, whisper.ts)
-  ├── fallback.ts       # Optional fallback (TTS only)
-  └── __tests__/        # Service tests
-  ```
+**`src/lib/`:**
+- Shared utilities: AudioContext singleton, logger, env validation, speech synthesis helpers
 
-### `src/components/` -- UI Components
-
-- Purpose: React presentation components
-- Organization: Grouped by feature area
-- Key files:
-  - `src/components/experience/OracleExperience.tsx`: **Main orchestrator** -- wires state machine, TTS, voice choice, ambient audio, and all UI
-  - `src/components/experience/PhaseBackground.tsx`: Full-screen background with phase-colored transitions
-  - `src/components/experience/PermissionScreen.tsx`: Microphone permission request UI
-  - `src/components/experience/StartButton.tsx`: Pulsing "Toque para comecar" button
-  - `src/components/experience/ChoiceButtons.tsx`: Binary choice buttons with countdown timer
-  - `src/components/experience/EndFade.tsx`: Fade-to-black on experience end
-  - `src/components/audio/WaveformVisualizer.tsx`: Canvas-based audio waveform display
-  - `src/components/audio/ListeningIndicator.tsx`: Pulsing bars animation during recording
-
-### `src/hooks/` -- Custom React Hooks
-
-- Purpose: Reusable stateful logic for audio, voice, and analytics
-- Key files:
-  - `src/hooks/useVoiceChoice.ts`: Full voice choice pipeline (record -> STT -> NLU -> result). Lifecycle managed by `active` boolean.
-  - `src/hooks/useMicrophone.ts`: MediaRecorder wrapper with auto-stop timer, MIME type detection, stream cleanup
-  - `src/hooks/useSessionAnalytics.ts`: Analytics service wrapper with start/end session lifecycle
-  - `src/hooks/useAmbientAudio.ts`: Ambient audio player lifecycle with phase-based crossfading
-  - `src/hooks/useWaveform.ts`: AnalyserNode waveform rendering to canvas ref
-
-### `src/lib/` -- Shared Utilities
-
-- Purpose: Low-level utilities shared across the app
-- Key files:
-  - `src/lib/audio/audioContext.ts`: AudioContext singleton (init, get, reset). Must be initialized on user gesture.
-  - `src/lib/audio/speechSynthesis.ts`: Browser SpeechSynthesis wrapper for segment-by-segment playback with pause timing
-  - `src/lib/api/validateEnv.ts`: `requireEnv()` helper for API route environment variable validation
-
-### `src/types/` -- Type Definitions
-
-- Purpose: Shared TypeScript types and constants
-- Key files:
-  - `src/types/index.ts`: Core types (`SpeechSegment`, `NarrativePhase`, `Choice1`, `Choice2`, `ExperiencePath`) and constants (`PHASE_COLORS`, `VOICE_DIRECTIONS`)
-  - `src/types/analytics.ts`: Session analytics types (`SessionRecord`, `SessionStatus`, `SessionStartData`, `SessionEndData`)
-  - `src/types/station.ts`: Station types (`StationInfo`, `StationStatus`)
-
-### `src/data/` -- Static Data
-
-- Purpose: Hardcoded narrative content
-- Key files:
-  - `src/data/script.ts`: Complete narrative script with 25 keyed entries mapping to `SpeechSegment[]` arrays. Includes main narrative, response variants, fallback prompts, and timeout messages.
-
-### `src/test/` -- Test Setup
-
-- Purpose: Global test configuration
-- Key files:
-  - `src/test/setup.ts`: Vitest setup file (DOM mocks, global config)
-
-### `public/audio/` -- Static Audio Assets
-
-- Purpose: Pre-recorded audio files for offline fallback and ambient soundscapes
-- Contains:
-  - `public/audio/prerecorded/`: 25 MP3 files mapping 1:1 to SCRIPT keys (not yet recorded)
-  - `public/audio/ambient-inferno.mp3`, `ambient-purgatorio.mp3`, `ambient-paraiso.mp3`: Phase ambient loops
+**`public/audio/prerecorded/`:**
+- 61 MP3 files matching script keys (lowercased)
+- Pattern: `{script_key}.mp3` -> e.g., `INFERNO_Q1_SETUP` -> `inferno_q1_setup.mp3`
 
 ## Key File Locations
 
-### Entry Points
+**Entry Points:**
+- `src/app/page.tsx`: Main page (renders OracleExperience)
+- `src/app/layout.tsx`: Root layout (metadata, lang="pt-BR")
+- `src/components/experience/OracleExperience.tsx`: Main orchestrator
 
-- `src/app/page.tsx`: Root page, renders OracleExperience
-- `src/app/admin/page.tsx`: Admin dashboard
-- `src/app/layout.tsx`: Root HTML layout
+**Configuration:**
+- `vitest.config.ts`: Test configuration
+- `tsconfig.json`: TypeScript config (strict, path aliases)
+- `.env.example`: Environment variable template
+- `tailwind.config.ts`: Tailwind content paths and theme
 
-### Configuration
+**Core Logic:**
+- `src/machines/oracleMachine.ts`: State machine (ALL flow logic)
+- `src/machines/guards/patternMatching.ts`: Archetype classification
+- `src/data/script.ts`: Narrative content
+- `src/types/index.ts`: Type system + question metadata
 
-- `package.json`: Dependencies, scripts (dev, build, test)
-- `tsconfig.json`: TypeScript strict mode, `@/*` path alias to `./src/*`
-- `vitest.config.ts`: Test runner config
-- `tailwind.config.ts`: Tailwind CSS config
-- `next.config.ts`: Next.js config (currently empty)
-- `.env.example`: Environment variable template (API keys, feature flags)
+**Services:**
+- `src/services/tts/index.ts`: TTS interface and factory
+- `src/services/tts/fallback.ts`: Pre-recorded MP3 player
+- `src/services/tts/elevenlabs.ts`: ElevenLabs client
+- `src/services/nlu/index.ts`: NLU interface and factory
+- `src/app/api/nlu/route.ts`: NLU API route (keyword match + Claude)
 
-### Core Logic
+**Hooks:**
+- `src/hooks/useVoiceChoice.ts`: Voice capture pipeline
+- `src/hooks/useTTSOrchestrator.ts`: TTS lifecycle
+- `src/hooks/useMicrophone.ts`: MediaRecorder wrapper
 
-- `src/machines/oracleMachine.ts`: State machine (the brain)
-- `src/components/experience/OracleExperience.tsx`: Orchestrator component (the spine)
-- `src/hooks/useVoiceChoice.ts`: Voice recognition pipeline
-- `src/data/script.ts`: Complete narrative content
-
-### Service Interfaces (entry points for service layer)
-
-- `src/services/tts/index.ts`: TTSService interface + createTTSService()
-- `src/services/stt/index.ts`: STTService interface + createSTTService()
-- `src/services/nlu/index.ts`: NLUService interface + createNLUService()
-- `src/services/analytics/index.ts`: AnalyticsService interface + createAnalyticsService()
-- `src/services/station/index.ts`: StationRegistry re-export
-
-### Testing
-
-- `src/machines/oracleMachine.test.ts`: State machine transition tests
-- `src/hooks/__tests__/*.test.ts`: Hook unit tests
-- `src/services/*/tests__/*.test.ts`: Service unit tests
-- `src/app/api/*/__tests__/*.test.ts`: API route tests
-- `src/__tests__/voice-flow-integration.test.ts`: End-to-end voice pipeline integration test
-- `src/components/audio/__tests__/*.test.tsx`: Audio component tests
+**Testing:**
+- `src/machines/oracleMachine.test.ts`: Machine tests (1034 lines, 60+ tests)
+- `src/machines/guards/__tests__/patternMatching.test.ts`: Archetype tests
+- `src/data/__tests__/script-v3.test.ts`: Script validation tests
+- `src/test/setup.ts`: Vitest setup
 
 ## Naming Conventions
 
-### Files
+**Files:**
+- Components: `PascalCase.tsx` (e.g., `OracleExperience.tsx`, `ChoiceButtons.tsx`)
+- Hooks: `camelCase.ts` with `use` prefix (e.g., `useVoiceChoice.ts`)
+- Services: `camelCase.ts` (e.g., `elevenlabs.ts`, `fallback.ts`, `mock.ts`)
+- Types: `camelCase.ts` (e.g., `index.ts`, `analytics.ts`)
+- Tests: `{name}.test.ts` or `{name}.test.tsx`
+- Machine: `camelCase.ts` (e.g., `oracleMachine.ts`)
 
-- **Components:** PascalCase with `.tsx` extension -- `OracleExperience.tsx`, `PhaseBackground.tsx`
-- **Hooks:** camelCase prefixed with `use` -- `useVoiceChoice.ts`, `useMicrophone.ts`
-- **Services:** camelCase matching the provider/concept -- `elevenlabs.ts`, `whisper.ts`, `claude.ts`, `mock.ts`
-- **Service indexes:** Always `index.ts` (interface + factory)
-- **Types:** camelCase -- `analytics.ts`, `station.ts`
-- **Tests:** Same name as source with `.test.ts`/`.test.tsx` suffix
-- **API routes:** Always `route.ts` (Next.js App Router convention)
-- **Utilities:** camelCase -- `audioContext.ts`, `speechSynthesis.ts`, `validateEnv.ts`
+**Test directories:**
+- `__tests__/` subdirectory adjacent to source (e.g., `src/services/tts/__tests__/`)
+- Exception: `src/machines/oracleMachine.test.ts` is co-located
 
-### Directories
-
-- **Feature groups:** lowercase singular -- `experience/`, `audio/`, `station/`
-- **Service domains:** lowercase singular matching the service name -- `tts/`, `stt/`, `nlu/`, `analytics/`
-- **Test directories:** `__tests__/` (co-located within parent directory)
-
-### Exports
-
-- **Components:** `export default function ComponentName` (default exports for pages and components)
-- **Hooks:** `export function useHookName` (named exports)
-- **Services:** Classes use `export class ServiceName`, factory functions use `export function createServiceName()`
-- **Types:** `export interface`/`export type` (named exports)
-- **Constants:** `export const UPPER_CASE` for config objects (`PHASE_COLORS`, `VOICE_DIRECTIONS`, `SCRIPT`)
-
-## Import Organization
-
-### Path Alias
-
-All `src/` imports use the `@/*` alias mapped to `./src/*`:
-
-```typescript
-import { oracleMachine } from '@/machines/oracleMachine';
-import type { NarrativePhase } from '@/types';
-import { createTTSService } from '@/services/tts';
-```
-
-### Import Order (observed pattern)
-
-1. React/framework imports (`react`, `next/server`, `xstate`)
-2. Internal modules via `@/` alias (machines, services, hooks, types, lib)
-3. Relative imports (sibling components)
-
-```typescript
-// Example from OracleExperience.tsx
-import { useMachine } from '@xstate/react';                          // 1. Framework
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { oracleMachine } from '@/machines/oracleMachine';            // 2. Internal
-import { SCRIPT } from '@/data/script';
-import type { NarrativePhase, SpeechSegment } from '@/types';
-import { createTTSService } from '@/services/tts';
-import { useVoiceChoice } from '@/hooks/useVoiceChoice';
-import PermissionScreen from './PermissionScreen';                    // 3. Relative
-import StartButton from './StartButton';
-```
-
-### Type-Only Imports
-
-Use `import type` for pure type imports:
-```typescript
-import type { OracleContext, OracleEvent } from './oracleMachine.types';
-import type { SpeechSegment, NarrativePhase } from '@/types';
-```
+**Directories:**
+- All lowercase, singular or descriptive (e.g., `services`, `hooks`, `experience`, `debug`)
 
 ## Where to Add New Code
 
-### New Service (e.g., Supabase Analytics)
+**New question/script content:**
+- Add to `src/data/script.ts` (ScriptDataV4 interface + SCRIPT object)
+- Add states to `src/machines/oracleMachine.ts`
+- Add MP3 to `public/audio/prerecorded/`
+- Add script key mapping in `getScriptKey()` in `OracleExperience.tsx`
+- Add choice config via `buildChoiceConfig()` if it's an AGUARDANDO state
+- Add breathing delay mapping in `getBreathingDelay()` in `OracleExperience.tsx`
 
-1. Create implementation file: `src/services/analytics/supabase.ts`
-2. Implement the existing `AnalyticsService` interface from `src/services/analytics/index.ts`
-3. Update factory in `src/services/analytics/index.ts` to return real implementation when `NEXT_PUBLIC_USE_REAL_APIS === 'true'`
-4. Add tests: `src/services/analytics/__tests__/supabase-analytics.test.ts`
-5. Add any needed API route: `src/app/api/analytics/route.ts`
+**New external service:**
+- Create `src/services/{name}/index.ts` (interface + factory)
+- Create `src/services/{name}/{impl}.ts` (implementation)
+- Create `src/services/{name}/mock.ts` (test mock)
+- Add API route in `src/app/api/{name}/route.ts`
+- Add env vars to `.env.example`
+- Create tests in `src/services/{name}/__tests__/`
 
-### New API Route
+**New UI component:**
+- Add to `src/components/experience/` (experience-related) or `src/components/audio/` (audio-related)
+- Use `'use client'` directive
+- Keep components small and focused
 
-1. Create directory: `src/app/api/{name}/`
-2. Create handler: `src/app/api/{name}/route.ts` -- export `POST` (or `GET`) async function
-3. Use `requireEnv()` from `src/lib/api/validateEnv.ts` for env var validation
-4. Add tests: `src/app/api/{name}/__tests__/{name}-route.test.ts`
-5. Add env var to `.env.example`
+**New hook:**
+- Add to `src/hooks/` with `use` prefix
+- Follow existing pattern: state + refs + callbacks + effects
+- Add tests in `src/hooks/__tests__/`
 
-### New UI Component
-
-1. Determine category: `experience/` (flow-related) or `audio/` (audio-visual) or create new directory
-2. Create file: `src/components/{category}/{ComponentName}.tsx`
-3. Use `'use client'` directive at top (all current components are client-side)
-4. Export as default: `export default function ComponentName`
-5. Wire into `OracleExperience.tsx` if it's part of the experience flow
-6. Add tests: `src/components/{category}/__tests__/{ComponentName}.test.tsx`
-
-### New Hook
-
-1. Create file: `src/hooks/use{Name}.ts`
-2. Follow pattern: `export function use{Name}(params): Return`
-3. Use `useRef` for service instances (lazy init pattern)
-4. Add tests: `src/hooks/__tests__/use{Name}.test.ts`
-
-### New Type Definitions
-
-1. Add to existing file if related: `src/types/index.ts` (core), `src/types/analytics.ts` (analytics), `src/types/station.ts` (station)
-2. Create new file for new domain: `src/types/{domain}.ts`
-3. Use `export type` and `export interface`
-
-### New State Machine Event or State
-
-1. Add event type to `OracleEvent` union in `src/machines/oracleMachine.types.ts`
-2. Add state/transition in `src/machines/oracleMachine.ts`
-3. If state has narration: add script entry in `src/data/script.ts`
-4. Update `getScriptKey()` mapping in `src/components/experience/OracleExperience.tsx`
-5. Add transition tests in `src/machines/oracleMachine.test.ts`
-
-### New Utility
-
-1. Determine domain: `lib/audio/` (audio), `lib/api/` (API helpers), or create `lib/{domain}/`
-2. Create file: `src/lib/{domain}/{utilName}.ts`
-3. Use named exports
-4. Add co-located test: `src/lib/{domain}/{utilName}.test.ts`
+**New type definitions:**
+- Add to `src/types/index.ts` for core types
+- Create new file in `src/types/` for domain-specific types (e.g., `analytics.ts`)
 
 ## Special Directories
 
-### `.planning/`
+**`public/audio/prerecorded/`:**
+- 61 MP3 files for offline fallback
+- Generated by `scripts/generate-audio-v3.ts`
+- Committed to git (required for offline operation)
 
-- Purpose: GSD workflow artifacts (milestone plans, phase plans, codebase analysis)
-- Generated: By Claude Code agents
-- Committed: Yes (tracked in git)
+**`scripts/narrative-proposals/`:**
+- Research materials (Lacanian, Winnicottian, Bionian frameworks)
+- NOT imported by source code; reference only
+- Committed to git
 
-### `public/audio/`
-
-- Purpose: Static audio assets served at build time
-- Generated: No (must be manually recorded/placed)
-- Committed: Yes (audio files are tracked)
-- Note: 25 pre-recorded MP3 files in `prerecorded/` are referenced by `FallbackTTSService` but may not exist yet (pending studio recording)
-
-### `.next/`
-
-- Purpose: Next.js build output
-- Generated: Yes (by `next build` / `next dev`)
-- Committed: No (in `.gitignore`)
-
-### `node_modules/`
-
-- Purpose: npm dependencies
-- Generated: Yes (by `npm install`)
-- Committed: No (in `.gitignore`)
-
-## Module Boundaries
-
-### Client vs. Server
-
-| Module | Runtime | Reason |
-|--------|---------|--------|
-| `src/app/api/**` | Server only | API keys, external service calls |
-| `src/lib/api/validateEnv.ts` | Server only | `process.env` without `NEXT_PUBLIC_` prefix |
-| `src/components/**` | Client only | `'use client'` directive, browser APIs |
-| `src/hooks/**` | Client only | React hooks, browser APIs (MediaRecorder, AudioContext) |
-| `src/services/tts/elevenlabs.ts` | Client | Calls `/api/tts` via fetch, plays via Web Audio |
-| `src/services/stt/whisper.ts` | Client | Calls `/api/stt` via fetch |
-| `src/services/nlu/claude.ts` | Client | Calls `/api/nlu` via fetch |
-| `src/services/analytics/mock.ts` | Client | localStorage access |
-| `src/services/station/registry.ts` | Client | localStorage access |
-| `src/machines/**` | Isomorphic | Pure logic, no browser/server APIs |
-| `src/types/**` | Isomorphic | Type definitions only |
-| `src/data/**` | Isomorphic | Static data, no side effects |
-
-### Dependency Direction
-
-```
-app/page.tsx
-  └── components/experience/OracleExperience.tsx (orchestrator)
-        ├── machines/oracleMachine.ts (state management)
-        ├── data/script.ts (content)
-        ├── hooks/useVoiceChoice.ts
-        │     ├── hooks/useMicrophone.ts (MediaRecorder)
-        │     ├── services/stt/ (transcription)
-        │     └── services/nlu/ (classification)
-        ├── hooks/useAmbientAudio.ts
-        │     └── services/audio/ambientPlayer.ts
-        │           └── services/audio/crossfader.ts
-        ├── hooks/useSessionAnalytics.ts
-        │     └── services/analytics/
-        ├── services/tts/ (narration)
-        │     └── lib/audio/speechSynthesis.ts
-        ├── services/station/ (heartbeat)
-        ├── lib/audio/audioContext.ts (shared AudioContext)
-        ├── types/ (shared type definitions)
-        └── components/experience/* (UI pieces)
-              └── components/audio/* (visualizers)
-
-app/api/tts/route.ts  ─── (server) ──→ ElevenLabs API
-app/api/stt/route.ts  ─── (server) ──→ OpenAI Whisper API
-app/api/nlu/route.ts  ─── (server) ──→ Anthropic Messages API
-```
-
-**Rule:** Services never import from components or hooks. Components import from services. Hooks import from services. Types are imported by everyone. `lib/` is imported by services and hooks.
+**`.planning/`:**
+- GSD workflow planning documents
+- Not committed to git (or optionally committed)
 
 ---
 
-*Structure analysis: 2026-03-25*
+*Structure analysis: 2026-03-29*

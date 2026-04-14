@@ -25,29 +25,41 @@ describe('AudioReactiveBackground', () => {
     expect(screen.getByTestId('audio-reactive-background')).toBeInTheDocument();
   });
 
-  it('has 3000ms transition-colors class for phase crossfade (VIS-03)', () => {
+  it('uses atmospheric gradient layers with 3000ms transition', () => {
     render(<AudioReactiveBackground phase="INFERNO" isPlaying={false} />);
     const bg = screen.getByTestId('audio-reactive-background');
-    expect(bg.className).toContain('transition-colors');
-    expect(bg.className).toContain('duration-[3000ms]');
+    // Main container has gradient child layers, not flat backgroundColor
+    const gradientLayers = bg.querySelectorAll('.transition-all');
+    expect(gradientLayers.length).toBeGreaterThanOrEqual(3); // base + glow + vignette
+    // Each layer has transition duration for smooth phase crossfade
+    gradientLayers.forEach(layer => {
+      expect(layer.className).toContain('duration-[3000ms]');
+    });
   });
 
-  it('sets background color from VISUAL_THEMES for INFERNO', () => {
+  it('renders gradient background for INFERNO phase', () => {
     render(<AudioReactiveBackground phase="INFERNO" isPlaying={false} />);
     const bg = screen.getByTestId('audio-reactive-background');
-    expect(bg.style.backgroundColor).toBe('rgb(74, 14, 14)'); // #4a0e0e
+    const layers = bg.querySelectorAll('.transition-all');
+    // Base layer should contain INFERNO gradient
+    const baseLayer = layers[0];
+    expect(baseLayer.getAttribute('style')).toContain('radial-gradient');
   });
 
-  it('sets background color from VISUAL_THEMES for PURGATORIO', () => {
+  it('renders gradient background for PURGATORIO phase', () => {
     render(<AudioReactiveBackground phase="PURGATORIO" isPlaying={false} />);
     const bg = screen.getByTestId('audio-reactive-background');
-    expect(bg.style.backgroundColor).toBe('rgb(61, 79, 92)'); // #3d4f5c
+    const layers = bg.querySelectorAll('.transition-all');
+    const baseLayer = layers[0];
+    expect(baseLayer.getAttribute('style')).toContain('radial-gradient');
   });
 
-  it('sets background color from VISUAL_THEMES for PARAISO', () => {
+  it('renders gradient background for PARAISO phase', () => {
     render(<AudioReactiveBackground phase="PARAISO" isPlaying={false} />);
     const bg = screen.getByTestId('audio-reactive-background');
-    expect(bg.style.backgroundColor).toBe('rgb(92, 74, 42)'); // #5c4a2a
+    const layers = bg.querySelectorAll('.transition-all');
+    const baseLayer = layers[0];
+    expect(baseLayer.getAttribute('style')).toContain('radial-gradient');
   });
 
   it('always shows IdleAnimation as ambient background (VIS-04)', () => {

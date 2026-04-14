@@ -1,321 +1,235 @@
 # Architecture
 
-**Analysis Date:** 2026-03-25
+**Analysis Date:** 2026-03-29
 
-## High-Level Overview
+## Pattern Overview
 
-O Oraculo is a **single-page interactive voice experience** built on Next.js 15 App Router. A visitor interacts via voice (microphone) while the system narrates a branching Dante-inspired journey using TTS. The architecture centers on an **XState v5 state machine** that orchestrates the entire flow, with a **service layer** that abstracts AI providers behind interfaces swappable via environment variable.
-
-**Pattern:** Component-orchestrated state machine with dependency-injected services.
+**Overall:** Event-driven state machine architecture with React UI layer
 
 **Key Characteristics:**
-- Single orchestrator component (`OracleExperience`) drives the entire experience
-- XState v5 state machine defines all narrative flow, branching, and timeouts
-- Interface + Factory + Mock pattern for all external services (TTS, STT, NLU, Analytics)
-- Server-side API routes proxy external AI calls (keys never reach client)
-- Client-side localStorage for analytics and station registry (mock phase)
-- Desktop-only, dark-theme, minimal UI -- voice is primary interaction
+- XState v5 state machine is the single source of truth for the entire experience flow
+- Service layer follows Interface + Factory + Implementation + Mock pattern
+- Next.js API routes serve as thin proxies to external services (no business logic server-side)
+- All experience logic is client-side; server only proxies API calls and protects secrets
+- Pre-recorded audio provides complete offline fallback
 
-## State Machine Architecture
+## Layers
 
-**Location:** `src/machines/oracleMachine.ts`
-**Types:** `src/machines/oracleMachine.types.ts`
+**State Machine Layer:**
+- Purpose: Controls the entire experience flow -- all state transitions, timeouts, branching logic
+- Location: `src/machines/`
+- Contains: `oracleMachine.ts` (710 lines), `oracleMachine.types.ts`, `guards/patternMatching.ts`
+- Depends on: Nothing (pure logic, no side effects)
+- Used by: `OracleExperience.tsx` via `useMachine()` hook
 
-The state machine is the **single source of truth** for the experience flow. It defines 17 states across 6 narrative phases, with 2 binary choice points producing 4 possible paths.
+**Service Layer:**
+- Purpose: Abstracts external service communication behind interfaces
+- Location: `src/services/`
+- Contains: TTS, STT, NLU, Analytics, Audio (ambient), Station (heartbeat)
+- Depends on: API routes (via fetch), Web Audio API
+- Used by: Hooks layer
 
-### State Hierarchy
+**Hook Layer:**
+- Purpose: Bridges services and React lifecycle, manages side effects
+- Location: `src/hooks/`
+- Contains: `useTTSOrchestrator`, `useVoiceChoice`, `useMicrophone`, `useAmbientAudio`, `useSessionAnalytics`
+- Depends on: Service layer, React lifecycle
+- Used by: Component layer
+
+**Component Layer:**
+- Purpose: Visual UI with minimal logic
+- Location: `src/components/`
+- Contains: Experience components, audio visualizers, debug panel
+- Depends on: Hook layer, types
+- Used by: Page (single entry point)
+
+**API Layer:**
+- Purpose: Server-side proxy to external services, protects API keys
+- Location: `src/app/api/`
+- Contains: `/api/tts`, `/api/stt`, `/api/nlu` route handlers
+- Depends on: External APIs (ElevenLabs, OpenAI, Anthropic)
+- Used by: Service layer (client-side fetch)
+
+**Data Layer:**
+- Purpose: Script content and type definitions
+- Location: `src/data/`, `src/types/`
+- Contains: Full Portuguese narrative script (523 lines), type system, question metadata
+- Depends on: Nothing
+- Used by: All layers
+
+## State Machine Design (v4)
+
+**Structure:** ~54 states across hierarchical + flat topology
 
 ```
-IDLE
-APRESENTACAO
-INFERNO (compound)
-  NARRATIVA -> PERGUNTA -> AGUARDANDO -> RESPOSTA_A | RESPOSTA_B | TIMEOUT_REDIRECT
-PURGATORIO_A (compound)
-  NARRATIVA -> PERGUNTA -> AGUARDANDO -> RESPOSTA_FICAR | RESPOSTA_EMBORA
-PURGATORIO_B (compound)
-  NARRATIVA -> PERGUNTA -> AGUARDANDO -> RESPOSTA_PISAR | RESPOSTA_CONTORNAR
-PARAISO
-DEVOLUCAO (routing state - uses `always` guards)
-  -> DEVOLUCAO_A_FICAR | DEVOLUCAO_A_EMBORA | DEVOLUCAO_B_PISAR | DEVOLUCAO_B_CONTORNAR
-ENCERRAMENTO
-FIM
+IDLE -> APRESENTACAO -> INFERNO -> PURGATORIO -> PARAISO -> DEVOLUCAO -> DEVOLUCAO_* -> ENCERRAMENTO -> FIM -> IDLE
 ```
 
-### Branching Logic
+**Hierarchical states (compound):**
+- `INFERNO`: INTRO -> Q1 (SETUP/PERGUNTA/AGUARDANDO/TIMEOUT/RESPOSTA_A/RESPOSTA_B) -> Q2 -> [Q2B conditional] -> exit
+- `PURGATORIO`: INTRO -> Q3 -> Q4 -> [Q4B conditional] -> exit
+- `PARAISO`: INTRO -> Q5 -> Q6 -> exit
 
-- **Choice 1 (INFERNO):** `CHOICE_A` (Vozes) or `CHOICE_B` (Silencio) -- timeout defaults to B
-- **Choice 2 (PURGATORIO_A):** `CHOICE_FICAR` or `CHOICE_EMBORA` -- timeout defaults to FICAR
-- **Choice 2 (PURGATORIO_B):** `CHOICE_PISAR` or `CHOICE_CONTORNAR` -- timeout defaults to CONTORNAR
-- **4 Paths:** A_FICAR, A_EMBORA, B_PISAR, B_CONTORNAR
+**Flat states (top-level):**
+- `IDLE`, `APRESENTACAO`, `ENCERRAMENTO`, `FIM`
+- `DEVOLUCAO` (transient routing node)
+- 8x `DEVOLUCAO_*` archetype states
 
-### Context
+**Branching:**
+- Q2B triggers when `Q1=A AND Q2=A` (shouldBranchQ2B guard)
+- Q4B triggers when `Q3=A AND Q4=A` (shouldBranchQ4B guard)
+- Results in 6-8 decision points per session
 
+**Each question follows:**
+```
+SETUP -> PERGUNTA -> AGUARDANDO (25s timeout) -> TIMEOUT or RESPOSTA_A/RESPOSTA_B
+```
+
+**Events:**
+- `START` - Begin experience
+- `NARRATIVA_DONE` - TTS playback complete, advance state
+- `CHOICE_A` / `CHOICE_B` - Visitor choice (voice or button)
+- `TIMEOUT` - 25s silence in AGUARDANDO
+- `FALLBACK_USED` - Increments fallback counter
+
+**Context (v4):**
 ```typescript
-interface OracleContext {
-  sessionId: string;         // UUID per session
-  choice1: 'A' | 'B' | null;
-  choice2: 'FICAR' | 'EMBORA' | 'PISAR' | 'CONTORNAR' | null;
-  fallbackCount: number;     // times voice recognition fell back
-  currentPhase: NarrativePhase;  // for UI background color
+{
+  sessionId: string;
+  choices: ChoicePattern;           // Variable-length array (6-8)
+  choiceMap: Partial<Record<QuestionId, ChoiceAB>>; // Named lookup
+  fallbackCount: number;
+  currentPhase: NarrativePhase;     // APRESENTACAO | INFERNO | PURGATORIO | PARAISO | DEVOLUCAO | ENCERRAMENTO
 }
 ```
 
-### Event Types
-
-All events the machine accepts (defined in `src/machines/oracleMachine.types.ts`):
-- `START` -- begin experience
-- `NARRATIVA_DONE` -- TTS finished speaking current script segment
-- `CHOICE_A`, `CHOICE_B` -- Inferno choice
-- `CHOICE_FICAR`, `CHOICE_EMBORA` -- Purgatorio A choice
-- `CHOICE_PISAR`, `CHOICE_CONTORNAR` -- Purgatorio B choice
-- `TIMEOUT` -- unused directly (machine uses `after` delays)
-- `FALLBACK_USED` -- increments fallbackCount
-
-### Timeout Strategy
-
-Every state (except IDLE and FIM) has a 120-second global `after` timeout that returns to IDLE. AGUARDANDO sub-states have a 15-second timeout that auto-selects the default choice. FIM auto-transitions to IDLE after 5 seconds.
-
-## Service Layer Architecture
-
-All external integrations follow the **Interface + Factory + Mock** pattern, toggled by `NEXT_PUBLIC_USE_REAL_APIS` environment variable.
-
-### Pattern
-
-```typescript
-// 1. Interface (in index.ts)
-export interface TTSService {
-  speak(segments: SpeechSegment[], voiceSettings: VoiceSettings): Promise<void>;
-  cancel(): void;
-}
-
-// 2. Factory (in index.ts)
-export function createTTSService(): TTSService {
-  if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_USE_REAL_APIS === 'true') {
-    return new ElevenLabsTTSService();
-  }
-  return new MockTTSService();
-}
-
-// 3. Mock (in mock.ts) -- uses browser SpeechSynthesis
-// 4. Real (in elevenlabs.ts) -- calls /api/tts
-// 5. Fallback (in fallback.ts) -- plays pre-recorded MP3s
-```
-
-### Service Map
-
-| Service | Interface | Mock | Real | Fallback | API Route |
-|---------|-----------|------|------|----------|-----------|
-| TTS | `src/services/tts/index.ts` | `mock.ts` (SpeechSynthesis) | `elevenlabs.ts` | `fallback.ts` (pre-recorded MP3) | `/api/tts` |
-| STT | `src/services/stt/index.ts` | `mock.ts` (returns "vozes") | `whisper.ts` | -- | `/api/stt` |
-| NLU | `src/services/nlu/index.ts` | `mock.ts` (keyword match) | `claude.ts` | -- | `/api/nlu` |
-| Analytics | `src/services/analytics/index.ts` | `mock.ts` (localStorage) | Not yet implemented | -- | -- |
-| Station | `src/services/station/index.ts` | `registry.ts` (localStorage singleton) | Not yet implemented | -- | -- |
-| Audio | `src/services/audio/` | Direct Web Audio API | -- | -- | -- |
-
-### API Route Architecture
-
-API routes live in `src/app/api/` and act as **server-side proxies** to keep API keys out of client bundles:
-
-- **`src/app/api/tts/route.ts`** -- Proxies to ElevenLabs `/v1/text-to-speech/{voiceId}/stream`. Includes concurrency limiter (max 2 parallel), retry with exponential backoff on 429. Returns `audio/mpeg` stream.
-- **`src/app/api/stt/route.ts`** -- Proxies to OpenAI Whisper `/v1/audio/transcriptions`. Accepts FormData with audio file, returns `{ text: string }`.
-- **`src/app/api/nlu/route.ts`** -- Proxies to Anthropic Messages API using `claude-3-5-haiku-20241022`. Sends binary classification prompt, parses JSON response, returns `ClassificationResult`.
-
-All routes use `requireEnv()` from `src/lib/api/validateEnv.ts` for env var validation.
+**Devolucao routing:** Uses `always` transitions with ordered guards:
+1. isMirror (alternating pattern)
+2. isDepthSeeker (100% A)
+3. isSurfaceKeeper (100% B)
+4. isPivotEarly (B-heavy start, A-heavy end)
+5. isPivotLate (A-heavy start, B-heavy end)
+6. isSeeker (66%+ A)
+7. isGuardian (66%+ B)
+8. isContradicted (default fallthrough)
 
 ## Data Flow
 
-### Primary Experience Flow
+**Main Experience Flow:**
 
-```
-User Click (START)
-  -> OracleExperience.handleStart()
-  -> initAudioContext() (unlocks Web Audio on user gesture)
-  -> createTTSService() (lazy init)
-  -> send({ type: 'START' }) to state machine
-  -> Machine transitions: IDLE -> APRESENTACAO
-  -> useEffect detects state change
-  -> getScriptKey(state) maps machine state to SCRIPT key
-  -> ttsRef.current.speak(segments, voiceSettings)
-  -> On TTS completion: send({ type: 'NARRATIVA_DONE' })
-  -> Machine transitions to next state
-  -> Repeat until AGUARDANDO state...
-```
+1. User clicks Start -> `OracleExperience` sends `START` event to machine
+2. Machine transitions to `APRESENTACAO`
+3. Effect A detects state change -> maps state to script key -> calls `tts.speak(SCRIPT[key])`
+4. TTS plays audio (ElevenLabs or pre-recorded MP3) -> sets `ttsComplete=true`
+5. Effect B detects `ttsComplete` -> waits breathing delay (0-2500ms) -> sends `NARRATIVA_DONE`
+6. Machine advances to next state -> cycle repeats
 
-### Voice Choice Pipeline (AGUARDANDO states)
+**Voice Choice Flow (AGUARDANDO states):**
 
-```
-State enters AGUARDANDO
-  -> isAguardando becomes true
-  -> useVoiceChoice(config, active=true) activates
-  -> useMicrophone.startRecording(6000ms)
-  -> MediaRecorder captures audio for 6s (auto-stop timer)
-  -> On stop: audioBlob produced
-  -> STT service transcribes audioBlob -> text
-  -> NLU service classifies text -> { choice: 'A'|'B', confidence }
-  -> If confidence >= 0.7: emit choiceResult with mapped event
-  -> If confidence < 0.7 and attempts < 2: set needsFallback
-  -> If needsFallback: play fallback script, restart listening
-  -> If max attempts: use defaultEvent
-  -> OracleExperience receives choiceResult -> send(eventType) to machine
-  -> Machine transitions to response state
-```
+1. Machine enters `Qn_AGUARDANDO` state
+2. `isAguardando=true` + `ttsComplete=true` -> `micShouldActivate=true`
+3. `useVoiceChoice` activates -> starts `useMicrophone` recording (4s)
+4. Recording auto-stops -> blob dispatched as `AUDIO_READY`
+5. Lifecycle transitions to `processing` -> STT transcription via `/api/stt`
+6. If transcript empty -> NEED_FALLBACK (re-ask question)
+7. If transcript present -> NLU classification via `/api/nlu` (keyword match first, then Claude)
+8. If confidence >= 0.7 -> dispatch `CHOICE_A` or `CHOICE_B` to machine
+9. If confidence < 0.7 and attempts < 2 -> NEED_FALLBACK
+10. If max attempts reached -> use default choice
 
-### Audio System
-
-Three independent audio paths sharing one `AudioContext`:
-
-1. **TTS Audio** -- `ElevenLabsTTSService` decodes MP3 response into `AudioBuffer`, plays via `AudioBufferSourceNode` connected to `destination`. `MockTTSService` uses browser `SpeechSynthesis`. `FallbackTTSService` plays pre-recorded MP3s from `/public/audio/prerecorded/`.
-
-2. **Ambient Audio** -- `AmbientPlayer` loads ambient tracks per phase (`/audio/ambient-{phase}.mp3`), plays via separate `GainNode` connected directly to `destination` (separate path from TTS per AMB-03). Crossfades between phases using `linearRampToValueAtTime`.
-
-3. **Waveform Visualization** -- `AnalyserNode` taps the main `GainNode` from `audioContext.ts`, reads time-domain data, renders to canvas via `requestAnimationFrame`.
-
-**AudioContext singleton:** `src/lib/audio/audioContext.ts` -- must be initialized on user gesture (`handleStart`). Provides `getAudioContext()` and `getGainNode()` globally.
-
-### Analytics Flow
-
-```
-Session Start (START event)
-  -> useSessionAnalytics.startSession(sessionId)
-  -> MockAnalyticsService writes to localStorage
-
-During Experience
-  -> StationRegistry.heartbeat() every 10s (per-tab)
-  -> localStorage key: 'oraculo_stations'
-
-Session End (FIM or timeout)
-  -> useSessionAnalytics.endSession(sessionId, choices, fallbackCount, completed)
-  -> MockAnalyticsService writes to localStorage key: 'oraculo_analytics'
-
-Admin Dashboard (/admin)
-  -> Reads same localStorage keys
-  -> Polls every 5s
-```
-
-### State Management
-
-- **State Machine:** XState v5 via `useMachine()` hook -- single source of truth for experience flow
-- **React State:** `useState` for UI concerns only (micPermissionGranted, experienceStarted, isSpeaking)
-- **Refs:** `useRef` for services (ttsRef, sttRef, nluRef) and internal state (prevStateRef, isSpeakingRef) -- avoids re-renders and stale closures
-- **localStorage:** Analytics sessions and station heartbeats (mock persistence)
-- **No global state management (Redux, Zustand, Context)** -- the state machine handles cross-component coordination
+**State Management:**
+- XState machine context is the single source of truth
+- React state in `OracleExperience` tracks: `micPermissionGranted`, `experienceStarted`, `ttsComplete`
+- `ttsForStateRef` prevents stale ttsComplete from previous state causing premature advance
+- `speakGeneration` in FallbackTTS prevents stale onended callbacks
 
 ## Key Abstractions
 
-### SpeechSegment
+**TTSService Interface:**
+- Purpose: Abstract TTS playback (real API vs pre-recorded vs browser SpeechSynthesis)
+- Implementations: `ElevenLabsTTSService`, `FallbackTTSService`, `MockTTSService`
+- Pattern: `speak(segments, voiceSettings, scriptKey?) -> Promise<void>`, `cancel() -> void`
+- Files: `src/services/tts/index.ts`, `src/services/tts/elevenlabs.ts`, `src/services/tts/fallback.ts`, `src/services/tts/mock.ts`
 
-The fundamental unit of narration. Each segment has text and optional pause timing.
+**NLUService Interface:**
+- Purpose: Classify voice transcript as choice A or B
+- Implementations: `ClaudeNLUService`, `MockNLUService`
+- Pattern: `classify(transcript, questionContext, options, keywords?) -> Promise<ClassificationResult>`
+- Files: `src/services/nlu/index.ts`, `src/services/nlu/claude.ts`, `src/services/nlu/mock.ts`
 
-- Defined in: `src/types/index.ts`
-- Used by: `src/data/script.ts`, all TTS services
-- Pattern: Array of segments per script key, sequential playback with pauses
+**STTService Interface:**
+- Purpose: Transcribe audio blob to text
+- Implementations: `WhisperSTTService`, `MockSTTService`
+- Pattern: `transcribe(audioBlob) -> Promise<string>`
+- Files: `src/services/stt/index.ts`, `src/services/stt/whisper.ts`, `src/services/stt/mock.ts`
 
-```typescript
-interface SpeechSegment {
-  text: string;
-  pauseAfter?: number; // milliseconds
-}
-```
+**VoiceLifecycle (useVoiceChoice):**
+- Purpose: Explicit finite state machine for voice capture pipeline
+- States: `idle -> listening -> processing -> decided` (or `-> fallback -> listening`)
+- File: `src/hooks/useVoiceChoice.ts`
 
-### VoiceSettings
-
-Phase-specific voice parameters for ElevenLabs TTS (stability, similarity_boost, style, speed) with a `phase` field for mock routing.
-
-- Defined in: `src/services/tts/index.ts`
-- Lookup table: `PHASE_VOICE_SETTINGS` maps `NarrativePhase -> VoiceSettings`
-
-### ChoiceConfig
-
-Configuration for the voice choice pipeline at each AGUARDANDO decision point. Defines question context, option labels, event mapping, and thresholds.
-
-- Defined in: `src/hooks/useVoiceChoice.ts`
-- Three instances: `INFERNO_CHOICE`, `PURGATORIO_A_CHOICE`, `PURGATORIO_B_CHOICE` in `OracleExperience.tsx`
-
-### NarrativePhase
-
-Union type of 6 phases that drives background colors, voice settings, and ambient audio selection.
-
-- Defined in: `src/types/index.ts`
-- Values: `APRESENTACAO`, `INFERNO`, `PURGATORIO`, `PARAISO`, `DEVOLUCAO`, `ENCERRAMENTO`
+**ScriptDataV4:**
+- Purpose: Typed narrative content with all keys matching machine states
+- Contains: 61 entries (APRESENTACAO, INTROs, SETUPs, PERGUNTAs, RESPOSTAs, DEVOLUCAOs, FALLBACKs, TIMEOUTs, ENCERRAMENTO)
+- File: `src/data/script.ts`
 
 ## Entry Points
 
-### Main Experience (`/`)
+**Main page (`src/app/page.tsx`):**
+- Renders `<OracleExperience />` in a black full-screen container
+- Single page application
 
-- Location: `src/app/page.tsx`
-- Renders: `OracleExperience` component
-- Triggers: User navigates to root URL, optionally with `?station=station-N`
+**OracleExperience (`src/components/experience/OracleExperience.tsx`):**
+- The orchestrator component (570 lines)
+- Wires: state machine + TTS + voice choice + ambient audio + analytics + UI
+- Contains Effect A (TTS playback), Effect B (NARRATIVA_DONE dispatch), fallback handler, choice handler
 
-### Admin Dashboard (`/admin`)
-
-- Location: `src/app/admin/page.tsx`
-- Renders: Station cards, session metrics, path distribution charts
-- Triggers: Staff navigates to `/admin`
-
-### API Routes
-
-- `src/app/api/tts/route.ts` -- POST, proxies ElevenLabs TTS
-- `src/app/api/stt/route.ts` -- POST, proxies OpenAI Whisper
-- `src/app/api/nlu/route.ts` -- POST, proxies Anthropic Claude
+**Admin dashboard (`src/app/admin/page.tsx`):**
+- Station monitoring dashboard
+- Components: `StationCard`, `SessionMetrics`, `PathDistribution`
 
 ## Error Handling
 
-### Strategy: Graceful Degradation with Fallback Chains
+**Strategy:** Graceful degradation with multiple fallback layers
 
-The system is designed for a live event. Every error path leads to a continued experience rather than a crash.
+**TTS errors:**
+- ElevenLabs fails -> FallbackTTSService (pre-recorded MP3s)
+- MP3 fetch fails -> Browser SpeechSynthesis
+- SpeechSynthesis unavailable -> Simulate delay (headless/server)
 
-### TTS Fallback Chain
+**STT errors:**
+- Whisper timeout (10s) -> Return 504
+- Empty audio -> Return empty transcript (no API call)
+- Hallucination detected -> Return empty transcript
 
-```
-ElevenLabsTTSService (/api/tts)
-  -> On API failure: FallbackTTSService (pre-recorded MP3s)
-    -> On MP3 not found: Browser SpeechSynthesis
-      -> On SpeechSynthesis unavailable: Simulated delay
-```
+**NLU errors:**
+- Direct match catches most cases (no API call needed)
+- Keyword match as intermediate layer
+- Claude timeout (10s) -> Return 504
+- JSON parse failure -> Text-based extraction fallback
+- Low confidence -> Fallback prompt (re-ask question)
+- Max attempts (2) -> Use default choice
 
-### Voice Choice Fallback
-
-```
-Record audio (6s) -> STT -> NLU
-  -> Low confidence: Play fallback prompt, retry (max 2 attempts)
-  -> Error/empty: Same retry logic
-  -> Max attempts reached: Use default choice
-  -> 15s state machine timeout: Auto-select default
-  -> Button fallback: ChoiceButtons always rendered alongside voice
-```
-
-### API Route Error Handling
-
-All API routes follow the same pattern:
-1. Validate environment variables with `requireEnv()` -- returns 500 if missing
-2. Validate request body -- returns 400 if malformed
-3. Call external API -- returns 502 if external service fails
-4. Catch-all -- returns 500 for unexpected errors
+**Voice pipeline errors:**
+- Mic permission denied -> Error message in PermissionScreen
+- Recording failure -> Error state, fallback to buttons
+- Empty transcript -> Fallback prompt
+- Max retries exhausted -> Default choice
 
 ## Cross-Cutting Concerns
 
-### Logging
+**Logging:** Custom `createLogger(namespace)` with elapsed-time prefix. Dev-only `DebugPanel` component.
 
-Console-based logging with prefixed tags: `[VoiceChoice]`, `[Mic]`, `[TTS]`, `[ElevenLabs]`. No structured logging framework. API routes use `console.error` and `console.warn`.
+**Validation:** `requireEnv()` helper in `src/lib/api/validateEnv.ts` for server-side env vars. Client-side validation minimal.
 
-### Validation
+**Audio Context:** Singleton AudioContext in `src/lib/audio/audioContext.ts`. Must be initialized on user gesture (click). Shared between TTS and ambient audio via separate GainNode paths.
 
-- API route input validation is inline (body field checks)
-- Environment variable validation via `requireEnv()` in `src/lib/api/validateEnv.ts`
-- TypeScript strict mode enforces type safety at compile time
+**Phase Colors:** `PHASE_COLORS` in `src/types/index.ts` maps phases to hex colors for `PhaseBackground` component.
 
-### Authentication
+**Breathing Delays:** Configurable pauses (0-2500ms) between TTS completion and state advance, defined in `getBreathingDelay()` in `OracleExperience.tsx`.
 
-No user authentication. The experience is public-facing at an art installation. API routes have no auth middleware -- they rely on server-side env vars for external API keys.
-
-### Multi-Station Isolation
-
-Each browser tab is a "station" identified by `?station=station-N` query parameter (defaults to `station-1`). Isolation is per-tab via separate `useMachine()` instances. The `StationRegistry` singleton in `src/services/station/registry.ts` uses localStorage for heartbeat coordination, meaning **multi-station only works across tabs on the same browser** (not across machines).
-
-### LGPD Compliance (ANA-02)
-
-Analytics records are strictly anonymous: UUID session IDs, path choices, duration, fallback count. The `SessionRecord` type in `src/types/analytics.ts` explicitly documents what must NEVER be stored (audio, transcripts, names, IPs).
+**Inactivity Timeouts:** 300s (5 min) timeout on every major state -> resets to IDLE. 25s timeout on every AGUARDANDO -> default choice. 5s on FIM -> reset to IDLE.
 
 ---
 
-*Architecture analysis: 2026-03-25*
+*Architecture analysis: 2026-03-29*

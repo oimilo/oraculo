@@ -4,12 +4,14 @@ import type { SpeechSegment } from '@/types';
 // Mock modules before imports
 const mockGetAudioContext = vi.fn();
 const mockInitAudioContext = vi.fn();
+const mockGetEffectsInput = vi.fn();
 const mockFallbackSpeak = vi.fn();
 const mockFallbackCancel = vi.fn();
 
 vi.mock('@/lib/audio/audioContext', () => ({
   getAudioContext: mockGetAudioContext,
   initAudioContext: mockInitAudioContext,
+  getEffectsInput: mockGetEffectsInput,
 }));
 
 vi.mock('../fallback', () => {
@@ -59,6 +61,8 @@ describe('ElevenLabsTTSService', () => {
     // Set up mock returns
     mockGetAudioContext.mockReturnValue(mockAudioContext);
     mockInitAudioContext.mockResolvedValue(mockAudioContext);
+    // Effects input not initialized in test — falls back to destination
+    mockGetEffectsInput.mockReturnValue(null);
 
     // Create a mock blob with arrayBuffer method
     const createMockBlob = () => {

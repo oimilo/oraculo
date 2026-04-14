@@ -108,7 +108,7 @@ describe('useVoiceChoice', () => {
 
     // Wait for async processing
     await waitFor(() => {
-      expect(mockTranscribe).toHaveBeenCalledWith(mockBlob);
+      expect(mockTranscribe).toHaveBeenCalledWith(mockBlob, expect.any(String));
     });
 
     await waitFor(() => {

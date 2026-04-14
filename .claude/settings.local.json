@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\ndocs: complete project research\n\nComprehensive research across 4 domains:\n- STACK.md: Next.js 14 + XState v5 + ElevenLabs + Whisper + Claude Haiku\n- FEATURES.md: Must-have table stakes, competitive differentiators, v2+ deferrals\n- ARCHITECTURE.md: Actor-based state machine with voice pipeline integration\n- PITFALLS.md: 10 critical failure modes with prevention strategies\n- SUMMARY.md: Executive synthesis with 3-phase roadmap implications\n\nStack recommendations prioritize low-latency streaming \\(ElevenLabs WebSocket TTS,\nWeb Audio API playback\\) and declarative state management \\(XState v5 actor model\\).\n\nArchitecture centers on state machine orchestration controlling TTS/STT/NLU\npipeline with Next.js API routes proxying external services for security.\n\nCritical pitfalls identified: browser autoplay policies, microphone permissions,\nnetwork latency, API rate limits, PT-BR transcription accuracy, LGPD compliance.\n\nRoadmap implications suggest 3 phases:\n1. Core State Machine & Audio Foundation \\(XState + AudioContext unlock\\)\n2. Voice Processing Pipeline \\(TTS/STT/NLU integration, needs deeper research\\)\n3. Polish, Resilience & Multi-Station \\(offline fallbacks, analytics, admin\\)\n\nOverall confidence: MEDIUM \\(stable browser APIs HIGH, external API endpoints need\nverification against 2026 docs, latency/accuracy claims need empirical testing\\)\n\nReady for roadmap planning.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(node:*)",
+      "Skill(gsd:plan-phase)"
+    ]
+  }
+}

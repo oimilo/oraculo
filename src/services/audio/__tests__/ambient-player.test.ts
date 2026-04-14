@@ -135,7 +135,7 @@ describe('AmbientPlayer', () => {
 
     const gainNode = (ctx as any)._gains[0];
     expect(gainNode.gain.setValueAtTime).toHaveBeenCalledWith(0, 0);
-    expect(gainNode.gain.linearRampToValueAtTime).toHaveBeenCalledWith(1, 2.0);
+    expect(gainNode.gain.linearRampToValueAtTime).toHaveBeenCalledWith(0.7, 2.0);
   });
 
   it('crossfadeTo crossfades between two phases', async () => {
@@ -153,8 +153,8 @@ describe('AmbientPlayer', () => {
     // Inferno should fade out
     expect(infernoGain.gain.linearRampToValueAtTime).toHaveBeenCalledWith(0, 12.0);
 
-    // Purgatorio should fade in
-    expect(purgatorioGain.gain.linearRampToValueAtTime).toHaveBeenCalledWith(1, 12.0);
+    // Purgatorio should fade in to its configured volume (0.5)
+    expect(purgatorioGain.gain.linearRampToValueAtTime).toHaveBeenCalledWith(0.5, 12.0);
   });
 
   it('crossfadeTo handles phase without ambient track (fade out only)', async () => {
@@ -162,7 +162,7 @@ describe('AmbientPlayer', () => {
     await player.loadTrack('INFERNO', '/audio/inferno.mp3');
 
     player.crossfadeTo('INFERNO', 1.0);
-    player.crossfadeTo('APRESENTACAO', 1.0); // No ambient for APRESENTACAO
+    player.crossfadeTo('DEVOLUCAO', 1.0); // No ambient for DEVOLUCAO
 
     const infernoGain = (ctx as any)._gains[0];
     expect(infernoGain.gain.linearRampToValueAtTime).toHaveBeenCalledWith(0, expect.any(Number));
@@ -222,14 +222,14 @@ describe('AmbientPlayer', () => {
 });
 
 describe('AMBIENT_URLS constant', () => {
-  it('defines URLs for INFERNO, PURGATORIO, and PARAISO', () => {
+  it('defines URLs for APRESENTACAO, INFERNO, PURGATORIO, and PARAISO', () => {
+    expect(AMBIENT_URLS.APRESENTACAO).toBe('/audio/ambient-apresentacao.mp3');
     expect(AMBIENT_URLS.INFERNO).toBe('/audio/ambient-inferno.mp3');
     expect(AMBIENT_URLS.PURGATORIO).toBe('/audio/ambient-purgatorio.mp3');
     expect(AMBIENT_URLS.PARAISO).toBe('/audio/ambient-paraiso.mp3');
   });
 
-  it('does not define URLs for APRESENTACAO, DEVOLUCAO, ENCERRAMENTO', () => {
-    expect(AMBIENT_URLS.APRESENTACAO).toBeUndefined();
+  it('does not define URLs for DEVOLUCAO and ENCERRAMENTO', () => {
     expect(AMBIENT_URLS.DEVOLUCAO).toBeUndefined();
     expect(AMBIENT_URLS.ENCERRAMENTO).toBeUndefined();
   });

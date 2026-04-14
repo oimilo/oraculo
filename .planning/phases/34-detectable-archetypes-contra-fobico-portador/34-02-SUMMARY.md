@@ -88,7 +88,7 @@ Each task was committed atomically (TDD: tests + implementation in same commit p
 2. **Task 2: Wire new guards into oracleMachine.ts (TDD)** - `a02b832` (feat)
 3. **Task 3: Extend OracleExperience.tsx + helper tests (TDD)** - `f6bde24` (feat)
 
-**Plan metadata:** _to be filled by final commit_
+**Plan metadata:** `c982ce1` (docs: complete Wave 2)
 
 ## Files Created/Modified
 
