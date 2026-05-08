@@ -8,21 +8,21 @@ Agente de voz interativo que guia visitantes por uma jornada inspirada na Divina
 
 A experiência deve ser seamless e imersiva como um jogo — o visitante fala, ouve, e é transformado. Se a voz, o roteiro e as transições funcionarem perfeitamente, tudo funciona.
 
-## Current Milestone: v6.0 Deep Branching
+## Current Milestone: v6.1 Duas Vozes
 
-**Goal:** Adicionar 3 novas branches condicionais (Q1B, Q5B, Q6B) ao fluxo do Oráculo, mais o arquétipo DEVOLUCAO_ESPELHO_SILENCIOSO e 2 arquétipos detectáveis novos (CONTRA_FOBICO, PORTADOR), aprofundando a sensação oracular sem gamificar.
+**Goal:** Criar versão V2 da experiência com sistema de duas vozes (Voz 1 = perguntas, Voz 2 soturna = narrativa/devoluções), preservando V1 intacta, com seletor na home.
 
 **Target features:**
-- Q1B "A Porta no Fundo" — branch contra-fóbica no Inferno (trigger: q1=B && q2=B), espelho do Q2B
-- Q5B "O Que Já Não Cabe" — branch no Paraíso (trigger: q4=A && q5=A), fecha gap de branching no Paraíso
-- Q6B "O Espelho Extra" — branch raríssima pré-devolução (trigger: q5=B && q6=A)
-- DEVOLUCAO_ESPELHO_SILENCIOSO — novo arquétipo: devolve estrutura aberta em vez de diagnóstico fechado
-- CONTRA_FOBICO — arquétipo detectável quando q1b=A (atravessou o vazio)
-- PORTADOR — arquétipo detectável quando q5b=A (fundiu memória + pergunta)
-- ~24 MP3s novos via ElevenLabs v3, ~78 estados na máquina total
-- Mitigation de overflow temporal (max-path ~7:20) + browser UAT em ≥3 caminhos
+- Seletor V1/V2 na home page (operador ou visitante escolhe antes de iniciar)
+- Sistema de duas vozes: tagear cada script key como VOZ_1 (perguntas) ou VOZ_2 (narrativa)
+- Nova env `ELEVENLABS_VOICE_ID_V2` para a voz soturna
+- Pipeline de geração de áudio dual-voice (gerar MP3s de VOZ_2 com voice ID diferente)
+- TTS/FallbackTTS consciente de qual voz usar por segmento na V2
+- API route `/api/tts` suporte a voice ID dinâmico (V1 vs V2)
+- Fix "faz" → "faça" no ENCERRAMENTO + regen do MP3
 
 **Previous milestones:**
+- v6.0 Deep Branching (shipped 2026-04-08) — 5 conditional branches (Q1B, Q2B, Q4B, Q5B, Q6B), 3 new archetypes (ESPELHO_SILENCIOSO, CONTRA_FOBICO, PORTADOR), 82 MP3s, 78-state machine, 24-path timing matrix
 - v5.0 Tester UI Polish (shipped 2026-04-06, ad-hoc closeout) — Phase 30 R3F audio-reactive visuals + ambient audio + voice pipeline fixes + intro delay + roteiro page (work shipped via direct commits, never formally closed via /gsd:complete-milestone)
 - v4.0 Game Flow (shipped 2026-03-29) — 8 branching decisions, 61 MP3s, 54-state machine, 5-7 min experience
 - v3.2 Integration & Audio (shipped 2026-03-28) — components updated for 6-choice, 49 MP3s generated
@@ -143,6 +143,8 @@ A experiência deve ser seamless e imersiva como um jogo — o visitante fala, o
 | 5-7 min target (down from 10.5) | Bienal foot traffic demands shorter sessions; game pacing keeps engagement high | — v4.0 |
 | Deep branching com 5 conditional branches | Recompensa perfis extremos com camada extra ORACULAR; mantém max-path em ~7:20 (overflow ~1-3% visitantes) | — v6.0 |
 | ESPELHO_SILENCIOSO devolve forma, não conteúdo | Quando visitante dissolve a própria pergunta + pede leitura, Oráculo devolve estrutura aberta como respeito ao gesto original | — v6.0 |
+| Duas vozes V2 (Voz 1 perguntas, Voz 2 narrativa) | Separação dramática: quem pergunta vs quem narra — sugestão Paulo Ribeiro, aprovada pelo cliente | — v6.1 |
+| Seletor V1/V2 na home (coexistência) | V1 preservada intacta como fallback de produção; V2 é evolução aprovada | — v6.1 |
 
 ## Evolution
 
@@ -162,4 +164,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-08 — Phase 34 Detectable Archetypes complete (AR-02 + AR-03 satisfied; isContraFobico + isPortador guards wired into oracleMachine at DEVOLUCAO.always[1]+[2] priority below ESPELHO_SILENCIOSO, 2 new top-level devolução states, 2 new MP3s, 24-path timing matrix max 7:11.2 min within 7:30 budget with 18.8s headroom; POL-02 deeper invariant preserved via field-isolated choiceMap reads — 78/78 patternMatching tests pass; 14/14 must-haves verified; browser UAT deferred to Phase 35)*
+*Last updated: 2026-05-08 — Milestone v6.1 Duas Vozes started*

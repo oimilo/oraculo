@@ -1,16 +1,15 @@
 ---
 gsd_state_version: 1.0
-milestone: v6.0
-milestone_name: Deep Branching
-status: verifying
-stopped_at: "Completed 34-03-PLAN.md (Wave 3: MP3s generated, validator extended to 24 paths, roteiro.html synced, fallback-tts SCRIPT count fixed). Phase 34 ready for verification."
-last_updated: "2026-04-08T10:02:43.743Z"
-last_activity: 2026-04-08
+milestone: v6.1
+milestone_name: Duas Vozes
+status: planning
+last_updated: "2026-05-08T22:27:51.029Z"
+last_activity: 2026-05-08
 progress:
-  total_phases: 5
-  completed_phases: 4
-  total_plans: 12
-  completed_plans: 12
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
   percent: 0
 ---
 
@@ -26,12 +25,10 @@ progress:
 
 ## Current Position
 
-Phase: 35
-Plan: Not started
-Status: Phase complete — ready for verification
-Last activity: 2026-04-08
-
-Progress: [░░░░░░░░░░] 0% (0/5 phases)
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-08 — Milestone v6.1 started
 
 ## Performance Metrics
 
