@@ -90,5 +90,5 @@ Items carried forward from previous milestones:
 ## Session Continuity
 
 Last session: 2026-05-08
-Stopped at: v6.1 roadmap created (4 phases, 11 requirements mapped to phases 36-39)
-Resume: Next step is `/gsd:plan-phase 36` to decompose Dual-Voice Data Layer into executable plans
+Stopped at: Phase 36 context gathered
+Resume: `.planning/phases/36-dual-voice-data-layer/36-CONTEXT.md` — next step is `/gsd-plan-phase 36`
