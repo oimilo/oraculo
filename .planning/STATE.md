@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 milestone: v6.1
 milestone_name: Duas Vozes
 status: planning
-last_updated: "2026-05-08T22:27:51.029Z"
+last_updated: "2026-05-08T22:30:00.000Z"
 last_activity: 2026-05-08
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -19,82 +19,42 @@ progress:
 
 **Core Value:** Experiencia seamless e imersiva como um jogo -- o visitante fala, ouve, e e transformado. Se a voz, o roteiro e as transicoes funcionarem perfeitamente, tudo funciona.
 
-**Current Milestone:** v6.0 Deep Branching
+**Current Milestone:** v6.1 Duas Vozes
 
-**Current Focus:** Phase 34 — detectable-archetypes-contra-fobico-portador
+**Current Focus:** Phase 36 — Dual-Voice Data Layer
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-05-08 — Milestone v6.1 started
+Phase: 36 of 39 (Dual-Voice Data Layer)
+Plan: 0 of TBD in current phase
+Status: Ready to plan
+Last activity: 2026-05-08 — v6.1 roadmap created with 4 phases, 11 requirements mapped
+
+Progress: [████████████████████████████████████░░░] 90% (35/39 phases complete)
 
 ## Performance Metrics
 
-**Milestone v1.0 (Complete):**
+**Milestone v6.0 Deep Branching (Complete 2026-04-08):**
 
-- Phases: 3/3, Plans: 13/13, Reqs: 41/41
-- Duration: 1 day (2026-03-24 to 2026-03-25)
+- Phases: 5/5 (Phases 31-35), Plans: 15/15
+- Duration: 2 days (2026-04-07 to 2026-04-08)
+- Requirements: 10/10 (BR-01 to UAT-01) — all satisfied
+- Deliverables: 5 conditional branches, 3 new archetypes, 82 MP3s, 78-state machine, 24-path timing matrix
 
-**Milestone v1.1 (Paused):**
+**Milestone v6.1 Duas Vozes (Active):**
 
-- Phases: 2/3 (Phase 6 Supabase deferred)
-- Plans: 4/4
+- Phases: 4 (Phases 36-39)
+- Plans: 0/TBD (roadmap complete, phase planning starts next)
+- Requirements: 11 (VER-01 to AUD-03)
+- Goal: Sistema de duas vozes (Voz 1 perguntas, Voz 2 narrativa) com seletor V1/V2 na home
+- Coverage: 11/11 requirements mapped (100%)
 
-**Milestone v1.2 (Complete):**
+**Previous Milestones Summary:**
 
-- Phases: 3/3 (Phases 7-9), Plans: 6/6
-- Duration: 1 day (2026-03-25 to 2026-03-26)
-
-**Milestone v1.3 (Complete):**
-
-- Phases: 2/2 (Phases 10-11, Phase 12 dropped), Plans: 4/4
-- Duration: 1 day (2026-03-26)
-
-**Milestone v2.0 (Complete):**
-
-- Phases: 1/1 (Phase 13), Plans: 2/2
-- Duration: 1 day (2026-03-27)
-
-**Milestone v3.0 (Complete):**
-
-- Phases: 2/2 (Phases 16-17), Plans: 4/4
-- Duration: 2 days (2026-03-27 to 2026-03-28)
-
-**Milestone v3.1 (Complete):**
-
-- Phases: 4/4 (Phases 21-24), Plans: 8/8
-- Duration: 1 day (2026-03-28)
-- Script elevated from first draft to production quality
-- 8 requirements (SCR-01 to SCR-08) all satisfied
-
-**Milestone v3.2 (Complete):**
-
-- Phases: 2/2 (Phases 18-19, Phase 20 skipped), Plans: 3/3
-- Duration: Same day as v3.1 (2026-03-28)
-- 49 MP3s generated, components updated
-
-**Milestone v4.0 (Complete):**
-
-- Phases: 5/5 (Phases 25-29), Plans: 9/9
-- Duration: 2 days (2026-03-28 to 2026-03-29)
-- Requirements: 16 (PACE-01 to INTG-02) — all satisfied
-- 61 MP3s, 54-state machine, 8 branching decisions, 5-7 min experience
-
-**Milestone v5.0 Tester UI Polish (Informally Shipped 2026-04-06):**
-
-- Phases: 1/4 formally tracked (Phase 30 R3F audio-reactive visuals)
-- Subsequent work shipped via direct commits without GSD planning: ambient audio (4 SFX MP3s), voice pipeline 9 fixes, intro delay (3s), roteiro page
-- Never formally closed via /gsd:complete-milestone — context drift between planning and code
-
-**Milestone v6.0 Deep Branching (Active):**
-
-- Phases: 5 (Phases 31-35) — Q1B, Q5B, Q6B+ESPELHO_SILENCIOSO, archetypes, mitigation+UAT
-- Plans: TBD (roadmap complete, phase planning starts next)
-- Requirements: 10 (BR-01, BR-02, BR-03, AR-01, AR-02, AR-03, POL-01, POL-02, POL-03, UAT-01)
-- Goal: 3 novas branches condicionais + arquétipo ESPELHO_SILENCIOSO + 2 arquétipos detectáveis
-- Coverage: 10/10 requirements mapped (100%)
+- v1.0 MVP: 3 phases, 13 plans (2026-03-25)
+- v1.2 Voice Flow: 3 phases, 6 plans (2026-03-26)
+- v3.1 Script Mastery: 4 phases, 8 plans (2026-03-28)
+- v4.0 Game Flow: 5 phases, 9 plans (2026-03-29)
 
 ## Accumulated Context
 
@@ -102,38 +62,33 @@ Last activity: 2026-05-08 — Milestone v6.1 started
 
 Recent decisions affecting current work:
 
-- [v6.0]: Deep branching com 5 conditional branches — recompensa perfis extremos sem gamificar
-- [v6.0]: ESPELHO_SILENCIOSO devolve forma, não conteúdo — quando visitante dissolve a própria pergunta + pede leitura
-- [v6.0]: Aceitar overflow temporal (~7:20 max-path) para 1-3% dos visitantes — preferível a cortar SETUPs base
-- [v6.0]: Phase numbering continues from 31 (não reset)
-- [v6.0]: Implementation order: Q1B → Q5B → Q6B → archetypes → mitigation/UAT (~9-12h total)
-- [v5.0]: Audio-reactive background — equalizer responds to TTS playback intensity, phase-specific themes
-- [v4.0]: Branching paths over linear flow — game-like engagement, choices feel consequential
-- [v4.0]: 5-7 min target (down from 10.5) — Bienal foot traffic demands shorter sessions
-- [Phase 31]: Q1B branch data primitives added (script + NLU + types) — patternMatching.ts deliberately untouched for POL-02 compliance
-- [Phase 31]: Q1B branch wired into oracleMachine (shouldBranchQ1B guard + 6 states, Q2_RESPOSTA_B guarded) and OracleExperience (Q1B_CHOICE + 6 helper extensions) — 18 new tests, zero v4.0 regression
-- [Phase 31]: Phase 31 BR-01 (Q1B contra-fobico) shipped end-to-end: 6 MP3s, 6-path timing matrix (max 6:14 min), roteiro.html in sync. Phase 35 browser UAT deferred.
-- [Phase 32]: Q5B data primitives added (script + NLU) — patternMatching.ts untouched per POL-02
-- [Phase 32]: Q5B wired with sibling rejoin pattern (plain Q6_SETUP target, no #oracle. prefix)
-- [Phase 32]: Q5B BR-02 shipped end-to-end: 6 MP3s generated, 12-path timing matrix validated (max 6:53.7 min), roteiro.html client-facing docs updated
-- [Phase 33]: Q6B narrative Option C chosen (most cinematic, echoes Q5 dissolution)
-- [Phase 33]: ESPELHO_SILENCIOSO Option B chosen (silêncio que tem forma, 6 segments)
-- [Phase 33]: ESPELHO packing: ONE key with 6 segments (matches 8 existing archetypes)
-- [Phase 34-detectable-archetypes-contra-fobico-portador]: Phase 34 Wave 1 shipped: DEVOLUCAO_CONTRA_FOBICO + DEVOLUCAO_PORTADOR scripts (6 segments each), DevolucaoArchetype union 8 to 11 variants (backfilled ESPELHO_SILENCIOSO from Phase 33 type-gap), test baseline 697/17/3
-- [Phase 34-detectable-archetypes-contra-fobico-portador]: Phase 34 Wave 2: isContraFobico + isPortador guards wired with field-isolated choiceMap reads (POL-02 invariant preserved). Priority: ESPELHO[0] > CONTRA_FOBICO[1] > PORTADOR[2] > 8 baseline > unguarded CONTRADICTED.
-- [Phase 34-detectable-archetypes-contra-fobico-portador]: Phase 34 Wave 3 shipped: 2 new MP3s (1.06+1.10 MB) generated via ElevenLabs v3, validate-timing.ts extended to 24 paths with trigger-aware pickLongestDevolucao (max 7:11.2 min, 18.8s headroom), roteiro.html synced with 11 archetypes, fallback-tts SCRIPT count fixed (80 to 82). Test baseline 733/16/3 matches Phase 33 + 14 new tests. AR-02 + AR-03 satisfied end-to-end. Phase 34 complete.
+- [v6.1]: Duas vozes V2 (Voz 1 perguntas, Voz 2 narrativa) — Separação dramática: quem pergunta vs quem narra — sugestão Paulo Ribeiro, aprovada pelo cliente
+- [v6.1]: Seletor V1/V2 na home (coexistência) — V1 preservada intacta como fallback de produção; V2 é evolução aprovada
+- [v6.0]: Deep branching com 5 conditional branches — Recompensa perfis extremos com camada extra ORACULAR; mantém max-path em ~7:20
+- [v6.0]: ESPELHO_SILENCIOSO devolve forma, não conteúdo — Quando visitante dissolve a própria pergunta + pede leitura, Oráculo devolve estrutura aberta
+- [v4.0]: 5-7 min target (down from 10.5) — Bienal foot traffic demands shorter sessions, game pacing keeps engagement high
 
-### Active TODOs
+Full decision log: PROJECT.md Key Decisions table
 
-- [ ] 3 browser UAT items from v1.0 (multi-station, isolation, inactivity timeout)
-- [ ] Phase 6 Supabase analytics (deferred from v1.1)
+### Pending Todos
 
-### Blockers
+None yet.
 
-None.
+### Blockers/Concerns
+
+None yet.
+
+## Deferred Items
+
+Items carried forward from previous milestones:
+
+| Category | Item | Status | Deferred At |
+|----------|------|--------|-------------|
+| Analytics | Supabase analytics backend | Phase 6 deferred to post-event | v1.1 |
+| Testing | Browser UAT multi-station isolation | Manual testing pending | v1.0 |
 
 ## Session Continuity
 
-Last session: 2026-04-08T01:38:18.976Z
-Stopped at: Completed 34-03-PLAN.md (Wave 3: MP3s generated, validator extended to 24 paths, roteiro.html synced, fallback-tts SCRIPT count fixed). Phase 34 ready for verification.
-Resume: `/gsd:execute-plan 31-03` (Q1B audio generation + timing validation + roteiro docs)
+Last session: 2026-05-08
+Stopped at: v6.1 roadmap created (4 phases, 11 requirements mapped to phases 36-39)
+Resume: Next step is `/gsd:plan-phase 36` to decompose Dual-Voice Data Layer into executable plans

@@ -68,23 +68,29 @@ All 10 requirements satisfied (BR-01 through UAT-01). 5 conditional branches (Q1
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| VER-01 | TBD | Pending |
-| VER-02 | TBD | Pending |
-| VER-03 | TBD | Pending |
-| VOZ-01 | TBD | Pending |
-| VOZ-02 | TBD | Pending |
-| VOZ-03 | TBD | Pending |
-| VOZ-04 | TBD | Pending |
-| VOZ-05 | TBD | Pending |
-| AUD-01 | TBD | Pending |
-| AUD-02 | TBD | Pending |
-| AUD-03 | TBD | Pending |
+| VER-01 | Phase 38 | Pending |
+| VER-02 | Phase 36 | Pending |
+| VER-03 | Phase 38 | Pending |
+| VOZ-01 | Phase 36 | Pending |
+| VOZ-02 | Phase 36 | Pending |
+| VOZ-03 | Phase 37 | Pending |
+| VOZ-04 | Phase 37 | Pending |
+| VOZ-05 | Phase 37 | Pending |
+| AUD-01 | Phase 39 | Pending |
+| AUD-02 | Phase 39 | Pending |
+| AUD-03 | Phase 39 | Pending |
 
 **Coverage:**
 - v6.1 requirements: 11 total
-- Mapped to phases: 0 (awaiting roadmap)
-- Unmapped: 11
+- Mapped to phases: 11/11 (100%)
+- Unmapped: 0
+
+**Phase-to-Requirements Mapping:**
+- Phase 36 (Dual-Voice Data Layer): VOZ-01, VOZ-02, VER-02
+- Phase 37 (Dual-Voice Service Layer): VOZ-03, VOZ-04, VOZ-05
+- Phase 38 (Version Selector & UI Integration): VER-01, VER-03
+- Phase 39 (Audio Generation & Polish): AUD-01, AUD-02, AUD-03
 
 ---
 *Requirements defined: 2026-05-08*
-*Last updated: 2026-05-08 after initial definition*
+*Last updated: 2026-05-08 after roadmap creation — 100% coverage validated*

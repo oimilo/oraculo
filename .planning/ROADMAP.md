@@ -12,7 +12,8 @@
 - v3.2 Integration & Audio (shipped 2026-03-28)
 - v4.0 Game Flow (shipped 2026-03-29)
 - v5.0 Tester UI Polish (informally shipped 2026-04-06 — Phase 30 R3F visuals + ad-hoc work; Phases 31-33 dropped/superseded by v6.0)
-- v6.0 Deep Branching (active)
+- v6.0 Deep Branching (shipped 2026-04-08)
+- v6.1 Duas Vozes (active)
 
 ## Phases
 
@@ -113,74 +114,75 @@ See: `.planning/milestones/v3.1-ROADMAP.md`
 
 </details>
 
-### v6.0 Deep Branching (Active)
+<details>
+<summary>v6.0 Deep Branching (Phases 31-35) - SHIPPED 2026-04-08</summary>
 
 - [x] **Phase 31: Q1B Branch (Inferno contra-fobico)** - Add "A Porta no Fundo" branch triggered by q1=B && q2=B (completed 2026-04-07)
 - [x] **Phase 32: Q5B Branch (Paraiso gap closure)** - Add "O Que Já Não Cabe" branch triggered by q4=A && q5=A (completed 2026-04-07)
 - [x] **Phase 33: Q6B + ESPELHO_SILENCIOSO** - Add "O Espelho Extra" branch + new DEVOLUCAO_ESPELHO_SILENCIOSO archetype (completed 2026-04-07)
 - [x] **Phase 34: Detectable Archetypes** - Add CONTRA_FOBICO and PORTADOR archetypes leveraging new branch data (completed 2026-04-08)
-- [ ] **Phase 35: Timing Mitigation + Browser UAT** - Validate 96 path permutations + browser UAT in ≥3 paths
+- [x] **Phase 35: Timing Mitigation + Browser UAT** - Validate 96 path permutations + browser UAT in ≥3 paths (completed 2026-04-08)
 
 See: `.planning/milestones/v6.0-ROADMAP.md` for full phase details, success criteria, and requirements traceability.
 
-#### Phase 31: Q1B Branch (Inferno contra-fobico)
-**Goal**: Add "A Porta no Fundo" branch — triggered when q1=B && q2=B (contra-fobico/destemido profile), tests courage against emptiness. Adds 6 SCRIPT keys, QUESTION_META[9], shouldBranchQ1B guard, 6 machine states, OracleExperience helper extensions, 6 MP3s, timing validation update, and roteiro.html documentation.
-**Depends on**: v4.0 Phase 29 baseline
-**Requirements**: BR-01, POL-02
-**Plans:** 3/3 plans complete
+</details>
 
-Plans:
-- [x] 31-01-PLAN.md — Data + Types: script.ts entries, QUESTION_META[9], QuestionId union extension (Wave 1)
-- [x] 31-02-PLAN.md — Machine + UI: shouldBranchQ1B guard, Q1B states, OracleExperience helpers (Wave 2, depends on 31-01)
-- [x] 31-03-PLAN.md — Audio + Validation + Docs: 6 MP3s, validate-timing.ts permutations, roteiro.html updates (Wave 3, depends on 31-01 and 31-02)
+### v6.1 Duas Vozes (Active)
 
-**UI hint**: no
+- [ ] **Phase 36: Dual-Voice Data Layer** - Script key voice classification + env configuration + version context types
+- [ ] **Phase 37: Dual-Voice Service Layer** - TTS/FallbackTTS dual-voice support + API route voice ID routing
+- [ ] **Phase 38: Version Selector & UI Integration** - Home page V1/V2 selector + OracleExperience version-aware audio routing
+- [ ] **Phase 39: Audio Generation & Polish** - Generate V2 narrative MP3s + fix "faça" in ENCERRAMENTO (both versions)
 
-#### Phase 32: Q5B Branch (Paraiso gap closure)
-**Goal**: Add "O Que Já Não Cabe" branch — triggered when q4=A && q5=A (PORTADOR profile precursor), addresses the gap that no Paraíso branch exists despite Inferno (Q2B) and Purgatorio (Q4B) having one each. Adds 6 SCRIPT keys, QUESTION_META[10], shouldBranchQ5B guard, 6 machine states with sibling-state rejoin to Q6_SETUP, OracleExperience helper extensions, 6 MP3s, timing validation expansion to 12 paths, and roteiro.html documentation. Mirrors Phase 31 (Q1B) structure with two key differences: (1) sibling-state rejoin pattern (no #oracle. prefix because Q5B and Q6_SETUP both live inside PARAISO compound state), (2) Q5B is COEXISTENT with Q4B (both fire when q3=A, q4=A, q5=A — not mutually exclusive). PORTADOR archetype detection deliberately deferred to Phase 34 to honor POL-02 invariant (patternMatching.ts byte-identical).
-**Depends on**: Phase 31
-**Requirements**: BR-02
-**Plans:** 3/3 plans complete
+## Phase Details
 
-Plans:
-- [x] 32-01-PLAN.md — Data + Types: script.ts entries, QUESTION_META[10], POL-02 verification (Wave 1)
-- [x] 32-02-PLAN.md — Machine + UI: shouldBranchQ5B guard, 6 Q5B states with sibling rejoin, OracleExperience helpers + Q4B/Q5B coexistence tests (Wave 2, depends on 32-01)
-- [x] 32-03-PLAN.md — Audio + Validation + Docs: 6 MP3s, validate-timing.ts 12-path matrix, roteiro.html updates (Wave 3, depends on 32-01 and 32-02)
-
-**UI hint**: no
-
-#### Phase 33: Q6B + ESPELHO_SILENCIOSO
-**Goal**: Add "O Espelho Extra" branch — triggered when q5=B && q6=A (visitor dissolveu a pergunta MAS pediu leitura) — plus the new DEVOLUCAO_ESPELHO_SILENCIOSO archetype that returns open structure instead of closed diagnosis. Adds 6 Q6B SCRIPT keys + 1 DEVOLUCAO_ESPELHO_SILENCIOSO SCRIPT key (6 segments in 1 MP3), QUESTION_META[11], shouldBranchQ6B guard + isEspelhoSilencioso guard (both in oracleMachine.ts setup.guards, NOT in patternMatching.ts — POL-02 invariant), 6 new Q6B machine states with QUALIFIED `#oracle.DEVOLUCAO` rejoin (different from Phase 32's sibling pattern because DEVOLUCAO lives at machine root), DEVOLUCAO.always[0] insertion (HIGHEST priority — ahead of all 8 existing archetypes), new top-level DEVOLUCAO_ESPELHO_SILENCIOSO state, OracleExperience Q6B_CHOICE + 6 helper extensions (including isPergunta mic warmup fix), 7 MP3s generated via generate-audio-v3.ts auto-discovery, validate-timing.ts expansion from 12 → 20 paths with hasQ6B/hasEspelhoSilencioso flags and pickLongestDevolucao update, and public/roteiro.html updates (Mermaid Q6B branch + ESPELHO archetype + ramificações count 3).
-**Depends on**: Phase 32
-**Requirements**: BR-03, AR-01
-**Plans:** 3/3 plans complete
-
-Plans:
-- [x] 33-01-PLAN.md — Data + Types: 6 Q6B SCRIPT keys + DEVOLUCAO_ESPELHO_SILENCIOSO (6 segments), QUESTION_META[11], POL-02 verification (Wave 1)
-- [x] 33-02-PLAN.md — Machine + UI: shouldBranchQ6B + isEspelhoSilencioso guards, Q6_RESPOSTA_A guarded transition, 6 Q6B states with QUALIFIED #oracle.DEVOLUCAO rejoin, DEVOLUCAO.always[0] = ESPELHO_SILENCIOSO (highest priority), new top-level DEVOLUCAO_ESPELHO_SILENCIOSO state, Q6B_CHOICE + 6 OracleExperience helper extensions with mic warmup fix (Wave 2, depends on 33-01)
-- [x] 33-03-PLAN.md — Audio + Timing + Roteiro: 7 new MP3s via generate-audio-v3.ts auto-discovery, validate-timing.ts 20-path matrix with Q6B + ESPELHO coverage, pickLongestDevolucao update, public/roteiro.html Mermaid + indicator + devoluções list update (Wave 3, depends on 33-01 and 33-02)
-
-**UI hint**: no
-
-#### Phase 34: Detectable Archetypes (CONTRA_FOBICO + PORTADOR)
-**Goal**: Add 2 new detectable archetypes leveraging new branch choice data. Guard priority: ESPELHO_SILENCIOSO → CONTRA_FOBICO → PORTADOR → 8 existing.
-**Depends on**: Phase 33
-**Requirements**: AR-02, AR-03
-**Plans:** 3/3 plans complete
-
-Plans:
-- [x] 34-01-PLAN.md — Data + Types: DevolucaoArchetype union extension (+ ESPELHO_SILENCIOSO backfill) + DEVOLUCAO_CONTRA_FOBICO and DEVOLUCAO_PORTADOR SCRIPT keys with drafted segment text (Wave 1)
-- [x] 34-02-PLAN.md — Guards + Machine + UI + Tests: isContraFobico/isPortador guards, oracleMachine setup.guards + DEVOLUCAO.always insertion + 2 new top-level states, OracleExperience getScriptKey extensions, TDD across 3 suites (Wave 2, depends on 34-01)
-- [x] 34-03-PLAN.md — Audio + Timing + Roteiro: generate 2 MP3s via ElevenLabs v3, extend validate-timing.ts (24 paths, trigger-aware pickLongestDevolucao), fix fallback-tts SCRIPT count (80→82), update roteiro.html with 2 new cards + 11-archetype priority list (Wave 3, depends on 34-02)
-
-**UI hint**: no
-
-#### Phase 35: Timing Mitigation + Browser UAT
-**Goal**: Validate timing across 96 path permutations, mitigate overflow if needed, browser UAT in ≥3 representative paths, update roteiro.html and CLAUDE.md.
-**Depends on**: Phase 34
-**Requirements**: POL-01, POL-03, UAT-01
+### Phase 36: Dual-Voice Data Layer
+**Goal**: Establish voice classification metadata and configuration foundation for V2 dual-voice system
+**Depends on**: Phase 35 (v6.0 complete)
+**Requirements**: VOZ-01, VOZ-02, VER-02
+**Success Criteria** (what must be TRUE):
+  1. Every SCRIPT key has voice classification metadata (VOZ_PERGUNTA or VOZ_NARRATIVA)
+  2. New env var ELEVENLABS_VOICE_ID_V2 exists and configures somber voice for V2
+  3. Version context (V1 vs V2) can be passed through the component tree and persists during session
+  4. Voice classification metadata is queryable by audio services to determine which voice ID to use
 **Plans**: TBD
-**UI hint**: no
+
+### Phase 37: Dual-Voice Service Layer
+**Goal**: Audio services route to correct voice based on version and segment type
+**Depends on**: Phase 36
+**Requirements**: VOZ-03, VOZ-04, VOZ-05
+**Success Criteria** (what must be TRUE):
+  1. API route /api/tts accepts voice ID parameter and routes to correct ElevenLabs voice
+  2. FallbackTTS in V2 loads narrative MP3s from public/audio/prerecorded/v2/ directory
+  3. FallbackTTS in V2 loads question MP3s from public/audio/prerecorded/ (original location)
+  4. In V2, narrative segments use Voice 2 (somber) and question segments use Voice 1 (current Oracle voice)
+  5. In V1, all segments continue using Voice 1 exactly as today (zero regression)
+**Plans**: TBD
+
+### Phase 38: Version Selector & UI Integration
+**Goal**: Users can choose V1 or V2 at start and experience version-specific audio routing
+**Depends on**: Phase 37
+**Requirements**: VER-01, VER-03
+**Success Criteria** (what must be TRUE):
+  1. Home page displays version selector (V1/V2) before Start button
+  2. Visitor or operator can choose version and selection persists through entire session
+  3. OracleExperience component receives version context and routes audio requests accordingly
+  4. V1 experience plays exactly as it does today with zero changes to audio, timing, or behavior
+  5. V2 experience plays with dual voices (questions in Voice 1, narrative in Voice 2)
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 39: Audio Generation & Polish
+**Goal**: All V2 narrative MP3s generated with somber voice plus "faça" fix applied to both versions
+**Depends on**: Phase 36 (voice classification metadata exists)
+**Requirements**: AUD-01, AUD-02, AUD-03
+**Success Criteria** (what must be TRUE):
+  1. Script generation tool (generate-audio-v3.ts) supports dual-voice mode with voice ID per segment type
+  2. All narrative segments have MP3s generated with somber voice in public/audio/prerecorded/v2/
+  3. ENCERRAMENTO script key updated from "faz" to "faça" and MP3 regenerated for both V1 and V2
+  4. Total MP3 count increases to accommodate V2 narrative files (approximately 82 V1 files + ~50 V2 narrative files)
+  5. FallbackTTS coverage verified for both versions with correct directory paths
+**Plans**: TBD
 
 ---
 
@@ -235,7 +237,7 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Max-path experience duration is 5-7 minutes when audio is generated
   2. All respostas contain 1-2 segments maximum (down from 4-5)
-  3. All setups contain 1-2 segments maximum (down from 3-5)
+  3. All setups contain 1 segment maximum (down from 3-5)
   4. Phase intros reduced to 1 sentence each
   5. Bookends trimmed while preserving emotional impact and structural symmetry
 
@@ -324,6 +326,71 @@ Plans:
   5. Canvas animation performs smoothly at 60fps on target event hardware
 **UI hint**: yes
 
+### Phase 31: Q1B Branch (Inferno contra-fobico)
+**Goal**: Add "A Porta no Fundo" branch — triggered when q1=B && q2=B (contra-fobico/destemido profile), tests courage against emptiness. Adds 6 SCRIPT keys, QUESTION_META[9], shouldBranchQ1B guard, 6 machine states, OracleExperience helper extensions, 6 MP3s, timing validation update, and roteiro.html documentation.
+**Depends on**: v4.0 Phase 29 baseline
+**Requirements**: BR-01, POL-02
+**Plans:** 3/3 plans complete
+
+Plans:
+- [x] 31-01-PLAN.md — Data + Types: script.ts entries, QUESTION_META[9], QuestionId union extension (Wave 1)
+- [x] 31-02-PLAN.md — Machine + UI: shouldBranchQ1B guard, Q1B states, OracleExperience helpers (Wave 2, depends on 31-01)
+- [x] 31-03-PLAN.md — Audio + Validation + Docs: 6 MP3s, validate-timing.ts permutations, roteiro.html updates (Wave 3, depends on 31-01 and 31-02)
+
+**UI hint**: no
+
+### Phase 32: Q5B Branch (Paraiso gap closure)
+**Goal**: Add "O Que Já Não Cabe" branch — triggered when q4=A && q5=A (PORTADOR profile precursor), addresses the gap that no Paraíso branch exists despite Inferno (Q2B) and Purgatorio (Q4B) having one each. Adds 6 SCRIPT keys, QUESTION_META[10], shouldBranchQ5B guard, 6 machine states with sibling-state rejoin to Q6_SETUP, OracleExperience helper extensions, 6 MP3s, timing validation expansion to 12 paths, and roteiro.html documentation. Mirrors Phase 31 (Q1B) structure with two key differences: (1) sibling-state rejoin pattern (no #oracle. prefix because Q5B and Q6_SETUP both live inside PARAISO compound state), (2) Q5B is COEXISTENT with Q4B (both fire when q3=A, q4=A, q5=A — not mutually exclusive). PORTADOR archetype detection deliberately deferred to Phase 34 to honor POL-02 invariant (patternMatching.ts byte-identical).
+**Depends on**: Phase 31
+**Requirements**: BR-02
+**Plans:** 3/3 plans complete
+
+Plans:
+- [x] 32-01-PLAN.md — Data + Types: script.ts entries, QUESTION_META[10], POL-02 verification (Wave 1)
+- [x] 32-02-PLAN.md — Machine + UI: shouldBranchQ5B guard, 6 Q5B states with sibling rejoin, OracleExperience helpers + Q4B/Q5B coexistence tests (Wave 2, depends on 32-01)
+- [x] 32-03-PLAN.md — Audio + Validation + Docs: 6 MP3s, validate-timing.ts 12-path matrix, roteiro.html updates (Wave 3, depends on 32-01 and 32-02)
+
+**UI hint**: no
+
+### Phase 33: Q6B + ESPELHO_SILENCIOSO
+**Goal**: Add "O Espelho Extra" branch — triggered when q5=B && q6=A (visitor dissolveu a pergunta MAS pediu leitura) — plus the new DEVOLUCAO_ESPELHO_SILENCIOSO archetype that returns open structure instead of closed diagnosis. Adds 6 Q6B SCRIPT keys + 1 DEVOLUCAO_ESPELHO_SILENCIOSO SCRIPT key (6 segments in 1 MP3), QUESTION_META[11], shouldBranchQ6B guard + isEspelhoSilencioso guard (both in oracleMachine.ts setup.guards, NOT in patternMatching.ts — POL-02 invariant), 6 new Q6B machine states with QUALIFIED `#oracle.DEVOLUCAO` rejoin (different from Phase 32's sibling pattern because DEVOLUCAO lives at machine root), DEVOLUCAO.always[0] insertion (HIGHEST priority — ahead of all 8 existing archetypes), new top-level DEVOLUCAO_ESPELHO_SILENCIOSO state, OracleExperience Q6B_CHOICE + 6 helper extensions (including isPergunta mic warmup fix), 7 MP3s generated via generate-audio-v3.ts auto-discovery, validate-timing.ts expansion from 12 → 20 paths with hasQ6B/hasEspelhoSilencioso flags and pickLongestDevolucao update, and public/roteiro.html updates (Mermaid Q6B branch + ESPELHO archetype + ramificações count 3).
+**Depends on**: Phase 32
+**Requirements**: BR-03, AR-01
+**Plans:** 3/3 plans complete
+
+Plans:
+- [x] 33-01-PLAN.md — Data + Types: 6 Q6B SCRIPT keys + DEVOLUCAO_ESPELHO_SILENCIOSO (6 segments), QUESTION_META[11], POL-02 verification (Wave 1)
+- [x] 33-02-PLAN.md — Machine + UI: shouldBranchQ6B + isEspelhoSilencioso guards, Q6_RESPOSTA_A guarded transition, 6 Q6B states with QUALIFIED #oracle.DEVOLUCAO rejoin, DEVOLUCAO.always[0] = ESPELHO_SILENCIOSO (highest priority), new top-level DEVOLUCAO_ESPELHO_SILENCIOSO state, Q6B_CHOICE + 6 OracleExperience helper extensions with mic warmup fix (Wave 2, depends on 33-01)
+- [x] 33-03-PLAN.md — Audio + Timing + Roteiro: 7 new MP3s via generate-audio-v3.ts auto-discovery, validate-timing.ts 20-path matrix with Q6B + ESPELHO coverage, pickLongestDevolucao update, public/roteiro.html Mermaid + indicator + devoluções list update (Wave 3, depends on 33-01 and 33-02)
+
+**UI hint**: no
+
+### Phase 34: Detectable Archetypes (CONTRA_FOBICO + PORTADOR)
+**Goal**: Add 2 new detectable archetypes leveraging new branch choice data. Guard priority: ESPELHO_SILENCIOSO → CONTRA_FOBICO → PORTADOR → 8 existing.
+**Depends on**: Phase 33
+**Requirements**: AR-02, AR-03
+**Plans:** 3/3 plans complete
+
+Plans:
+- [x] 34-01-PLAN.md — Data + Types: DevolucaoArchetype union extension (+ ESPELHO_SILENCIOSO backfill) + DEVOLUCAO_CONTRA_FOBICO and DEVOLUCAO_PORTADOR SCRIPT keys with drafted segment text (Wave 1)
+- [x] 34-02-PLAN.md — Guards + Machine + UI + Tests: isContraFobico/isPortador guards, oracleMachine setup.guards + DEVOLUCAO.always insertion + 2 new top-level states, OracleExperience getScriptKey extensions, TDD across 3 suites (Wave 2, depends on 34-01)
+- [x] 34-03-PLAN.md — Audio + Timing + Roteiro: generate 2 MP3s via ElevenLabs v3, extend validate-timing.ts (24 paths, trigger-aware pickLongestDevolucao), fix fallback-tts SCRIPT count (80→82), update roteiro.html with 2 new cards + 11-archetype priority list (Wave 3, depends on 34-02)
+
+**UI hint**: no
+
+### Phase 35: Timing Mitigation + Browser UAT
+**Goal**: Validate timing across 24 path permutations, mitigate overflow if needed, browser UAT in ≥3 representative paths, update roteiro.html and CLAUDE.md.
+**Depends on**: Phase 34
+**Requirements**: POL-01, POL-03, UAT-01
+**Plans:** 3/3 plans complete
+
+Plans:
+- [x] 35-01-PLAN.md — Timing validation across 24 paths + overflow mitigation if max-path > 7:30
+- [x] 35-02-PLAN.md — Browser UAT across ≥3 representative paths (short, long, branch-heavy)
+- [x] 35-03-PLAN.md — Update roteiro.html timing table + CLAUDE.md status documentation
+
+**UI hint**: no
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -341,21 +408,22 @@ Plans:
 | 32. Q5B Branch | v6.0 | 3/3 | Complete    | 2026-04-07 |
 | 33. Q6B + ESPELHO_SILENCIOSO | v6.0 | 3/3 | Complete    | 2026-04-07 |
 | 34. Detectable Archetypes | v6.0 | 3/3 | Complete    | 2026-04-08 |
-| 35. Timing + UAT | v6.0 | 0/TBD | Not started | - |
+| 35. Timing + UAT | v6.0 | 3/3 | Complete    | 2026-04-08 |
+| 36. Dual-Voice Data Layer | v6.1 | 0/TBD | Not started | - |
+| 37. Dual-Voice Service Layer | v6.1 | 0/TBD | Not started | - |
+| 38. Version Selector & UI Integration | v6.1 | 0/TBD | Not started | - |
+| 39. Audio Generation & Polish | v6.1 | 0/TBD | Not started | - |
 
 ## Dependencies
 
 ```
-v4.0 Game Flow (shipped):
-  Phase 29: Integration (DONE)
+v6.0 Deep Branching (shipped):
+  Phase 35: Timing + UAT (DONE)
                 |
-v5.0 Tester UI Polish (informally shipped):
-  Phase 30: Visual System (R3F shaders, ambient audio shipped via direct commits)
-                |
-v6.0 Deep Branching (active):
-  Phase 31: Q1B Branch -> Phase 32: Q5B Branch -> Phase 33: Q6B + ESPELHO_SILENCIOSO -> Phase 34: Detectable Archetypes -> Phase 35: Timing Mitigation + UAT
+v6.1 Duas Vozes (active):
+  Phase 36: Dual-Voice Data Layer -> Phase 37: Dual-Voice Service Layer -> Phase 38: Version Selector & UI -> Phase 39: Audio Generation & Polish
 ```
 
 ---
 
-*Last updated: 2026-04-07 -- Phase 34 planned (3 plans, Wave 1-3 structure mirroring Phases 31-33; adds 2 new detectable archetypes CONTRA_FOBICO + PORTADOR on top of ESPELHO_SILENCIOSO priority stack)*
+*Last updated: 2026-05-08 -- v6.1 Duas Vozes roadmap created (4 phases, 11 requirements mapped)*
