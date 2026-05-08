@@ -34,6 +34,12 @@ export type DevolucaoArchetype =
   | 'CONTRA_FOBICO'       // Phase 34, AR-02 — q1='B' && q2='B' && q1b='A', courage walking toward what threatens
   | 'PORTADOR';           // Phase 34, AR-03 — q4='A' && q5='A' && q5b='A', the question as treasure
 
+/** Voice type classification for dual-voice system (V2) */
+export type VoiceType = 'VOZ_PERGUNTA' | 'VOZ_NARRATIVA';
+
+/** Experience version — V1 (single voice) or V2 (dual voice) */
+export type ExperienceVersion = 'V1' | 'V2';
+
 // Legacy types kept for backward compatibility during transition
 /** @deprecated Use ChoiceAB instead */
 export type Choice1 = 'A' | 'B' | null;
