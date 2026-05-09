@@ -196,7 +196,7 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 39-01-PLAN.md — Env var fix + generation script --v2 dual-voice extension + script.ts "faca" commit
+- [x] 39-01-PLAN.md — Env var fix + generation script --v2 dual-voice extension + script.ts "faca" commit
 - [ ] 39-02-PLAN.md — Generate 47 V2 narrative MP3s + regenerate ENCERRAMENTO V1 + coverage verification
 
 ---
@@ -427,7 +427,7 @@ Plans:
 | 36. Dual-Voice Data Layer | v6.1 | 2/2 | Complete    | 2026-05-09 |
 | 37. Dual-Voice Service Layer | v6.1 | 2/2 | Complete    | 2026-05-09 |
 | 38. Version Selector & UI Integration | v6.1 | 2/2 | Complete    | 2026-05-09 |
-| 39. Audio Generation & Polish | v6.1 | 0/2 | Not started | - |
+| 39. Audio Generation & Polish | v6.1 | 1/2 | In progress | - |
 
 ## Dependencies
 

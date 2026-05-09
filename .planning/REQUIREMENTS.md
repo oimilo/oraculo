@@ -23,7 +23,7 @@ Requirements for **Duas Vozes** milestone. Criar versão V2 da experiência com 
 
 ### Audio
 
-- [ ] **AUD-01**: Script de geração (`generate-audio-v3.ts`) suporta dual-voice (gerar com voice ID diferente por tipo de segmento)
+- [x] **AUD-01**: Script de geração (`generate-audio-v3.ts`) suporta dual-voice (gerar com voice ID diferente por tipo de segmento) -- *Phase 39, Plan 01*
 - [ ] **AUD-02**: MP3s V2 (segmentos narrativos com voz soturna) gerados em `public/audio/prerecorded/v2/`
 - [ ] **AUD-03**: Fix "faça" no ENCERRAMENTO regenerado como MP3 (V1 e V2)
 
@@ -76,7 +76,7 @@ All 10 requirements satisfied (BR-01 through UAT-01). 5 conditional branches (Q1
 | VOZ-03 | Phase 37 | Complete (Plan 01) |
 | VOZ-04 | Phase 37 | Complete (Plan 02) |
 | VOZ-05 | Phase 37 | Complete (Plan 02) |
-| AUD-01 | Phase 39 | Pending |
+| AUD-01 | Phase 39 | Complete (Plan 01) |
 | AUD-02 | Phase 39 | Pending |
 | AUD-03 | Phase 39 | Pending |
 

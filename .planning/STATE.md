@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v6.1
 milestone_name: Duas Vozes
 status: in-progress
-last_updated: "2026-05-09T15:35:00.000Z"
+last_updated: "2026-05-09T16:30:00.000Z"
 last_activity: 2026-05-09
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 6
-  completed_plans: 6
-  percent: 75
+  total_plans: 8
+  completed_plans: 7
+  percent: 87
 ---
 
 # State: O Oraculo
@@ -25,10 +25,10 @@ progress:
 
 ## Current Position
 
-Phase: 39 of 39 (Audio Generation & Polish) -- READY TO EXECUTE
-Plan: 0 of 2 in current phase
-Status: Phase 39 planned (2 plans in 2 waves), ready to execute
-Last activity: 2026-05-09 — Phase 39 planned (env var fix + script extension + MP3 generation)
+Phase: 39 of 39 (Audio Generation & Polish) -- IN PROGRESS
+Plan: 1 of 2 in current phase (39-01 complete)
+Status: Plan 39-01 complete (script extension + env var fix + faca commit), 39-02 pending (MP3 generation)
+Last activity: 2026-05-09 — Plan 39-01 executed (generate-audio-v3.ts --v2 mode + script.ts faca fix)
 
 Progress: [██████████████████████████████████████░] 97% (38/39 phases complete)
 
@@ -44,7 +44,7 @@ Progress: [███████████████████████
 **Milestone v6.1 Duas Vozes (Active):**
 
 - Phases: 4 (Phases 36-39)
-- Plans: 6/TBD completed
+- Plans: 7/8 completed
 - Requirements: 11 (VER-01 to AUD-03)
 - Goal: Sistema de duas vozes (Voz 1 perguntas, Voz 2 narrativa) com seletor V1/V2 na home
 - Coverage: 11/11 requirements mapped (100%)
@@ -62,6 +62,9 @@ Progress: [███████████████████████
 
 Recent decisions affecting current work:
 
+- [v6.1]: generateAudio accepts voiceId parameter instead of module-level constant -- enables dual-voice generation (Plan 39-01)
+- [v6.1]: getVoiceType imported in generation script from voiceClassification.ts -- reuse, not duplicate (Plan 39-01)
+- [v6.1]: V2 output directory is public/audio/prerecorded/v2/ subdirectory (Plan 39-01)
 - [v6.1]: FallbackTTS uses version + voiceType (not voiceId) for directory routing -- avoids client-side env var exposure (Plan 37-02)
 - [v6.1]: Versioned cache keys prevent cross-version AudioBuffer contamination in FallbackTTS (Plan 37-02)
 - [v6.1]: Voice ID resolved server-side in API route (not client-side) — keeps ELEVENLABS_VOICE_ID_V2 server-only, consistent with existing env var convention (Plan 37-01)
@@ -97,5 +100,5 @@ Items carried forward from previous milestones:
 ## Session Continuity
 
 Last session: 2026-05-09
-Stopped at: Phase 38 complete — VersionSelector + V1 regression verified (5/5 must-haves, 2 human UAT items pending)
-Resume: Phase 39 — Audio Generation & Polish (final phase)
+Stopped at: Plan 39-01 complete — generate-audio-v3.ts extended with --v2 dual-voice mode, script.ts faca fix committed
+Resume: Plan 39-02 — Generate 47 V2 narrative MP3s + regenerate ENCERRAMENTO V1
