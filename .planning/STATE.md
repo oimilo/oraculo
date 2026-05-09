@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v6.1
 milestone_name: Duas Vozes
 status: in-progress
-last_updated: "2026-05-09T11:32:41.000Z"
+last_updated: "2026-05-09T15:35:00.000Z"
 last_activity: 2026-05-09
 progress:
   total_phases: 4
-  completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
-  percent: 50
+  completed_phases: 3
+  total_plans: 6
+  completed_plans: 6
+  percent: 75
 ---
 
 # State: O Oraculo
@@ -21,16 +21,16 @@ progress:
 
 **Current Milestone:** v6.1 Duas Vozes
 
-**Current Focus:** Phase 38 — Version Selector & UI Integration
+**Current Focus:** Phase 39 — Audio Generation & Polish
 
 ## Current Position
 
-Phase: 38 of 39 (Version Selector & UI Integration) -- PLANNED
-Plan: 0 of 2 in current phase
-Status: Ready to execute (2 plans in 2 waves)
-Last activity: 2026-05-09 — Phase 38 planned (VersionSelector + V1 regression tests)
+Phase: 39 of 39 (Audio Generation & Polish) -- NOT STARTED
+Plan: 0 of TBD in current phase
+Status: Phase 38 complete, advancing to Phase 39
+Last activity: 2026-05-09 — Phase 38 complete (VersionSelector + V1 regression tests verified 5/5)
 
-Progress: [██████████████████████████████████████░] 95% (37/39 phases complete)
+Progress: [██████████████████████████████████████░] 97% (38/39 phases complete)
 
 ## Performance Metrics
 
@@ -44,7 +44,7 @@ Progress: [███████████████████████
 **Milestone v6.1 Duas Vozes (Active):**
 
 - Phases: 4 (Phases 36-39)
-- Plans: 4/TBD completed
+- Plans: 6/TBD completed
 - Requirements: 11 (VER-01 to AUD-03)
 - Goal: Sistema de duas vozes (Voz 1 perguntas, Voz 2 narrativa) com seletor V1/V2 na home
 - Coverage: 11/11 requirements mapped (100%)
@@ -97,5 +97,5 @@ Items carried forward from previous milestones:
 ## Session Continuity
 
 Last session: 2026-05-09
-Stopped at: Phase 37 complete — all dual-voice service layer verified (5/5 must-haves)
-Resume: Phase 38 — Version Selector & UI Integration (next phase)
+Stopped at: Phase 38 complete — VersionSelector + V1 regression verified (5/5 must-haves, 2 human UAT items pending)
+Resume: Phase 39 — Audio Generation & Polish (final phase)

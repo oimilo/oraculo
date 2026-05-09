@@ -131,7 +131,7 @@ See: `.planning/milestones/v6.0-ROADMAP.md` for full phase details, success crit
 
 - [x] **Phase 36: Dual-Voice Data Layer** - Script key voice classification + env configuration + version context types (completed 2026-05-09)
 - [x] **Phase 37: Dual-Voice Service Layer** - TTS/FallbackTTS dual-voice support + API route voice ID routing (completed 2026-05-09)
-- [ ] **Phase 38: Version Selector & UI Integration** - Home page V1/V2 selector + OracleExperience version-aware audio routing
+- [x] **Phase 38: Version Selector & UI Integration** - Home page V1/V2 selector + OracleExperience version-aware audio routing (completed 2026-05-09)
 - [ ] **Phase 39: Audio Generation & Polish** - Generate V2 narrative MP3s + fix "faça" in ENCERRAMENTO (both versions)
 
 ## Phase Details
@@ -180,8 +180,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 38-01-PLAN.md — VersionSelector component + OracleExperience wiring (PermissionScreen -> VersionSelector -> StartButton flow)
-- [ ] 38-02-PLAN.md — V1 regression tests + V2 selection flow verification + full suite regression check
+- [x] 38-01-PLAN.md — VersionSelector component + OracleExperience wiring (PermissionScreen -> VersionSelector -> StartButton flow)
+- [x] 38-02-PLAN.md — V1 regression tests + V2 selection flow verification + full suite regression check
 
 ### Phase 39: Audio Generation & Polish
 **Goal**: All V2 narrative MP3s generated with somber voice plus "faça" fix applied to both versions
@@ -422,7 +422,7 @@ Plans:
 | 35. Timing + UAT | v6.0 | 3/3 | Complete    | 2026-04-08 |
 | 36. Dual-Voice Data Layer | v6.1 | 2/2 | Complete    | 2026-05-09 |
 | 37. Dual-Voice Service Layer | v6.1 | 2/2 | Complete    | 2026-05-09 |
-| 38. Version Selector & UI Integration | v6.1 | 0/2 | Planned | - |
+| 38. Version Selector & UI Integration | v6.1 | 2/2 | Complete    | 2026-05-09 |
 | 39. Audio Generation & Polish | v6.1 | 0/TBD | Not started | - |
 
 ## Dependencies
