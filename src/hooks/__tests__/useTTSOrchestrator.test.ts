@@ -72,6 +72,8 @@ describe('useTTSOrchestrator', () => {
     expect(mockSpeak).toHaveBeenCalledWith(
       testSegments,
       expect.objectContaining({ phase: 'INFERNO' }),
+      undefined,
+      undefined,
       undefined
     );
   });

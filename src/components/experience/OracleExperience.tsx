@@ -9,6 +9,8 @@ import { QUESTION_META } from '@/types';
 import { initAudioContext } from '@/lib/audio/audioContext';
 import { useVoiceChoice, type ChoiceConfig } from '@/hooks/useVoiceChoice';
 import { useTTSOrchestrator } from '@/hooks/useTTSOrchestrator';
+import { useVersion } from '@/contexts/VersionContext';
+import { getVoiceType } from '@/lib/voice/voiceClassification';
 import { useAmbientAudio } from '@/hooks/useAmbientAudio';
 import { useSessionAnalytics } from '@/hooks/useSessionAnalytics';
 import { initEffectsChain, setEffectsPhase, startEchoBursts, stopEchoBursts, startRobotBursts, stopRobotBursts } from '@/services/audio/effectsChain';
@@ -275,6 +277,9 @@ export default function OracleExperience() {
   // TTS orchestrator hook
   const tts = useTTSOrchestrator();
 
+  // Experience version (V1 single voice, V2 dual voice)
+  const { version } = useVersion();
+
   // Session analytics hook
   const analytics = useSessionAnalytics();
 
@@ -478,8 +483,9 @@ export default function OracleExperience() {
     speakTimeoutRef.current = setTimeout(() => {
       if (cancelled) return;
 
+      const voiceType = getVoiceType(scriptKey);
       logger.log('speak START', { phase: state.context.currentPhase, introDelay });
-      tts.speak(SCRIPT[scriptKey], state.context.currentPhase, scriptKey)
+      tts.speak(SCRIPT[scriptKey], state.context.currentPhase, scriptKey, version, voiceType)
         .then(() => {
           if (!cancelled) {
             logger.log('speak END — success', { stateKey });
@@ -505,7 +511,7 @@ export default function OracleExperience() {
       tts.cancel();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.value]);
+  }, [state.value, version]);
 
   /**
    * Effect B: Send NARRATIVA_DONE only after TTS completes (FLOW-01, FLOW-02, FLOW-05)
@@ -574,7 +580,8 @@ export default function OracleExperience() {
 
     let cancelled = false;
 
-    tts.speak(fallback.segments, state.context.currentPhase, fallback.key)
+    const fallbackVoiceType = getVoiceType(fallback.key);
+    tts.speak(fallback.segments, state.context.currentPhase, fallback.key, version, fallbackVoiceType)
       .then(() => {
         if (cancelled) return;
         // Brief delay before restarting mic to avoid capturing TTS audio tail

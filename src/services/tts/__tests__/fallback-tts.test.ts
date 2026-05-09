@@ -143,6 +143,110 @@ describe('FallbackTTSService', () => {
       expect(expectedUrl).toMatch(/^\/audio\/prerecorded\/[a-z0-9_]+\.mp3$/);
     }
   });
+
+  describe('V2 dual-directory routing (Phase 37)', () => {
+    it('should fetch from /audio/prerecorded/v2/ for V2 narrative segments', async () => {
+      const segments: SpeechSegment[] = [{ text: 'Test V2 narrative' }];
+
+      const speakPromise = service.speak(segments, mockVoiceSettings, 'INFERNO_INTRO', 'V2', 'VOZ_NARRATIVA');
+
+      // Simulate playback completion
+      setTimeout(() => {
+        const mockSource = (service as any).currentSource;
+        if (mockSource?.onended) {
+          mockSource.onended();
+        }
+      }, 10);
+
+      await speakPromise;
+
+      expect(global.fetch).toHaveBeenCalledWith('/audio/prerecorded/v2/inferno_intro.mp3');
+    });
+
+    it('should fetch from /audio/prerecorded/ for V2 question segments', async () => {
+      const segments: SpeechSegment[] = [{ text: 'Test V2 question' }];
+
+      const speakPromise = service.speak(segments, mockVoiceSettings, 'INFERNO_Q1_PERGUNTA', 'V2', 'VOZ_PERGUNTA');
+
+      // Simulate playback completion
+      setTimeout(() => {
+        const mockSource = (service as any).currentSource;
+        if (mockSource?.onended) {
+          mockSource.onended();
+        }
+      }, 10);
+
+      await speakPromise;
+
+      expect(global.fetch).toHaveBeenCalledWith('/audio/prerecorded/inferno_q1_pergunta.mp3');
+    });
+
+    it('should fetch from /audio/prerecorded/ for V1 regardless of voice type', async () => {
+      const segments: SpeechSegment[] = [{ text: 'Test V1 narrative' }];
+
+      const speakPromise = service.speak(segments, mockVoiceSettings, 'INFERNO_INTRO', 'V1', 'VOZ_NARRATIVA');
+
+      // Simulate playback completion
+      setTimeout(() => {
+        const mockSource = (service as any).currentSource;
+        if (mockSource?.onended) {
+          mockSource.onended();
+        }
+      }, 10);
+
+      await speakPromise;
+
+      expect(global.fetch).toHaveBeenCalledWith('/audio/prerecorded/inferno_intro.mp3');
+    });
+
+    it('should fetch from /audio/prerecorded/ when no version provided (V1 default)', async () => {
+      const segments: SpeechSegment[] = [{ text: 'Test no version' }];
+
+      const speakPromise = service.speak(segments, mockVoiceSettings, 'INFERNO_INTRO');
+
+      // Simulate playback completion
+      setTimeout(() => {
+        const mockSource = (service as any).currentSource;
+        if (mockSource?.onended) {
+          mockSource.onended();
+        }
+      }, 10);
+
+      await speakPromise;
+
+      expect(global.fetch).toHaveBeenCalledWith('/audio/prerecorded/inferno_intro.mp3');
+    });
+
+    it('should use versioned cache keys to prevent cross-version contamination', async () => {
+      const segments: SpeechSegment[] = [{ text: 'Test cache key' }];
+
+      // First call: V1
+      const speakPromise1 = service.speak(segments, mockVoiceSettings, 'INFERNO_INTRO', 'V1');
+      setTimeout(() => {
+        const mockSource = (service as any).currentSource;
+        if (mockSource?.onended) {
+          mockSource.onended();
+        }
+      }, 10);
+      await speakPromise1;
+
+      // Second call: V2 narrative
+      const speakPromise2 = service.speak(segments, mockVoiceSettings, 'INFERNO_INTRO', 'V2', 'VOZ_NARRATIVA');
+      setTimeout(() => {
+        const mockSource = (service as any).currentSource;
+        if (mockSource?.onended) {
+          mockSource.onended();
+        }
+      }, 10);
+      await speakPromise2;
+
+      // Both should have fetched separately (different cache keys)
+      const fetchCalls = (global.fetch as any).mock.calls;
+      const fetchUrls = fetchCalls.map((c: any) => c[0]);
+      expect(fetchUrls).toContain('/audio/prerecorded/inferno_intro.mp3');
+      expect(fetchUrls).toContain('/audio/prerecorded/v2/inferno_intro.mp3');
+    });
+  });
 });
 
 describe('isOnline', () => {

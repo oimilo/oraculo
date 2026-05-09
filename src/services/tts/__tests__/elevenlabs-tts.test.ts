@@ -286,4 +286,70 @@ describe('ElevenLabsTTSService', () => {
 
     await expect(speakPromise).rejects.toThrow('Speech cancelled');
   });
+
+  describe('voice routing (Phase 37)', () => {
+    it('should include version and script_key in fetch body when provided', async () => {
+      const segments: SpeechSegment[] = [{ text: 'Test voice routing' }];
+      const voiceSettings = PHASE_VOICE_SETTINGS.INFERNO;
+
+      const speakPromise = service.speak(segments, voiceSettings, 'INFERNO_INTRO', 'V2', 'VOZ_NARRATIVA');
+
+      // Simulate playback completion
+      setTimeout(() => {
+        const mockSource = mockAudioContext.createBufferSource.mock.results[0]?.value;
+        if (mockSource?.onended) {
+          mockSource.onended();
+        }
+      }, 10);
+
+      await speakPromise;
+
+      const callArgs = mockFetch.mock.calls[0];
+      const body = JSON.parse(callArgs[1].body);
+      expect(body.version).toBe('V2');
+      expect(body.script_key).toBe('INFERNO_INTRO');
+    });
+
+    it('should NOT include version or script_key when not provided (V1 default)', async () => {
+      const segments: SpeechSegment[] = [{ text: 'Test default' }];
+      const voiceSettings = PHASE_VOICE_SETTINGS.APRESENTACAO;
+
+      const speakPromise = service.speak(segments, voiceSettings, undefined);
+
+      // Simulate playback completion
+      setTimeout(() => {
+        const mockSource = mockAudioContext.createBufferSource.mock.results[0]?.value;
+        if (mockSource?.onended) {
+          mockSource.onended();
+        }
+      }, 10);
+
+      await speakPromise;
+
+      const callArgs = mockFetch.mock.calls[0];
+      const body = JSON.parse(callArgs[1].body);
+      expect(body).not.toHaveProperty('version');
+      expect(body).not.toHaveProperty('script_key');
+    });
+
+    it('should forward version and voiceType to fallback service on API failure', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 502,
+      });
+
+      const segments: SpeechSegment[] = [{ text: 'Test fallback routing' }];
+      const voiceSettings = PHASE_VOICE_SETTINGS.INFERNO;
+
+      await service.speak(segments, voiceSettings, 'INFERNO_INTRO', 'V2', 'VOZ_NARRATIVA');
+
+      expect(mockFallbackSpeak).toHaveBeenCalledWith(
+        segments,
+        voiceSettings,
+        'INFERNO_INTRO',
+        'V2',
+        'VOZ_NARRATIVA',
+      );
+    });
+  });
 });

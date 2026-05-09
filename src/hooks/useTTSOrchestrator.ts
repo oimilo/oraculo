@@ -1,11 +1,17 @@
 import { useState, useRef, useCallback } from 'react';
 import { createTTSService, PHASE_VOICE_SETTINGS, type TTSService } from '@/services/tts';
-import type { SpeechSegment, NarrativePhase } from '@/types';
+import type { SpeechSegment, NarrativePhase, ExperienceVersion, VoiceType } from '@/types';
 import { createLogger } from '@/lib/debug/logger';
 
 export interface UseTTSOrchestratorReturn {
   isSpeaking: boolean;
-  speak: (segments: SpeechSegment[], phase: NarrativePhase, scriptKey?: string) => Promise<void>;
+  speak: (
+    segments: SpeechSegment[],
+    phase: NarrativePhase,
+    scriptKey?: string,
+    version?: ExperienceVersion,
+    voiceType?: VoiceType,
+  ) => Promise<void>;
   cancel: () => void;
   initTTS: () => void;
 }
@@ -37,7 +43,13 @@ export function useTTSOrchestrator(): UseTTSOrchestratorReturn {
     setIsSpeaking(false);
   }, []);
 
-  const speak = useCallback(async (segments: SpeechSegment[], phase: NarrativePhase, scriptKey?: string): Promise<void> => {
+  const speak = useCallback(async (
+    segments: SpeechSegment[],
+    phase: NarrativePhase,
+    scriptKey?: string,
+    version?: ExperienceVersion,
+    voiceType?: VoiceType,
+  ): Promise<void> => {
     if (!ttsRef.current) {
       throw new Error('TTS service not initialized. Call initTTS() first.');
     }
@@ -53,7 +65,7 @@ export function useTTSOrchestrator(): UseTTSOrchestratorReturn {
     logger.log('speak START', { segmentCount: segments.length, phase, scriptKey });
     try {
       logger.log('speak — calling service');
-      await ttsRef.current.speak(segments, PHASE_VOICE_SETTINGS[phase], scriptKey);
+      await ttsRef.current.speak(segments, PHASE_VOICE_SETTINGS[phase], scriptKey, version, voiceType);
       logger.log('speak END — success');
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
