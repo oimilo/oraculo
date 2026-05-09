@@ -1,25 +1,25 @@
 import type { VoiceType, ExperienceVersion } from '@/types';
 
 /**
- * Derives voice type from script key name (per D-01).
- * Classification rule (per D-02, D-03, D-04):
- *   VOZ_PERGUNTA: APRESENTACAO, ENCERRAMENTO, *_PERGUNTA, FALLBACK_*, TIMEOUT_*
- *   VOZ_NARRATIVA: everything else (*_INTRO, *_SETUP, *_RESPOSTA_*, DEVOLUCAO_*)
+ * Derives voice type from script key name.
+ * Classification rule:
+ *   VOZ_PERGUNTA: APRESENTACAO, ENCERRAMENTO, *_PERGUNTA, FALLBACK_*, TIMEOUT_*, *_INTRO, *_SETUP
+ *   VOZ_NARRATIVA: *_RESPOSTA_*, DEVOLUCAO_* (oracle's formulation/verdict after visitor's choice)
  */
 export function getVoiceType(key: string): VoiceType {
-  // Explicit bookend names (per D-04)
+  // Explicit bookend names
   if (key === 'APRESENTACAO' || key === 'ENCERRAMENTO') {
     return 'VOZ_PERGUNTA';
   }
-  // Prefix matches (per D-03)
+  // Prefix matches
   if (key.startsWith('FALLBACK_') || key.startsWith('TIMEOUT_')) {
     return 'VOZ_PERGUNTA';
   }
-  // Suffix match (per D-02)
-  if (key.endsWith('_PERGUNTA')) {
+  // Suffix matches — questions, intros, setups are guide narration (Voz 1)
+  if (key.endsWith('_PERGUNTA') || key.endsWith('_INTRO') || key.endsWith('_SETUP')) {
     return 'VOZ_PERGUNTA';
   }
-  // Default: narrative (per D-02)
+  // Respostas and devoluções are oracle's formulation (Voz 2 somber)
   return 'VOZ_NARRATIVA';
 }
 

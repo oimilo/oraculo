@@ -4,12 +4,11 @@ import type { VoiceType } from '@/types';
 import { SCRIPT } from '@/data/script';
 
 /**
- * Voice Classification Tests — Phase 36, Plan 01
- * TDD: RED phase — tests written before implementation.
+ * Voice Classification Tests
  *
- * Classification rules (per D-01 through D-04):
- *   VOZ_PERGUNTA: APRESENTACAO, ENCERRAMENTO, *_PERGUNTA, FALLBACK_*, TIMEOUT_*
- *   VOZ_NARRATIVA: *_INTRO, *_SETUP, *_RESPOSTA_*, DEVOLUCAO_*
+ * Classification rules:
+ *   VOZ_PERGUNTA: APRESENTACAO, ENCERRAMENTO, *_PERGUNTA, FALLBACK_*, TIMEOUT_*, *_INTRO, *_SETUP
+ *   VOZ_NARRATIVA: *_RESPOSTA_*, DEVOLUCAO_* (oracle's formulation/verdict)
  */
 
 describe('getVoiceType — VOZ_PERGUNTA classification', () => {
@@ -48,34 +47,35 @@ describe('getVoiceType — VOZ_PERGUNTA classification', () => {
   it('Test 8: TIMEOUT_Q5B returns VOZ_PERGUNTA (branch timeout)', () => {
     expect(getVoiceType('TIMEOUT_Q5B')).toBe('VOZ_PERGUNTA');
   });
+
+  // Intros and setups are guide narration (Voz 1)
+  it('Test 8b: INFERNO_INTRO returns VOZ_PERGUNTA (guide narration)', () => {
+    expect(getVoiceType('INFERNO_INTRO')).toBe('VOZ_PERGUNTA');
+  });
+
+  it('Test 8c: INFERNO_Q1_SETUP returns VOZ_PERGUNTA (guide narration)', () => {
+    expect(getVoiceType('INFERNO_Q1_SETUP')).toBe('VOZ_PERGUNTA');
+  });
+
+  it('Test 8d: PURGATORIO_Q4B_SETUP returns VOZ_PERGUNTA (branch setup)', () => {
+    expect(getVoiceType('PURGATORIO_Q4B_SETUP')).toBe('VOZ_PERGUNTA');
+  });
 });
 
 describe('getVoiceType — VOZ_NARRATIVA classification', () => {
-  it('Test 9: INFERNO_INTRO returns VOZ_NARRATIVA (narrative)', () => {
-    expect(getVoiceType('INFERNO_INTRO')).toBe('VOZ_NARRATIVA');
-  });
-
-  it('Test 10: INFERNO_Q1_SETUP returns VOZ_NARRATIVA (narrative)', () => {
-    expect(getVoiceType('INFERNO_Q1_SETUP')).toBe('VOZ_NARRATIVA');
-  });
-
-  it('Test 11: INFERNO_Q1_RESPOSTA_A returns VOZ_NARRATIVA (narrative)', () => {
+  it('Test 9: INFERNO_Q1_RESPOSTA_A returns VOZ_NARRATIVA (oracle formulation)', () => {
     expect(getVoiceType('INFERNO_Q1_RESPOSTA_A')).toBe('VOZ_NARRATIVA');
   });
 
-  it('Test 12: DEVOLUCAO_SEEKER returns VOZ_NARRATIVA (narrative)', () => {
+  it('Test 10: DEVOLUCAO_SEEKER returns VOZ_NARRATIVA (oracle verdict)', () => {
     expect(getVoiceType('DEVOLUCAO_SEEKER')).toBe('VOZ_NARRATIVA');
   });
 
-  it('Test 13: DEVOLUCAO_ESPELHO_SILENCIOSO returns VOZ_NARRATIVA (narrative)', () => {
+  it('Test 11: DEVOLUCAO_ESPELHO_SILENCIOSO returns VOZ_NARRATIVA (oracle verdict)', () => {
     expect(getVoiceType('DEVOLUCAO_ESPELHO_SILENCIOSO')).toBe('VOZ_NARRATIVA');
   });
 
-  it('Test 14: PURGATORIO_Q4B_SETUP returns VOZ_NARRATIVA (branch setup)', () => {
-    expect(getVoiceType('PURGATORIO_Q4B_SETUP')).toBe('VOZ_NARRATIVA');
-  });
-
-  it('Test 15: PARAISO_Q6B_RESPOSTA_B returns VOZ_NARRATIVA (branch response)', () => {
+  it('Test 12: PARAISO_Q6B_RESPOSTA_B returns VOZ_NARRATIVA (branch response)', () => {
     expect(getVoiceType('PARAISO_Q6B_RESPOSTA_B')).toBe('VOZ_NARRATIVA');
   });
 });
@@ -89,12 +89,12 @@ describe('getVoiceType — exhaustive coverage', () => {
     });
   });
 
-  it('Test 17: VOZ_PERGUNTA count is 35, VOZ_NARRATIVA count is 47', () => {
+  it('Test 17: VOZ_PERGUNTA count is 49, VOZ_NARRATIVA count is 33', () => {
     const allKeys = Object.keys(SCRIPT);
     const pergunta = allKeys.filter(k => getVoiceType(k) === 'VOZ_PERGUNTA');
     const narrativa = allKeys.filter(k => getVoiceType(k) === 'VOZ_NARRATIVA');
-    expect(pergunta.length).toBe(35);
-    expect(narrativa.length).toBe(47);
+    expect(pergunta.length).toBe(49);
+    expect(narrativa.length).toBe(33);
   });
 });
 
