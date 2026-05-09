@@ -149,7 +149,7 @@ See: `.planning/milestones/v6.0-ROADMAP.md` for full phase details, success crit
 
 Plans:
 - [x] 36-01-PLAN.md — VoiceType + getVoiceType() + getVoiceId() with TDD + ELEVENLABS_VOICE_ID_V2 env var
-- [ ] 36-02-PLAN.md — VersionContext provider + hook + page.tsx wiring
+- [x] 36-02-PLAN.md — VersionContext provider + hook + page.tsx wiring
 
 ### Phase 37: Dual-Voice Service Layer
 **Goal**: Audio services route to correct voice based on version and segment type
@@ -413,7 +413,7 @@ Plans:
 | 33. Q6B + ESPELHO_SILENCIOSO | v6.0 | 3/3 | Complete    | 2026-04-07 |
 | 34. Detectable Archetypes | v6.0 | 3/3 | Complete    | 2026-04-08 |
 | 35. Timing + UAT | v6.0 | 3/3 | Complete    | 2026-04-08 |
-| 36. Dual-Voice Data Layer | v6.1 | 1/2 | In progress | - |
+| 36. Dual-Voice Data Layer | v6.1 | 2/2 | Complete    | 2026-05-09 |
 | 37. Dual-Voice Service Layer | v6.1 | 0/TBD | Not started | - |
 | 38. Version Selector & UI Integration | v6.1 | 0/TBD | Not started | - |
 | 39. Audio Generation & Polish | v6.1 | 0/TBD | Not started | - |
@@ -430,4 +430,4 @@ v6.1 Duas Vozes (active):
 
 ---
 
-*Last updated: 2026-05-08 -- Plan 36-01 complete (VoiceType + classification + env var)*
+*Last updated: 2026-05-09 -- Phase 36 complete (Plan 36-02: VersionContext + page.tsx wiring)*

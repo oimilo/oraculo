@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v6.1
 milestone_name: Duas Vozes
 status: in-progress
-last_updated: "2026-05-08T23:58:19.000Z"
-last_activity: 2026-05-08
+last_updated: "2026-05-09T00:04:01.000Z"
+last_activity: 2026-05-09
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
-  percent: 13
+  completed_plans: 2
+  percent: 25
 ---
 
 # State: O Oraculo
@@ -25,12 +25,12 @@ progress:
 
 ## Current Position
 
-Phase: 36 of 39 (Dual-Voice Data Layer)
-Plan: 1 of 2 in current phase
-Status: Executing Phase 36
-Last activity: 2026-05-08 — Plan 36-01 complete (VoiceType + getVoiceType + getVoiceId + env var)
+Phase: 36 of 39 (Dual-Voice Data Layer) -- COMPLETE
+Plan: 2 of 2 in current phase (all plans complete)
+Status: Phase 36 complete, ready for Phase 37
+Last activity: 2026-05-09 — Plan 36-02 complete (VersionContext + page.tsx wiring)
 
-Progress: [████████████████████████████████████░░░] 90% (35/39 phases complete)
+Progress: [█████████████████████████████████████░░] 92% (36/39 phases complete)
 
 ## Performance Metrics
 
@@ -44,7 +44,7 @@ Progress: [███████████████████████
 **Milestone v6.1 Duas Vozes (Active):**
 
 - Phases: 4 (Phases 36-39)
-- Plans: 1/TBD completed
+- Plans: 2/TBD completed
 - Requirements: 11 (VER-01 to AUD-03)
 - Goal: Sistema de duas vozes (Voz 1 perguntas, Voz 2 narrativa) com seletor V1/V2 na home
 - Coverage: 11/11 requirements mapped (100%)
@@ -62,6 +62,8 @@ Progress: [███████████████████████
 
 Recent decisions affecting current work:
 
+- [v6.1]: React Context for version (not prop drilling or machine context) — natural fit for component tree config (Plan 36-02)
+- [v6.1]: V1 as default with no initialVersion in page.tsx — zero regression guaranteed (Plan 36-02)
 - [v6.1]: Voice classification derived from key name pattern matching — no SCRIPT mutation or lookup tables (Plan 36-01)
 - [v6.1]: getVoiceType hierarchy: explicit names > prefix > suffix > default narrative (Plan 36-01)
 - [v6.1]: Duas vozes V2 (Voz 1 perguntas, Voz 2 narrativa) — Separação dramática: quem pergunta vs quem narra — sugestão Paulo Ribeiro, aprovada pelo cliente
@@ -91,6 +93,6 @@ Items carried forward from previous milestones:
 
 ## Session Continuity
 
-Last session: 2026-05-08
-Stopped at: Completed 36-01-PLAN.md
-Resume: `.planning/phases/36-dual-voice-data-layer/36-02-PLAN.md` — next plan in Phase 36
+Last session: 2026-05-09
+Stopped at: Completed 36-02-PLAN.md (Phase 36 complete)
+Resume: Phase 37 — Dual-Voice Service Layer (next phase)

@@ -10,7 +10,7 @@ Requirements for **Duas Vozes** milestone. Criar versão V2 da experiência com 
 ### Versioning
 
 - [ ] **VER-01**: Operador/visitante pode escolher entre V1 e V2 na home page antes de iniciar
-- [ ] **VER-02**: Escolha de versão persiste durante toda a sessão (não reseta entre estados)
+- [x] **VER-02**: Escolha de versão persiste durante toda a sessão (não reseta entre estados) — *Phase 36, Plan 02*
 - [ ] **VER-03**: V1 funciona exatamente como hoje (zero regressão)
 
 ### Dual-Voice
@@ -69,7 +69,7 @@ All 10 requirements satisfied (BR-01 through UAT-01). 5 conditional branches (Q1
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | VER-01 | Phase 38 | Pending |
-| VER-02 | Phase 36 | Pending |
+| VER-02 | Phase 36 | Complete (Plan 02) |
 | VER-03 | Phase 38 | Pending |
 | VOZ-01 | Phase 36 | Complete (Plan 01) |
 | VOZ-02 | Phase 36 | Complete (Plan 01) |
@@ -93,4 +93,4 @@ All 10 requirements satisfied (BR-01 through UAT-01). 5 conditional branches (Q1
 
 ---
 *Requirements defined: 2026-05-08*
-*Last updated: 2026-05-08 — VOZ-01 and VOZ-02 completed in Plan 36-01*
+*Last updated: 2026-05-09 — VER-02 completed in Plan 36-02*
