@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v6.1
 milestone_name: Duas Vozes
-status: planned
-last_updated: "2026-05-08T23:00:00.000Z"
+status: in-progress
+last_updated: "2026-05-08T23:58:19.000Z"
 last_activity: 2026-05-08
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 2
-  completed_plans: 0
-  percent: 0
+  completed_plans: 1
+  percent: 13
 ---
 
 # State: O Oraculo
@@ -26,9 +26,9 @@ progress:
 ## Current Position
 
 Phase: 36 of 39 (Dual-Voice Data Layer)
-Plan: 0 of 2 in current phase
-Status: Ready to execute
-Last activity: 2026-05-08 — v6.1 roadmap created with 4 phases, 11 requirements mapped
+Plan: 1 of 2 in current phase
+Status: Executing Phase 36
+Last activity: 2026-05-08 — Plan 36-01 complete (VoiceType + getVoiceType + getVoiceId + env var)
 
 Progress: [████████████████████████████████████░░░] 90% (35/39 phases complete)
 
@@ -44,7 +44,7 @@ Progress: [███████████████████████
 **Milestone v6.1 Duas Vozes (Active):**
 
 - Phases: 4 (Phases 36-39)
-- Plans: 0/TBD (roadmap complete, phase planning starts next)
+- Plans: 1/TBD completed
 - Requirements: 11 (VER-01 to AUD-03)
 - Goal: Sistema de duas vozes (Voz 1 perguntas, Voz 2 narrativa) com seletor V1/V2 na home
 - Coverage: 11/11 requirements mapped (100%)
@@ -62,6 +62,8 @@ Progress: [███████████████████████
 
 Recent decisions affecting current work:
 
+- [v6.1]: Voice classification derived from key name pattern matching — no SCRIPT mutation or lookup tables (Plan 36-01)
+- [v6.1]: getVoiceType hierarchy: explicit names > prefix > suffix > default narrative (Plan 36-01)
 - [v6.1]: Duas vozes V2 (Voz 1 perguntas, Voz 2 narrativa) — Separação dramática: quem pergunta vs quem narra — sugestão Paulo Ribeiro, aprovada pelo cliente
 - [v6.1]: Seletor V1/V2 na home (coexistência) — V1 preservada intacta como fallback de produção; V2 é evolução aprovada
 - [v6.0]: Deep branching com 5 conditional branches — Recompensa perfis extremos com camada extra ORACULAR; mantém max-path em ~7:20
@@ -90,5 +92,5 @@ Items carried forward from previous milestones:
 ## Session Continuity
 
 Last session: 2026-05-08
-Stopped at: Phase 36 context gathered
-Resume: `.planning/phases/36-dual-voice-data-layer/36-CONTEXT.md` — next step is `/gsd-plan-phase 36`
+Stopped at: Completed 36-01-PLAN.md
+Resume: `.planning/phases/36-dual-voice-data-layer/36-02-PLAN.md` — next plan in Phase 36
