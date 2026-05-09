@@ -132,7 +132,7 @@ See: `.planning/milestones/v6.0-ROADMAP.md` for full phase details, success crit
 - [x] **Phase 36: Dual-Voice Data Layer** - Script key voice classification + env configuration + version context types (completed 2026-05-09)
 - [x] **Phase 37: Dual-Voice Service Layer** - TTS/FallbackTTS dual-voice support + API route voice ID routing (completed 2026-05-09)
 - [x] **Phase 38: Version Selector & UI Integration** - Home page V1/V2 selector + OracleExperience version-aware audio routing (completed 2026-05-09)
-- [ ] **Phase 39: Audio Generation & Polish** - Generate V2 narrative MP3s + fix "faca" in ENCERRAMENTO (both versions)
+- [ ] **Phase 39: Audio Generation & Polish** - Generate V2 narrative MP3s + fix "faca" in ENCERRAMENTO (both versions) *(2 plans)*
 
 ## Phase Details
 
