@@ -4,9 +4,12 @@
  * Usage: npx tsx scripts/generate-audio-v3.ts
  *        npx tsx scripts/generate-audio-v3.ts --clean   (delete old v2 files first)
  *        npx tsx scripts/generate-audio-v3.ts --dry-run  (show what would be generated)
+ *        npx tsx scripts/generate-audio-v3.ts --v2       (generate only narrative keys with V2 voice)
+ *        npx tsx scripts/generate-audio-v3.ts --v2 --dry-run  (preview V2 generation)
  *
  * Reads ELEVENLABS_API_KEY and ELEVENLABS_VOICE_ID from .env.local
- * Outputs MP3 files to public/audio/prerecorded/
+ * In --v2 mode, also reads ELEVENLABS_VOICE_ID_V2 (somber narrative voice)
+ * Outputs MP3 files to public/audio/prerecorded/ (V1) or public/audio/prerecorded/v2/ (V2)
  *
  * Imports SCRIPT directly from src/data/script.ts — always in sync.
  */
@@ -15,11 +18,13 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, unlink
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { SCRIPT } from '@/data/script';
+import { getVoiceType } from '@/lib/voice/voiceClassification';
 import type { SpeechSegment } from '@/types';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
-const OUTPUT_DIR = resolve(ROOT, 'public/audio/prerecorded');
+const OUTPUT_DIR_V1 = resolve(ROOT, 'public/audio/prerecorded');
+const OUTPUT_DIR_V2 = resolve(ROOT, 'public/audio/prerecorded/v2');
 
 // --- Load .env.local ---
 function loadEnv() {
@@ -42,9 +47,16 @@ loadEnv();
 
 const API_KEY = process.env.ELEVENLABS_API_KEY!;
 const VOICE_ID = process.env.ELEVENLABS_VOICE_ID!;
+const isV2Mode = process.argv.slice(2).includes('--v2');
+const VOICE_ID_V2 = isV2Mode ? process.env.ELEVENLABS_VOICE_ID_V2 : undefined;
 
 if (!API_KEY || !VOICE_ID) {
   console.error('ERROR: ELEVENLABS_API_KEY and ELEVENLABS_VOICE_ID must be set in .env.local');
+  process.exit(1);
+}
+
+if (isV2Mode && !VOICE_ID_V2) {
+  console.error('ERROR: ELEVENLABS_VOICE_ID_V2 must be set in .env.local for --v2 mode');
   process.exit(1);
 }
 
@@ -103,8 +115,13 @@ function buildV3Text(segments: SpeechSegment[]): string {
 }
 
 // --- Call ElevenLabs API ---
-async function generateAudio(key: string, text: string, voiceSettings: { stability: number; similarity_boost: number; style: number }): Promise<Buffer> {
-  const url = `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}?output_format=mp3_44100_192`;
+async function generateAudio(
+  key: string,
+  text: string,
+  voiceSettings: { stability: number; similarity_boost: number; style: number },
+  voiceId: string,
+): Promise<Buffer> {
+  const url = `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=mp3_44100_192`;
 
   const body = {
     text,
@@ -135,16 +152,16 @@ async function generateAudio(key: string, text: string, voiceSettings: { stabili
 }
 
 // --- Clean old v2 files ---
-function cleanOldFiles() {
-  if (!existsSync(OUTPUT_DIR)) return;
+function cleanOldFiles(outputDir: string) {
+  if (!existsSync(outputDir)) return;
 
   const v3Keys = new Set(Object.keys(SCRIPT).map(k => `${k.toLowerCase()}.mp3`));
-  const existing = readdirSync(OUTPUT_DIR).filter(f => f.endsWith('.mp3'));
+  const existing = readdirSync(outputDir).filter(f => f.endsWith('.mp3'));
 
   let removed = 0;
   for (const file of existing) {
     if (!v3Keys.has(file)) {
-      unlinkSync(resolve(OUTPUT_DIR, file));
+      unlinkSync(resolve(outputDir, file));
       console.log(`  REMOVED old file: ${file}`);
       removed++;
     }
@@ -159,21 +176,35 @@ async function main() {
   const clean = args.includes('--clean');
   const force = args.includes('--force');
 
+  const OUTPUT_DIR = isV2Mode ? OUTPUT_DIR_V2 : OUTPUT_DIR_V1;
+
   if (!existsSync(OUTPUT_DIR)) {
     mkdirSync(OUTPUT_DIR, { recursive: true });
   }
 
   if (clean) {
-    console.log('\nCleaning old v2 files...');
-    cleanOldFiles();
+    console.log('\nCleaning old files...');
+    cleanOldFiles(OUTPUT_DIR);
   }
 
-  const keys = Object.keys(SCRIPT);
+  const allKeys = Object.keys(SCRIPT);
+  const keys = isV2Mode
+    ? allKeys.filter(key => getVoiceType(key) === 'VOZ_NARRATIVA')
+    : allKeys;
+
+  const activeVoiceId = isV2Mode ? VOICE_ID_V2! : VOICE_ID;
+
   console.log(`\n=== ElevenLabs v3 Audio Generation ===`);
-  console.log(`Voice ID: ${VOICE_ID}`);
+  console.log(`Voice ID: ${activeVoiceId}`);
   console.log(`Model: eleven_v3`);
   console.log(`Output: ${OUTPUT_DIR}`);
-  console.log(`Total keys: ${keys.length}\n`);
+  console.log(`Total keys: ${keys.length}`);
+  if (isV2Mode) {
+    console.log(`Mode: V2 (narrative segments only)`);
+    console.log(`V2 Voice ID: ${VOICE_ID_V2}`);
+    console.log(`Narrative keys: ${keys.length} of ${allKeys.length} total`);
+  }
+  console.log('');
 
   if (dryRun) {
     console.log('DRY RUN — showing what would be generated:\n');
@@ -219,7 +250,7 @@ async function main() {
 
     try {
       process.stdout.write(`  [${completed + 1}/${keys.length}] ${filename} (${phase})...`);
-      const audioBuffer = await generateAudio(key, text, voiceSettings);
+      const audioBuffer = await generateAudio(key, text, voiceSettings, activeVoiceId);
       writeFileSync(outputPath, audioBuffer);
       const sizeMB = (audioBuffer.length / (1024 * 1024)).toFixed(2);
       console.log(` OK (${sizeMB} MB)`);
