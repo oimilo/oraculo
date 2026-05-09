@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v6.1
 milestone_name: Duas Vozes
 status: in-progress
-last_updated: "2026-05-09T00:04:01.000Z"
+last_updated: "2026-05-09T11:22:06.000Z"
 last_activity: 2026-05-09
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 4
-  completed_plans: 2
-  percent: 25
+  completed_plans: 3
+  percent: 50
 ---
 
 # State: O Oraculo
@@ -25,10 +25,10 @@ progress:
 
 ## Current Position
 
-Phase: 37 of 39 (Dual-Voice Service Layer) -- PLANNED
-Plan: 0 of 2 in current phase (ready to execute)
-Status: Phase 37 planned, ready to execute (2 plans, 2 waves)
-Last activity: 2026-05-09 — Phase 37 planned (37-01: TTSService + API route, 37-02: ElevenLabs + FallbackTTS + OracleExperience)
+Phase: 37 of 39 (Dual-Voice Service Layer) -- EXECUTING
+Plan: 1 of 2 in current phase (wave 1 complete, wave 2 pending)
+Status: Phase 37 executing (plan 01 complete, plan 02 pending)
+Last activity: 2026-05-09 — Plan 37-01 complete (TTSService interface + API route voice routing)
 
 Progress: [█████████████████████████████████████░░] 92% (36/39 phases complete)
 
@@ -44,7 +44,7 @@ Progress: [███████████████████████
 **Milestone v6.1 Duas Vozes (Active):**
 
 - Phases: 4 (Phases 36-39)
-- Plans: 2/TBD completed
+- Plans: 3/TBD completed
 - Requirements: 11 (VER-01 to AUD-03)
 - Goal: Sistema de duas vozes (Voz 1 perguntas, Voz 2 narrativa) com seletor V1/V2 na home
 - Coverage: 11/11 requirements mapped (100%)
@@ -62,6 +62,7 @@ Progress: [███████████████████████
 
 Recent decisions affecting current work:
 
+- [v6.1]: Voice ID resolved server-side in API route (not client-side) — keeps ELEVENLABS_VOICE_ID_V2 server-only, consistent with existing env var convention (Plan 37-01)
 - [v6.1]: React Context for version (not prop drilling or machine context) — natural fit for component tree config (Plan 36-02)
 - [v6.1]: V1 as default with no initialVersion in page.tsx — zero regression guaranteed (Plan 36-02)
 - [v6.1]: Voice classification derived from key name pattern matching — no SCRIPT mutation or lookup tables (Plan 36-01)
@@ -94,5 +95,5 @@ Items carried forward from previous milestones:
 ## Session Continuity
 
 Last session: 2026-05-09
-Stopped at: Completed 36-02-PLAN.md (Phase 36 complete)
-Resume: Phase 37 — Dual-Voice Service Layer (next phase)
+Stopped at: Completed 37-01-PLAN.md (TTS interface + API route voice routing)
+Resume: Plan 37-02 — FallbackTTS + ElevenLabs client voice routing (wave 2)
