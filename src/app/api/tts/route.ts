@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireEnv } from '@/lib/api/validateEnv';
+import { getVoiceType, getVoiceId } from '@/lib/voice/voiceClassification';
+import type { ExperienceVersion } from '@/types';
 
 interface TTSRequestBody {
   text: string;
@@ -9,6 +11,8 @@ interface TTSRequestBody {
     style: number;
     speed?: number;
   };
+  version?: 'V1' | 'V2';
+  script_key?: string;
 }
 
 // Concurrency limiter — ElevenLabs allows max 3 parallel, we use 2 to leave headroom
@@ -95,7 +99,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const voiceId = process.env.ELEVENLABS_VOICE_ID || '21m00Tcm4TlvDq8ikWAM';
+    // Phase 37: Resolve voice ID server-side from version + script key classification
+    const requestVersion: ExperienceVersion = body.version === 'V2' ? 'V2' : 'V1';
+    const voiceType = body.script_key ? getVoiceType(body.script_key) : 'VOZ_PERGUNTA';
+    const resolvedVoiceId = getVoiceId(requestVersion, voiceType);
+    const voiceId = resolvedVoiceId || process.env.ELEVENLABS_VOICE_ID || '21m00Tcm4TlvDq8ikWAM';
     const useV3 = process.env.USE_V3_MODEL === 'true';
 
     // Wait for a concurrency slot

@@ -1,4 +1,4 @@
-import type { SpeechSegment, NarrativePhase } from '@/types';
+import type { SpeechSegment, NarrativePhase, ExperienceVersion, VoiceType } from '@/types';
 import { MockTTSService } from './mock';
 import { FallbackTTSService, isOnline } from './fallback';
 import { ElevenLabsTTSService } from './elevenlabs';
@@ -21,7 +21,13 @@ export const PHASE_VOICE_SETTINGS: Record<NarrativePhase, VoiceSettings> = {
 };
 
 export interface TTSService {
-  speak(segments: SpeechSegment[], voiceSettings: VoiceSettings, scriptKey?: string): Promise<void>;
+  speak(
+    segments: SpeechSegment[],
+    voiceSettings: VoiceSettings,
+    scriptKey?: string,
+    version?: ExperienceVersion,
+    voiceType?: VoiceType,
+  ): Promise<void>;
   cancel(): void;
 }
 

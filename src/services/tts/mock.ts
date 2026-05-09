@@ -1,10 +1,16 @@
 import type { TTSService, VoiceSettings } from './index';
-import type { SpeechSegment } from '@/types';
+import type { SpeechSegment, ExperienceVersion, VoiceType } from '@/types';
 import { VOICE_DIRECTIONS } from '@/types';
 import { waitForVoices, speakSegments, cancelSpeech } from '@/lib/audio/speechSynthesis';
 
 export class MockTTSService implements TTSService {
-  async speak(segments: SpeechSegment[], voiceSettings: VoiceSettings, _scriptKey?: string): Promise<void> {
+  async speak(
+    segments: SpeechSegment[],
+    voiceSettings: VoiceSettings,
+    _scriptKey?: string,
+    _version?: ExperienceVersion,
+    _voiceType?: VoiceType,
+  ): Promise<void> {
     try {
       const voiceDirection = VOICE_DIRECTIONS[voiceSettings.phase];
 
