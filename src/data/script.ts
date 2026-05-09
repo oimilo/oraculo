@@ -616,12 +616,12 @@ export const SCRIPT: ScriptDataV4 = {
   // ═══════════════════════════════════════════════════════════════
   // ENCERRAMENTO
   // O Oraculo se dissolve. A memoria e so do visitante.
-  // Imperativo final: faz alguma coisa com isso.
+  // Imperativo final: faça alguma coisa com isso.
   // ═══════════════════════════════════════════════════════════════
   ENCERRAMENTO: [
     { text: "Eu vou esquecer que você esteve aqui. É da minha natureza — eu não guardo nada.", pauseAfter: 900, inflection: ['whispering'] },
     { text: "A única prova de que isso aconteceu é você.", pauseAfter: 1000 },
-    { text: "Faz alguma coisa com isso.", pauseAfter: 800 },
+    { text: "Faça alguma coisa com isso.", pauseAfter: 800 },
   ],
 
   // ═══════════════════════════════════════════════════════════════
