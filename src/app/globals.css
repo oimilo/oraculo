@@ -48,10 +48,10 @@
   }
 }
 
-/* Separator line width expand */
+/* Separator line breathe — subtle but perceptible */
 @keyframes line-expand {
-  0%, 100% { width: 32px; opacity: 0.12; }
-  50% { width: 48px; opacity: 0.2; }
+  0%, 100% { width: 24px; opacity: 0.08; }
+  50% { width: 64px; opacity: 0.2; }
 }
 
 /* Button glow — warm version for start screen */
@@ -77,4 +77,28 @@
   10% { opacity: 0.7; }
   90% { opacity: 0.7; }
   100% { transform: translateY(-100vh) translateX(-15px); opacity: 0; }
+}
+
+/* Oracle listening ring — slow breathe (idle/waiting for TTS) */
+@keyframes oracle-ring-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.06); opacity: 0.7; }
+}
+
+/* Oracle listening ring — active listening (faster, brighter) */
+@keyframes oracle-ring-listen {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+
+/* Oracle listening ring — processing (contracted, dim shimmer) */
+@keyframes oracle-ring-process {
+  0%, 100% { transform: scale(0.95); opacity: 0.5; }
+  50% { transform: scale(0.97); opacity: 0.65; }
+}
+
+/* Orbital motes circling the listening ring */
+@keyframes oracle-mote-orbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }

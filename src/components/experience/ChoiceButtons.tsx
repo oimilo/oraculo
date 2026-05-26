@@ -5,6 +5,7 @@ interface ChoiceButtonsProps {
   options: Array<{ label: string; event: string }>;
   onChoice: (eventType: string) => void;
   timeoutSeconds: number;
+  minimal?: boolean;
 }
 
 /**
@@ -12,7 +13,7 @@ interface ChoiceButtonsProps {
  * Voice is the primary input method, but buttons allow manual testing and provide
  * a backup when voice recognition fails or is unavailable.
  */
-export default function ChoiceButtons({ options, onChoice, timeoutSeconds }: ChoiceButtonsProps) {
+export default function ChoiceButtons({ options, onChoice, timeoutSeconds, minimal = false }: ChoiceButtonsProps) {
   const [remaining, setRemaining] = useState(timeoutSeconds);
   const [mounted, setMounted] = useState(false);
 
@@ -33,6 +34,128 @@ export default function ChoiceButtons({ options, onChoice, timeoutSeconds }: Cho
   }, []);
 
   const progress = remaining / timeoutSeconds;
+
+  // Listening bars config — 5 bars with staggered height/timing
+  const bars = [
+    { height: 10, delay: '0ms', duration: '1.2s' },
+    { height: 16, delay: '150ms', duration: '1.0s' },
+    { height: 22, delay: '50ms', duration: '1.1s' },
+    { height: 16, delay: '250ms', duration: '0.9s' },
+    { height: 10, delay: '100ms', duration: '1.3s' },
+  ];
+
+  if (minimal) {
+    return (
+      <div
+        className="fixed inset-0 flex items-center justify-center z-40 pointer-events-none"
+        style={{
+          opacity: mounted ? 1 : 0,
+          transition: 'opacity 1s ease-out',
+        }}
+      >
+        {/* Centered row: [Option A]  |bars|  [Option B] */}
+        <div className="flex items-center gap-8 pointer-events-auto">
+          {/* Option A — ghostly text, glow on hover */}
+          <button
+            onClick={() => onChoice(options[0].event)}
+            className="px-2 py-1 transition-all duration-500 cursor-pointer"
+            style={{
+              fontFamily: 'var(--font-cormorant), Georgia, serif',
+              fontSize: '1.05rem',
+              fontStyle: 'italic',
+              fontWeight: 300,
+              letterSpacing: '0.06em',
+              color: 'rgba(255, 255, 255, 0.35)',
+              background: 'none',
+              border: 'none',
+              textShadow: '0 0 8px rgba(255, 255, 255, 0.05)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = 'rgba(255, 255, 255, 0.7)';
+              e.currentTarget.style.textShadow = '0 0 20px rgba(255, 255, 255, 0.2)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = 'rgba(255, 255, 255, 0.35)';
+              e.currentTarget.style.textShadow = '0 0 8px rgba(255, 255, 255, 0.05)';
+            }}
+          >
+            {options[0].label}
+          </button>
+
+          {/* Listening bars */}
+          <div
+            className="flex items-center justify-center gap-[3px]"
+            aria-label="Ouvindo"
+            role="status"
+          >
+            {bars.map((bar, i) => (
+              <span
+                key={i}
+                className="inline-block rounded-full"
+                style={{
+                  width: 2,
+                  height: bar.height,
+                  background: 'rgba(255, 255, 255, 0.35)',
+                  animation: `listening-bar ${bar.duration} ease-in-out ${bar.delay} infinite`,
+                  transformOrigin: 'center',
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Option B — ghostly text, glow on hover */}
+          <button
+            onClick={() => onChoice(options[1].event)}
+            className="px-2 py-1 transition-all duration-500 cursor-pointer"
+            style={{
+              fontFamily: 'var(--font-cormorant), Georgia, serif',
+              fontSize: '1.05rem',
+              fontStyle: 'italic',
+              fontWeight: 300,
+              letterSpacing: '0.06em',
+              color: 'rgba(255, 255, 255, 0.35)',
+              background: 'none',
+              border: 'none',
+              textShadow: '0 0 8px rgba(255, 255, 255, 0.05)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = 'rgba(255, 255, 255, 0.7)';
+              e.currentTarget.style.textShadow = '0 0 20px rgba(255, 255, 255, 0.2)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = 'rgba(255, 255, 255, 0.35)';
+              e.currentTarget.style.textShadow = '0 0 8px rgba(255, 255, 255, 0.05)';
+            }}
+          >
+            {options[1].label}
+          </button>
+        </div>
+
+        {/* Timer arc — bottom center, subtle */}
+        <div className="fixed bottom-6 inset-x-0 flex justify-center pointer-events-none">
+          <div className="relative w-3 h-3">
+            <svg viewBox="0 0 20 20" className="w-full h-full -rotate-90">
+              <circle
+                cx="10" cy="10" r="8"
+                fill="none"
+                stroke="rgba(255,255,255,0.05)"
+                strokeWidth="1.5"
+              />
+              <circle
+                cx="10" cy="10" r="8"
+                fill="none"
+                stroke="rgba(255,255,255,0.15)"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeDasharray={`${progress * 50.27} 50.27`}
+                style={{ transition: 'stroke-dasharray 1s linear' }}
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

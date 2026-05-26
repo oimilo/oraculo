@@ -21,7 +21,7 @@ import AudioReactiveBackground from '../visuals/AudioReactiveBackground';
 import ChoiceButtons from './ChoiceButtons';
 import EndFade from './EndFade';
 import WaveformVisualizer from '../audio/WaveformVisualizer';
-import ListeningIndicator from '../audio/ListeningIndicator';
+// OracleListeningRing removed — listening bars in ChoiceButtons are sufficient
 import DebugPanel from '@/components/debug/DebugPanel';
 import { createLogger } from '@/lib/debug/logger';
 
@@ -651,11 +651,10 @@ export default function OracleExperience() {
       {experienceActive && (
         <div className="fixed inset-0 flex flex-col items-center justify-center gap-8 pointer-events-none">
           <WaveformVisualizer visible={tts.isSpeaking} />
-          <ListeningIndicator isListening={voiceChoice.isListening} />
         </div>
       )}
 
-      {/* Choice UI — buttons alongside voice for all 6 AGUARDANDO states */}
+      {/* Choice UI — voice-first options for all AGUARDANDO states */}
       {isAguardando && activeChoiceConfig && (
         <ChoiceButtons
           options={[
@@ -664,6 +663,7 @@ export default function OracleExperience() {
           ]}
           onChoice={(eventType) => send({ type: eventType as any })}
           timeoutSeconds={15}
+          minimal
         />
       )}
 
