@@ -30,3 +30,51 @@
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-4px); }
 }
+
+@keyframes start-breathe {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+/* Logo slow pulse — very gentle scale + brightness */
+@keyframes logo-pulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1) drop-shadow(0 0 0px rgba(200, 60, 40, 0));
+  }
+  50% {
+    transform: scale(1.015);
+    filter: brightness(1.15) drop-shadow(0 0 30px rgba(200, 60, 40, 0.15));
+  }
+}
+
+/* Separator line width expand */
+@keyframes line-expand {
+  0%, 100% { width: 32px; opacity: 0.12; }
+  50% { width: 48px; opacity: 0.2; }
+}
+
+/* Button glow — warm version for start screen */
+@keyframes start-glow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.03), 0 0 60px rgba(200, 60, 40, 0);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.06), 0 0 80px rgba(200, 60, 40, 0.06);
+  }
+}
+
+/* Floating particles for ambient depth */
+@keyframes particle-drift {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+}
+
+@keyframes particle-drift-alt {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 0.7; }
+  90% { opacity: 0.7; }
+  100% { transform: translateY(-100vh) translateX(-15px); opacity: 0; }
+}

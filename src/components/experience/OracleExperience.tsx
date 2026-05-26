@@ -17,7 +17,6 @@ import { initEffectsChain, setEffectsPhase, startEchoBursts, stopEchoBursts, sta
 import { StationRegistry } from '@/services/station';
 import PermissionScreen from './PermissionScreen';
 import StartButton from './StartButton';
-import VersionSelector from './VersionSelector';
 import AudioReactiveBackground from '../visuals/AudioReactiveBackground';
 import ChoiceButtons from './ChoiceButtons';
 import EndFade from './EndFade';
@@ -269,7 +268,6 @@ export default function OracleExperience() {
   const [state, send] = useMachine(oracleMachine);
   const [micPermissionGranted, setMicPermissionGranted] = useState(false);
   const [experienceStarted, setExperienceStarted] = useState(false);
-  const [versionSelected, setVersionSelected] = useState(false);
   const prevStateRef = useRef<any>(state.value);
   const [ttsComplete, setTtsComplete] = useState(false);
   const ttsForStateRef = useRef<string>('');
@@ -645,10 +643,7 @@ export default function OracleExperience() {
       {!micPermissionGranted && (
         <PermissionScreen onGranted={() => setMicPermissionGranted(true)} />
       )}
-      {micPermissionGranted && !versionSelected && state.matches('IDLE') && (
-        <VersionSelector onContinue={() => setVersionSelected(true)} />
-      )}
-      {micPermissionGranted && versionSelected && state.matches('IDLE') && (
+      {micPermissionGranted && state.matches('IDLE') && (
         <StartButton onClick={handleStart} />
       )}
 
