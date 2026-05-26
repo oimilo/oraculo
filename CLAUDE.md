@@ -4,7 +4,7 @@
 
 Interactive voice art installation for the VII Bienal de Psicanalise e Cultura (SBPRP 2026, May 29-30). A visitor puts on headphones, the Oracle guides them through a Dante-inspired journey (Inferno → Purgatorio → Paraiso) with up to 11 max decisions (6 base + 5 conditional branches) in 5-7 minutes, then delivers a personalized devolucao based on their choice pattern.
 
-**Status:** v6.0 Deep Branching complete. All code, script, machine, and 82 MP3s shipped. Pending: browser UAT + event deploy.
+**Status:** v6.1 in progress. Start screen redesigned with logo + ambient effects. V1 only (VersionSelector removed from flow). Pending: V2 audio generation (Phase 39-02) + browser UAT + event deploy.
 
 ## Stack
 
@@ -132,7 +132,7 @@ src/
   components/experience/
     OracleExperience.tsx        # THE orchestrator component
     PermissionScreen.tsx        # Mic permission UI
-    StartButton.tsx             # Start button
+    StartButton.tsx             # Start screen (logo + ambient particles + enter button)
     ChoiceButtons.tsx           # Voice choice fallback buttons
   components/audio/
     WaveformVisualizer.tsx      # Canvas waveform
@@ -160,6 +160,7 @@ scripts/
   generate-audio-v3.ts         # MP3 generation via ElevenLabs
   validate-timing.ts           # Duration validation (24 branch paths)
 public/audio/prerecorded/      # 82 pre-recorded MP3s (~24MB)
+public/images/oraculogo.png    # Hand-painted logo (used on start screen)
 ```
 
 ## Important Constraints

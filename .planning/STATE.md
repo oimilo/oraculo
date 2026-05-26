@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v6.1
 milestone_name: Duas Vozes
 status: in-progress
-last_updated: "2026-05-09T16:30:00.000Z"
-last_activity: 2026-05-09
+last_updated: "2026-05-26T12:00:00.000Z"
+last_activity: 2026-05-26
 progress:
-  total_phases: 4
-  completed_phases: 3
+  total_phases: 5
+  completed_phases: 4
   total_plans: 8
   completed_plans: 7
-  percent: 87
+  percent: 90
 ---
 
 # State: O Oraculo
@@ -25,12 +25,11 @@ progress:
 
 ## Current Position
 
-Phase: 39 of 39 (Audio Generation & Polish) -- IN PROGRESS
-Plan: 1 of 2 in current phase (39-01 complete)
-Status: Plan 39-01 complete (script extension + env var fix + faca commit), 39-02 pending (MP3 generation)
-Last activity: 2026-05-09 — Plan 39-01 executed (generate-audio-v3.ts --v2 mode + script.ts faca fix)
+Phase: 40 of 40 (Start Screen Redesign) -- COMPLETE
+Previous: Phase 39 (Audio Generation & Polish) -- IN PROGRESS (plan 39-02 pending)
+Last activity: 2026-05-26 — Phase 40 complete (start screen redesign with logo, particles, VersionSelector removed)
 
-Progress: [██████████████████████████████████████░] 97% (38/39 phases complete)
+Progress: [██████████████████████████████████████░] 97% (39/40 phases complete, Phase 39 plan 39-02 pending)
 
 ## Performance Metrics
 
@@ -99,6 +98,6 @@ Items carried forward from previous milestones:
 
 ## Session Continuity
 
-Last session: 2026-05-09
-Stopped at: Plan 39-01 complete — generate-audio-v3.ts extended with --v2 dual-voice mode, script.ts faca fix committed
+Last session: 2026-05-26
+Stopped at: Phase 40 complete — start screen redesigned with logo, ambient particles, VersionSelector removed (V1 only)
 Resume: Plan 39-02 — Generate 47 V2 narrative MP3s + regenerate ENCERRAMENTO V1

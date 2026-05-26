@@ -133,6 +133,7 @@ See: `.planning/milestones/v6.0-ROADMAP.md` for full phase details, success crit
 - [x] **Phase 37: Dual-Voice Service Layer** - TTS/FallbackTTS dual-voice support + API route voice ID routing (completed 2026-05-09)
 - [x] **Phase 38: Version Selector & UI Integration** - Home page V1/V2 selector + OracleExperience version-aware audio routing (completed 2026-05-09)
 - [ ] **Phase 39: Audio Generation & Polish** - Generate V2 narrative MP3s + fix "faca" in ENCERRAMENTO (both versions) *(2 plans)*
+- [x] **Phase 40: Start Screen Redesign** - Logo, ambient particles, staggered animations, VersionSelector removed (V1 only) *(ad-hoc, 1 commit)*
 
 ## Phase Details
 
@@ -406,6 +407,18 @@ Plans:
 
 **UI hint**: no
 
+### Phase 40: Start Screen Redesign
+**Goal**: Replace plain dark start button with branded start screen featuring hand-painted logo, ambient effects, and streamlined flow (remove VersionSelector, V1 only)
+**Depends on**: Phase 38
+**Requirements**: Ad-hoc pre-event polish
+**Status**: Complete (ad-hoc, single commit)
+**Changes**:
+  1. Logo (`oraculogo.png`) added to `public/images/`, displayed with `mix-blend-mode: screen` on dark background
+  2. StartButton.tsx rewritten: staggered 3-phase entrance (hidden → logo → ready), slow logo pulse (6s), 8 floating ambient particles, animated separator, dual-animation button (breathe + glow), event context line
+  3. VersionSelector removed from OracleExperience flow — experience defaults to V1 via VersionProvider
+  4. 6 new CSS keyframes added to globals.css (logo-pulse, line-expand, start-glow, particle-drift, particle-drift-alt, start-breathe)
+  5. **Note**: VersionSelector component and VersionContext still exist in codebase (used by TTS/FallbackTTS for V2 routing) — only removed from UI flow
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -428,6 +441,7 @@ Plans:
 | 37. Dual-Voice Service Layer | v6.1 | 2/2 | Complete    | 2026-05-09 |
 | 38. Version Selector & UI Integration | v6.1 | 2/2 | Complete    | 2026-05-09 |
 | 39. Audio Generation & Polish | v6.1 | 1/2 | In progress | - |
+| 40. Start Screen Redesign | v6.1 | ad-hoc | Complete | 2026-05-26 |
 
 ## Dependencies
 
@@ -441,4 +455,4 @@ v6.1 Duas Vozes (active):
 
 ---
 
-*Last updated: 2026-05-09 -- Phase 39 planned (2 plans: script extension + audio generation)*
+*Last updated: 2026-05-26 -- Phase 40 complete (start screen redesign), Phase 39 in progress*
