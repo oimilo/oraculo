@@ -922,7 +922,7 @@ export const oracleMachine = setup({
 
     FIM: {
       after: {
-        5000: {
+        18000: {
           target: 'IDLE',
           actions: assign({
             sessionId: '',
