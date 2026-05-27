@@ -153,7 +153,15 @@ export class ElevenLabsTTSService implements TTSService {
         reject(new Error(`Failed to play audio: ${url}`));
       };
 
-      audio.play().catch((err) => {
+      // Resume AudioContext if suspended (mobile browsers suspend after inactivity)
+      this.audioContext!.resume().then(() => {
+        audio.play().catch((err) => {
+          console.warn('[ElevenLabs] audio.play() failed:', err.name, err.message);
+          this.currentAudio = null;
+          reject(err);
+        });
+      }).catch((err) => {
+        console.warn('[ElevenLabs] AudioContext resume failed:', err);
         this.currentAudio = null;
         reject(err);
       });

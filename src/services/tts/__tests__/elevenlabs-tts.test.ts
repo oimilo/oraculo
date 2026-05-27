@@ -56,6 +56,8 @@ describe('ElevenLabsTTSService', () => {
         })
       ),
       destination: {},
+      state: 'running',
+      resume: vi.fn(() => Promise.resolve()),
     };
 
     // Set up mock returns

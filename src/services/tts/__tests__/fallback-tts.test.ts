@@ -18,6 +18,8 @@ global.AudioContext = vi.fn().mockImplementation(() => ({
     connect: vi.fn(),
   })),
   destination: {},
+  state: 'running',
+  resume: vi.fn(() => Promise.resolve()),
   decodeAudioData: vi.fn((arrayBuffer) =>
     Promise.resolve({
       duration: 1.0,
