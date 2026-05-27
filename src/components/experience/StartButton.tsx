@@ -77,7 +77,8 @@ export default function StartButton({ onClick }: StartButtonProps) {
       {/* Floating particles */}
       {phase !== 'hidden' && <AmbientParticles />}
 
-      <div className="relative flex flex-col items-center gap-0 px-8">
+      {/* Main content — shifted above center for visual balance */}
+      <div className="relative flex flex-col items-center gap-0 px-8" style={{ marginBottom: '12vh' }}>
         {/* Logo with slow pulse after load */}
         <div
           style={{
@@ -118,58 +119,22 @@ export default function StartButton({ onClick }: StartButtonProps) {
           uma experiência interativa por voz
         </p>
 
-        {/* Instructions — staggered line-by-line entrance */}
-        <div className="mt-14 flex flex-col items-center gap-5">
-          {[
-            { text: 'Coloque os fones de ouvido.', delay: 0.3, icon: '○' },
-            { text: 'Uma experiência curta, guiada por voz.', delay: 0.6, icon: '○' },
-            { text: 'Diversos finais possíveis.', delay: 0.9, icon: '○' },
-          ].map((line, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-3"
-              style={{
-                opacity: phase === 'ready' ? 1 : 0,
-                transform: phase === 'ready' ? 'translateY(0)' : 'translateY(10px)',
-                transition: `opacity 1s ease-out ${line.delay}s, transform 1s ease-out ${line.delay}s`,
-              }}
-            >
-              <span
-                style={{
-                  fontSize: '0.35rem',
-                  color: 'rgba(200, 80, 60, 0.4)',
-                  animation: phase === 'ready' ? `start-breathe 4s ease-in-out ${i * 1.3}s infinite` : 'none',
-                }}
-              >
-                {line.icon}
-              </span>
-              <span
-                style={{
-                  fontFamily: 'var(--font-cormorant), Georgia, serif',
-                  fontSize: '0.85rem',
-                  fontWeight: 300,
-                  color: 'rgba(255, 255, 255, 0.32)',
-                  letterSpacing: '0.06em',
-                }}
-              >
-                {line.text}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* Animated separator line */}
-        <div
-          className="mx-auto mt-9 mb-9"
+        {/* Single atmospheric instruction */}
+        <p
+          className="mt-14 mb-14 text-center"
           style={{
-            height: '1px',
-            background: 'rgba(255, 255, 255, 0.12)',
+            fontFamily: 'var(--font-cormorant), Georgia, serif',
+            fontSize: '0.85rem',
+            fontWeight: 300,
+            color: 'rgba(255, 255, 255, 0.25)',
+            letterSpacing: '0.08em',
             opacity: phase === 'ready' ? 1 : 0,
-            transition: 'opacity 1.5s ease-out',
-            animation: phase === 'ready' ? 'line-expand 6s ease-in-out infinite' : 'none',
-            width: '32px',
+            transform: phase === 'ready' ? 'translateY(0)' : 'translateY(8px)',
+            transition: 'opacity 1.4s ease-out 0.3s, transform 1.4s ease-out 0.3s',
           }}
-        />
+        >
+          Coloque os fones. O Oráculo aguarda.
+        </p>
 
         {/* Start button with glow + breathe */}
         <button
@@ -198,21 +163,38 @@ export default function StartButton({ onClick }: StartButtonProps) {
             style={{ background: 'rgba(255, 255, 255, 0.04)' }}
           />
         </button>
+      </div>
 
-        {/* Event context */}
+      {/* Footer — anchored to bottom, independent of main content */}
+      <div
+        className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-3"
+        style={{
+          opacity: phase === 'ready' ? 1 : 0,
+          transition: 'opacity 2s ease-out 0.5s',
+        }}
+      >
+        <Image
+          src="/images/sbprp-logo.png"
+          alt="SBPRP — Sociedade Brasileira de Psicanálise de Ribeirão Preto"
+          width={120}
+          height={40}
+          style={{
+            userSelect: 'none',
+            pointerEvents: 'none',
+            opacity: 0.35,
+            filter: 'brightness(1.8) grayscale(0.3)',
+          }}
+        />
         <p
-          className="mt-14"
           style={{
             fontFamily: 'Georgia, serif',
             fontSize: '0.65rem',
             fontWeight: 400,
             color: 'rgba(255, 255, 255, 0.15)',
             letterSpacing: '0.08em',
-            opacity: phase === 'ready' ? 1 : 0,
-            transition: 'opacity 2s ease-out 0.5s',
           }}
         >
-          VII Bienal de Psicanálise e Cultura &middot; SBPRP 2026
+          VII Bienal de Psicanálise e Cultura &middot; 2026
         </p>
       </div>
     </div>

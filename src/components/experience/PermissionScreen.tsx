@@ -38,7 +38,7 @@ export default function PermissionScreen({ onGranted }: PermissionScreenProps) {
     } catch (err) {
       if (err instanceof DOMException) {
         if (err.name === 'NotAllowedError') {
-          setError('Permissao negada. Precisamos do microfone para ouvir suas respostas.');
+          setError('Permissão negada. Precisamos do microfone para ouvir suas respostas.');
         } else if (err.name === 'NotFoundError') {
           setError('Nenhum microfone encontrado.');
         } else {
@@ -51,13 +51,22 @@ export default function PermissionScreen({ onGranted }: PermissionScreenProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-8"
-      style={{
-        background: 'radial-gradient(ellipse at center, #0a0a0a 0%, #000000 70%)',
-      }}
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-8"
+      style={{ background: '#000000' }}
     >
+      {/* Match StartButton ambient warmth */}
       <div
-        className="max-w-md text-center"
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at 50% 38%, rgba(120, 40, 30, 0.06) 0%, transparent 55%)',
+          transition: 'opacity 2s ease',
+          opacity: mounted ? 1 : 0,
+        }}
+      />
+
+      <div
+        className="relative max-w-md text-center"
         style={{
           opacity: mounted ? 1 : 0,
           transform: mounted ? 'translateY(0)' : 'translateY(16px)',
@@ -65,56 +74,66 @@ export default function PermissionScreen({ onGranted }: PermissionScreenProps) {
         }}
       >
         {/* Ornamental line */}
-        <div className="mx-auto mb-8 w-12 h-px bg-white/20" />
-
-        <h2
-          className="text-3xl text-white/90 mb-2 font-light tracking-wide"
-          style={{ fontFamily: 'var(--font-cormorant), Georgia, serif' }}
-        >
-          O Oraculo
-        </h2>
+        <div className="mx-auto mb-10 w-12 h-px bg-white/12" />
 
         <p
-          className="text-white/30 text-sm mb-8 tracking-widest uppercase"
-          style={{ fontFamily: 'var(--font-cormorant), Georgia, serif' }}
+          className="text-white/40 mb-4 leading-relaxed"
+          style={{
+            fontFamily: 'var(--font-cormorant), Georgia, serif',
+            fontSize: '1rem',
+            fontWeight: 300,
+            letterSpacing: '0.04em',
+          }}
         >
-          experiencia interativa de voz
+          Vamos precisar do seu microfone
+          <br />
+          para ouvir suas respostas.
         </p>
 
-        <p className="text-white/50 mb-10 leading-relaxed text-sm" style={{ fontFamily: 'Georgia, serif' }}>
-          Vamos precisar do seu microfone para ouvir suas respostas.
-          <br />
-          Suas palavras nao sao gravadas — apenas processadas no momento.
+        <p
+          className="mb-12"
+          style={{
+            fontFamily: 'Georgia, serif',
+            fontSize: '0.72rem',
+            color: 'rgba(255, 255, 255, 0.22)',
+            letterSpacing: '0.04em',
+          }}
+        >
+          Suas palavras não são gravadas — apenas processadas no momento.
         </p>
 
         <button
           onClick={requestMicrophone}
           disabled={isRequesting}
-          className="group relative px-10 py-4 rounded-full text-white/80 text-base tracking-wider transition-all duration-500 disabled:opacity-40"
+          className="group relative px-12 py-4 rounded-full transition-all duration-500 disabled:opacity-40"
           style={{
             fontFamily: 'var(--font-cormorant), Georgia, serif',
-            background: 'rgba(255, 255, 255, 0.04)',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            animation: 'oracle-glow 4s ease-in-out infinite',
+            fontSize: '1.05rem',
+            fontWeight: 400,
+            letterSpacing: '0.16em',
+            color: 'rgba(255, 255, 255, 0.6)',
+            background: 'rgba(255, 255, 255, 0.03)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            animation: mounted ? 'start-glow 6s ease-in-out infinite' : 'none',
           }}
         >
-          <span className="relative z-10 group-hover:text-white transition-colors duration-300">
-            {isRequesting ? 'Aguardando permissao...' : 'Permitir microfone'}
+          <span className="relative z-10 group-hover:text-white/80 transition-all duration-700">
+            {isRequesting ? 'Aguardando permissão...' : 'Permitir microfone'}
           </span>
           <div
-            className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-            style={{ background: 'rgba(255, 255, 255, 0.06)' }}
+            className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+            style={{ background: 'rgba(255, 255, 255, 0.04)' }}
           />
         </button>
 
         {error && (
-          <p className="text-red-400/70 mt-8 text-sm" style={{ fontFamily: 'Georgia, serif' }}>
+          <p className="mt-8" style={{ fontFamily: 'Georgia, serif', fontSize: '0.78rem', color: 'rgba(200, 80, 60, 0.6)' }}>
             {error}
           </p>
         )}
 
         {/* Bottom ornamental line */}
-        <div className="mx-auto mt-12 w-8 h-px bg-white/10" />
+        <div className="mx-auto mt-12 w-8 h-px bg-white/8" />
       </div>
     </div>
   );
