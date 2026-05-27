@@ -629,9 +629,7 @@ export default function OracleExperience() {
    */
   const handleStart = useCallback(async () => {
     await initAudioContext();
-    // Effects chain disabled — ConvolverNode breaks audio routing on mobile browsers.
-    // Voice plays clean (no EQ/reverb) but works universally.
-    // initEffectsChain();
+    initEffectsChain(); // Wire EQ + reverb + delay into audio chain
     tts.initTTS();
     setExperienceStarted(true);
     send({ type: 'START' });
