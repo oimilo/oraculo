@@ -20,6 +20,13 @@ function getSupportedMimeType(): string {
 
 const logger = createLogger('Mic');
 
+// Silence detection parameters
+const SILENCE_CHECK_INTERVAL_MS = 100;  // How often to check audio level
+const SILENCE_THRESHOLD = 0.015;        // RMS below this = silence
+const SPEECH_THRESHOLD = 0.02;          // RMS above this = speech detected
+const SILENCE_DURATION_MS = 1200;       // Stop after this much silence post-speech
+const MIN_RECORDING_MS = 1200;          // Always record at least this long
+
 export interface UseMicrophoneReturn {
   isRecording: boolean;
   audioBlob: Blob | null;
@@ -39,6 +46,9 @@ export function useMicrophone(): UseMicrophoneReturn {
   const streamRef = useRef<MediaStream | null>(null);
   const warmStreamRef = useRef<MediaStream | null>(null);
   const autoStopRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const silenceIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
 
   const releaseStream = useCallback(() => {
     logger.log('releaseStream', { hadStream: !!streamRef.current });
@@ -83,6 +93,15 @@ export function useMicrophone(): UseMicrophoneReturn {
       });
   }, []);
 
+  const clearSilenceDetection = useCallback(() => {
+    if (silenceIntervalRef.current) {
+      clearInterval(silenceIntervalRef.current);
+      silenceIntervalRef.current = null;
+    }
+    analyserRef.current = null;
+    // Don't close audioCtx — reuse across recordings
+  }, []);
+
   const stopRecording = useCallback(() => {
     logger.log('stopRecording called', { hasRecorder: !!mediaRecorderRef.current, state: mediaRecorderRef.current?.state });
     // Clear auto-stop timer (always, whether it exists or not)
@@ -90,11 +109,12 @@ export function useMicrophone(): UseMicrophoneReturn {
       clearTimeout(autoStopRef.current);
       autoStopRef.current = null;
     }
+    clearSilenceDetection();
     if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
       mediaRecorderRef.current.stop();
     }
     setIsRecording(false);
-  }, []);
+  }, [clearSilenceDetection]);
 
   const startRecording = useCallback(async (maxDuration?: number) => {
     // Stop any previous recording first
@@ -149,6 +169,7 @@ export function useMicrophone(): UseMicrophoneReturn {
       recorder.start();
       mediaRecorderRef.current = recorder;
       setIsRecording(true);
+      const recordingStartTime = Date.now();
       logger.log('Recording started', { maxDuration, mimeType: mimeType || 'default' });
 
       // Set auto-stop timer inside startRecording — tied to THIS recorder
@@ -160,8 +181,74 @@ export function useMicrophone(): UseMicrophoneReturn {
             recorder.stop();
             setIsRecording(false);
           }
+          clearSilenceDetection();
           autoStopRef.current = null;
         }, maxDuration);
+      }
+
+      // Silence detection: stop recording early when speech ends
+      try {
+        if (!audioCtxRef.current || audioCtxRef.current.state === 'closed') {
+          audioCtxRef.current = new AudioContext();
+        }
+        const actx = audioCtxRef.current;
+        const source = actx.createMediaStreamSource(stream);
+        const analyser = actx.createAnalyser();
+        analyser.fftSize = 512;
+        source.connect(analyser);
+        analyserRef.current = analyser;
+
+        const dataArray = new Float32Array(analyser.fftSize);
+        let speechDetected = false;
+        let silenceStart: number | null = null;
+
+        silenceIntervalRef.current = setInterval(() => {
+          // Guard: only process if THIS recorder is still active
+          if (mediaRecorderRef.current !== recorder || recorder.state !== 'recording') {
+            clearSilenceDetection();
+            return;
+          }
+
+          analyser.getFloatTimeDomainData(dataArray);
+          // Compute RMS
+          let sum = 0;
+          for (let i = 0; i < dataArray.length; i++) {
+            sum += dataArray[i] * dataArray[i];
+          }
+          const rms = Math.sqrt(sum / dataArray.length);
+
+          const elapsed = Date.now() - recordingStartTime;
+
+          if (rms >= SPEECH_THRESHOLD) {
+            if (!speechDetected) {
+              speechDetected = true;
+              logger.log('Speech detected', { rms: rms.toFixed(4), elapsedMs: elapsed });
+            }
+            silenceStart = null; // Reset silence timer
+          } else if (speechDetected && rms < SILENCE_THRESHOLD) {
+            // Speech was detected and now it's silent
+            if (!silenceStart) {
+              silenceStart = Date.now();
+            } else if (Date.now() - silenceStart >= SILENCE_DURATION_MS && elapsed >= MIN_RECORDING_MS) {
+              logger.log('Silence detected after speech — stopping early', {
+                silenceDurationMs: Date.now() - silenceStart,
+                totalRecordingMs: elapsed,
+              });
+              clearSilenceDetection();
+              if (autoStopRef.current) {
+                clearTimeout(autoStopRef.current);
+                autoStopRef.current = null;
+              }
+              recorder.stop();
+              setIsRecording(false);
+            }
+          }
+        }, SILENCE_CHECK_INTERVAL_MS);
+      } catch (silenceErr) {
+        // Silence detection is best-effort; fall back to timer-based stop
+        logger.log('Silence detection unavailable, using timer fallback', {
+          error: silenceErr instanceof Error ? silenceErr.message : String(silenceErr),
+        });
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Microphone access denied';
@@ -170,7 +257,7 @@ export function useMicrophone(): UseMicrophoneReturn {
       setIsRecording(false);
       releaseStream();
     }
-  }, [releaseStream, stopRecording]);
+  }, [releaseStream, stopRecording, clearSilenceDetection]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -179,13 +266,18 @@ export function useMicrophone(): UseMicrophoneReturn {
         clearTimeout(autoStopRef.current);
         autoStopRef.current = null;
       }
+      clearSilenceDetection();
+      if (audioCtxRef.current && audioCtxRef.current.state !== 'closed') {
+        audioCtxRef.current.close();
+        audioCtxRef.current = null;
+      }
       if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
         mediaRecorderRef.current.stop();
       }
       releaseStream();
       releaseWarmStream();
     };
-  }, [releaseStream, releaseWarmStream]);
+  }, [releaseStream, releaseWarmStream, clearSilenceDetection]);
 
   return { isRecording, audioBlob, error, startRecording, stopRecording, warmUp };
 }

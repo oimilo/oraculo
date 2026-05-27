@@ -669,7 +669,7 @@ export default function OracleExperience() {
 
       {state.matches('FIM') && <EndFade />}
 
-      {/* Dev skip button — advances to next state by firing NARRATIVA_DONE */}
+      {/* Dev skip button — uncomment when needed for testing
       {experienceActive && !isAguardando && !state.matches('FIM') && (
         <button
           onClick={() => {
@@ -686,6 +686,7 @@ export default function OracleExperience() {
           Skip
         </button>
       )}
+      */}
 
       {process.env.NODE_ENV === 'development' && (
         <DebugPanel
